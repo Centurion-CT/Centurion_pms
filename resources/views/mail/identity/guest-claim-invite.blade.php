@@ -14,5 +14,5 @@ This link is good for 7 days. It signs you in without a password; you can set on
 If you didn't book anything, you can safely ignore this email.
 
 Thanks,
-The Keverna team
+The {{ config('app.name') }} team
 </x-mail::message>

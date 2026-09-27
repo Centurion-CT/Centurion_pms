@@ -12,5 +12,5 @@ Use the code below to confirm your email address. It expires in 10 minutes.
 If you didn't sign up for Keverna, please ignore this email.
 
 Thanks,
-The Keverna team
+The {{ config('app.name') }} team
 </x-mail::message>

@@ -19,5 +19,5 @@ Top up now
 </x-mail::button>
 
 Thanks,
-The Keverna team
+The {{ config('app.name') }} team
 </x-mail::message>

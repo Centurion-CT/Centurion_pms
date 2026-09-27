@@ -19,5 +19,5 @@ If anything stops you along the way, reply to this email and a human will
 help.
 
 Thanks,
-The Keverna team
+The {{ config('app.name') }} team
 </x-mail::message>

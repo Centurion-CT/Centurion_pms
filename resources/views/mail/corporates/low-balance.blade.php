@@ -18,5 +18,5 @@ Top up now
 Memberships set to auto-renew will pause if the wallet hits zero on renewal day, top up to keep your team's bookings running.
 
 Thanks,
-The Keverna team
+The {{ config('app.name') }} team
 </x-mail::message>
