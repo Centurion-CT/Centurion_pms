@@ -19,8 +19,7 @@ use Throwable;
  * products, outlet_operators, stock_requests, purchase_orders, and
  * pos_sales (which in turn cascade their lines + returns). Payments
  * on those sales use nullOnDelete on pos_sale_id, so tender rows
- * survive - the caller can hit {@see \App\Actions\Admin\PurgeTenantPosSales}
- * first if they want a clean sweep including receipts.
+ * survive by design.
  *
  * Guards:
  *   - Only Manager may delete an outlet.

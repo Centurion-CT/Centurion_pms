@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\Admin;
 use App\Models\IdentityAccount;
 use App\Models\Operator;
 
@@ -12,9 +11,8 @@ return [
     | Authentication Defaults
     |--------------------------------------------------------------------------
     |
-    | The default `web` guard authenticates property operators against their
-    | tenant. Admins live on a separate `admin` guard backed by a dedicated
-    | model + table — see PRD §8.
+    | Solo mode has one operator table + one guest membership table.
+    | No platform admin guard; property Managers hold the highest role.
     */
 
     'defaults' => [
@@ -22,21 +20,10 @@ return [
         'passwords' => env('AUTH_PASSWORD_BROKER', 'operators'),
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Guards
-    |--------------------------------------------------------------------------
-    */
-
     'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'operators',
-        ],
-
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
         ],
 
         'corporate' => [
@@ -44,30 +31,18 @@ return [
             'provider' => 'corporate_members',
         ],
 
-        // Central-domain unified identity (docs/unified-login.md). Backs
-        // keverna.com/login and the account chooser. Cross-tenant by
-        // design — the model does NOT use BelongsToTenant.
+        // Unified identity for operator login. Backs /login and any
+        // account-scoped flows. Not tenant-scoped by design.
         'identity' => [
             'driver' => 'session',
             'provider' => 'identity_accounts',
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | User Providers
-    |--------------------------------------------------------------------------
-    */
-
     'providers' => [
         'operators' => [
             'driver' => 'eloquent',
             'model' => Operator::class,
-        ],
-
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => Admin::class,
         ],
 
         'corporate_members' => [
@@ -81,23 +56,10 @@ return [
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Resetting Passwords
-    |--------------------------------------------------------------------------
-    */
-
     'passwords' => [
         'operators' => [
             'provider' => 'operators',
             'table' => 'operator_password_reset_tokens',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-
-        'admins' => [
-            'provider' => 'admins',
-            'table' => 'admin_password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],
@@ -109,11 +71,6 @@ return [
             'throttle' => 60,
         ],
 
-        // Central-domain unified identity (docs/unified-login.md).
-        // Backs the /password/forgot + /password/reset flow served
-        // from keverna.com so a single IdentityAccount can reset
-        // once, then use the same password to sign into every
-        // tenant they operate.
         'identities' => [
             'provider' => 'identity_accounts',
             'table' => 'identity_account_password_reset_tokens',
@@ -121,12 +78,6 @@ return [
             'throttle' => 60,
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Password Confirmation Timeout
-    |--------------------------------------------------------------------------
-    */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 ];

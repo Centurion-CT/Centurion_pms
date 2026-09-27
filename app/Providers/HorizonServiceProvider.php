@@ -28,17 +28,17 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     }
 
     /**
-     * Restrict /horizon to logged-in platform admins. The `admin` guard
-     * authenticates against the dedicated `admins` table (App\Models\Admin),
-     * not the tenant-side `operators` table — so this gate cannot be
-     * accidentally widened by a misconfigured tenant role.
+     * Restrict /horizon to the property's Manager operators. Solo mode
+     * has no platform admin — the highest local role owns the queue UI.
      */
     protected function gate(): void
     {
-        Gate::define('viewHorizon', function ($_user = null): bool {
-            $admin = auth('admin')->user();
-
-            return $admin !== null && (bool) ($admin->is_active ?? false);
+        Gate::define('viewHorizon', function ($user = null): bool {
+            $op = $user ?: auth('web')->user();
+            if (! $op instanceof \App\Models\Operator) {
+                return false;
+            }
+            return $op->role === \App\Enums\OperatorRole::Manager;
         });
     }
 }

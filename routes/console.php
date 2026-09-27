@@ -10,11 +10,8 @@ use App\Console\Commands\Bookings\SendCheckInReminders;
 use App\Console\Commands\Bookings\SendExtendPrompts;
 use App\Console\Commands\Bookings\SendReviewPrompts;
 use App\Console\Commands\Inventory\SendLowStockDigest;
-use App\Console\Commands\RecomputePlatformStats;
 use App\Console\Commands\RenewCorporateMembershipsCommand;
 use App\Console\Commands\Reports\SendSummaryReports;
-use App\Console\Commands\Subscriptions\ProcessExpiredSubscriptions;
-use App\Console\Commands\Subscriptions\SendRenewalReminders;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -22,24 +19,6 @@ use Illuminate\Support\Facades\Schedule;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
-
-/*
-|--------------------------------------------------------------------------
-| Subscription lifecycle (PRD §4.2)
-|--------------------------------------------------------------------------
-| Run daily at 09:00 WAT - the app default timezone is Africa/Lagos,
-| which is IANA's only Nigerian zone (covers Abuja, where we operate).
-*/
-
-Schedule::command(SendRenewalReminders::class)
-    ->dailyAt('09:00')
-    ->withoutOverlapping()
-    ->onOneServer();
-
-Schedule::command(ProcessExpiredSubscriptions::class)
-    ->dailyAt('09:15')
-    ->withoutOverlapping()
-    ->onOneServer();
 
 /*
 |--------------------------------------------------------------------------
@@ -176,19 +155,3 @@ Schedule::command(SendSummaryReports::class, ['monthly'])
     ->withoutOverlapping()
     ->onOneServer();
 
-/*
-|--------------------------------------------------------------------------
-| Platform-stats singleton refresh (marketing kobo counter)
-|--------------------------------------------------------------------------
-| Every 30 minutes we resum successful Payments across every tenant
-| (bypassing TenantScope) so the marketing home reads a fresh number
-| from a single-row lookup instead of scanning the payments table
-| inline. Runs on any hour boundary so a 10-min post-deploy visitor
-| already sees updated numbers; --quiet-if-fresh keeps it a no-op
-| when a manual invoke or the seeder wrote within the last 5 min.
-*/
-
-Schedule::command(RecomputePlatformStats::class, ['--quiet-if-fresh'])
-    ->everyThirtyMinutes()
-    ->withoutOverlapping()
-    ->onOneServer();

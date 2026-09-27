@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Admin\ConsumeImpersonationController;
-use App\Http\Controllers\Admin\EndImpersonationController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\PostRegistrationLoginController;
 use App\Http\Controllers\Dashboard\SearchCacheController;
@@ -13,7 +11,6 @@ use App\Http\Controllers\Tenant\FinanceCsvExportController;
 use App\Http\Controllers\Tenant\OperatorInviteClaimController;
 use App\Http\Controllers\Tenant\PublicLandingController;
 use App\Http\Controllers\Tenant\SsoConsumeController;
-use App\Http\Middleware\EnforceSubscriptionAccess;
 use App\Http\Middleware\RequireCompleteOnboarding;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
@@ -142,7 +139,6 @@ use App\Livewire\Guest\Show as GuestShow;
 use App\Livewire\Onboarding\EmailVerification;
 use App\Livewire\Onboarding\PhoneVerification;
 use App\Livewire\Onboarding\PropertyBasics;
-use App\Livewire\Subscription\Manage as SubscriptionManage;
 use App\Models\Operator;
 use App\Models\Tenant;
 use Illuminate\Http\RedirectResponse;
@@ -273,16 +269,6 @@ Route::get('/pos/pair/{code}', [PosDevicePairingController::class, 'claim'])
 Route::view('/pos/device-disconnected', 'errors.pos-device-disconnected')
     ->name('tenant.pos.device-disconnected');
 
-// Admin impersonation landing (PRD §18). One-shot URL: 15-min sha256 token.
-Route::get('/admin-impersonate/{token}', ConsumeImpersonationController::class)
-    ->name('tenant.admin.impersonate.consume');
-
-// "End impersonation" - operator-logged-in surface; logs them back out and
-// bounces to admin.keverna.com.
-Route::post('/end-impersonation', EndImpersonationController::class)
-    ->middleware('auth:web')
-    ->name('tenant.admin.impersonate.end');
-
 // SSO handoff consumer (docs/unified-login.md §3, Phase 1c). No auth
 // middleware - the signed URL IS the auth. The controller then logs
 // the linked Operator into the `web` guard.
@@ -343,18 +329,12 @@ Route::middleware('auth:web')->group(function (): void {
     Route::get('/onboarding/phone', PhoneVerification::class)->name('tenant.onboarding.phone');
 
     // Dashboard home (PRD §6.2.1 / §15). Gated by completed onboarding.
-    // EnforceSubscriptionAccess sits inside this group so the "trial ended,
-    // renew to keep making changes" bar + global write guard apply to every
-    // authed dashboard route (subscription page included - the CTA there
-    // is exactly what the bar links to, so keeping the flag on avoids
-    // needing to special-case it).
-    Route::middleware([RequireCompleteOnboarding::class, EnforceSubscriptionAccess::class])->group(function (): void {
+    // Solo mode has no billing enforcement — the property runs on the
+    // hotel's own infra, not on Keverna's subscription rails.
+    Route::middleware([RequireCompleteOnboarding::class])->group(function (): void {
         Route::get('/dashboard', DashboardHome::class)
             ->middleware('role:dashboard')
             ->name('tenant.dashboard');
-        Route::get('/subscription', SubscriptionManage::class)
-            ->middleware('role:subscription')
-            ->name('tenant.subscription');
         Route::get('/domain', DomainManage::class)
             ->middleware('role:domain')
             ->name('tenant.domain');

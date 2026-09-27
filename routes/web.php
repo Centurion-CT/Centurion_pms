@@ -7,7 +7,6 @@ use App\Http\Controllers\Central\IdentityHandoffController;
 use App\Http\Controllers\Central\IdentityLogoutController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Paystack\CorporateWalletTopupWebhookController;
-use App\Http\Controllers\Paystack\SubscriptionWebhookController;
 use App\Http\Controllers\Portal\CorporateLogoutController;
 use App\Http\Controllers\Portal\CorporateWalletCallbackController;
 use App\Http\Middleware\EnsureCorporateActive;
@@ -208,12 +207,8 @@ Route::middleware('auth:identity')->group(function (): void {
     Route::get('/reservations', CentralReservations::class)->name('central.reservations');
 });
 
-// Paystack webhook for subscription payments (PRD §3). Webhook is signed with
-// FregateLab's master key; controller verifies signature server-side.
-Route::post('/paystack/subscription-webhook', SubscriptionWebhookController::class)
-    ->name('paystack.subscription-webhook');
-
-// Paystack webhook for corporate wallet top-ups. Same master key.
+// Paystack webhook for corporate wallet top-ups. Signed with the property's
+// master key.
 // Filters by reference prefix `KCT-` so subscription events arriving
 // here are politely rejected with 422 (so we'd notice misrouting).
 Route::post('/paystack/corporate-wallet-topup-webhook', CorporateWalletTopupWebhookController::class)
@@ -264,36 +259,4 @@ if (! app()->environment('production')) {
         return \App\Support\DevMailPreview::render($template);
     })->name('dev.mail.preview');
 
-    Route::get('/dev/mail/subscription/{kind}', function (string $kind) {
-        abort_unless(in_array($kind, ['contract', 'receipt', 'invoice'], true), 404);
-
-        $tenant = \App\Models\Tenant::query()->first()
-            ?? \App\Models\Tenant::factory()->make(['name' => 'Sample Stays', 'slug' => 'sample-stays', 'email' => 'owner@sample.test']);
-
-        $sub = new \App\Models\Subscription([
-            'tenant_id'         => $tenant->getKey() ?? 1,
-            'plan'              => 'annual_300k',
-            'amount'            => 200_000,
-            'contract_amount'   => 300_000,
-            'amount_received'   => 200_000,
-            'duration_months'   => 12,
-            'agreement_notes'   => 'Two-instalment plan agreed with the operator.',
-            'status'            => 'active',
-            'paystack_reference'=> 'admin-01JZK2M8H1QW3F',
-            'starts_at'         => now(),
-            'expires_at'        => now()->addYear(),
-            'paid_at'           => now(),
-        ]);
-        $sub->setRelation('tenant', $tenant);
-
-        $outstanding = max(0, (int) $sub->contract_amount - (int) $sub->amount_received);
-
-        $mail = match ($kind) {
-            'contract' => new \App\Mail\Subscriptions\SubscriptionContractMail($sub),
-            'receipt'  => new \App\Mail\Subscriptions\SubscriptionReceiptMail($sub, (int) $sub->amount_received),
-            'invoice'  => new \App\Mail\Subscriptions\SubscriptionInvoiceMail($sub, $outstanding),
-        };
-
-        return $mail->render();
-    })->name('dev.mail.subscription');
 }

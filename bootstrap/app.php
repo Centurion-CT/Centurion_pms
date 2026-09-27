@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Exceptions\SubscriptionExpiredException;
 use App\Http\Middleware\ConfigureTenantMediaDisk;
 use App\Http\Middleware\ForceHttpsInProduction;
-use App\Http\Middleware\RedirectOldSlug;
-use App\Http\Middleware\RedirectWwwToApex;
 use App\Http\Middleware\ResolveTenantFromRequest;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -23,48 +20,31 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
         then: function (): void {
-            // Central marketing + auth — restricted to the central host (PRD §5.2).
-            Route::middleware([
-                'web',
-                // First-touch source capture for /stays marketplace
-                // pricing (see CaptureFirstTouchReferrer). No-op on
-                // pages with a same-host or missing Referer, so the
-                // marketing pages are unaffected.
-                \App\Http\Middleware\CaptureFirstTouchReferrer::class,
-            ])
-                ->domain((string) config('keverna.central_domain'))
-                ->group(base_path('routes/web.php'));
-
-            // Platform admin panel — restricted to admin.keverna.com (PRD §8).
-            // No URL prefix: admin has a dedicated subdomain, so /login lives
-            // at admin.keverna.com/login rather than admin.keverna.com/admin/login.
-            Route::middleware('web')
-                ->domain((string) config('keverna.admin_domain'))
-                ->name('admin.')
-                ->group(base_path('routes/admin.php'));
-
-            // Tenant dashboards + public booking engine — any host that
-            // DomainTenantFinder resolves to a tenant (PRD §6.6). NeedsTenant
-            // returns 404 when no tenant is bound, so this group cannot leak
-            // to central/admin hosts.
+            // Solo topology: one hotel per install → no domain sharding.
+            // Everything runs on the single app host. The tenant resolver
+            // (SoloTenantFinder) auto-selects the singleton Tenant row on
+            // every request so tenant-scoped code keeps working without
+            // any domain-based lookup.
+            //
+            // routes/web.php holds the public-facing surface (guest stays
+            // page, booking flow) and routes/tenant.php holds the operator
+            // dashboard. Both mount at the app root; the operator side
+            // gates behind `auth` middleware inside its own file.
             Route::middleware([
                 'web',
                 ResolveTenantFromRequest::class,
                 NeedsTenant::class,
-                // After the tenant is bound, swap MediaLibrary's disk to
-                // the tenant's own Dokwe Storage space when they've
-                // connected the integration. No-op for tenants on the
-                // platform default.
                 ConfigureTenantMediaDisk::class,
-                // First-touch acquisition source for rate rules.
-                // Sticks the original external referer on entry so
-                // multi-branch chooser hops don't overwrite it.
-                \App\Http\Middleware\CaptureFirstTouchReferrer::class,
+            ])->group(base_path('routes/web.php'));
+
+            Route::middleware([
+                'web',
+                ResolveTenantFromRequest::class,
+                NeedsTenant::class,
+                ConfigureTenantMediaDisk::class,
             ])->group(base_path('routes/tenant.php'));
 
-            // Mobile API — bearer-token JSON, no cookies, no CSRF. Lives on
-            // the tenant subdomain so the tenant is resolved from the host
-            // exactly like the web dashboard. See routes/api-mobile.php.
+            // Mobile API — bearer-token JSON, no cookies, no CSRF.
             Route::middleware([
                 'api',
                 ResolveTenantFromRequest::class,
@@ -72,12 +52,9 @@ return Application::configure(basePath: dirname(__DIR__))
             ])->prefix('api/mobile/v1')
               ->group(base_path('routes/api-mobile.php'));
 
-            // Mobile *central* endpoints — /login lives here (not
-            // tenant-scoped) because the client hits it before it
-            // knows which tenant. Everything else stays on the
-            // tenant subdomain. See routes/api-mobile-central.php.
+            // Mobile central endpoints (login, device pairing) live at the
+            // same host as everything else in solo mode.
             Route::middleware(['api'])
-                ->domain((string) config('keverna.central_domain'))
                 ->prefix('api/mobile/v1')
                 ->group(base_path('routes/api-mobile-central.php'));
         },
@@ -102,40 +79,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 | Request::HEADER_X_FORWARDED_PROTO,
         );
 
-        // Unauthenticated operators land on the tenant-side login (PRD §2).
-        // Admin-guarded routes redirect to the admin login instead. The check
-        // is host-based: admin.keverna.com goes to admin.login, anything else
-        // goes to tenant.login (the central-domain doesn't use auth).
-        $middleware->redirectGuestsTo(function ($request) {
-            $adminHost = (string) config('keverna.admin_domain');
-            if ($request->getHost() === $adminHost) {
-                return route('admin.login');
-            }
+        // Unauthenticated operators land on the operator login.
+        $middleware->redirectGuestsTo(fn () => route('tenant.login'));
 
-            return route('tenant.login');
-        });
-
-        // Inverse of the above — when a signed-in user hits a `guest`
-        // route (like /login), send them somewhere useful instead of
-        // silently reloading the login page (the framework default
-        // was RouteServiceProvider::HOME, which resolved to `/`).
-        //
-        // Two paths to check because our auth stack has three guards:
-        //   * `identity` — central login guard (keverna.com/login)
-        //   * `web`      — tenant subdomain operator (tenant.keverna.com)
-        //   * `admin`    — admin.keverna.com
-        //
-        // The most useful destination for an authenticated identity
-        // hitting /login is the account-chooser; from there they pick
-        // their tenant + get handed off. `web`/`admin` fall through to
-        // their own home page.
-        $middleware->redirectUsersTo(function ($request) {
-            if (auth()->guard('identity')->check()) {
-                return route('central.choose');
-            }
-            if (auth()->guard('admin')->check()) {
-                return route('admin.dashboard');
-            }
+        // Signed-in operators hitting a `guest` route (e.g. /login) go
+        // straight to the dashboard.
+        $middleware->redirectUsersTo(function () {
             if (auth()->guard('web')->check()) {
                 return route('tenant.dashboard');
             }
@@ -143,37 +92,19 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         // Paystack signs webhook payloads with HMAC-SHA512; CSRF tokens are
-        // meaningless to them. The signature check is enforced inside the
-        // controller — see SubscriptionWebhookController.
+        // meaningless to them. Signature checks live in each controller.
         $middleware->validateCsrfTokens(except: [
-            'paystack/subscription-webhook',
-            // Tenant-side per-operator webhook (PRD §11). Signature is
-            // HMAC-SHA512 with the operator's Paystack secret — verified in
-            // the controller, which 401s anything tampered.
+            // Per-operator booking webhook. HMAC-SHA512 with the operator's
+            // Paystack secret — verified in-controller.
             'paystack/booking-webhook',
-            // Corporate wallet top-up webhook — signed with the master
-            // Paystack key. Controller verifies signature + reference
+            // Corporate wallet top-up webhook — signed with the property's
+            // master Paystack key. Controller verifies signature + reference
             // prefix; CSRF tokens are meaningless here.
             'paystack/corporate-wallet-topup-webhook',
         ]);
 
-        // PRD §6.6.1: 301-redirect old slugs (post slug-change) to the new
-        // host for 90 days. Registered globally so it fires even on URLs that
-        // don't match any tenant route — otherwise Laravel returns 404
-        // before the route group's middleware runs.
-        $middleware->prepend(RedirectOldSlug::class);
-
-        // PRD §19: enforce HTTPS in production. Bypassed in local + testing.
-        // Prepended before RedirectOldSlug so an http://old-slug.example.com
-        // request gets bumped to HTTPS first, then 301'd to the new slug.
+        // Enforce HTTPS in production. Bypassed in local + testing.
         $middleware->prepend(ForceHttpsInProduction::class);
-
-        // Canonicalise host: strip `www.` before anything else runs so
-        // the tenant resolver never sees `www` as a slug (that bug made
-        // www.keverna.com render as a would-be tenant landing page).
-        // Prepended last → runs first: www→apex first, then HTTPS
-        // enforcement rewrites http://apex to https://apex if needed.
-        $middleware->prepend(RedirectWwwToApex::class);
 
         // Laravel's default middlewarePriority puts AuthenticatesRequests
         // (auth:sanctum) BEFORE any custom middleware — which meant
@@ -218,30 +149,15 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->report($e, request());
         });
 
-        // PRD §12 — unresolved tenants must 404 from the public surface, not 500.
-        // NeedsTenant throws when no tenant is bound; we render it as Not Found.
+        // Solo mode: NoCurrentTenant means the install hasn't been
+        // seeded yet. Bounce anything that lands here to the /setup
+        // wizard so the operator gets a clear "finish install" prompt
+        // instead of a 500.
         $exceptions->render(function (NoCurrentTenant $e, $request) {
-            return response()->view('errors.tenant-not-found', [
-                'attemptedHost' => $request->getHost(),
-                'centralDomain' => (string) config('keverna.central_domain'),
-            ], 404);
-        });
-
-        // Global write-guard bounce. When an expired-trial tenant tries to
-        // save/delete anything (Livewire action, form POST, or a raw service
-        // call), AppServiceProvider's Model::saving guard throws this
-        // exception. Livewire requests get a plain 403 (its client shows the
-        // built-in error toast); regular POSTs bounce back with a flash so
-        // the tenant lands where they were with the bottom bar's CTA
-        // already prompting them to renew.
-        $exceptions->render(function (SubscriptionExpiredException $e, $request) {
-            if ($request->hasHeader('X-Livewire') || $request->expectsJson()) {
+            if ($request->is('setup') || $request->is('setup/*')) {
                 return null;
             }
-
-            return redirect()
-                ->back(fallback: route('tenant.subscription'))
-                ->with('status', $e->getMessage());
+            return redirect('/setup');
         });
 
         // Stale CSRF (browser back after logout, session TTL exceeded) surfaces
