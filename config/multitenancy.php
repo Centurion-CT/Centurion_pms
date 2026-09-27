@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\Tenant;
-use App\Multitenancy\DomainTenantFinder;
+use App\Multitenancy\SoloTenantFinder;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
@@ -18,7 +18,7 @@ use Spatie\Multitenancy\Jobs\TenantAware;
 use Spatie\Multitenancy\Tasks\PrefixCacheTask;
 
 return [
-    'tenant_finder' => DomainTenantFinder::class,
+    'tenant_finder' => SoloTenantFinder::class,
 
     'tenant_artisan_search_fields' => [
         'id',
