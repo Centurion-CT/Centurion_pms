@@ -7,7 +7,6 @@ use App\Enums\PropertyType;
 use App\Livewire\Dashboard\Staff\OperatorPermissions;
 use App\Models\Operator;
 use App\Models\Property;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Services\Properties\PropertyContext;
 use Livewire\Livewire;
@@ -20,7 +19,6 @@ use Livewire\Livewire;
 beforeEach(function (): void {
     $this->tenant = Tenant::factory()->create(['slug' => 'branch-access']);
     $this->tenant->makeCurrent();
-    Subscription::factory()->for($this->tenant)->trial()->create();
 
     $this->lagos = Property::factory()->for($this->tenant)->create(['name' => 'Lagos', 'type' => PropertyType::Hotel]);
     $this->abuja = Property::factory()->for($this->tenant)->create(['name' => 'Abuja', 'type' => PropertyType::Hotel]);

@@ -14,7 +14,6 @@ use App\Models\Property;
 use App\Models\Review;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Multitenancy\TenantScope;
 use Illuminate\Support\Carbon;
@@ -32,7 +31,6 @@ beforeEach(function (): void {
 
     $this->tenant = Tenant::factory()->create(['slug' => 'review-test']);
     $this->tenant->makeCurrent();
-    Subscription::factory()->for($this->tenant)->trial()->create();
 
     $this->property = Property::factory()->for($this->tenant)->create(['is_listed_publicly' => true]);
     $this->category = RoomCategory::factory()->for($this->tenant)->for($this->property)->create([

@@ -16,7 +16,6 @@ use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Services\Reports\FinanceSnapshot;
 use App\Services\Reports\ReportSnapshot;
@@ -35,7 +34,6 @@ use Livewire\Livewire;
 beforeEach(function (): void {
     $this->tenant = Tenant::factory()->create(['slug' => 'branch-scope']);
     $this->tenant->makeCurrent();
-    Subscription::factory()->for($this->tenant)->trial()->create();
 
     $this->lagos = Property::factory()->for($this->tenant)->create([
         'name' => 'Lagos',

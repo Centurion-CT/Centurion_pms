@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Enums\OperatorRole;
 use App\Models\Operator;
 use App\Models\Property;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
@@ -16,7 +15,6 @@ beforeEach(function (): void {
     // Subscription + property + onboarding-complete operator so
     // RequireCompleteOnboarding + EnforceSubscriptionAccess middleware
     // don't redirect the endpoint hit before it reaches the controller.
-    Subscription::factory()->for($this->tenant)->trial()->create();
     Property::factory()->for($this->tenant)->create();
     $this->operator = Operator::factory()->for($this->tenant)->create([
         'role' => OperatorRole::Manager,

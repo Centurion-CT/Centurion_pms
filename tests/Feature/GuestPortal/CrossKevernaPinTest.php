@@ -10,7 +10,6 @@ use App\Models\Operator;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Services\Customers\CustomerLinker;
 use App\Services\GuestPortal\GuestPinService;
@@ -28,7 +27,6 @@ it('a PIN set at Tenant A verifies at Tenant B for the same guest phone', functi
     // Two entirely different tenants (different orgs on Keverna).
     $orgA = Tenant::factory()->create(['slug' => 'org-a']);
     $orgA->makeCurrent();
-    Subscription::factory()->for($orgA)->trial()->create();
     $propA = Property::factory()->for($orgA)->create();
     $catA = RoomCategory::factory()->for($orgA)->for($propA)->create(['capacity_adults' => 2, 'capacity_children' => 0, 'base_rate' => 40_000, 'min_nights' => 1]);
     $roomA = Room::factory()->for($orgA)->for($propA)->for($catA, 'category')->create();
@@ -57,7 +55,6 @@ it('a PIN set at Tenant A verifies at Tenant B for the same guest phone', functi
     // Same person, different Keverna operator entirely.
     $orgB = Tenant::factory()->create(['slug' => 'org-b']);
     $orgB->makeCurrent();
-    Subscription::factory()->for($orgB)->trial()->create();
     $propB = Property::factory()->for($orgB)->create();
     $catB = RoomCategory::factory()->for($orgB)->for($propB)->create(['capacity_adults' => 2, 'capacity_children' => 0, 'base_rate' => 50_000, 'min_nights' => 1]);
     $roomB = Room::factory()->for($orgB)->for($propB)->for($catB, 'category')->create();

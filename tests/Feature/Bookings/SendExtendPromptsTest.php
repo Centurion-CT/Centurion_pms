@@ -8,7 +8,6 @@ use App\Models\Booking;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Services\GuestPortal\GuestNotifier;
 use Illuminate\Support\Carbon;
@@ -21,7 +20,6 @@ use Illuminate\Support\Carbon;
 beforeEach(function (): void {
     $this->tenant = Tenant::factory()->create(['slug' => 'ext-nudge']);
     $this->tenant->makeCurrent();
-    Subscription::factory()->for($this->tenant)->trial()->create();
 
     $this->property = Property::factory()->for($this->tenant)->create([
         'portal_qr_slug' => 'test-portal-slug',

@@ -11,7 +11,6 @@ use App\Models\Operator;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Services\GuestPortal\GuestNotifier;
 use Livewire\Livewire;
@@ -24,7 +23,6 @@ use Livewire\Livewire;
 beforeEach(function (): void {
     $this->tenant = Tenant::factory()->create(['slug' => 'gr-notify']);
     $this->tenant->makeCurrent();
-    Subscription::factory()->for($this->tenant)->trial()->create();
     $this->property = Property::factory()->for($this->tenant)->create(['name' => 'Notifier Inn']);
     $this->category = RoomCategory::factory()->for($this->tenant)->for($this->property)->create([
         'capacity_adults' => 2, 'capacity_children' => 0, 'base_rate' => 40_000, 'min_nights' => 1,

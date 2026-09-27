@@ -6,7 +6,6 @@ use App\Enums\OperatorRole;
 use App\Livewire\Dashboard\Branches\Index as BranchesIndex;
 use App\Models\Operator;
 use App\Models\Property;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Services\Properties\PropertyContext;
 use Livewire\Livewire;
@@ -20,7 +19,6 @@ beforeEach(function (): void {
     $this->tenant->makeCurrent();
     // Active trial so the global billing write-guard doesn't throw
     // when the switch endpoint saves the operator's picked branch.
-    Subscription::factory()->for($this->tenant)->trial()->create();
 
     $this->main = Property::factory()->for($this->tenant)->create(['name' => 'Main']);
     $this->lagos = Property::factory()->for($this->tenant)->create(['name' => 'Lagos']);

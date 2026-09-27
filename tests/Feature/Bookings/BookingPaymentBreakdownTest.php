@@ -12,7 +12,6 @@ use App\Models\Operator;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use Livewire\Livewire;
 
@@ -26,7 +25,6 @@ use Livewire\Livewire;
 beforeEach(function (): void {
     $this->tenant = Tenant::factory()->create(['slug' => 'payment-breakdown']);
     $this->tenant->makeCurrent();
-    Subscription::factory()->for($this->tenant)->trial()->create();
 
     $this->property = Property::factory()->for($this->tenant)->create();
     $cat = RoomCategory::factory()->for($this->tenant)->for($this->property)->create([

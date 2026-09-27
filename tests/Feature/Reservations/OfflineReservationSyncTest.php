@@ -13,7 +13,6 @@ use App\Models\Operator;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -37,9 +36,6 @@ beforeEach(function (): void {
     ]);
     // Seed a live subscription so EnforceSubscriptionAccess doesn't
     // flip the tenant into read-only and reject the offline-sync write.
-    Subscription::factory()->for($this->tenant)->create([
-        'expires_at' => Carbon::now()->addYear(),
-    ]);
     $this->actingAs($this->operator, 'web');
 });
 

@@ -12,7 +12,6 @@ use App\Models\Operator;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -31,7 +30,6 @@ beforeEach(function (): void {
         'paystack_secret_key' => 'sk_test',
     ]);
     $this->tenant->makeCurrent();
-    Subscription::factory()->for($this->tenant)->trial()->create();
 
     $this->property = Property::factory()->for($this->tenant)->create();
     $this->currentCat = RoomCategory::factory()->for($this->tenant)->for($this->property)->create([

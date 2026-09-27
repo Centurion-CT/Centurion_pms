@@ -13,7 +13,6 @@ use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
@@ -37,9 +36,6 @@ beforeEach(function (): void {
         ->for($this->category, 'category')
         ->create(['status' => RoomStatus::Active, 'room_number' => 210]);
     $this->manager = Operator::factory()->for($this->tenant)->create(['role' => OperatorRole::Manager]);
-    Subscription::factory()->for($this->tenant)->create([
-        'expires_at' => Carbon::now()->addYear(),
-    ]);
     $this->actingAs($this->manager, 'web');
 });
 

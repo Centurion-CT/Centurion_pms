@@ -14,7 +14,6 @@ use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
@@ -29,7 +28,6 @@ use Livewire\Livewire;
 beforeEach(function (): void {
     $this->tenant = Tenant::factory()->create(['slug' => 'unassigned-ops']);
     $this->tenant->makeCurrent();
-    Subscription::factory()->for($this->tenant)->trial()->create();
 
     $this->property = Property::factory()->for($this->tenant)->create();
     $this->categoryA = RoomCategory::factory()->for($this->tenant)->for($this->property)->create([
