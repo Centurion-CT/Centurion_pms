@@ -26,10 +26,18 @@ return Application::configure(basePath: dirname(__DIR__))
             // every request so tenant-scoped code keeps working without
             // any domain-based lookup.
             //
-            // routes/web.php holds the public-facing surface (guest stays
-            // page, booking flow) and routes/tenant.php holds the operator
-            // dashboard. Both mount at the app root; the operator side
-            // gates behind `auth` middleware inside its own file.
+            // Setup wizard: mounted BEFORE the tenant-scoped groups and
+            // deliberately does NOT run NeedsTenant, because this is the
+            // page the operator lands on when there IS no tenant row yet.
+            // Its component aborts 404 on itself once the tenant exists.
+            Route::middleware(['web'])->group(function (): void {
+                Route::get('/setup', \App\Livewire\Setup\Wizard::class)
+                    ->name('setup');
+            });
+
+            // routes/web.php holds the guest-facing surface (property
+            // landing, booking flow, corporate portal). routes/tenant.php
+            // holds the operator dashboard. Both need a bound Tenant.
             Route::middleware([
                 'web',
                 ResolveTenantFromRequest::class,
