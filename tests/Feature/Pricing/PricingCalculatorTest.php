@@ -6,6 +6,7 @@ use App\Enums\DepositType;
 use App\Enums\RoomBookingType;
 use App\Models\Property;
 use App\Models\Room;
+use App\Models\RoomCategory;
 use App\Models\RoomPrice;
 use App\Models\Tenant;
 use App\Services\Pricing\PricingCalculator;
@@ -28,7 +29,17 @@ function makeRoom(array $overrides = []): Room
     /** @var Property $property */
     $property = $tenant->property ?? Property::factory()->for($tenant)->create();
 
-    return Room::factory()->for($tenant)->for($property)->create(array_merge([
+    // Pricing fields all belong to RoomCategory now; Room only holds
+    // per-unit identifiers (room_number, status, qr_slug). Allow
+    // callers to override either bucket by keying with the field
+    // name — anything the Room row itself doesn't recognise routes
+    // to the category.
+    $categoryFields = [
+        'name', 'base_rate', 'weekly_discount_percent', 'monthly_discount_percent',
+        'deposit_type', 'deposit_value', 'booking_type', 'monthly_rate', 'min_nights',
+        'capacity_adults', 'capacity_children',
+    ];
+    $catDefaults = [
         'base_rate' => 30_000,
         'weekly_discount_percent' => 0,
         'monthly_discount_percent' => 0,
@@ -37,7 +48,15 @@ function makeRoom(array $overrides = []): Room
         'booking_type' => RoomBookingType::ShortLet,
         'monthly_rate' => null,
         'min_nights' => 1,
-    ], $overrides));
+    ];
+    $catOverrides = array_intersect_key($overrides, array_flip($categoryFields));
+    $roomOverrides = array_diff_key($overrides, $catOverrides);
+
+    $cat = RoomCategory::factory()->for($tenant)->for($property)->create(
+        array_merge($catDefaults, $catOverrides),
+    );
+
+    return Room::factory()->for($tenant)->for($property)->for($cat, 'category')->create($roomOverrides);
 }
 
 /* --------------------------------------------------------------------------

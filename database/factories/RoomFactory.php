@@ -25,6 +25,22 @@ class RoomFactory extends Factory
     protected $model = Room::class;
 
     /**
+     * Category fields that legacy callers still hand to Room's factory
+     * via `->create(['base_rate' => 30_000, 'capacity_adults' => 2, ...])`.
+     * `newModel()` below intercepts these, routes them to the category
+     * row instead, and hands Room only the columns it actually has.
+     * Saves rewriting every test's setUp block.
+     */
+    private const CATEGORY_ATTRIBUTES = [
+        'name', 'type', 'description',
+        'base_rate', 'monthly_rate', 'min_nights',
+        'capacity_adults', 'capacity_children',
+        'weekly_discount_percent', 'monthly_discount_percent',
+        'deposit_type', 'deposit_value',
+        'booking_type', 'breakfast_included_rate',
+    ];
+
+    /**
      * @return array<string, mixed>
      */
     public function definition(): array
@@ -46,6 +62,36 @@ class RoomFactory extends Factory
             'internal_notes' => null,
             'status' => RoomStatus::Active,
         ];
+    }
+
+    /**
+     * Split category-owned fields out of the incoming attributes so
+     * they land on the RoomCategory row (which they now belong to)
+     * instead of blowing up on Room's `create` with "no such column".
+     */
+    public function newModel(array $attributes = [])
+    {
+        $categoryOverrides = array_intersect_key($attributes, array_flip(self::CATEGORY_ATTRIBUTES));
+        $roomAttributes = array_diff_key($attributes, $categoryOverrides);
+
+        if (! empty($categoryOverrides)) {
+            $categoryId = $roomAttributes['room_category_id'] ?? null;
+            if ($categoryId === null) {
+                $category = RoomCategory::factory()->create(array_merge([
+                    'tenant_id' => $roomAttributes['tenant_id'] ?? null,
+                    'property_id' => $roomAttributes['property_id'] ?? null,
+                ], $categoryOverrides));
+                $roomAttributes['room_category_id'] = $category->id;
+            } else {
+                RoomCategory::query()->where('id', $categoryId)->update(
+                    collect($categoryOverrides)
+                        ->map(fn ($v) => $v instanceof \BackedEnum ? $v->value : $v)
+                        ->all(),
+                );
+            }
+        }
+
+        return parent::newModel($roomAttributes);
     }
 
     public function inactive(): self

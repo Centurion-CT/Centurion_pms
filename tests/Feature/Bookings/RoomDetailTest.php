@@ -12,6 +12,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Room;
+use App\Models\RoomCategory;
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -26,13 +27,15 @@ beforeEach(function (): void {
     ]);
     $this->tenant->makeCurrent();
     $this->property = Property::factory()->live()->for($this->tenant)->create();
-    $this->room = Room::factory()->for($this->tenant)->for($this->property)->create([
+    // Category holds the shared pricing/capacity fields; the room row is lean.
+    $cat = RoomCategory::factory()->for($this->tenant)->for($this->property)->create([
         'name' => 'Maitama Suite',
         'base_rate' => 30_000,
         'capacity_adults' => 2,
         'capacity_children' => 1,
         'min_nights' => 1,
     ]);
+    $this->room = Room::factory()->for($this->tenant)->for($this->property)->for($cat, 'category')->create();
 });
 
 afterEach(function (): void {

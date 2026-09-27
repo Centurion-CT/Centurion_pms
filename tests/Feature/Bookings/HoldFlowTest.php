@@ -17,6 +17,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Room;
+use App\Models\RoomCategory;
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -30,13 +31,16 @@ beforeEach(function (): void {
     ]);
     $this->tenant->makeCurrent();
     $this->property = Property::factory()->for($this->tenant)->create();
-    $this->room = Room::factory()->for($this->tenant)->for($this->property)->create([
+    // Pricing fields live on RoomCategory now; Room only holds the
+    // per-unit fields (room_number, status, qr_slug).
+    $cat = RoomCategory::factory()->for($this->tenant)->for($this->property)->create([
         'base_rate' => 30_000,
         'deposit_type' => DepositType::Percent,
         'deposit_value' => 30,
         'min_nights' => 1,
         'capacity_adults' => 2,
     ]);
+    $this->room = Room::factory()->for($this->tenant)->for($this->property)->for($cat, 'category')->create();
 });
 
 afterEach(function (): void {

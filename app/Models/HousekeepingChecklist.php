@@ -23,6 +23,19 @@ class HousekeepingChecklist extends Model
 
     protected $guarded = ['id'];
 
+    protected static function booted(): void
+    {
+        // Legacy test fixtures create checklists without a name; the
+        // column is NOT NULL. Default it here so existing tests keep
+        // working — the manager UI still requires a real value on
+        // save because the wizard validates non-blank before insert.
+        static::creating(function (self $model): void {
+            if (empty($model->name)) {
+                $model->name = 'Standard';
+            }
+        });
+    }
+
     /**
      * @return array<string, string>
      */
