@@ -1,0 +1,89 @@
+name: keverna
+description: Keverna — Run your entire property from one platform. Staff mobile app.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # ── Networking ─────────────────────────────────────
+  dio: ^5.7.0
+
+  # ── State + navigation ─────────────────────────────
+  # Pinned to 2.6.x — 3.x+ moved API in ways the codebase doesn't
+  # follow yet (StreamProvider signature, Ref generics, etc).
+  flutter_riverpod: 2.6.1
+  riverpod_annotation: 2.6.1
+  go_router: ^14.2.7
+
+  # ── Persistence ────────────────────────────────────
+  drift: ^2.20.2
+  drift_flutter: ^0.2.1
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  flutter_secure_storage: ^9.2.2
+
+  # ── Device + hardware ──────────────────────────────
+  mobile_scanner: ^5.2.3
+  device_info_plus: ^10.1.2
+  package_info_plus: ^8.0.2
+  connectivity_plus: ^6.0.5
+
+  # ── UI + typography ────────────────────────────────
+  google_fonts: ^6.2.1
+  cached_network_image: ^3.4.1
+
+  # ── Utils ──────────────────────────────────────────
+  intl: ^0.19.0
+  ulid: ^2.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.13
+  drift_dev: ^2.20.2
+  riverpod_generator: 2.6.5
+
+  # ── Brand asset generation (design-time only) ──────
+  # Both run once per icon/splash change; not shipped in the app.
+  flutter_launcher_icons: ^0.14.1
+  flutter_native_splash: ^2.4.2
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/branding/
+
+# ── Launcher icons (dart run flutter_launcher_icons) ──────
+# Generates every required iOS + Android size from the sources in
+# assets/branding/. Adaptive icon uses the transparent foreground on
+# a lime background so it works with Android 8+ launcher shapes.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/branding/icon_source.png
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  adaptive_icon_background: "#BEE44E"
+  adaptive_icon_foreground: assets/branding/icon_foreground.png
+
+# ── Native splash (dart run flutter_native_splash:create) ──
+# Cream background matches the app's --color-card token, so the
+# transition from splash to KevernaApp scaffold has no colour flash.
+# Android 12+ gets the branded icon slot; older Android + iOS use
+# the same asset centred on the cream background.
+flutter_native_splash:
+  color: "#F6F3EA"
+  color_dark: "#F6F3EA"
+  image: assets/branding/splash_mark.png
+  android_12:
+    image: assets/branding/splash_mark.png
+    icon_background_color: "#F6F3EA"
+  android: true
+  ios: true

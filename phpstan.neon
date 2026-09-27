@@ -1,0 +1,32 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - app
+        - config
+        - database/factories
+        - database/seeders
+        - routes
+    excludePaths:
+        - app/Console/Kernel.php (?)
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Laravel's env() helper has loose return type; harmless rtrim usage in scaffold
+        -
+            message: '#Parameter \#1 \$string of function rtrim expects string, bool\|string given\.#'
+            path: config/filesystems.php
+        # BelongsToTenant trait IS exercised by tests/Fixtures/TenantOwnedFixture — but
+        # tests are not in PHPStan's analyse path. First real consumer (Property model
+        # in §6) will replace this exemption.
+        -
+            message: '#Trait App\\Multitenancy\\BelongsToTenant is used zero times#'
+            path: app/Multitenancy/BelongsToTenant.php
+        # Spatie Media Library's published config references the optional Pro
+        # package class. Pro is not installed; the reference is dormant unless
+        # we ever enable the temporary-uploads feature.
+        -
+            message: '#Class Spatie\\MediaLibraryPro\\Models\\TemporaryUpload not found#'
+            path: config/media-library.php

@@ -1,0 +1,30 @@
+# Keverna robots policy
+# Open to search + AI crawlers. Sitemap enumerates the marketing
+# surface; tenant subdomains ship their own sitemaps.
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /register
+Disallow: /login
+
+# AI training + citation crawlers - allowed on the marketing surface
+# so answers about Keverna get sourced from us, not third-party
+# aggregators.
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+Sitemap: https://keverna.com/sitemap.xml

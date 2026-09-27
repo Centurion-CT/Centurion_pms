@@ -1,0 +1,53 @@
+# Local & dev artifacts
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+.editorconfig
+.idea
+.vscode
+.phpunit.result.cache
+.phpunit.cache
+.phpstan-cache
+.phpactor.json
+.fleet
+.zed
+
+# Vendor / node — rebuilt inside the image
+vendor
+node_modules
+
+# Test + tooling
+tests
+phpunit.xml
+phpunit.xml.dist
+phpstan.neon
+pint.json
+.dusk
+storage/dusk
+
+# Logs + runtime caches (shouldn't be in the image)
+storage/logs/*
+!storage/logs/.gitkeep
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/testing/*
+storage/app/public/*
+storage/debugbar
+bootstrap/cache/*.php
+!bootstrap/cache/.gitkeep
+
+# Vite dev artifacts (we rebuild)
+public/hot
+public/build
+
+# Local docs / READMEs irrelevant to runtime
+README.md
+IMPLEMENTATION.md
+docs
+
+# OS noise
+.DS_Store
+Thumbs.db

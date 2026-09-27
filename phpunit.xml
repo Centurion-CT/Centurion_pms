@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         processIsolation="false"
+         stopOnFailure="false"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <coverage>
+        <report>
+            <html outputDirectory="storage/coverage" lowUpperBound="50" highLowerBound="85"/>
+            <text outputFile="php://stdout" showOnlySummary="true"/>
+        </report>
+    </coverage>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="BROADCAST_CONNECTION" value="null"/>
+        <env name="CACHE_STORE" value="array"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="MAIL_MAILER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="FILESYSTEM_DISK" value="local"/>
+        <env name="REDIS_CLIENT" value="predis"/>
+        <env name="REDIS_DB" value="15"/>
+        <env name="REDIS_CACHE_DB" value="15"/>
+        <env name="PAYSTACK_SECRET_KEY" value="sk_test_dummy"/>
+        <env name="PAYSTACK_PUBLIC_KEY" value="pk_test_dummy"/>
+        <env name="PAYSTACK_WEBHOOK_SECRET" value="whsec_test_dummy"/>
+        <env name="CLOUDFLARE_API_URL" value="https://cf.test/client/v4"/>
+        <env name="CLOUDFLARE_API_TOKEN" value="cf_test_dummy"/>
+        <env name="CLOUDFLARE_ZONE_ID" value="zone_test_dummy"/>
+        <env name="CLOUDFLARE_CNAME_TARGET" value="cname.keverna.test"/>
+        <env name="SENDPIPE_API_URL" value="https://sendpipe.test/v1"/>
+        <!-- SENDPIPE_API_KEY intentionally unset in tests; WhatsAppOtpService
+             treats that as a no-op + log. Individual tests that need to assert
+             outbound Sendpipe traffic set it explicitly via config()->set. -->
+        <env name="SENDPIPE_FROM" value="noreply@keverna.test"/>
+        <env name="SENDPIPE_WA_OTP_TEMPLATE" value="kev_otp"/>
+        <env name="SENDPIPE_WA_OTP_LANGUAGE" value="en"/>
+        <env name="CENTRAL_DOMAIN" value="keverna.test"/>
+        <env name="ADMIN_DOMAIN" value="admin.keverna.test"/>
+        <env name="TENANT_DOMAIN_SUFFIX" value=".keverna.test"/>
+        <env name="PULSE_ENABLED" value="false"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="NIGHTWATCH_ENABLED" value="false"/>
+    </php>
+</phpunit>
