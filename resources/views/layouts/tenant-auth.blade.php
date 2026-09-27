@@ -49,46 +49,13 @@
         </script>
     @endauth
 
-    {{-- Read-only mode dimmer. When EnforceSubscriptionAccess flags the
-         request, common write-action buttons (primary CTAs, danger
-         actions, pill buttons, and generic form submits) are visually
-         disabled - pointer-events off + faded - so operators see
-         upfront that clicks won't do anything. The server-side guard
-         in AppServiceProvider is what actually rejects writes; this
-         is purely to keep the UI honest. Opt out with
-         `data-billing-safe` on any button that must stay clickable
-         even in read-only (renew CTA, logout, impersonation end,
-         search/filter). --}}
-    <style>
-        body[data-billing-readonly]
-            :is(.lp-btn--primary, .lp-btn--danger, .lp-pill, button[type="submit"]):not([data-billing-safe]) {
-            opacity: 0.42;
-            pointer-events: none;
-            cursor: not-allowed;
-            filter: grayscale(0.4);
-        }
-    </style>
-
     {{-- Sidebar variant is rendered directly on the <html> tag above
          so Livewire's wire:navigate morph preserves it. No script
          needed. See the comment above <html> for the full story. --}}
 </head>
 <body class="antialiased"
-      data-current-route="{{ request()->route()?->getName() ?? '' }}"
-      @if($billingReadOnly ?? false) data-billing-readonly="1" @endif>
+      data-current-route="{{ request()->route()?->getName() ?? '' }}">
     @include('partials.maintenance-banner')
-
-    @if (session('impersonator_admin_id'))
-        <div role="alert" data-testid="impersonation-banner"
-             class="border-b border-amber-300 bg-amber-100 px-4 py-2 text-center text-sm text-amber-900">
-            You're impersonating this tenant as a Keverna admin.
-            <form method="POST" action="{{ url('/end-impersonation') }}" class="inline">
-                @csrf
-                <button type="submit" data-testid="end-impersonation" data-billing-safe
-                        class="ml-2 underline hover:no-underline">End impersonation</button>
-            </form>
-        </div>
-    @endif
 
     @auth('web')
         @php
@@ -240,8 +207,6 @@
                      'icon'  => 'M3 6l7-3 7 3v9l-7 3-7-3zM3 6l7 3 7-3M10 9v9'],
                     ['label' => 'POS',          'module' => 'pos', 'route' => 'tenant.pos.pick-outlet', 'prefix' => 'tenant.pos.', 'color' => 'red',
                      'icon'  => 'M4 4h12v3H4zM4 9h12v9H4zM7 12h2M11 12h2M7 15h6'],
-                    ['label' => 'Subscription', 'module' => 'subscription', 'route' => 'tenant.subscription', 'prefix' => 'tenant.subscription', 'color' => 'violet',
-                     'icon'  => 'M3 6h14v10H3zM3 9h14M6 13h3'],
                     ['label' => 'Domain',       'module' => 'domain', 'route' => 'tenant.domain',       'prefix' => 'tenant.domain', 'color' => 'sky',
                      'icon'  => 'M10 17a7 7 0 1 1 0-14 7 7 0 0 1 0 14zM3 10h14M10 3c2 2 3 5 3 7s-1 5-3 7M10 3c-2 2-3 5-3 7s1 5 3 7'],
                     ['label' => 'Staff',        'module' => 'staff', 'route' => 'tenant.staff.index', 'prefix' => 'tenant.staff.index', 'color' => 'cyan',
@@ -925,69 +890,6 @@
 
             {{-- ─── Main content area ─────────────────────────────── --}}
             <div class="lp-main">
-                {{-- ── Trial / renewal expiry banner ────────────────
-                     Prompts renewal when the sub is within its "ending
-                     soon" window (5 days for a trial, 14 for annual).
-                     Distinct from the post-expiry read-only bar at the
-                     bottom — this fires BEFORE expiry so the operator
-                     has runway to route payment. --}}
-                @php
-                    $expirySub = \App\Models\Tenant::current()?->currentSubscription();
-                    $expiryDaysLeft = $expirySub?->isEndingSoon()
-                        ? $expirySub->daysUntilExpiry()
-                        : null;
-                    $expiryIsTrial = $expirySub?->plan === \App\Enums\SubscriptionPlan::Trial;
-                    $expiryDate = $expirySub?->expires_at?->toFormattedDateString();
-                @endphp
-                @if ($expiryDaysLeft !== null)
-                    <div role="status"
-                         data-testid="expiry-warning-bar"
-                         data-days-left="{{ $expiryDaysLeft }}"
-                         style="background: #FEF3C7;
-                                border-bottom: 1px solid #F5D48C;
-                                padding: 10px 20px;
-                                display: flex; align-items: center; gap: 14px;
-                                flex-wrap: wrap; justify-content: space-between;">
-                        <div style="display: flex; align-items: center; gap: 10px;
-                                    min-width: 0; flex: 1 1 260px;">
-                            <span aria-hidden
-                                  style="display: inline-flex; align-items: center; justify-content: center;
-                                         width: 22px; height: 22px; border-radius: 999px;
-                                         background: #A8650A; color: #FEF3C7;
-                                         font-size: 13px; font-weight: 700; flex-shrink: 0;">!</span>
-                            <p style="margin: 0; font-size: 13px; line-height: 1.4; color: #78350F;">
-                                @if ($expiryIsTrial)
-                                    <strong style="font-weight: 600;">
-                                        Your trial ends in
-                                        {{ $expiryDaysLeft }} day{{ $expiryDaysLeft === 1 ? '' : 's' }}
-                                        ({{ $expiryDate }}).
-                                    </strong>
-                                    Upgrade before then to keep everything running.
-                                @else
-                                    <strong style="font-weight: 600;">
-                                        Your subscription renews in
-                                        {{ $expiryDaysLeft }} day{{ $expiryDaysLeft === 1 ? '' : 's' }}
-                                        ({{ $expiryDate }}).
-                                    </strong>
-                                    Confirm payment early to avoid an interruption on the renewal date.
-                                @endif
-                            </p>
-                        </div>
-                        <a href="{{ route('tenant.subscription') }}"
-                           wire:navigate
-                           data-testid="expiry-warning-cta"
-                           style="background: #A8650A; color: #FEF3C7;
-                                  padding: 7px 14px; border-radius: 999px;
-                                  font-size: 12px; font-weight: 600;
-                                  text-decoration: none;
-                                  display: inline-flex; align-items: center; gap: 6px;
-                                  flex-shrink: 0;">
-                            {{ $expiryIsTrial ? 'Upgrade' : 'Renew now' }}
-                            <span aria-hidden>&rarr;</span>
-                        </a>
-                    </div>
-                @endif
-
                 <header class="lp-topbar" data-testid="dash-topbar">
                     <div class="flex items-center gap-3 min-w-0">
                         {{-- Mobile-only hamburger that toggles the
@@ -1048,7 +950,7 @@
                     </div>
                 </header>
 
-                <main @if($billingReadOnly ?? false) style="padding-bottom: 88px;" @endif>
+                <main>
                     {{ $slot }}
 
                     {{-- Contextual feedback prompt. Sits inline at the
@@ -1062,41 +964,6 @@
                 </main>
             </div>
         </div>
-
-        {{-- Trial-ended / subscription-expired bar. Rendered when the
-             EnforceSubscriptionAccess middleware flags the request as
-             read-only. Fixed to the viewport bottom, sits above the
-             notify modal in z-order but under any Alpine open drawer.
-             The only affordance is a link to /subscription - the same
-             page the write-guard also bounces failed actions to. --}}
-        @if($billingReadOnly ?? false)
-            <div role="status" data-testid="billing-readonly-bar"
-                 style="position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
-                        background: var(--color-ink, #1a1a1a); color: #fff;
-                        border-top: 1px solid rgba(255,255,255,0.08);
-                        box-shadow: 0 -6px 24px rgba(0,0,0,0.18);">
-                <div style="max-width: 1200px; margin: 0 auto;
-                            padding: 14px 20px;
-                            display: flex; align-items: center; gap: 16px;
-                            justify-content: space-between; flex-wrap: wrap;">
-                    <div style="min-width: 0; flex: 1 1 260px;">
-                        <p style="font-weight: 600; font-size: 14px; line-height: 1.35;">
-                            Your trial has ended.
-                        </p>
-                        <p style="font-size: 12.5px; opacity: 0.78; margin-top: 2px;">
-                            Everything is view-only until you renew. Bookings, room edits, and payments are paused.
-                        </p>
-                    </div>
-                    <a href="{{ route('tenant.subscription') }}"
-                       style="background: #fff; color: var(--color-ink, #1a1a1a);
-                              padding: 10px 18px; border-radius: 999px;
-                              font-weight: 600; font-size: 13.5px;
-                              text-decoration: none; white-space: nowrap;">
-                        Renew subscription
-                    </a>
-                </div>
-            </div>
-        @endif
 
         {{-- Global success / error modal. Any Livewire component
              on an authed page can trigger it with:

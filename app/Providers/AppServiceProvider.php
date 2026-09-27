@@ -4,20 +4,15 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Exceptions\SubscriptionExpiredException;
 use App\Mail\Transport\SendpipeTransport;
-use App\Models\Activity;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Services\Dns\DnsResolver;
 use App\Services\Dns\SystemDnsResolver;
 use App\Services\Identity\GuestClaimTokenSigner;
 use App\Services\Identity\TenantSsoTokenSigner;
 use App\Services\Sendpipe\SendpipeClient;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -130,16 +125,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // NOTE: every listener in app/Listeners is auto-discovered by
-        // Laravel 12 via the `handle*(TypedEvent $event)` convention:
-        //   - DispatchSubdomainProvisioning::handle{TenantOnboarded,SubscriptionActivated}
-        //   - SendBookingConfirmationMail::handle(BookingConfirmed $event)
-        //   - SendBookingCancelledMail::handle(BookingCancelled $event)
-        //   - SendOperatorWelcomeMail::handle(TenantOnboarded $event)
-        //   - NotifyOperatorsOfBookingActivity::handle{Confirmed,Cancelled}
-        //   - UpdateCustomerOnBookingActivity::handle{Confirmed,Cancelled}
+        // Laravel 12 via the `handle*(TypedEvent $event)` convention.
         // Don't add manual Event::listen() calls — they create duplicate
-        // registrations that double-fire (caught when bell tests showed
-        // 2× expected notifications on each event dispatch).
+        // registrations that double-fire.
 
         // PRD §17: stamp tenant_id on every DatabaseNotification row so the
         // bell can query without joining on the notifiable. Prefers the value
@@ -164,39 +152,9 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        // Global write guard for expired-trial tenants. The
-        // EnforceSubscriptionAccess middleware sets the container flag when
-        // the current request belongs to a tenant with no live subscription;
-        // these listeners then throw on any Eloquent save/delete so writes
-        // fail whether they originate from a Livewire action, a form POST,
-        // or a service call. Allowlist preserves the renewal path:
-        // Subscription rows must be creatable so the operator can start a
-        // Paystack checkout; Activity + DatabaseNotification stay writable
-        // so audit + system notifications still work.
-        //
-        // Listens on the wildcard "eloquent.saving: *" (not Model::saving),
-        // because Eloquent namespaces model events by subclass and a base
-        // Model::saving() callback never fires for App\Models\Room et al.
-        $guard = static function (string $eventName, array $payload): void {
-            if (! app()->bound('billing.read_only') || ! app('billing.read_only')) {
-                return;
-            }
-
-            $model = $payload[0] ?? null;
-            if (! $model instanceof Model) {
-                return;
-            }
-
-            foreach ([Subscription::class, Activity::class, DatabaseNotification::class] as $allowed) {
-                if ($model instanceof $allowed) {
-                    return;
-                }
-            }
-
-            throw new SubscriptionExpiredException();
-        };
-
-        Event::listen('eloquent.saving: *', $guard);
-        Event::listen('eloquent.deleting: *', $guard);
+        // Solo mode has no billing enforcement — writes are always
+        // permitted. The old SaaS build had a global save/delete guard
+        // here that threw SubscriptionExpiredException when the tenant's
+        // trial ended; there's nothing analogous to gate in solo.
     }
 }

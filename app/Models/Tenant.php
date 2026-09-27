@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\CustomDomainStatus;
-use App\Enums\SubscriptionStatus;
 use App\Enums\TenantStatus;
-use App\Multitenancy\TenantScope;
 use Database\Factories\TenantFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -155,18 +153,9 @@ class Tenant extends SpatieTenant
     }
 
     /**
-     * @return HasMany<Subscription, $this>
-     */
-    public function subscriptions(): HasMany
-    {
-        return $this->hasMany(Subscription::class);
-    }
-
-    /**
-     * All properties (branches) belonging to this org. Multi-property
-     * was added late in Phase 3 — orgs pre-launch have exactly one
-     * property (slug "main"); new orgs can add branches from the
-     * Branches management page.
+     * All properties (branches) belonging to this install. Solo mode
+     * seeds one Property in /setup; the operator can add more from
+     * the Branches management page.
      *
      * @return HasMany<Property, $this>
      */
@@ -193,38 +182,12 @@ class Tenant extends SpatieTenant
     }
 
     /**
-     * The most recent live (trial or active) subscription, if any. Drives the
-     * derived tenant.status + tenant.subscription_expires_at fields.
-     *
-     * Lifts the TenantScope so it works from central context (webhooks,
-     * scheduled commands) — Tenant itself is central, so calling this never
-     * crosses isolation boundaries.
-     */
-    public function currentSubscription(): ?Subscription
-    {
-        return $this->subscriptions()
-            ->withoutGlobalScope(TenantScope::class)
-            ->whereIn('status', [
-                SubscriptionStatus::Trial->value,
-                SubscriptionStatus::Active->value,
-            ])
-            ->orderByDesc('expires_at')
-            ->first();
-    }
-
-    /**
-     * True when the tenant has no live subscription — either the most recent
-     * Trial/Active row has expired, or there's no such row at all. Drives the
-     * dashboard read-only mode + the "renew to make changes" bottom bar.
-     *
-     * Checks expires_at live (not tenant.status) so a trial that ended today
-     * flips read-only immediately, without waiting for the daily
-     * ProcessExpiredSubscriptions job to advance the tenant into Grace.
+     * Solo mode has no platform billing — the hotel runs on its own
+     * infra. Kept as a stub returning `false` so any leftover caller
+     * (dashboard read-only banner, write-guard) reads as "unlocked".
      */
     public function isReadOnlyForBilling(): bool
     {
-        $sub = $this->currentSubscription();
-
-        return $sub === null || $sub->expires_at->isPast();
+        return false;
     }
 }
