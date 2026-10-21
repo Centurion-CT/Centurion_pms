@@ -66,7 +66,10 @@ if [ -n "$missing_required" ]; then
     exit 1
 fi
 
-for line in $RECOMMENDED_VARS; do
+# Read line-by-line: a `for` loop would word-split the descriptions on
+# spaces and eval fragments like "+" as variable names.
+printf '%s\n' "$RECOMMENDED_VARS" | while IFS= read -r line; do
+    [ -z "$line" ] && continue
     var="${line%%=*}"
     feature="${line#*=}"
     eval "val=\${$var:-}"
