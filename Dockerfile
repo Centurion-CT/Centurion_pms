@@ -125,7 +125,10 @@ RUN mkdir -p \
 
 # Re-run package discovery now that all extensions are present. Skipped in
 # the composer stage above so this stage controls the final autoloader.
-RUN composer dump-autoload --classmap-authoritative --no-dev
+# The php base image has no composer binary, so borrow the vendor stage's.
+COPY --from=vendor /usr/bin/composer /usr/bin/composer
+RUN composer dump-autoload --classmap-authoritative --no-dev \
+    && chown -R www-data:www-data bootstrap/cache
 
 # Entrypoint dispatches on KEVERNA_ROLE.
 COPY docker/start.sh /usr/local/bin/start.sh
