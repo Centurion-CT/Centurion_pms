@@ -94,6 +94,9 @@ it('seeds Tenant + Property + Operator on submit + logs the operator in', functi
     expect($operator->email)->toBe('ada@citistay.example');
     expect($operator->role)->toBe(OperatorRole::Manager);
     expect($operator->email_verified_at)->not->toBeNull();
+    // Activated up front — otherwise the login gate rejects them after logout.
+    expect($operator->activated_at)->not->toBeNull();
+    expect($operator->canSignIn())->toBeTrue();
 
     // Password stored hashed, not plaintext.
     expect(\Illuminate\Support\Facades\Hash::check('correct-horse-battery', $operator->password))->toBeTrue();

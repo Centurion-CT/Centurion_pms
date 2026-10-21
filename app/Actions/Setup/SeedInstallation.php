@@ -107,6 +107,10 @@ class SeedInstallation
                 'role' => OperatorRole::Manager->value,
                 'email_verified_at' => now(),
             ]);
+            // The installer picked their own password in the wizard, so
+            // there's no invite to claim — mark them activated or the
+            // login gate (Operator::canSignIn) rejects them.
+            $operator->forceFill(['activated_at' => now()]);
             $operator->save();
 
             // Invalidate SoloTenantFinder's memoised null so the next
