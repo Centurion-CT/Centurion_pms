@@ -40,13 +40,17 @@ COPY routes/ ./routes/
 
 # Production install: no dev deps, autoloader optimised, no scripts (we'll
 # run package discovery again in the runtime stage where extensions exist).
+# The composer image lacks pcntl (horizon) and exif (spatie/image); the
+# runtime stage installs both, so skip those platform checks here.
 RUN composer install \
         --no-dev \
         --no-interaction \
         --no-progress \
         --prefer-dist \
         --optimize-autoloader \
-        --no-scripts
+        --no-scripts \
+        --ignore-platform-req=ext-pcntl \
+        --ignore-platform-req=ext-exif
 
 # ─── Stage 3 — runtime (PHP-FPM + nginx) ─────────────────────────────────
 FROM php:8.3-fpm-alpine AS runtime
