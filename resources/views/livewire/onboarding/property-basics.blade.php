@@ -33,7 +33,7 @@
                 <legend>How do you rent?</legend>
                 <div class="mt-2 grid gap-3">
                     <label class="mode-card"
-                           style="background: {{ $unitMode === 'multi_room' ? 'rgba(173, 203, 82, 0.08)' : 'transparent' }};"
+                           style="background: {{ $unitMode === 'multi_room' ? 'rgba(51, 103, 153, 0.08)' : 'transparent' }};"
                            data-testid="unit-mode-multi_room">
                         <input type="radio" wire:model.live="unitMode" value="multi_room"
                                style="accent-color: var(--color-accent-deep); margin-top: 3px;">
@@ -47,7 +47,7 @@
                         </span>
                     </label>
                     <label class="mode-card"
-                           style="background: {{ $unitMode === 'single_unit' ? 'rgba(173, 203, 82, 0.08)' : 'transparent' }};"
+                           style="background: {{ $unitMode === 'single_unit' ? 'rgba(51, 103, 153, 0.08)' : 'transparent' }};"
                            data-testid="unit-mode-single_unit">
                         <input type="radio" wire:model.live="unitMode" value="single_unit"
                                style="accent-color: var(--color-accent-deep); margin-top: 3px;">

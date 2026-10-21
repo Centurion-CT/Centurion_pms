@@ -14,7 +14,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ \App\Models\Tenant::current()?->name }} POS &middot; Keverna</title>
+    <title>{{ \App\Models\Tenant::current()?->name }} POS &middot; {{ config('brand.name') }}</title>
     @include('partials.favicons')
 
     {{-- PWA install: manifest + theme colour + iOS-specific bits. See

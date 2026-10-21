@@ -33,9 +33,12 @@
     --color-ink-mute:    #6E767D;
     --color-ink-deep:    #1B1714;   /* dark coffee for inverted hero / CTA */
     --color-ink-deep-2:  #2A241F;
-    --color-accent:      #ADCB52;   /* olive lime */
-    --color-accent-deep: #8AAE3A;
-    --color-accent-soft: rgba(173, 203, 82, 0.18);
+    /* Brand accent — Centurion blue (see config/brand.php). */
+    --color-accent:         #336799;
+    --color-accent-deep:    #285480;   /* text/borders on light surfaces */
+    --color-accent-soft:    rgba(51, 103, 153, 0.14);
+    --color-accent-on-dark: #8DB6DE;   /* accent text/marks on ink surfaces */
+    --color-on-accent:      #FFFFFF;   /* text/icons sitting on --color-accent */
     --color-line:        rgba(20,23,26,0.10);
     --color-line-soft:   rgba(20,23,26,0.06);
     --color-line-on-dark: rgba(255, 252, 245, 0.10);
@@ -255,7 +258,7 @@
         font-style: italic;
         font-family: var(--font-display);
     }
-    .lp-page .lp-eyebrow-on-dark { color: var(--color-accent); }
+    .lp-page .lp-eyebrow-on-dark { color: var(--color-accent-on-dark); }
 
     /* Cards ───────────────────────────────────────────────────────────── */
     .lp-page .lp-card {
@@ -315,7 +318,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-ink);
+        color: var(--color-on-accent);
     }
 
     /* Inline spinner. Swaps in for the pill arrow (or sits next to a
@@ -370,8 +373,8 @@
         height: 1px;
         background: var(--color-accent-deep);
     }
-    .lp-page .lp-card-ink .lp-eyebrow-strip { color: var(--color-accent); }
-    .lp-page .lp-card-ink .lp-eyebrow-strip::before { background: var(--color-accent); }
+    .lp-page .lp-card-ink .lp-eyebrow-strip { color: var(--color-accent-on-dark); }
+    .lp-page .lp-card-ink .lp-eyebrow-strip::before { background: var(--color-accent-on-dark); }
 
     /* Photograph placeholder (used until production shots are in). */
     .lp-page .lp-photo-stub {
@@ -609,7 +612,7 @@
     }
     .lp-page .lp-input--on-dark::placeholder { color: rgba(244, 239, 230, 0.32); }
     .lp-page .lp-input--on-dark:hover { border-bottom-color: rgba(244, 239, 230, 0.35); }
-    .lp-page .lp-input--on-dark:focus { border-bottom-color: var(--color-accent); }
+    .lp-page .lp-input--on-dark:focus { border-bottom-color: var(--color-accent-on-dark); }
     .lp-page .lp-input--on-dark[aria-invalid="true"],
     .lp-page .lp-input--on-dark.is-invalid { border-bottom-color: #E07A5F; }
 
@@ -888,8 +891,8 @@
     .lp-page .lp-sidebar-brand-mark {
         display: inline-flex; align-items: center; justify-content: center;
         width: 30px; height: 30px;
-        background: var(--color-accent);
-        color: var(--color-ink);
+        background: #FFFFFF;
+        padding: 4px;
         border-radius: 9px;
         flex-shrink: 0;
     }
@@ -1619,7 +1622,7 @@
         margin-top: 18px;
         padding: 9px 22px;
         background: var(--color-accent);
-        color: var(--color-ink);
+        color: var(--color-on-accent);
         border: 0;
         border-radius: 9px;
         font-family: inherit;
@@ -1672,10 +1675,10 @@
         position: absolute;
         left: 0; top: 6px; bottom: 6px;
         width: 3px;
-        background: var(--color-accent);
+        background: var(--color-accent-on-dark);
         border-radius: 0 3px 3px 0;
     }
-    .lp-page .lp-sidebar-link.is-active svg { color: var(--color-accent); }
+    .lp-page .lp-sidebar-link.is-active svg { color: var(--color-accent-on-dark); }
 
     .lp-page .lp-sidebar-foot {
         margin-top: auto;
@@ -4097,7 +4100,7 @@
     .lp-page .lp-tag--pending     { background: rgba(20, 23, 26, 0.06);     color: var(--color-ink-soft); }
     .lp-page .lp-tag--cancelled   { background: rgba(224, 122, 95, 0.14);   color: #B85C42; }
     .lp-page .lp-tag--checked-in  { background: var(--color-ink);           color: var(--color-card); }
-    .lp-page .lp-tag--checked-in::before { color: var(--color-accent); opacity: 1; }
+    .lp-page .lp-tag--checked-in::before { color: var(--color-accent-on-dark); opacity: 1; }
     .lp-page .lp-tag--checked-out { background: var(--color-card-deep);     color: var(--color-ink-mute); }
 
     /* Compact pill button for row-level actions. */
@@ -4115,7 +4118,7 @@
     .lp-page .lp-pill-sm .dot {
         width: 20px; height: 20px;
         background: var(--color-accent);
-        color: var(--color-ink);
+        color: var(--color-on-accent);
         border-radius: 9999px;
         display: inline-flex; align-items: center; justify-content: center;
     }
@@ -4447,7 +4450,7 @@
     }
     .lp-page .photo-manager__drop.is-dragging-over {
         border-color: var(--color-accent-deep);
-        background: var(--color-accent-soft, rgba(173, 203, 82,0.14));
+        background: var(--color-accent-soft, rgba(51, 103, 153,0.14));
     }
     .lp-page .photo-manager__drop.is-disabled {
         opacity: 0.55; pointer-events: none;
@@ -4736,11 +4739,11 @@
     .lp-page .logo-uploader__drop:hover,
     .lp-page .logo-uploader__drop:focus-within {
         border-color: var(--color-accent-deep);
-        background: var(--color-accent-soft, rgba(173, 203, 82,0.14));
+        background: var(--color-accent-soft, rgba(51, 103, 153,0.14));
     }
     .lp-page .logo-uploader__drop.is-dragging-over {
         border-color: var(--color-accent-deep);
-        background: var(--color-accent-soft, rgba(173, 203, 82,0.18));
+        background: var(--color-accent-soft, rgba(51, 103, 153,0.18));
     }
     .lp-page .logo-uploader__drop-icon {
         color: var(--color-ink-mute);
@@ -5756,7 +5759,7 @@
         font-style: normal;
         font-weight: 600;
         font-variant-numeric: tabular-nums lining-nums;
-        color: var(--color-accent, #C9DE8A);
+        color: var(--color-accent, #8DB6DE);
         text-shadow: 0 0 30px rgba(182, 217, 126, 0.35);
         margin: 0 6px;
     }
@@ -6077,7 +6080,7 @@
     .lp-page .lp-cal-matrix td.is-selecting,
     .lp-page .lp-heat-cell.is-selecting {
         background: var(--color-accent) !important;
-        color: var(--color-ink) !important;
+        color: var(--color-on-accent) !important;
         transform: scale(1.04);
         box-shadow: 0 0 0 1px var(--color-accent-deep);
     }
@@ -6690,7 +6693,7 @@
         font-size: 11px;
         opacity: 0.75;
     }
-    .lp-page .lp-chip.is-active .count { color: var(--color-accent); opacity: 1; }
+    .lp-page .lp-chip.is-active .count { color: var(--color-accent-on-dark); opacity: 1; }
 
     /* Tag pill — inline removable tag (form) + display tag (profile). */
     .lp-page .lp-tag-pill {

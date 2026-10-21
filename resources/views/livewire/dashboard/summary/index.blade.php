@@ -156,7 +156,7 @@
                 Rooms &middot; &#8358;{{ number_format((int) $trendRoomTotal) }}
             </span>
             <span style="display:inline-flex; align-items:center; gap:6px;">
-                <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-soft, rgba(173, 203, 82,0.35)); display:inline-block;"></span>
+                <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-soft, rgba(51, 103, 153,0.35)); display:inline-block;"></span>
                 POS &middot; &#8358;{{ number_format((int) $trendPosTotal) }}
             </span>
         </div>
@@ -166,9 +166,9 @@
             <svg viewBox="0 0 {{ $tW }} {{ $tH }}" preserveAspectRatio="none"
                  style="width: 100%; height: 200px; display: block;">
                 <path d="{{ $roomArea }}" fill="var(--color-accent-deep)" fill-opacity="0.10"/>
-                <path d="{{ $posArea }}" fill="var(--color-accent-soft, rgba(173, 203, 82,0.35))" fill-opacity="0.18"/>
+                <path d="{{ $posArea }}" fill="var(--color-accent-soft, rgba(51, 103, 153,0.35))" fill-opacity="0.18"/>
                 <path d="{{ $roomLine }}" fill="none" stroke="var(--color-accent-deep)" stroke-width="1.6"/>
-                <path d="{{ $posLine }}" fill="none" stroke="var(--color-accent-soft, rgba(173, 203, 82,0.65))" stroke-width="1.6"/>
+                <path d="{{ $posLine }}" fill="none" stroke="var(--color-accent-soft, rgba(51, 103, 153,0.65))" stroke-width="1.6"/>
                 <text x="{{ $tPadX }}" y="{{ $tH - 6 }}" font-size="10" fill="var(--color-ink-mute)" font-family="ui-monospace, monospace">
                     {{ \Illuminate\Support\Carbon::parse($daily[0]['date'] ?? $from->toDateString())->format('M j') }}
                 </text>

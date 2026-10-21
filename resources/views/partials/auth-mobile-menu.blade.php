@@ -1,7 +1,7 @@
 {{--
     Mobile hamburger menu for the auth surfaces (central + tenant
     login / register / forgot / reset). Replaces the "Est. 2026 ·
-    Lagos, NG" / "Powered by Keverna" / "Remembered it?" tag line on
+    Lagos, NG" / "Powered by <brand>" / "Remembered it?" tag line on
     ≤ 1023px viewports so operators on phones have a proper way to
     move between pages instead of only seeing an editorial mono line
     they can't do anything with.
@@ -37,10 +37,6 @@
                 <a href="{{ route('tenant.password.request') }}">Forgot password</a>
             @endif
         @endif
-        <div class="divider" aria-hidden="true"></div>
-        <a href="{{ url('/pricing') }}">Pricing</a>
-        <a href="{{ url('/for-hosts') }}">For hosts</a>
-        <a href="mailto:hello@keverna.com">Contact</a>
         <div class="divider" aria-hidden="true"></div>
         <div class="foot" aria-hidden="true">Elevated hospitality · One property at a time</div>
     </div>

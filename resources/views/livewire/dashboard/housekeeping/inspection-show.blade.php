@@ -91,7 +91,7 @@
                             wire:click="markAllDone"
                             wire:confirm="Tick every remaining checklist item as done?"
                             data-testid="inspection-mark-all-done"
-                            style="background: var(--color-accent); color: var(--color-ink);
+                            style="background: var(--color-accent); color: var(--color-on-accent);
                                    border: 0; padding: 5px 12px; border-radius: 999px;
                                    font-family: inherit; font-size: 11.5px; font-weight: 600;
                                    cursor: pointer;">

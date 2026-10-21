@@ -136,7 +136,7 @@
                         :aria-expanded="open ? 'true' : 'false'"
                         class="lp-pill"
                         style="background: var(--color-accent);
-                               color: var(--color-ink); border-color: var(--color-accent);
+                               color: var(--color-on-accent); border-color: var(--color-accent);
                                font-weight: 600; gap: 8px;">
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none"
                          stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"
@@ -223,7 +223,7 @@
                                             @click="open = false"
                                             data-testid="dash-quick-checkin-btn-{{ $g->booking_ref }}"
                                             style="background: var(--color-accent);
-                                                   color: var(--color-ink);
+                                                   color: var(--color-on-accent);
                                                    border: 0; padding: 6px 12px;
                                                    border-radius: 999px;
                                                    font-family: inherit; font-size: 11.5px; font-weight: 600;

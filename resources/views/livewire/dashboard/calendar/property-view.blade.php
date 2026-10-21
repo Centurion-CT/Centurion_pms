@@ -592,7 +592,7 @@
                         data-testid="reassign-confirm-submit"
                         @if ($reassignBlocker !== '') disabled @endif
                         style="background: var(--color-accent);
-                               color: var(--color-ink);
+                               color: var(--color-on-accent);
                                border: 0; padding: 10px 22px;
                                border-radius: 9px;
                                font-family: inherit; font-size: 13px; font-weight: 600;

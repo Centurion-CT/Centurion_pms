@@ -76,7 +76,7 @@
             Billed &middot; &#8358;{{ number_format((int) $trendTotalBilled) }}
         </span>
         <span style="display:inline-flex; align-items:center; gap:6px;">
-            <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-soft, rgba(173, 203, 82,0.35)); display:inline-block;"></span>
+            <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-soft, rgba(51, 103, 153,0.35)); display:inline-block;"></span>
             Collected &middot; &#8358;{{ number_format((int) $trendTotalCollected) }}
         </span>
     </div>
@@ -93,9 +93,9 @@
             <line x1="{{ $padX }}" y1="{{ $padTop + $innerH }}"
                   x2="{{ $padX + $innerW }}" y2="{{ $padTop + $innerH }}"
                   stroke="var(--color-line-soft)" stroke-width="1"/>
-            <path d="{{ $collectedArea }}" fill="var(--color-accent-soft, rgba(173, 203, 82,0.18))"/>
+            <path d="{{ $collectedArea }}" fill="var(--color-accent-soft, rgba(51, 103, 153,0.18))"/>
             <path d="{{ $collectedLine }}" fill="none"
-                  stroke="var(--color-accent-soft, rgba(173, 203, 82,0.55))"
+                  stroke="var(--color-accent-soft, rgba(51, 103, 153,0.55))"
                   stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="{{ $billedLine }}" fill="none"
                   stroke="var(--color-accent-deep)"
@@ -124,7 +124,7 @@
             On-books &middot; &#8358;{{ number_format((int) $forecastOnBooks) }}
         </span>
         <span style="display:inline-flex; align-items:center; gap:6px;">
-            <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-soft, rgba(173, 203, 82,0.35)); display:inline-block;"></span>
+            <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-soft, rgba(51, 103, 153,0.35)); display:inline-block;"></span>
             Estimate on top &middot; &#8358;{{ number_format((int) $forecastProjected) }}
         </span>
         <span style="color: var(--color-ink); font-weight: 500;">
@@ -157,7 +157,7 @@
                 @if ($projectedH > 0)
                     <rect x="{{ $x }}" y="{{ $yTotalTop }}"
                           width="{{ round($barW, 2) }}" height="{{ round($projectedH, 2) }}"
-                          fill="var(--color-accent-soft, rgba(173, 203, 82,0.35))"/>
+                          fill="var(--color-accent-soft, rgba(51, 103, 153,0.35))"/>
                 @endif
                 @if ($onBooksH > 0)
                     <rect x="{{ $x }}" y="{{ $yOnBooksTop }}"

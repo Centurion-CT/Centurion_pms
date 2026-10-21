@@ -109,7 +109,7 @@
         }
         .lp-page .lp-dash-bulk-bar__actions .lp-dash-bulk-action--primary {
             background: var(--color-accent);
-            color: var(--color-ink);
+            color: var(--color-on-accent);
         }
         .lp-page .lp-dash-bulk-bar__actions .lp-dash-bulk-action--primary:hover {
             background: var(--color-accent-deep);

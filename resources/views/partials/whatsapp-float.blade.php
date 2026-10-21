@@ -51,12 +51,12 @@
         z-index: 90;
         display: inline-flex; align-items: center; justify-content: center;
         width: 60px; height: 60px; border-radius: 50%;
-        /* Olive gradient — Keverna's own accent, not WhatsApp brand-green.
-           Still reads as "green button" so the glyph carries the meaning. */
-        background: linear-gradient(140deg, #ADCB52 0%, #8AAE3A 100%);
-        color: #14110C;
+        /* Brand-blue gradient (Centurion), not WhatsApp green — the
+           glyph carries the meaning. */
+        background: linear-gradient(140deg, #3F78AE 0%, #285480 100%);
+        color: #FFFFFF;
         box-shadow:
-            0 12px 32px -10px rgba(75, 92, 34, 0.42),
+            0 12px 32px -10px rgba(40, 84, 128, 0.42),
             0 4px 12px -4px rgba(20, 17, 12, 0.18),
             inset 0 0 0 1px rgba(255, 255, 255, 0.14);
         text-decoration: none;
@@ -79,7 +79,7 @@
     .kv-wa-float::before {
         content: ''; position: absolute; inset: -6px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(173, 203, 82, 0.35) 0%, transparent 60%);
+        background: radial-gradient(circle, rgba(51, 103, 153, 0.35) 0%, transparent 60%);
         z-index: -1;
         animation: kv-wa-pulse 2600ms ease-in-out infinite;
     }
@@ -95,7 +95,7 @@
     .kv-wa-ring {
         position: absolute; inset: 0;
         border-radius: 50%;
-        border: 2px solid #ADCB52;
+        border: 2px solid #336799;
         z-index: -1;
         opacity: 0;
         pointer-events: none;

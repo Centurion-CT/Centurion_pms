@@ -53,7 +53,7 @@
                           style="display:inline-flex; align-items:center; gap:6px;
                                  padding: 3px 10px; border-radius: 999px;
                                  letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
-                                 background: {{ $it['connected'] ? 'var(--color-accent-soft, rgba(173, 203, 82,0.18))' : 'var(--color-card-deep)' }};
+                                 background: {{ $it['connected'] ? 'var(--color-accent-soft, rgba(51, 103, 153,0.18))' : 'var(--color-card-deep)' }};
                                  color: {{ $it['connected'] ? 'var(--color-accent-deep)' : 'var(--color-ink-mute)' }};">
                         <span style="width:6px; height:6px; border-radius:50%;
                                      background: {{ $it['connected'] ? 'var(--color-accent-deep)' : 'var(--color-ink-mute)' }}; display:inline-block;"></span>

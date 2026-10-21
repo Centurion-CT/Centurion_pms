@@ -10,17 +10,15 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <span aria-hidden class="inline-flex h-7 w-7 items-center justify-center"
-                          style="background: var(--color-ink); color: var(--color-card); border-radius: 8px;">
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                            <path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-                        </svg>
+                          style="background: #FFFFFF; border: 1px solid var(--color-line); border-radius: 8px; padding: 3px;">
+                        <img src="{{ asset(config('brand.logo')) }}" alt="" width="18" height="21">
                     </span>
                     <span class="lp-display text-[18px] tracking-tight truncate" style="color: var(--color-ink); font-weight: 600; max-width: 380px;">
                         {{ $tenant?->name ?? 'Your property' }}
                     </span>
                 </div>
                 <span class="text-[12.5px]" style="color: var(--color-ink-mute);">
-                    Powered by <span style="color: var(--color-ink); font-weight: 500;">Keverna</span>
+                    Powered by <span style="color: var(--color-ink); font-weight: 500;">{{ config('brand.name') }}</span>
                 </span>
             </div>
         </header>
@@ -39,8 +37,7 @@
 
                 <p class="mt-5 max-w-[440px] text-[15px] leading-[1.65]" style="color: var(--color-ink-soft);">
                     You'll use this password to sign in from now on, either on
-                    <span style="color: var(--color-ink);">{{ $tenant?->primaryHost() ?? 'this tenant' }}/login</span>
-                    or the central <span style="color: var(--color-ink);">keverna.com/login</span>.
+                    <span style="color: var(--color-ink);">{{ $tenant?->primaryHost() ?? 'this tenant' }}/login</span>.
                     Your account is not active until you set it.
                 </p>
 

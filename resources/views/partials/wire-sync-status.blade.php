@@ -98,7 +98,7 @@
                     data-testid="wire-sync-now"
                     :disabled="!isOnline || syncing"
                     style="background: var(--color-accent);
-                           color: var(--color-ink);
+                           color: var(--color-on-accent);
                            border: 0; padding: 5px 12px; border-radius: 999px;
                            font-size: 11.5px; font-weight: 600;
                            cursor: pointer;

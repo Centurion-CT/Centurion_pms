@@ -6,20 +6,19 @@
 @endphp
 
 {{-- ─── Property (tenant) sign-in ────────────────────────────────
-     Same aesthetic as the central /login (warm-ink canvas with olive
+     Same aesthetic as the central /login (ink canvas with brand-blue
      aurora, grain, vignette, editorial mono chrome). Two personalisations:
        - Hero display splits: "Welcome," then the property name in
-         italic olive so the operator knows they're on the right
+         italic brand blue so the operator knows they're on the right
          subdomain at a glance
-       - Foot line reads "Powered by Keverna" so tenants keep the
-         white-label frame intact
+       - Foot line reads "Powered by <brand>" from config/brand.php
      Layout wraps in .lp-page (matches the shared tenant-auth body) so
      nothing about the outer chrome fights the canvas. --}}
 <div class="kv-auth">
 <style>
     .kv-auth {
-        --ink:        #14110C;
-        --ink-deep:   #0B0906;
+        --ink:        #0F151C;
+        --ink-deep:   #070B11;
         --ink-soft:   #4B4A46;
         --ink-mute:   #6E6C66;
         --cream:      #F7F3EA;
@@ -27,11 +26,13 @@
         --paper:      #FFFFFF;
         --line:       rgba(20, 17, 12, 0.08);
         --line-2:     rgba(20, 17, 12, 0.14);
-        --olive:      #ADCB52;
-        --olive-d:    #8AAE3A;
-        --olive-in:   #4B5C22;
-        --olive-soft: #C9DE8A;
-        --olive-deep: #2F3A18;
+        /* Brand accent (config/brand.php) — Centurion blue. */
+        --accent:        #336799;
+        --accent-d:      #285480;
+        --accent-in:     #336799;   /* on cream: links, checks (5.5:1) */
+        --accent-bright: #8DB6DE;   /* text on the dark canvas */
+        --accent-soft:   #9DBFE0;
+        --accent-deep:   #13304A;
 
         min-height: 100vh;
         background: var(--ink-deep);
@@ -48,19 +49,19 @@
         mix-blend-mode: screen; will-change: transform;
     }
     .kv-auth-aurora .a1 {
-        background: radial-gradient(circle, var(--olive) 0%, transparent 65%);
+        background: radial-gradient(circle, var(--accent) 0%, transparent 65%);
         top: -220px; left: -180px;
         animation: kv-drift-a 22s ease-in-out infinite alternate;
         opacity: 0.55;
     }
     .kv-auth-aurora .a2 {
-        background: radial-gradient(circle, var(--olive-soft) 0%, transparent 65%);
+        background: radial-gradient(circle, var(--accent-soft) 0%, transparent 65%);
         top: 30%; right: -260px;
         animation: kv-drift-b 26s ease-in-out infinite alternate;
         opacity: 0.35;
     }
     .kv-auth-aurora .a3 {
-        background: radial-gradient(circle, var(--olive-deep) 0%, transparent 60%);
+        background: radial-gradient(circle, var(--accent-deep) 0%, transparent 60%);
         bottom: -300px; left: 20%;
         animation: kv-drift-c 30s ease-in-out infinite alternate;
         opacity: 0.7;
@@ -89,8 +90,8 @@
     .kv-auth-vignette {
         position: absolute; inset: 0; pointer-events: none; z-index: 2;
         background:
-            radial-gradient(80% 60% at 50% 100%, rgba(11, 9, 6, 0.75) 0%, transparent 55%),
-            radial-gradient(70% 60% at 50% 0%,   rgba(11, 9, 6, 0.55) 0%, transparent 60%);
+            radial-gradient(80% 60% at 50% 100%, rgba(7, 11, 17, 0.75) 0%, transparent 55%),
+            radial-gradient(70% 60% at 50% 0%,   rgba(7, 11, 17, 0.55) 0%, transparent 60%);
     }
 
     .kv-auth-inner {
@@ -148,6 +149,7 @@
         width: 26px; height: 26px; border-radius: 7px;
         background: var(--cream); color: var(--ink);
         display: inline-flex; align-items: center; justify-content: center;
+        padding: 3px;
         flex-shrink: 0;
     }
     .kv-auth-brand-name {
@@ -167,13 +169,13 @@
         display: inline-block;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
-        color: var(--olive);
+        color: var(--accent-bright);
         margin-bottom: 24px;
     }
     .kv-hero-eyebrow::before {
         content: ''; display: inline-block;
         width: 6px; height: 6px; border-radius: 999px;
-        background: var(--olive);
+        background: var(--accent);
         margin-right: 10px; vertical-align: middle;
     }
     .kv-hero-title {
@@ -186,7 +188,7 @@
     }
     .kv-hero-title em {
         font-style: italic; font-weight: 500;
-        color: var(--olive);
+        color: var(--accent-bright);
     }
     .kv-hero-sub {
         margin-top: 32px; max-width: 460px;
@@ -202,7 +204,7 @@
         }
     }
     .kv-hero-bullet { display: flex; align-items: baseline; gap: 12px; }
-    .kv-hero-bullet-dot { display: inline-block; width: 6px; height: 6px; border-radius: 999px; background: var(--olive); flex-shrink: 0; }
+    .kv-hero-bullet-dot { display: inline-block; width: 6px; height: 6px; border-radius: 999px; background: var(--accent); flex-shrink: 0; }
 
     /* Form card */
     .kv-auth-form-wrap {
@@ -255,7 +257,7 @@
     .kv-field-label a {
         font-family: 'Inter', system-ui, sans-serif;
         text-transform: none; letter-spacing: 0;
-        color: var(--olive-in);
+        color: var(--accent-in);
         font-size: 12px; font-weight: 500;
         text-decoration: none;
     }
@@ -271,8 +273,8 @@
     }
     .kv-input:focus {
         outline: none;
-        border-color: var(--olive-d);
-        box-shadow: 0 0 0 3px rgba(173, 203, 82, 0.22);
+        border-color: var(--accent-d);
+        box-shadow: 0 0 0 3px rgba(51, 103, 153, 0.22);
     }
     .kv-input.is-invalid {
         border-color: #C1583A;
@@ -312,7 +314,7 @@
         cursor: pointer;
         display: inline-flex; align-items: center; justify-content: center;
     }
-    .kv-check:checked { background: var(--olive-in); border-color: var(--olive-in); }
+    .kv-check:checked { background: var(--accent-in); border-color: var(--accent-in); }
     .kv-check:checked::after { content: '✓'; color: var(--cream); font-size: 12px; line-height: 1; }
 
     .kv-submit {
@@ -331,13 +333,13 @@
     .kv-submit:disabled { opacity: 0.7; cursor: default; }
     .kv-submit-dot {
         width: 26px; height: 26px; border-radius: 999px;
-        background: var(--olive); color: var(--olive-in);
+        background: var(--accent); color: #FFFFFF;
         display: inline-flex; align-items: center; justify-content: center;
     }
     .kv-spinner-dot {
         width: 12px; height: 12px;
-        border: 2px solid rgba(75, 92, 34, 0.35);
-        border-top-color: var(--olive-in);
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        border-top-color: #FFFFFF;
         border-radius: 999px;
         animation: kv-spin 700ms linear infinite;
     }
@@ -394,13 +396,11 @@
         <div class="kv-auth-line kv-auth-line--top">
             <span class="kv-auth-brand">
                 <span class="kv-auth-brand-mark" aria-hidden="true">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-                    </svg>
+                    <img src="{{ asset(config('brand.logo')) }}" alt="" width="18" height="21">
                 </span>
                 <span class="kv-auth-brand-name">{{ $tenantDisplayName }}</span>
             </span>
-            <span class="kv-auth-line-right">Powered by <a href="https://keverna.com" style="color: var(--cream); margin-left: 4px;">Keverna</a></span>
+            <span class="kv-auth-line-right">Powered by @if(config('brand.url'))<a href="{{ config('brand.url') }}" style="color: var(--cream); margin-left: 4px;">{{ config('brand.name') }}</a>@else{{ config('brand.name') }}@endif</span>
             @include('partials.auth-mobile-menu')
         </div>
 
@@ -528,16 +528,12 @@
                         </span>
                     </button>
                 </form>
-
-                <div class="kv-form-foot">
-                    <span>Wrong property? <a href="https://keverna.com" style="color: var(--olive-in);">Go to keverna.com</a></span>
-                </div>
             </div>
         </div>
 
         <div class="kv-auth-line kv-auth-line--bot">
-            <span>© {{ date('Y') }} Keverna</span>
-            <span><a href="https://keverna.com/privacy">Privacy</a> &middot; <a href="https://keverna.com/terms">Terms</a></span>
+            <span>© {{ date('Y') }} {{ config('brand.name') }}</span>
+            <span><a href="{{ route('legal.privacy') }}">Privacy</a> &middot; <a href="{{ route('legal.terms') }}">Terms</a></span>
         </div>
 
     </div>

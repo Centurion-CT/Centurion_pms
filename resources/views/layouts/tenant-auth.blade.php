@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ \App\Models\Tenant::current()?->name }}, Keverna</title>
+    <title>{{ \App\Models\Tenant::current()?->name }}, {{ config('brand.name') }}</title>
     @include('partials.favicons')
 
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -544,9 +544,7 @@
 
                 <div class="lp-sidebar-brand">
                     <span class="lp-sidebar-brand-mark" aria-hidden>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                            <path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-                        </svg>
+                        <img src="{{ asset(config('brand.logo')) }}" alt="" width="20" height="23">
                     </span>
                     <span class="lp-sidebar-brand-text">
                         <span class="name">{{ \App\Models\Tenant::current()?->name ?? 'Your property' }}</span>

@@ -72,9 +72,9 @@
         transition: background 160ms;
     }
     .kv-cc-btn--primary {
-        background: #ADCB52; color: #0F1215;
+        background: #336799; color: #FFFFFF;
     }
-    .kv-cc-btn--primary:hover { background: #C0DA6D; }
+    .kv-cc-btn--primary:hover { background: #285480; }
     .kv-cc-btn--ghost {
         background: transparent;
         color: rgba(245, 239, 225, 0.85);

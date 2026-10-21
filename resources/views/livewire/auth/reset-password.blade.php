@@ -118,8 +118,8 @@
         <footer class="lp-card lp-card-cream" style="padding: 16px 20px;">
             <div class="flex flex-col gap-2 text-[12px] sm:flex-row sm:items-center sm:justify-between"
                  style="color: var(--color-ink-mute);">
-                <span>© {{ date('Y') }} Keverna</span>
-                <span><a href="https://keverna.com/privacy" style="color: inherit;">Privacy</a> · <a href="https://keverna.com/terms" style="color: inherit;">Terms</a></span>
+                <span>© {{ date('Y') }} {{ config('brand.name') }}</span>
+                <span><a href="{{ route('legal.privacy') }}" style="color: inherit;">Privacy</a> · <a href="{{ route('legal.terms') }}" style="color: inherit;">Terms</a></span>
             </div>
         </footer>
 

@@ -227,7 +227,7 @@
                         <span x-text="c.currency" style="color: #6E7278; margin-left: 4px;"></span>
                     </span>
                 </span>
-                <span x-show="$store.kv.region === key" style="color: #8AAE3A;">✓</span>
+                <span x-show="$store.kv.region === key" style="color: #285480;">✓</span>
             </button>
         </template>
     </div>

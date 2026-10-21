@@ -312,7 +312,7 @@
                                   + 'cursor: ' + (newBalanceBeforePayment > 0 ? 'pointer' : 'not-allowed') + ';'
                                   + 'opacity: ' + (newBalanceBeforePayment > 0 ? '1' : '0.4') + ';'
                                   + (payChoice === 'full'
-                                      ? 'background: var(--color-accent); color: var(--color-ink); border: 0;'
+                                      ? 'background: var(--color-accent); color: var(--color-on-accent); border: 0;'
                                       : 'background: transparent; color: var(--color-ink); border: 1px solid var(--color-line);')">
                         Full (<span x-text="money(newBalanceBeforePayment)"></span>)
                     </button>
@@ -327,7 +327,7 @@
                                   + 'cursor: ' + (extensionNet > 0 ? 'pointer' : 'not-allowed') + ';'
                                   + 'opacity: ' + (extensionNet > 0 ? '1' : '0.4') + ';'
                                   + (payChoice === 'extension'
-                                      ? 'background: var(--color-accent); color: var(--color-ink); border: 0;'
+                                      ? 'background: var(--color-accent); color: var(--color-on-accent); border: 0;'
                                       : 'background: transparent; color: var(--color-ink); border: 1px solid var(--color-line);')">
                         Extension only (<span x-text="money(extensionNet)"></span>)
                     </button>
@@ -340,7 +340,7 @@
                                   + 'font-family: inherit; font-size: 11.5px; cursor: pointer;'
                                   + 'font-weight: ' + (payChoice === 'wallet' ? '600' : '500') + ';'
                                   + (payChoice === 'wallet'
-                                      ? 'background: var(--color-accent); color: var(--color-ink); border: 0;'
+                                      ? 'background: var(--color-accent); color: var(--color-on-accent); border: 0;'
                                       : 'background: transparent; color: var(--color-ink); border: 1px solid var(--color-line);')">
                         Wallet (<span x-text="money(Math.min(walletBalance, newBalanceBeforePayment))"></span>)
                     </button>

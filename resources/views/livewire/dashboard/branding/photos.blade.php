@@ -106,10 +106,10 @@
             transition: border-color 160ms, background 160ms;
         }
         .lp-page .logo-uploader__drop:hover, .lp-page .logo-uploader__drop:focus-within {
-            border-color: var(--color-accent-deep); background: var(--color-accent-soft, rgba(173, 203, 82,0.14));
+            border-color: var(--color-accent-deep); background: var(--color-accent-soft, rgba(51, 103, 153,0.14));
         }
         .lp-page .logo-uploader__drop.is-dragging-over {
-            border-color: var(--color-accent-deep); background: var(--color-accent-soft, rgba(173, 203, 82,0.18));
+            border-color: var(--color-accent-deep); background: var(--color-accent-soft, rgba(51, 103, 153,0.18));
         }
         .lp-page .logo-uploader__drop-icon { color: var(--color-ink-mute); margin-bottom: 4px; }
         .lp-page .logo-uploader__drop-title { font-size: 14px; font-weight: 500; color: var(--color-ink); }

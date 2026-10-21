@@ -9,7 +9,7 @@
     <div style="width: 100%; max-width: 640px;">
         <div style="text-align: center; margin-bottom: 28px;">
             <p style="text-transform: uppercase; letter-spacing: 0.16em;
-                      font-size: 11px; color: #8AAE3A; font-weight: 600;">
+                      font-size: 11px; color: #285480; font-weight: 600;">
                 Keverna Solo &middot; Install
             </p>
             <h1 style="font-family: 'Playfair Display', Georgia, serif;

@@ -35,7 +35,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? $tenant?->name ?? 'Keverna' }}</title>
+    <title>{{ $title ?? $tenant?->name ?? config('brand.name') }}</title>
     @include('partials.favicons')
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -236,7 +236,7 @@
             <p class="meta">
                 © {{ date('Y') }} {{ $tenant?->name }}
                 <span class="dot">·</span>
-                Powered by <a href="https://keverna.com" target="_blank" rel="noopener">Keverna</a>
+                Powered by @if (config('brand.url'))<a href="{{ config('brand.url') }}" target="_blank" rel="noopener">{{ config('brand.name') }}</a>@else{{ config('brand.name') }}@endif
             </p>
         </div>
     </footer>

@@ -160,7 +160,7 @@
                 color: var(--color-ink, #14171A);
             }
             .kv-feedback-inline-thanks {
-                color: var(--color-accent-deep, #8AAE3A);
+                color: var(--color-accent-deep, #285480);
             }
             .kv-feedback-inline-thanks span {
                 flex: 1 1 auto;

@@ -22,7 +22,7 @@
     {{-- ── Status banner ────────────────────────────────────────── --}}
     @php
         $accent = $status['connected'] ? 'var(--color-accent-deep)' : '#B85C42';
-        $tint   = $status['connected'] ? 'var(--color-accent-soft, rgba(173, 203, 82,0.10))' : 'rgba(224, 122, 95, 0.06)';
+        $tint   = $status['connected'] ? 'var(--color-accent-soft, rgba(51, 103, 153,0.10))' : 'rgba(224, 122, 95, 0.06)';
     @endphp
     <div data-testid="dokwe-status"
          class="lp-dash-card"

@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nothing here · Keverna</title>
+    <title>Nothing here · {{ config('brand.name') }}</title>
     <meta name="robots" content="noindex, nofollow">
 
     {{-- Same font pair as the landing (welcome.blade.php) so this page

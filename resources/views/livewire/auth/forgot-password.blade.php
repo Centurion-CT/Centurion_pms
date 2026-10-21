@@ -7,7 +7,7 @@
 
 {{-- ─── Property (tenant) forgot password ─────────────────────────
      Same visual language as the property /login and the central
-     /password/forgot: warm-ink canvas, olive aurora, grain, vignette,
+     /password/forgot: ink canvas, brand-blue aurora, grain, vignette,
      editorial mono lines top and bottom, big Fraunces display on the
      left, cream form card on the right.
 
@@ -19,8 +19,8 @@
 <div class="kv-auth">
 <style>
     .kv-auth {
-        --ink:        #14110C;
-        --ink-deep:   #0B0906;
+        --ink:        #0F151C;
+        --ink-deep:   #070B11;
         --ink-soft:   #4B4A46;
         --ink-mute:   #6E6C66;
         --cream:      #F7F3EA;
@@ -28,11 +28,13 @@
         --paper:      #FFFFFF;
         --line:       rgba(20, 17, 12, 0.08);
         --line-2:     rgba(20, 17, 12, 0.14);
-        --olive:      #ADCB52;
-        --olive-d:    #8AAE3A;
-        --olive-in:   #4B5C22;
-        --olive-soft: #C9DE8A;
-        --olive-deep: #2F3A18;
+        /* Brand accent (config/brand.php) — Centurion blue. */
+        --accent:        #336799;
+        --accent-d:      #285480;
+        --accent-in:     #336799;   /* on cream: links, checks (5.5:1) */
+        --accent-bright: #8DB6DE;   /* text on the dark canvas */
+        --accent-soft:   #9DBFE0;
+        --accent-deep:   #13304A;
 
         min-height: 100vh;
         background: var(--ink-deep);
@@ -48,9 +50,9 @@
         border-radius: 50%; filter: blur(120px);
         mix-blend-mode: screen; will-change: transform;
     }
-    .kv-auth-aurora .a1 { background: radial-gradient(circle, var(--olive) 0%, transparent 65%); top: -220px; left: -180px; animation: kv-drift-a 22s ease-in-out infinite alternate; opacity: 0.55; }
-    .kv-auth-aurora .a2 { background: radial-gradient(circle, var(--olive-soft) 0%, transparent 65%); top: 30%; right: -260px; animation: kv-drift-b 26s ease-in-out infinite alternate; opacity: 0.35; }
-    .kv-auth-aurora .a3 { background: radial-gradient(circle, var(--olive-deep) 0%, transparent 60%); bottom: -300px; left: 20%; animation: kv-drift-c 30s ease-in-out infinite alternate; opacity: 0.7; }
+    .kv-auth-aurora .a1 { background: radial-gradient(circle, var(--accent) 0%, transparent 65%); top: -220px; left: -180px; animation: kv-drift-a 22s ease-in-out infinite alternate; opacity: 0.55; }
+    .kv-auth-aurora .a2 { background: radial-gradient(circle, var(--accent-soft) 0%, transparent 65%); top: 30%; right: -260px; animation: kv-drift-b 26s ease-in-out infinite alternate; opacity: 0.35; }
+    .kv-auth-aurora .a3 { background: radial-gradient(circle, var(--accent-deep) 0%, transparent 60%); bottom: -300px; left: 20%; animation: kv-drift-c 30s ease-in-out infinite alternate; opacity: 0.7; }
     @keyframes kv-drift-a { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(140px,80px,0) scale(1.15); } }
     @keyframes kv-drift-b { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(-160px,-120px,0) scale(1.1); } }
     @keyframes kv-drift-c { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(120px,-160px,0) scale(1.2); } }
@@ -62,8 +64,8 @@
     .kv-auth-vignette {
         position: absolute; inset: 0; pointer-events: none; z-index: 2;
         background:
-            radial-gradient(80% 60% at 50% 100%, rgba(11, 9, 6, 0.75) 0%, transparent 55%),
-            radial-gradient(70% 60% at 50% 0%,   rgba(11, 9, 6, 0.55) 0%, transparent 60%);
+            radial-gradient(80% 60% at 50% 100%, rgba(7, 11, 17, 0.75) 0%, transparent 55%),
+            radial-gradient(70% 60% at 50% 0%,   rgba(7, 11, 17, 0.55) 0%, transparent 60%);
     }
 
     .kv-auth-inner {
@@ -108,6 +110,7 @@
         width: 26px; height: 26px; border-radius: 7px;
         background: var(--cream); color: var(--ink);
         display: inline-flex; align-items: center; justify-content: center;
+        padding: 3px;
         flex-shrink: 0;
     }
     .kv-auth-brand-name {
@@ -121,12 +124,12 @@
         display: inline-block;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
-        color: var(--olive); margin-bottom: 24px;
+        color: var(--accent-bright); margin-bottom: 24px;
     }
     .kv-hero-eyebrow::before {
         content: ''; display: inline-block;
         width: 6px; height: 6px; border-radius: 999px;
-        background: var(--olive);
+        background: var(--accent);
         margin-right: 10px; vertical-align: middle;
     }
     .kv-hero-title {
@@ -135,12 +138,12 @@
         font-size: clamp(56px, 9.5vw, 140px);
         color: var(--cream); margin: 0;
     }
-    .kv-hero-title em { font-style: italic; font-weight: 500; color: var(--olive); }
+    .kv-hero-title em { font-style: italic; font-weight: 500; color: var(--accent-bright); }
     .kv-hero-sub { margin-top: 32px; max-width: 460px; font-size: 15.5px; line-height: 1.6; color: rgba(247, 243, 234, 0.72); }
     .kv-hero-note {
         margin-top: 28px; padding: 16px 18px; max-width: 460px;
-        background: rgba(173, 203, 82, 0.08);
-        border: 1px solid rgba(173, 203, 82, 0.22);
+        background: rgba(51, 103, 153, 0.08);
+        border: 1px solid rgba(51, 103, 153, 0.22);
         border-radius: 12px;
         font-size: 13.5px; color: rgba(247, 243, 234, 0.85); line-height: 1.55;
     }
@@ -186,8 +189,8 @@
         transition: border-color 150ms, box-shadow 150ms;
     }
     .kv-input:focus {
-        outline: none; border-color: var(--olive-d);
-        box-shadow: 0 0 0 3px rgba(173, 203, 82, 0.22);
+        outline: none; border-color: var(--accent-d);
+        box-shadow: 0 0 0 3px rgba(51, 103, 153, 0.22);
     }
     .kv-input.is-invalid {
         border-color: #C1583A;
@@ -216,13 +219,13 @@
     .kv-submit:disabled { opacity: 0.7; cursor: default; }
     .kv-submit-dot {
         width: 26px; height: 26px; border-radius: 999px;
-        background: var(--olive); color: var(--olive-in);
+        background: var(--accent); color: #FFFFFF;
         display: inline-flex; align-items: center; justify-content: center;
     }
     .kv-spinner-dot {
         width: 12px; height: 12px;
-        border: 2px solid rgba(75, 92, 34, 0.35);
-        border-top-color: var(--olive-in);
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        border-top-color: #FFFFFF;
         border-radius: 999px;
         animation: kv-spin 700ms linear infinite;
     }
@@ -241,8 +244,8 @@
     /* Success state */
     .kv-sent-icon {
         width: 60px; height: 60px; border-radius: 50%;
-        background: rgba(173, 203, 82, 0.15);
-        color: var(--olive-in);
+        background: rgba(51, 103, 153, 0.15);
+        color: var(--accent-in);
         display: inline-flex; align-items: center; justify-content: center;
         margin-bottom: 18px;
     }
@@ -284,9 +287,7 @@
         <div class="kv-auth-line kv-auth-line--top">
             <span class="kv-auth-brand">
                 <span class="kv-auth-brand-mark" aria-hidden="true">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-                    </svg>
+                    <img src="{{ asset(config('brand.logo')) }}" alt="" width="18" height="21">
                 </span>
                 <span class="kv-auth-brand-name">{{ $tenantDisplayName }}</span>
             </span>
@@ -311,7 +312,7 @@
                                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="5" width="18" height="14" rx="2"/>
                                 <path d="M3 7l9 6 9-6"/>
-                                <path d="M8 15l2 2 6-6" stroke="var(--olive-d)"/>
+                                <path d="M8 15l2 2 6-6" stroke="var(--accent-d)"/>
                             </svg>
                         </span>
                         <span class="kv-form-eyebrow">Check your inbox</span>
@@ -377,8 +378,8 @@
         </div>
 
         <div class="kv-auth-line kv-auth-line--bot">
-            <span>© {{ date('Y') }} Keverna</span>
-            <span>Powered by <a href="https://keverna.com" style="color: var(--cream);">Keverna</a></span>
+            <span>© {{ date('Y') }} {{ config('brand.name') }}</span>
+            <span>Powered by @if(config('brand.url'))<a href="{{ config('brand.url') }}" style="color: var(--cream); margin-left: 4px;">{{ config('brand.name') }}</a>@else{{ config('brand.name') }}@endif</span>
         </div>
 
     </div>
