@@ -21,7 +21,7 @@ class ForceHttpsInProduction
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! app()->environment('production')) {
+        if (! app()->environment('production') || ! config('keverna.force_https')) {
             return $next($request);
         }
 

@@ -15,6 +15,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
 use PlatformCommunity\Flysystem\BunnyCDN\BunnyCDNAdapter;
@@ -58,6 +59,14 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Behind TLS termination the app may not see the request as secure
+        // (see keverna.force_https). Pin generated URLs to https whenever
+        // APP_URL says so, so links, assets and Livewire calls never
+        // downgrade to http:// and trip mixed-content blocking.
+        if ($this->app->environment('production') && str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
+
         // Register a custom "sendpipe" mail transport so any Mailable sent
         // via Mail::to(...)->queue(...) routes through Sendpipe (PRD §5.1).
         Mail::extend('sendpipe', fn (): SendpipeTransport => new SendpipeTransport(

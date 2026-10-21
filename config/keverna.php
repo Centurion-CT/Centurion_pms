@@ -44,6 +44,15 @@ return [
     ],
 
     /*
+    | App-level HTTP → HTTPS 301 (App\Http\Middleware\ForceHttpsInProduction).
+    | Turn off when the edge already enforces HTTPS but the proxy chain
+    | doesn't deliver `X-Forwarded-Proto: https` to the app — otherwise the
+    | middleware 301-loops. Generated URLs stay https either way because
+    | AppServiceProvider forces the scheme from an https APP_URL.
+    */
+    'force_https' => (bool) env('FORCE_HTTPS', true),
+
+    /*
     |--------------------------------------------------------------------------
     | Subdomain provisioning mode
     |--------------------------------------------------------------------------

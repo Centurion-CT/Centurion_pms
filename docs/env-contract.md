@@ -64,6 +64,8 @@ These have safe defaults but you almost always want them explicit in prod.
 | `LOG_CHANNEL` | `stderr` | `stack` — log to file, swallowed by container ephemeral storage |
 | `LOG_LEVEL` | `info` | `debug` |
 | `DB_PORT` | `5432` (pgsql) / `3306` (mysql) | `5432` / `3306` per driver |
+| `FORCE_HTTPS` | `true`, or `false` if the proxy chain drops `X-Forwarded-Proto: https` and the app 301-loops | `true` |
+| `SESSION_SECURE_COOKIE` | `true` | unset (cookies not marked Secure) |
 | `REDIS_CLIENT` | `predis` | `predis` |
 | `REDIS_PORT` | `6379` | `6379` |
 | `SESSION_DRIVER` | `redis` | `database` |
