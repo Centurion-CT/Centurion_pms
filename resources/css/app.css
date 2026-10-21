@@ -26,13 +26,13 @@
        saturated against dark sidebar + content cards. Cards stay
        distinguishable from the page (small luminance gap preserved). */
     --color-paper:       #FFFFFF;   /* page background — pure white so cards read as raised cream against it */
-    --color-card:        #FCFAF5;   /* slightly lighter card surface */
-    --color-card-deep:   #F2EDE2;   /* nested band inside a card */
+    --color-card:        #F7F9FC;   /* card surface — cool tint to sit with Centurion blue */
+    --color-card-deep:   #EBF0F6;   /* nested band inside a card */
     --color-ink:         #14171A;
     --color-ink-soft:    #3A4148;
     --color-ink-mute:    #6E767D;
-    --color-ink-deep:    #1B1714;   /* dark coffee for inverted hero / CTA */
-    --color-ink-deep-2:  #2A241F;
+    --color-ink-deep:    #0F1C2A;   /* brand navy for sidebar / inverted hero / CTA */
+    --color-ink-deep-2:  #1A2B3D;
     /* Brand accent — Centurion blue (see config/brand.php). */
     --color-accent:         #336799;
     --color-accent-deep:    #285480;   /* text/borders on light surfaces */
@@ -41,7 +41,7 @@
     --color-on-accent:      #FFFFFF;   /* text/icons sitting on --color-accent */
     --color-line:        rgba(20,23,26,0.10);
     --color-line-soft:   rgba(20,23,26,0.06);
-    --color-line-on-dark: rgba(255, 252, 245, 0.10);
+    --color-line-on-dark: rgba(247, 250, 253, 0.10);
 }
 
 /*
@@ -512,7 +512,7 @@
     .lp-page .lp-step.is-active::before { opacity: 0; }
     .lp-page .lp-step.is-active .lp-step-num,
     .lp-page .lp-step.is-active .lp-step-title { color: var(--color-card); }
-    .lp-page .lp-step.is-active .lp-step-desc  { color: rgba(244, 239, 230, 0.78); }
+    .lp-page .lp-step.is-active .lp-step-desc  { color: rgba(230, 238, 247, 0.78); }
 
     /* Touch devices skip the hover variant since `:hover` is unreliable
        there and we don't want a row to stick lit after a tap. */
@@ -525,7 +525,7 @@
         .lp-page .lp-step:hover::before { opacity: 0; }
         .lp-page .lp-step:hover .lp-step-num,
         .lp-page .lp-step:hover .lp-step-title { color: var(--color-card); }
-        .lp-page .lp-step:hover .lp-step-desc  { color: rgba(244, 239, 230, 0.78); }
+        .lp-page .lp-step:hover .lp-step-desc  { color: rgba(230, 238, 247, 0.78); }
     }
 
     @media (max-width: 640px) {
@@ -608,15 +608,15 @@
        and cream text to stay legible. */
     .lp-page .lp-input--on-dark {
         color: var(--color-card);
-        border-bottom-color: rgba(244, 239, 230, 0.18);
+        border-bottom-color: rgba(230, 238, 247, 0.18);
     }
-    .lp-page .lp-input--on-dark::placeholder { color: rgba(244, 239, 230, 0.32); }
-    .lp-page .lp-input--on-dark:hover { border-bottom-color: rgba(244, 239, 230, 0.35); }
+    .lp-page .lp-input--on-dark::placeholder { color: rgba(230, 238, 247, 0.32); }
+    .lp-page .lp-input--on-dark:hover { border-bottom-color: rgba(230, 238, 247, 0.35); }
     .lp-page .lp-input--on-dark:focus { border-bottom-color: var(--color-accent-on-dark); }
     .lp-page .lp-input--on-dark[aria-invalid="true"],
     .lp-page .lp-input--on-dark.is-invalid { border-bottom-color: #E07A5F; }
 
-    .lp-page .lp-form-label--on-dark { color: rgba(244, 239, 230, 0.55); }
+    .lp-page .lp-form-label--on-dark { color: rgba(230, 238, 247, 0.55); }
 
     /* Password reveal — an eye-toggle sits inside the input's trailing
        edge and swaps to a slashed eye once the password is visible. The
@@ -665,7 +665,7 @@
     }
     .kv-password-toggle:hover { color: rgb(15 23 42); }
     .lp-password-field.on-dark .lp-password-toggle {
-        color: rgba(244, 239, 230, 0.55);
+        color: rgba(230, 238, 247, 0.55);
     }
     .lp-password-field.on-dark .lp-password-toggle:hover {
         color: var(--color-card);
@@ -876,11 +876,11 @@
        feel clean. WebKit only; Firefox falls back to default. */
     .lp-page .lp-sidebar::-webkit-scrollbar { width: 6px; }
     .lp-page .lp-sidebar::-webkit-scrollbar-thumb {
-        background: rgba(244, 239, 230, 0.12);
+        background: rgba(230, 238, 247, 0.12);
         border-radius: 9999px;
     }
     .lp-page .lp-sidebar::-webkit-scrollbar-thumb:hover {
-        background: rgba(244, 239, 230, 0.22);
+        background: rgba(230, 238, 247, 0.22);
     }
 
     .lp-page .lp-sidebar-brand {
@@ -909,7 +909,7 @@
     }
     .lp-page .lp-sidebar-brand-text .sub {
         font-size: 10.5px;
-        color: rgba(244, 239, 230, 0.55);
+        color: rgba(230, 238, 247, 0.55);
         letter-spacing: 0.08em;
         text-transform: uppercase;
         margin-top: 2px;
@@ -921,20 +921,20 @@
        not admin, not the guest portal). */
     .lp-page .lp-sidebar-brand-text .kv-op-led {
         display: inline-flex; align-items: center; gap: 6px;
-        color: rgba(200, 216, 138, 0.85); /* soft olive on ink */
+        color: rgba(141, 182, 222, 0.9); /* light brand blue on navy */
     }
     .lp-page .kv-op-led-dot {
         position: relative;
         width: 7px; height: 7px; border-radius: 999px;
-        background: #B6D97E; /* Keverna olive-lime */
-        box-shadow: 0 0 10px rgba(182, 217, 126, 0.55);
+        background: #8DB6DE; /* light brand blue */
+        box-shadow: 0 0 10px rgba(141, 182, 222, 0.55);
         flex-shrink: 0;
     }
     .lp-page .kv-op-led-dot::before {
         content: '';
         position: absolute; inset: -4px;
         border-radius: 999px;
-        background: rgba(182, 217, 126, 0.30);
+        background: rgba(141, 182, 222, 0.30);
         animation: kv-op-led-pulse 2400ms ease-in-out infinite;
     }
     @keyframes kv-op-led-pulse {
@@ -956,15 +956,15 @@
         display: flex; align-items: center; justify-content: space-between;
         width: 100%;
         padding: 9px 12px;
-        background: rgba(244, 239, 230, 0.06);
-        border: 1px solid rgba(244, 239, 230, 0.10);
+        background: rgba(230, 238, 247, 0.06);
+        border: 1px solid rgba(230, 238, 247, 0.10);
         border-radius: 10px;
         color: var(--color-card);
         cursor: pointer;
         transition: background 120ms ease;
     }
     .lp-page .lp-sidebar-branches-trigger:hover {
-        background: rgba(244, 239, 230, 0.10);
+        background: rgba(230, 238, 247, 0.10);
     }
     .lp-page .lp-sidebar-branches-trigger .label {
         display: flex; flex-direction: column; align-items: flex-start;
@@ -973,7 +973,7 @@
     .lp-page .lp-sidebar-branches-trigger .eyebrow {
         font-size: 9.5px; font-weight: 600;
         letter-spacing: 0.16em; text-transform: uppercase;
-        color: rgba(244, 239, 230, 0.55);
+        color: rgba(230, 238, 247, 0.55);
     }
     .lp-page .lp-sidebar-branches-trigger .name {
         font-size: 13px; font-weight: 500; margin-top: 2px;
@@ -1031,7 +1031,7 @@
         padding: 10px 10px 6px;
         font-size: 9.5px; font-weight: 600;
         letter-spacing: 0.2em; text-transform: uppercase;
-        color: rgba(244, 239, 230, 0.42);
+        color: rgba(230, 238, 247, 0.42);
     }
     /* Recent's label — non-clickable, matches static label look. */
     .lp-page .lp-sidebar-label--static { cursor: default; }
@@ -1045,9 +1045,9 @@
         cursor: pointer;
         transition: color 160ms;
     }
-    .lp-page .lp-sidebar-label--btn:hover { color: rgba(244, 239, 230, 0.7); }
+    .lp-page .lp-sidebar-label--btn:hover { color: rgba(230, 238, 247, 0.7); }
     .lp-page .lp-sidebar-label--btn:focus-visible {
-        outline: 1px solid rgba(244, 239, 230, 0.35);
+        outline: 1px solid rgba(230, 238, 247, 0.35);
         outline-offset: 2px;
         border-radius: 4px;
     }
@@ -1070,7 +1070,7 @@
         left: 10px; top: 50%;
         transform: translateY(-50%);
         width: 13px; height: 13px;
-        color: rgba(244, 239, 230, 0.42);
+        color: rgba(230, 238, 247, 0.42);
         pointer-events: none;
     }
     .lp-page .lp-sidebar-search {
@@ -1078,17 +1078,17 @@
         padding: 8px 28px 8px 30px;
         font-size: 12.5px;
         font-family: inherit;
-        background: rgba(244, 239, 230, 0.05);
-        border: 1px solid rgba(244, 239, 230, 0.10);
+        background: rgba(230, 238, 247, 0.05);
+        border: 1px solid rgba(230, 238, 247, 0.10);
         border-radius: 8px;
         color: var(--color-card);
         outline: none;
         transition: border-color 160ms, background 160ms;
     }
-    .lp-page .lp-sidebar-search::placeholder { color: rgba(244, 239, 230, 0.4); }
+    .lp-page .lp-sidebar-search::placeholder { color: rgba(230, 238, 247, 0.4); }
     .lp-page .lp-sidebar-search:focus {
-        border-color: rgba(244, 239, 230, 0.28);
-        background: rgba(244, 239, 230, 0.08);
+        border-color: rgba(230, 238, 247, 0.28);
+        background: rgba(230, 238, 247, 0.08);
     }
     /* Kill the native search's clear button — we render our own so
        it matches the palette and is keyboard reachable. */
@@ -1100,21 +1100,21 @@
         width: 18px; height: 18px;
         display: inline-flex; align-items: center; justify-content: center;
         background: transparent; border: 0;
-        color: rgba(244, 239, 230, 0.55);
+        color: rgba(230, 238, 247, 0.55);
         font-size: 16px; line-height: 1;
         cursor: pointer;
         border-radius: 4px;
     }
     .lp-page .lp-sidebar-search-clear:hover {
         color: var(--color-card);
-        background: rgba(244, 239, 230, 0.08);
+        background: rgba(230, 238, 247, 0.08);
     }
 
     /* No-results feedback while searching. */
     .lp-page .lp-sidebar-empty {
         padding: 10px 12px;
         font-size: 12px;
-        color: rgba(244, 239, 230, 0.5);
+        color: rgba(230, 238, 247, 0.5);
         font-style: italic;
     }
 
@@ -1143,7 +1143,7 @@
         border-radius: 12px;
         transition: transform 140ms ease, background 140ms ease;
     }
-    .lp-page .lp-nav-tile:hover { background: rgba(244, 239, 230, 0.04); }
+    .lp-page .lp-nav-tile:hover { background: rgba(230, 238, 247, 0.04); }
     .lp-page .lp-nav-tile:active { transform: scale(0.96); }
     .lp-page .lp-nav-tile-icon {
         position: relative;
@@ -1188,7 +1188,7 @@
         line-height: 1.15;
         font-weight: 500;
         text-align: center;
-        color: rgba(244, 239, 230, 0.82);
+        color: rgba(230, 238, 247, 0.82);
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -1235,7 +1235,7 @@
         padding: 8px 6px 4px;
         font-size: 9.5px; font-weight: 600;
         letter-spacing: 0.2em; text-transform: uppercase;
-        color: rgba(244, 239, 230, 0.42);
+        color: rgba(230, 238, 247, 0.42);
     }
 
     /* ─── Sidebar variant: "list" ──────────────────────────────────
@@ -1260,13 +1260,13 @@
         min-height: 0;
     }
     html[data-sidebar-variant="list"] .lp-page .lp-nav-tile:hover {
-        background: rgba(244, 239, 230, 0.05);
+        background: rgba(230, 238, 247, 0.05);
     }
     html[data-sidebar-variant="list"] .lp-page .lp-nav-tile-icon {
         width: 20px; height: 20px;
         background: transparent !important;
         box-shadow: none;
-        color: rgba(244, 239, 230, 0.62);
+        color: rgba(230, 238, 247, 0.62);
         border-radius: 4px;
         transform: none !important;
     }
@@ -1277,11 +1277,11 @@
     html[data-sidebar-variant="list"] .lp-page .lp-nav-tile-icon svg {
         width: 15px; height: 15px;
         stroke-width: 1.6;
-        color: rgba(244, 239, 230, 0.7);
+        color: rgba(230, 238, 247, 0.7);
     }
     html[data-sidebar-variant="list"] .lp-page .lp-nav-tile-label {
         font-size: 12.5px; font-weight: 500;
-        color: rgba(244, 239, 230, 0.78);
+        color: rgba(230, 238, 247, 0.78);
         letter-spacing: 0;
         text-align: left;
         text-transform: none;
@@ -1290,7 +1290,7 @@
         color: var(--color-card);
     }
     html[data-sidebar-variant="list"] .lp-page .lp-nav-tile.is-active {
-        background: rgba(244, 239, 230, 0.08);
+        background: rgba(230, 238, 247, 0.08);
         box-shadow: inset 2px 0 0 var(--color-accent-deep);
     }
     html[data-sidebar-variant="list"] .lp-page .lp-nav-tile.is-active .lp-nav-tile-icon,
@@ -1377,9 +1377,9 @@
         display: flex; align-items: center; gap: 8px;
         width: 100%;
         padding: 6px 8px; margin-bottom: 8px;
-        background: transparent; border: 1px solid rgba(244, 239, 230, 0.10);
+        background: transparent; border: 1px solid rgba(230, 238, 247, 0.10);
         border-radius: 8px;
-        color: rgba(244, 239, 230, 0.62);
+        color: rgba(230, 238, 247, 0.62);
         font-family: inherit; font-size: 11px;
         letter-spacing: 0.02em;
         cursor: pointer;
@@ -1387,8 +1387,8 @@
     }
     .lp-sidebar-foot .lp-sidebar-variant-toggle:hover {
         color: var(--color-card);
-        border-color: rgba(244, 239, 230, 0.22);
-        background: rgba(244, 239, 230, 0.04);
+        border-color: rgba(230, 238, 247, 0.22);
+        background: rgba(230, 238, 247, 0.04);
     }
     .lp-sidebar-foot .lp-sidebar-variant-toggle-label { flex: 1; text-align: left; }
 
@@ -1491,7 +1491,7 @@
         flex: 1;
         height: 4px;
         border-radius: 2px;
-        background: rgba(244, 239, 230, 0.18);
+        background: rgba(230, 238, 247, 0.18);
     }
 
     /* Tile-grid preview: 3 cols × 2 rows of coloured tiles. */
@@ -1518,7 +1518,7 @@
         width: 5px; height: 5px;
         margin: -2.5px 0 0 -2.5px;
         border-radius: 1.5px;
-        background: rgba(244, 239, 230, 0.85);
+        background: rgba(230, 238, 247, 0.85);
     }
 
     /* Compact-list preview: 7 dense rows, one active with accent bar. */
@@ -1536,23 +1536,23 @@
     }
     .lp-page .lp-sidebar-pick-row > .dot {
         width: 7px; height: 7px; border-radius: 2px;
-        background: rgba(244, 239, 230, 0.42);
+        background: rgba(230, 238, 247, 0.42);
         flex-shrink: 0;
     }
     .lp-page .lp-sidebar-pick-row > .bar {
         height: 4px; flex: 1;
         border-radius: 2px;
-        background: rgba(244, 239, 230, 0.28);
+        background: rgba(230, 238, 247, 0.28);
     }
     .lp-page .lp-sidebar-pick-row.is-active {
-        background: rgba(244, 239, 230, 0.08);
+        background: rgba(230, 238, 247, 0.08);
         box-shadow: inset 2px 0 0 var(--color-accent-deep);
     }
     .lp-page .lp-sidebar-pick-row.is-active > .dot {
         background: var(--color-accent-deep);
     }
     .lp-page .lp-sidebar-pick-row.is-active > .bar {
-        background: rgba(244, 239, 230, 0.7);
+        background: rgba(230, 238, 247, 0.7);
     }
 
     .lp-page .lp-sidebar-pick-desc {
@@ -1645,7 +1645,7 @@
         display: flex; align-items: center; gap: 11px;
         padding: 9px 11px;
         font-size: 13.5px;
-        color: rgba(244, 239, 230, 0.78);
+        color: rgba(230, 238, 247, 0.78);
         border-radius: 9px;
         line-height: 1;
         transition: background 160ms, color 160ms;
@@ -1653,11 +1653,11 @@
     }
     .lp-page .lp-sidebar-link svg {
         width: 16px; height: 16px; flex-shrink: 0;
-        color: rgba(244, 239, 230, 0.55);
+        color: rgba(230, 238, 247, 0.55);
         transition: color 160ms;
     }
     .lp-page .lp-sidebar-link:hover {
-        background: rgba(244, 239, 230, 0.06);
+        background: rgba(230, 238, 247, 0.06);
         color: var(--color-card);
     }
     .lp-page .lp-sidebar-link:hover svg { color: var(--color-card); }
@@ -1666,7 +1666,7 @@
        leading stripe in the lime accent gives the dark sidebar a
        clear "you are here" marker without needing a heavy fill. */
     .lp-page .lp-sidebar-link.is-active {
-        background: rgba(244, 239, 230, 0.10);
+        background: rgba(230, 238, 247, 0.10);
         color: var(--color-card);
         font-weight: 500;
     }
@@ -3853,9 +3853,9 @@
         border-color: var(--color-ink);
     }
     .lp-page .lp-res-action--primary:hover:not(:disabled):not([disabled]) {
-        background: var(--color-ink-deep, #1B1714);
+        background: var(--color-ink-deep, #0F1C2A);
         color: var(--color-card);
-        border-color: var(--color-ink-deep, #1B1714);
+        border-color: var(--color-ink-deep, #0F1C2A);
     }
     .lp-page .lp-res-action--primary svg { opacity: 1; }
     /* Accent CTA — used for Take payment when money is owed. Sits
@@ -4860,7 +4860,7 @@
         border-radius: 999px;
         background: rgba(20, 17, 12, 0.85);
         color: var(--color-card);
-        border: 1px solid rgba(244, 239, 230, 0.16);
+        border: 1px solid rgba(230, 238, 247, 0.16);
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
         font-family: var(--font-mono, monospace);
@@ -4893,59 +4893,59 @@
         align-self: start;
         background: var(--color-ink-deep, #14171A);
         color: var(--color-card);
-        border: 1px solid rgba(244, 239, 230, 0.08);
+        border: 1px solid rgba(230, 238, 247, 0.08);
         box-shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.5);
     }
     .lp-page .lp-pos__cart .lp-dash-card-head {
-        border-bottom-color: rgba(244, 239, 230, 0.10);
+        border-bottom-color: rgba(230, 238, 247, 0.10);
     }
     .lp-page .lp-pos__cart .lp-dash-card-title {
         color: var(--color-card);
     }
     .lp-page .lp-pos__cart .lp-dash-card-meta {
-        color: rgba(244, 239, 230, 0.55);
+        color: rgba(230, 238, 247, 0.55);
     }
     .lp-page .lp-pos__cart [data-testid="cart-empty"] {
-        color: rgba(244, 239, 230, 0.5) !important;
+        color: rgba(230, 238, 247, 0.5) !important;
     }
     /* Line rows read light-on-dark; softer separators. */
     .lp-page .lp-pos__cart .lp-pos__line {
-        border-bottom-color: rgba(244, 239, 230, 0.08);
+        border-bottom-color: rgba(230, 238, 247, 0.08);
     }
     .lp-page .lp-pos__cart .lp-pos__line .name { color: var(--color-card); }
-    .lp-page .lp-pos__cart .lp-pos__line .unit { color: rgba(244, 239, 230, 0.5); }
+    .lp-page .lp-pos__cart .lp-pos__line .unit { color: rgba(230, 238, 247, 0.5); }
     .lp-page .lp-pos__cart .lp-pos__line .subtotal { color: var(--color-card); }
     .lp-page .lp-pos__cart .lp-pos__line .stepper button {
-        background: rgba(244, 239, 230, 0.06);
-        border-color: rgba(244, 239, 230, 0.14);
+        background: rgba(230, 238, 247, 0.06);
+        border-color: rgba(230, 238, 247, 0.14);
         color: var(--color-card);
     }
     .lp-page .lp-pos__cart .lp-pos__line .stepper button:hover {
-        background: rgba(244, 239, 230, 0.12);
-        border-color: rgba(244, 239, 230, 0.24);
+        background: rgba(230, 238, 247, 0.12);
+        border-color: rgba(230, 238, 247, 0.24);
     }
     .lp-page .lp-pos__cart .lp-pos__line .stepper .qty { color: var(--color-card); }
     /* Totals: cream soft; grand-total pops with the accent green. */
     .lp-page .lp-pos__cart .lp-pos__totals {
-        border-top-color: rgba(244, 239, 230, 0.12);
+        border-top-color: rgba(230, 238, 247, 0.12);
     }
     .lp-page .lp-pos__cart .lp-pos__totals > div {
-        color: rgba(244, 239, 230, 0.62);
+        color: rgba(230, 238, 247, 0.62);
     }
     .lp-page .lp-pos__cart .lp-pos__totals .grand {
         color: var(--color-card);
-        border-top-color: rgba(244, 239, 230, 0.10);
+        border-top-color: rgba(230, 238, 247, 0.10);
     }
     /* Clear = subtle ghost inside the dark shell. */
     .lp-page .lp-pos__cart [data-testid="cart-clear"] {
         background: transparent;
-        color: rgba(244, 239, 230, 0.8);
-        border: 1px solid rgba(244, 239, 230, 0.14);
+        color: rgba(230, 238, 247, 0.8);
+        border: 1px solid rgba(230, 238, 247, 0.14);
     }
     .lp-page .lp-pos__cart [data-testid="cart-clear"]:hover {
-        background: rgba(244, 239, 230, 0.06);
+        background: rgba(230, 238, 247, 0.06);
         color: var(--color-card);
-        border-color: rgba(244, 239, 230, 0.24);
+        border-color: rgba(230, 238, 247, 0.24);
     }
     /* Take payment = brand green pill with dark ink type. The dark
        cart backdrop lets this button carry the day's most important
@@ -5696,7 +5696,7 @@
             #14171A 0%,
             #1B1F24 100%
         );
-        color: #F5F1E8;
+        color: #EEF2F7;
         box-shadow: 0 24px 60px -28px rgba(11, 9, 6, 0.65);
     }
     /* Slow aurora sweep across the strip — same visual grammar as
@@ -5728,7 +5728,7 @@
         font-size: 10.5px;
         letter-spacing: 0.18em;
         text-transform: uppercase;
-        color: rgba(245, 241, 232, 0.68);
+        color: rgba(232, 239, 247, 0.68);
     }
     .lp-page .kv-trust-bar__dash {
         display: inline-block;
@@ -5747,7 +5747,7 @@
     }
     .lp-page .kv-trust-bar__line--mute {
         margin-top: 4px;
-        color: rgba(245, 241, 232, 0.72);
+        color: rgba(232, 239, 247, 0.72);
     }
     .lp-page .kv-trust-bar__word {
         font-style: italic;
@@ -5771,9 +5771,9 @@
         font-family: var(--font-display);
         font-style: normal;
         font-weight: 700;
-        color: #F5F1E8;
+        color: #EEF2F7;
         text-shadow:
-            0 0 24px rgba(182, 217, 126, 0.55),
+            0 0 24px rgba(141, 182, 222, 0.55),
             0 0 4px rgba(182, 217, 126, 0.4);
         margin: 0 4px;
     }
@@ -7153,23 +7153,23 @@
         --color-page-deep: #12100D;
         --color-card:      #1B1814;
         --color-card-deep: #22201B;
-        --color-ink:       #F5F1E8;
+        --color-ink:       #EEF2F7;
         --color-ink-soft:  #CFC9BC;
         --color-ink-mute:  #928C7F;
-        --color-line:      rgba(245, 241, 232, 0.10);
-        --color-line-soft: rgba(245, 241, 232, 0.06);
+        --color-line:      rgba(232, 239, 247, 0.10);
+        --color-line-soft: rgba(232, 239, 247, 0.06);
         --color-paper:     #12100D;
         background: #12100D;
-        color: #F5F1E8;
+        color: #EEF2F7;
     }
     body.lp-kiosk-body .lp-kiosk__header {
         background: #1B1814;
-        border-bottom-color: rgba(245, 241, 232, 0.10);
+        border-bottom-color: rgba(232, 239, 247, 0.10);
     }
     body.lp-kiosk-body .lp-kiosk__brand,
     body.lp-kiosk-body .lp-kiosk__brand-name,
     body.lp-kiosk-body .lp-kiosk__operator-name {
-        color: #F5F1E8;
+        color: #EEF2F7;
     }
     body.lp-kiosk-body .lp-kiosk__brand-mark {
         background: var(--color-accent, #B6D97E);
@@ -7266,7 +7266,7 @@
     transition: color 150ms, border-color 150ms, background 150ms;
 }
 .kv-auth-mob-nav summary:hover {
-    color: #F7F3EA;
+    color: #F3F6FA;
     border-color: rgba(247, 243, 234, 0.28);
     background: rgba(247, 243, 234, 0.09);
 }
@@ -7275,7 +7275,7 @@
 .kv-auth-mob-nav-panel {
     position: absolute; top: calc(100% + 10px); right: 0;
     min-width: 240px;
-    background: #F7F3EA; color: #14110C;
+    background: #F3F6FA; color: #14110C;
     border-radius: 14px; padding: 8px 6px;
     box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.45);
     display: grid; gap: 2px; z-index: 100;
