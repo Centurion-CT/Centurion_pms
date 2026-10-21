@@ -67,38 +67,30 @@
             // current operator's role can't access them) and the
             // route-middleware argument (server-side gate).
             // Nav colour palette. Each tile carries a `color` key that
-            // resolves to a from → to gradient below. Centurion brand:
-            // every key maps onto five tones drawn from the logo blue
-            // (#336799) so the launcher reads as one family with the
-            // logo, while neighbouring functions still differ in tone.
-            $brandTones = [
-                'brand' => ['#4C82B8', '#2B5A87'],   // logo blue
-                'sky'   => ['#6AA4D6', '#3570A6'],   // lighter, airier
-                'navy'  => ['#2E5C89', '#16324F'],   // deep
-                'steel' => ['#7D97B3', '#4A6582'],   // muted grey-blue
-                'slate' => ['#62717F', '#36424F'],   // neutral
-            ];
+            // resolves to a from → to gradient below. Colours are
+            // clustered by function so operators build muscle memory:
+            // Bookings-family blues, Housekeeping greens, Finance
+            // emeralds, POS reds, Staff / Settings neutrals.
             $navPalette = [
-                'slate'   => $brandTones['slate'],
-                'gray'    => $brandTones['slate'],
-                'blue'    => $brandTones['brand'],
-                'indigo'  => $brandTones['brand'],
-                'violet'  => $brandTones['brand'],
-                'purple'  => $brandTones['brand'],
-                'fuchsia' => $brandTones['brand'],
-                'sky'     => $brandTones['sky'],
-                'cyan'    => $brandTones['sky'],
-                'teal'    => $brandTones['sky'],
-                'amber'   => $brandTones['sky'],
-                'yellow'  => $brandTones['sky'],
-                'green'   => $brandTones['navy'],
-                'emerald' => $brandTones['navy'],
-                'olive'   => $brandTones['navy'],
-                'rust'    => $brandTones['navy'],
-                'orange'  => $brandTones['navy'],
-                'rose'    => $brandTones['steel'],
-                'pink'    => $brandTones['steel'],
-                'red'     => $brandTones['steel'],
+                'slate'   => ['#64748B', '#334155'],
+                'blue'    => ['#3B82F6', '#1D4ED8'],
+                'cyan'    => ['#06B6D4', '#0E7490'],
+                'indigo'  => ['#6366F1', '#3730A3'],
+                'amber'   => ['#F59E0B', '#B45309'],
+                'rose'    => ['#F43F5E', '#9F1239'],
+                'purple'  => ['#A855F7', '#6B21A8'],
+                'rust'    => ['#F97316', '#9A3412'],
+                'teal'    => ['#14B8A6', '#0F766E'],
+                'green'   => ['#22C55E', '#15803D'],
+                'emerald' => ['#10B981', '#047857'],
+                'pink'    => ['#EC4899', '#9D174D'],
+                'violet'  => ['#8B5CF6', '#5B21B6'],
+                'fuchsia' => ['#D946EF', '#86198F'],
+                'sky'     => ['#0EA5E9', '#0369A1'],
+                'yellow'  => ['#EAB308', '#A16207'],
+                'orange'  => ['#FB923C', '#C2410C'],
+                'red'     => ['#EF4444', '#991B1B'],
+                'gray'    => ['#6B7280', '#374151'],
             ];
 
             $nav = [
