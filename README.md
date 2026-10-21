@@ -60,7 +60,7 @@ shared infrastructure, no per-tenant fees, no external kill-switch.
 
 ## Requirements
 
-- PHP 8.2 or newer
+- PHP 8.4 or newer
 - Composer 2
 - Node 20 + npm (for the frontend build)
 - Redis 6+

@@ -53,7 +53,7 @@ RUN composer install \
         --ignore-platform-req=ext-exif
 
 # ─── Stage 3 — runtime (PHP-FPM + nginx) ─────────────────────────────────
-FROM php:8.3-fpm-alpine AS runtime
+FROM php:8.4-fpm-alpine AS runtime
 
 # nginx + tini for clean PID 1; the rest are PHP build deps that get
 # discarded in the same layer to keep the image small.

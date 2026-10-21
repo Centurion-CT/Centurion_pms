@@ -6,7 +6,7 @@
     "keywords": ["laravel", "keverna", "pms", "hospitality"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "barryvdh/laravel-dompdf": "^3.0",
         "endroid/qr-code": "^6.0",
         "intervention/image": "^3.0",
