@@ -35,8 +35,9 @@ return new class extends Migration
             $table->json('suggested_content')->nullable();
             $table->json('approved_content')->nullable();
             $table->text('error_message')->nullable();
-            $table->foreignId('run_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
-            $table->foreignId('approved_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            // No FK: solo has no `admins` table (dropped in phase 1a).
+            $table->foreignId('run_by_admin_id')->nullable();
+            $table->foreignId('approved_by_admin_id')->nullable();
             $table->timestamp('fetched_at')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('notified_operator_at')->nullable();
