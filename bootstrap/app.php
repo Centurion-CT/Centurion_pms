@@ -112,7 +112,17 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // Enforce HTTPS in production. Bypassed in local + testing.
-        $middleware->prepend(ForceHttpsInProduction::class);
+        //
+        // Must run AFTER Laravel's built-in TrustProxies middleware (which
+        // is configured via $middleware->trustProxies(...) above). TrustProxies
+        // reads X-Forwarded-Proto from the edge (nginx terminates TLS and
+        // forwards HTTP to the origin), so $request->isSecure() only returns
+        // true once TrustProxies has run. Using prepend() here put this
+        // middleware at position 0 of the global stack — BEFORE TrustProxies —
+        // so isSecure() returned false even on HTTPS requests, triggering an
+        // infinite 301 → HTTPS → 301 loop. append() runs it after the proxy
+        // trust has been applied.
+        $middleware->append(ForceHttpsInProduction::class);
 
         // Laravel's default middlewarePriority puts AuthenticatesRequests
         // (auth:sanctum) BEFORE any custom middleware — which meant
