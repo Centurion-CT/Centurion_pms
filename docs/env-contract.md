@@ -21,7 +21,8 @@ same lists. Drift here is a bug.
 |---|---|---|
 | `APP_KEY` | Laravel encryption key. Generate once with `php artisan key:generate --show` and store as a dokwe secret. Rotating it invalidates every active session, cookie, and signed URL. | `base64:…` |
 | `APP_URL` | Canonical central host. Used for absolute URL generation everywhere outside the tenant context. | `https://keverna.com` |
-| `DB_HOST` | MySQL host. Wire to the dokwe MySQL service-app's internal hostname. | `keverna-mysql.svc` |
+| `DB_CONNECTION` | Database driver: `pgsql` or `mysql`. Without it Laravel falls back to `sqlite` and treats `DB_DATABASE` as a file path. | `pgsql` |
+| `DB_HOST` | Database host. Wire to the dokwe MySQL service-app's internal hostname. | `keverna-mysql.svc` |
 | `DB_DATABASE` | Database name on that host. | `keverna` |
 | `DB_USERNAME` | DB user. | `keverna` |
 | `REDIS_HOST` | Redis host. Wire to the dokwe Redis service-app. | `keverna-redis.svc` |
@@ -62,8 +63,7 @@ These have safe defaults but you almost always want them explicit in prod.
 | `APP_DEBUG` | `false` | `false` |
 | `LOG_CHANNEL` | `stderr` | `stack` — log to file, swallowed by container ephemeral storage |
 | `LOG_LEVEL` | `info` | `debug` |
-| `DB_CONNECTION` | `mysql` | `mysql` |
-| `DB_PORT` | `3306` | `3306` |
+| `DB_PORT` | `5432` (pgsql) / `3306` (mysql) | `5432` / `3306` per driver |
 | `REDIS_CLIENT` | `predis` | `predis` |
 | `REDIS_PORT` | `6379` | `6379` |
 | `SESSION_DRIVER` | `redis` | `database` |

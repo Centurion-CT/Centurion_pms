@@ -70,6 +70,7 @@ RUN apk add --no-cache \
         libwebp \
         freetype \
         libzip \
+        libpq \
     && apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
         icu-dev \
@@ -79,9 +80,11 @@ RUN apk add --no-cache \
         freetype-dev \
         libzip-dev \
         oniguruma-dev \
+        postgresql-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
         pdo_mysql \
+        pdo_pgsql \
         mysqli \
         bcmath \
         gd \
