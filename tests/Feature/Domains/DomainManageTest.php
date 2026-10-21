@@ -121,3 +121,21 @@ it('the domain page is gated by the onboarding wizard', function (): void {
 
     $response->assertRedirect(route('tenant.onboarding.property'));
 });
+
+it('hides the Domain sidebar entry when domain management is disabled', function (): void {
+    config()->set('keverna.domain_management.enabled', false);
+
+    $response = $this->actingAs($this->operator, 'web')
+        ->get('http://domain-ui-test.keverna.test/dashboard');
+
+    $response->assertOk();
+    $response->assertDontSee('domain-ui-test.keverna.test/domain', false);
+});
+
+it('shows the Domain sidebar entry when domain management is enabled', function (): void {
+    $response = $this->actingAs($this->operator, 'web')
+        ->get('http://domain-ui-test.keverna.test/dashboard');
+
+    $response->assertOk();
+    $response->assertSee('domain-ui-test.keverna.test/domain', false);
+});

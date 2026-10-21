@@ -30,6 +30,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | In-app domain management (opt-in)
+    |--------------------------------------------------------------------------
+    |
+    | Off by default in solo: the hotel's domain is attached once in the
+    | Dokwe dashboard. When enabled, the /domain page + sidebar entry come
+    | back, letting the manager rename the subdomain or attach a custom
+    | domain, which dispatches the App\Jobs\Domains\* jobs. Those need
+    | DOKWE_API_KEY + DOKWE_PROJECT_ID (and CLOUDFLARE_* for subdomain DNS).
+    */
+    'domain_management' => [
+        'enabled' => (bool) env('DOMAIN_MANAGEMENT_ENABLED', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Subdomain provisioning mode
     |--------------------------------------------------------------------------
     |

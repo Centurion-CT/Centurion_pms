@@ -335,9 +335,12 @@ Route::middleware('auth:web')->group(function (): void {
         Route::get('/dashboard', DashboardHome::class)
             ->middleware('role:dashboard')
             ->name('tenant.dashboard');
-        Route::get('/domain', DomainManage::class)
-            ->middleware('role:domain')
-            ->name('tenant.domain');
+        // Opt-in — see keverna.domain_management in config/keverna.php.
+        if (config('keverna.domain_management.enabled')) {
+            Route::get('/domain', DomainManage::class)
+                ->middleware('role:domain')
+                ->name('tenant.domain');
+        }
 
         // Room categories - manager-only inventory management.
         Route::middleware('role:categories')->group(function (): void {

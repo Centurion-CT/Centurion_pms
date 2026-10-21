@@ -290,7 +290,9 @@
                     ))
                     && ! ($storeSuppressed && ($item['module'] ?? '') === 'store')
                     && ! ($isSingleUnit && in_array($item['module'] ?? '', $singleUnitHidden, true))
-                    && ! (! $portfolioShown && ($item['route'] ?? '') === 'tenant.portfolio.index'),
+                    && ! (! $portfolioShown && ($item['route'] ?? '') === 'tenant.portfolio.index')
+                    // Domain management is opt-in; its route isn't registered when off.
+                    && ! (! config('keverna.domain_management.enabled') && ($item['module'] ?? '') === 'domain'),
                 )))
                 ->filter(fn (array $items) => count($items) > 0)
                 ->all();

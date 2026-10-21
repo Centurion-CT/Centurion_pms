@@ -36,11 +36,21 @@ same lists. Drift here is a bug.
 | `PAYSTACK_SECRET_KEY` | Billing + guest bookings | Without this, charge creation throws. |
 | `PAYSTACK_WEBHOOK_SECRET` | Billing webhooks | Without this, signature verification fails. |
 | `SENDPIPE_API_KEY` | Outbound email + WhatsApp OTPs | Set `MAIL_MAILER=sendpipe` alongside. |
-| `BUNNY_STORAGE_ZONE` | Tenant media uploads | Storage zone name from dash.bunny.net. |
-| `BUNNY_STORAGE_API_KEY` | Tenant media uploads | Zone-level API key (not the account key). |
-| `BUNNY_PULL_ZONE_URL` | CDN delivery for media | Public pull-zone URL — never store internals here. |
-| `DOKWE_API_KEY` | Custom domain attach via dokwe | `dk_pak_…` personal API key issued from dokwe Settings → API Keys. |
-| `DOKWE_PROJECT_ID` | Custom domain attach via dokwe | UUID of the keverna project inside dokwe. Current value: `9b22e799-a6eb-43db-841e-8715451d5a91`. |
+| `DOKWE_ACCESS_KEY`, `DOKWE_SECRET_KEY`, `DOKWE_BUCKET`, `DOKWE_ENDPOINT`, `DOKWE_PUBLIC_URL` | Media uploads | Checked only when `MEDIA_DISK` or `FILESYSTEM_DISK` is `dokwe`. |
+| `BUNNY_STORAGE_ZONE`, `BUNNY_STORAGE_API_KEY`, `BUNNY_PULL_ZONE_URL` | Media uploads | Checked only when `MEDIA_DISK` or `FILESYSTEM_DISK` is `bunny` (deprecated). |
+
+### Opt-in: in-app domain management
+
+Off by default (`DOMAIN_MANAGEMENT_ENABLED=false`) — a solo install attaches
+its domain once in the Dokwe dashboard. Set it to `true` to re-enable the
+`/domain` page (subdomain rename + custom domain attach). The vars below are
+only checked when it's on.
+
+| Var | Feature affected if missing | Notes |
+|---|---|---|
+| `DOKWE_API_KEY` | Custom domain attach via dokwe | `dk_pak_…` personal API key issued from dokwe Settings → API Keys. Not the same as the storage `DOKWE_ACCESS_KEY`. |
+| `DOKWE_PROJECT_ID` | Custom domain attach via dokwe | UUID of this deployment's project inside dokwe. |
+| `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_ID` | Subdomain DNS provisioning | Only if subdomain DNS is managed through Cloudflare. |
 
 ## Tier 3 — should be set, but defaults are sane
 

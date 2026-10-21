@@ -41,17 +41,38 @@ TENANT_DOMAIN_SUFFIX
 # Each line: VAR=feature-description (used in the warning text only).
 RECOMMENDED_VARS="
 DB_PASSWORD=writable database access
-CLOUDFLARE_API_TOKEN=tenant subdomain DNS provisioning
-CLOUDFLARE_ZONE_ID=tenant subdomain DNS provisioning
 PAYSTACK_SECRET_KEY=billing + guest bookings
 PAYSTACK_WEBHOOK_SECRET=billing webhooks
 SENDPIPE_API_KEY=outbound email + WhatsApp OTPs
-BUNNY_STORAGE_ZONE=tenant media uploads
-BUNNY_STORAGE_API_KEY=tenant media uploads
+"
+
+# Storage vars only matter for the disk actually in use.
+if [ "${MEDIA_DISK:-}" = "bunny" ] || [ "${FILESYSTEM_DISK:-}" = "bunny" ]; then
+    RECOMMENDED_VARS="$RECOMMENDED_VARS
+BUNNY_STORAGE_ZONE=media uploads
+BUNNY_STORAGE_API_KEY=media uploads
 BUNNY_PULL_ZONE_URL=CDN delivery for media
+"
+fi
+if [ "${MEDIA_DISK:-}" = "dokwe" ] || [ "${FILESYSTEM_DISK:-}" = "dokwe" ]; then
+    RECOMMENDED_VARS="$RECOMMENDED_VARS
+DOKWE_ACCESS_KEY=media uploads
+DOKWE_SECRET_KEY=media uploads
+DOKWE_BUCKET=media uploads
+DOKWE_ENDPOINT=media uploads
+DOKWE_PUBLIC_URL=media delivery
+"
+fi
+
+# In-app domain management is opt-in (config/keverna.php).
+if [ "${DOMAIN_MANAGEMENT_ENABLED:-false}" = "true" ]; then
+    RECOMMENDED_VARS="$RECOMMENDED_VARS
 DOKWE_API_KEY=custom domain attach via dokwe
 DOKWE_PROJECT_ID=custom domain attach via dokwe
+CLOUDFLARE_API_TOKEN=tenant subdomain DNS provisioning
+CLOUDFLARE_ZONE_ID=tenant subdomain DNS provisioning
 "
+fi
 
 missing_required=""
 for var in $REQUIRED_VARS; do
