@@ -1004,6 +1004,15 @@
                                 var raw = localStorage.getItem(this.STORAGE_RECENT);
                                 this.recent = raw ? JSON.parse(raw) : [];
                             } catch (e) { this.recent = []; }
+                            // Stored entries snapshot their tile colours;
+                            // re-resolve from the live nav so palette
+                            // changes don't leave stale-coloured Recents.
+                            var byRoute = {};
+                            for (var k in this.navItems) byRoute[this.navItems[k].route] = this.navItems[k];
+                            this.recent = this.recent.map(function (r) {
+                                var live = byRoute[r.route];
+                                return live ? Object.assign({}, r, { colorFrom: live.colorFrom, colorTo: live.colorTo }) : r;
+                            });
                             this.trackRecent();
 
                             // Re-run tracking on wire:navigate - the
