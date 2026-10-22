@@ -4,52 +4,52 @@
      x-on:portal-flash.window="toast = $event.detail?.message ?? ''; setTimeout(() => toast = '', 3200)">
     <style>
         /* Guest self-service portal - mobile-first design system.
-           Palette follows Keverna's warm ink + cream brand rather
-           than a generic blue. Tap targets are >=44px per iOS HIG;
+           Palette follows the Centurion "Harbour" brand (navy, logo
+           blue, mist). Tap targets are >=44px per iOS HIG;
            safe-area padding respects the iPhone notch + home
            indicator. */
         :root {
-            --gp-paper:      #FCFAF5;           /* app background   */
+            --gp-paper:      #EEF3F7;           /* app background   */
             --gp-card:       #FFFFFF;           /* raised surfaces  */
-            --gp-card-deep:  #F5F1E8;           /* nested surfaces  */
-            --gp-ink:        #14171A;
-            --gp-ink-soft:   #3D434A;
-            --gp-ink-mute:   #7A7F87;
-            --gp-line:       rgba(20, 23, 26, 0.08);
-            --gp-line-soft:  rgba(20, 23, 26, 0.05);
-            --gp-primary:    #14171A;
-            --gp-accent:     #B6D97E;           /* Keverna olive-lime */
-            --gp-accent-deep:#7DAE3F;
-            --gp-danger:     #B85C42;
-            --gp-ok:         #4C956C;
+            --gp-card-deep:  #E3EAF1;           /* nested surfaces  */
+            --gp-ink:        #1A2430;
+            --gp-ink-soft:   #4A5563;
+            --gp-ink-mute:   #6B7684;
+            --gp-line:       rgba(26, 36, 48, 0.10);
+            --gp-line-soft:  rgba(26, 36, 48, 0.06);
+            --gp-primary:    #16324B;           /* Harbour navy */
+            --gp-accent:     #336799;           /* Centurion blue */
+            --gp-accent-deep:#285480;
+            --gp-danger:     #C2414B;
+            --gp-ok:         #1F7A50;
             --gp-warn:       #A8650A;
+            --gp-navy:       #16324B;
+            --gp-navy-deep:  #0F2438;
 
             --gp-safe-top:    env(safe-area-inset-top, 0px);
             --gp-safe-bottom: env(safe-area-inset-bottom, 0px);
-            --gp-shadow-lift: 0 12px 34px -20px rgba(20, 17, 12, 0.28);
-            --gp-shadow-card: 0 4px 14px -6px rgba(20, 17, 12, 0.10);
+            --gp-shadow-lift: 0 12px 34px -20px rgba(16, 38, 60, 0.30);
+            --gp-shadow-card: 0 4px 14px -6px rgba(16, 38, 60, 0.10);
         }
 
-        /* Warm-dark palette for the 2am test: a guest waking to a
-           blinding cream card is a UX failure. All tokens flip in one
-           media query; downstream rules that read var(--gp-*) inherit
-           the flip without touching a single component style. Kept
-           warm (near-black ink #12100D, cream text #F5F1E8) instead of
-           pure black-on-white-inverted so the brand read stays
-           Keverna, not "generic dark app". */
+        /* Night palette for the 2am test: a guest waking to a bright
+           white screen is a UX failure. All tokens flip in one media
+           query; components read var(--gp-*) and follow. Navy-based so
+           it stays on brand. */
         @media (prefers-color-scheme: dark) {
             :root {
-                --gp-paper:      #12100D;
-                --gp-card:       #1B1814;
-                --gp-card-deep:  #22201B;
-                --gp-ink:        #F5F1E8;
-                --gp-ink-soft:   #CFC9BC;
-                --gp-ink-mute:   #928C7F;
-                --gp-line:       rgba(245, 241, 232, 0.10);
-                --gp-line-soft:  rgba(245, 241, 232, 0.06);
-                --gp-primary:    #F5F1E8;
-                /* Olive + status colours stay identical — they read
-                   correctly against both cream and warm-ink surfaces. */
+                --gp-paper:      #0B1724;
+                --gp-card:       #13263A;
+                --gp-card-deep:  #1A3049;
+                --gp-ink:        #EAF1F8;
+                --gp-ink-soft:   #B9C8D8;
+                --gp-ink-mute:   #8597AA;
+                --gp-line:       rgba(234, 241, 248, 0.12);
+                --gp-line-soft:  rgba(234, 241, 248, 0.07);
+                --gp-primary:    #EAF1F8;
+                --gp-accent:     #8DB6DE;
+                --gp-accent-deep:#A9C5E1;
+                /* Status colours read on both palettes. */
                 --gp-shadow-lift: 0 12px 34px -18px rgba(0, 0, 0, 0.6);
                 --gp-shadow-card: 0 4px 14px -6px rgba(0, 0, 0, 0.35);
             }
@@ -60,7 +60,8 @@
             min-height: 100vh; min-height: 100dvh;
             background: var(--gp-paper);
             color: var(--gp-ink);
-            font-family: system-ui, -apple-system, 'SF Pro Text', Segoe UI, sans-serif;
+            font-family: var(--body-font, system-ui, -apple-system, sans-serif);
+            font-feature-settings: "tnum" 1;
             padding-bottom: calc(24px + var(--gp-safe-bottom));
             -webkit-font-smoothing: antialiased;
         }
@@ -395,6 +396,12 @@
         @media (min-width: 520px) {
             .gp-shell { padding: 0 24px; }
         }
+
+        /* Pre-auth welcome band */
+        .gp-auth-hero { margin: 0 -18px 18px; padding: 30px 22px 34px; background: var(--gp-navy); color: #FFFFFF; }
+        .gp-auth-kicker { margin: 0; font-size: 14px; color: #8DB6DE; }
+        .gp-auth-title { margin: 10px 0 0; font-family: var(--display-font); font-weight: 600; font-size: 32px; line-height: 1.08; letter-spacing: -0.01em; }
+        .gp-auth-lede { margin: 10px 0 0; font-size: 15px; color: #A9C5E1; line-height: 1.5; }
     </style>
 
     {{-- Sticky app-bar - full-width backdrop with a max-width inner
@@ -410,14 +417,12 @@
     <header class="gp-appbar">
         <div class="gp-appbar-inner">
             <div class="gp-appbar-brand">
-                <span class="gp-appbar-mark" aria-hidden>
-                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square">
-                        <path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5"/>
-                    </svg>
+                <span class="gp-appbar-mark" aria-hidden style="background: #FFFFFF; padding: 3px;">
+                    <img src="{{ $property?->getFirstMedia('logo')?->getUrl() ?: asset(config('brand.logo')) }}" alt="" style="width: 100%; height: 100%; object-fit: contain;">
                 </span>
                 <span class="brand-text">
                     <span class="kicker">Guest portal</span>
-                    <span class="name">{{ $property?->name ?? 'Your room' }}</span>
+                    <span class="name">{{ \App\Models\Tenant::current()?->name ?: ($property?->name ?? 'Your room') }}</span>
                 </span>
             </div>
             @if (! $isAuthed)
@@ -454,17 +459,19 @@
     </header>
 
     <div class="gp-shell">
-        {{-- Pre-auth intro card - replaces the terse brand header. --}}
+        {{-- Pre-auth welcome band (approved mockup 5). --}}
         @if ($step === 'auth.phone' || $step === 'auth.pin_set' || $step === 'auth.pin_enter' || $step === 'auth.pin_reset')
-            <div style="padding: 30px 4px 20px;">
-                <p style="font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gp-ink-mute); font-weight: 600; margin: 0;">
-                    Guest portal
-                </p>
-                <h1 style="margin: 8px 0 6px; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; font-family: var(--display-font, ui-serif, Georgia, serif);">
-                    {{ $room?->name ?? ($property?->name ?? 'Your room') }}
+            <div class="gp-auth-hero">
+                <p class="gp-auth-kicker">{{ \App\Models\Tenant::current()?->name ?: ($property?->name ?? 'Guest portal') }}</p>
+                <h1 class="gp-auth-title">
+                    @if ($room?->room_number) Welcome to room {{ $room->room_number }}. @else Welcome. @endif
                 </h1>
-                <p style="font-size: 14px; color: var(--gp-ink-soft); margin: 0; line-height: 1.5;">
-                    Sign in with your phone to extend your stay, order in, request help, and check out.
+                <p class="gp-auth-lede">
+                    @if ($step === 'auth.phone')
+                        Enter the phone number on your booking. We'll ask for your 4-digit PIN next.
+                    @else
+                        Order food, ask for housekeeping, extend your stay or see your bill, right from your phone.
+                    @endif
                 </p>
             </div>
         @endif
@@ -509,8 +516,8 @@
         @if ($step === 'auth.pin_set')
             <div class="gp-card" data-testid="portal-step-pin-set">
                 <p style="font-size: 13.5px; color: var(--gp-ink-soft); margin: 0 0 14px; line-height: 1.5;">
-                    First time on a Keverna property - set a 4-digit PIN.
-                    You'll use the same PIN at every Keverna property you visit.
+                    First time here? Choose a 4-digit PIN. You'll use it to unlock
+                    this portal for the rest of your stay.
                 </p>
                 <label class="gp-form-label">4-digit PIN</label>
                 <x-gp-otp wire-model="pin" :length="4" testid="portal-pin-set-input" :autofocus="true" />
@@ -588,218 +595,80 @@
                  same tokens as the auth surfaces. Big Fraunces welcome,
                  "Your stay" card (Room · Check-out · Balance), then a
                  clean tile grid. --}}
+            {{-- Home (approved mockup 6): navy greeting band, bill card,
+                 tinted-icon service tiles, a quieter "More" list. --}}
             <style>
-                .gp-hv2 {
-                    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-                    color: var(--gp-ink);
-                    padding-top: 6px;
+                .gp-home-hero { margin: 0 -18px; padding: 26px 22px 64px; background: var(--gp-navy); color: #FFFFFF; }
+                .gp-hv2-hello { margin: 0; font-family: var(--display-font); font-weight: 600; font-size: 30px; line-height: 1.1; letter-spacing: -0.01em; }
+                .gp-home-sub { margin: 6px 0 0; font-size: 15px; color: #A9C5E1; }
+                .gp-hv2-stay { margin: -44px 0 0; position: relative; background: var(--gp-card); border: 1px solid var(--gp-line); border-radius: 14px; padding: 16px; box-shadow: var(--gp-shadow-lift); display: flex; align-items: center; gap: 14px; }
+                .gp-bill-label { font-size: 13px; color: var(--gp-ink-mute); }
+                .gp-bill-amount { font-family: var(--display-font); font-weight: 600; font-size: 26px; line-height: 1.15; }
+                .gp-bill-amount.is-paid { color: var(--gp-ok); font-size: 22px; }
+                .gp-bill-meta { font-size: 13px; color: var(--gp-ink-soft); }
+                .gp-bill-pay { margin-left: auto; flex-shrink: 0; height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--gp-accent); color: #FFFFFF; font: inherit; font-weight: 600; cursor: pointer; }
+                .gp-hv2-sec { margin: 22px 2px 10px; font-size: 15px; font-weight: 600; }
+                .gp-hv2-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+                .gp-hv2-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 108px; padding: 14px; border: 1px solid var(--gp-line); border-radius: 14px; background: var(--gp-card); color: var(--gp-ink); font: inherit; text-align: left; cursor: pointer; }
+                .gp-hv2-tile:active { transform: scale(0.98); }
+                .gp-tile-icon { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; }
+                .gp-tile-icon svg { width: 20px; height: 20px; }
+                .gp-hv2-tile-name { display: block; font-weight: 600; font-size: 15px; line-height: 1.2; }
+                .gp-hv2-tile-sub { display: block; font-size: 12.5px; color: var(--gp-ink-mute); margin-top: 2px; }
+                .gp-t-red { background: #FDECEC; color: #C2414B; } .gp-t-green { background: #E8F6EE; color: #1F7A50; }
+                .gp-t-amber { background: #FFF3DD; color: #A8650A; } .gp-t-violet { background: #F0EDFD; color: #6D5BD0; }
+                .gp-t-cyan { background: #E3F6FA; color: #0E7490; } .gp-t-blue { background: #EAF1F8; color: #336799; }
+                .gp-t-teal { background: #E2F5F2; color: #0F766E; } .gp-t-slate { background: #EEF1F4; color: #475569; }
+                @media (prefers-color-scheme: dark) {
+                    .gp-t-red, .gp-t-green, .gp-t-amber, .gp-t-violet, .gp-t-cyan, .gp-t-blue, .gp-t-teal, .gp-t-slate { background: rgba(234, 241, 248, 0.08); }
                 }
-                .gp-hv2-hello {
-                    font-family: 'Fraunces', Georgia, serif;
-                    font-weight: 500;
-                    letter-spacing: -0.025em;
-                    line-height: 1.02;
-                    font-size: clamp(30px, 8vw, 40px);
-                    color: var(--gp-ink);
-                    margin: 0;
-                }
-                .gp-hv2-hello em {
-                    font-style: italic; font-weight: 500;
-                    color: var(--gp-accent-deep);
-                }
-                .gp-hv2-eyebrow {
-                    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-                    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
-                    color: var(--gp-ink-mute);
-                    margin: 0 0 6px;
-                }
-
-                /* Stay card */
-                .gp-hv2-stay {
-                    margin-top: 20px;
-                    background: linear-gradient(135deg, #182014 0%, #0F1310 100%);
-                    color: #F7F3EA;
-                    border-radius: 20px;
-                    padding: 20px 22px 22px;
-                    position: relative; overflow: hidden;
-                    box-shadow: 0 20px 40px -18px rgba(20, 17, 12, 0.28);
-                }
-                .gp-hv2-stay::after {
-                    content: ''; position: absolute;
-                    top: -30%; right: -20%;
-                    width: 300px; height: 300px;
-                    background: radial-gradient(circle, rgba(173, 203, 82, 0.32) 0%, transparent 60%);
-                    filter: blur(30px);
-                    pointer-events: none;
-                }
-                .gp-hv2-stay-eye {
-                    font-family: ui-monospace, monospace;
-                    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
-                    color: rgba(247, 243, 234, 0.55);
-                }
-                .gp-hv2-stay-ref {
-                    float: right; font-family: ui-monospace, monospace;
-                    font-size: 10.5px; letter-spacing: 0.08em;
-                    color: rgba(247, 243, 234, 0.55);
-                }
-                .gp-hv2-stay-title {
-                    font-family: 'Fraunces', Georgia, serif;
-                    font-size: 22px; font-weight: 600;
-                    letter-spacing: -0.015em;
-                    color: #F7F3EA;
-                    margin: 6px 0 16px;
-                    position: relative; z-index: 1;
-                }
-                .gp-hv2-stay-grid {
-                    display: grid; grid-template-columns: 1fr 1fr 1fr;
-                    gap: 12px; position: relative; z-index: 1;
-                    padding-top: 14px;
-                    border-top: 1px solid rgba(247, 243, 234, 0.12);
-                }
-                .gp-hv2-stay-cell .k {
-                    font-family: ui-monospace, monospace;
-                    font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
-                    color: rgba(247, 243, 234, 0.6); margin-bottom: 4px;
-                }
-                .gp-hv2-stay-cell .v {
-                    font-family: 'Fraunces', Georgia, serif;
-                    font-size: 20px; font-weight: 600; color: #F7F3EA;
-                    letter-spacing: -0.01em;
-                    line-height: 1.15;
-                }
-                .gp-hv2-stay-cell.overdue .v { color: #E9B26B; }
-                .gp-hv2-stay-cell .sub {
-                    font-size: 10.5px; color: rgba(233, 178, 107, 0.9); margin-top: 3px;
-                }
-                .gp-hv2-stay-cell .paid-chip {
-                    display: inline-flex; align-items: center; gap: 4px;
-                    padding: 2px 8px; border-radius: 999px;
-                    background: rgba(173, 203, 82, 0.18);
-                    color: #C9DE8A;
-                    font-family: 'Inter', system-ui, sans-serif;
-                    font-size: 12px; font-weight: 500;
-                    letter-spacing: 0;
-                }
-
-                /* Section title */
-                .gp-hv2-sec {
-                    margin: 26px 0 12px;
-                    font-family: 'Fraunces', Georgia, serif;
-                    font-size: 18px; font-weight: 600;
-                    letter-spacing: -0.015em;
-                    color: var(--gp-ink);
-                }
-                .gp-hv2-sec-sub {
-                    font-family: 'Inter', system-ui, sans-serif;
-                    font-size: 13px; font-weight: 400;
-                    color: var(--gp-ink-mute);
-                    margin-left: 8px;
-                }
-
-                /* Tile grid */
-                .gp-hv2-tiles {
-                    display: grid; grid-template-columns: 1fr 1fr;
-                    gap: 10px;
-                }
-                @media (min-width: 480px) {
-                    .gp-hv2-tiles { grid-template-columns: 1fr 1fr 1fr; }
-                }
-                .gp-hv2-tile {
-                    display: flex; flex-direction: column;
-                    align-items: flex-start; text-align: left;
-                    gap: 10px;
-                    padding: 14px 14px 14px;
-                    background: var(--gp-card);
-                    border: 1px solid var(--gp-line);
-                    border-radius: 14px;
-                    cursor: pointer;
-                    font: inherit; color: var(--gp-ink);
-                    transition: transform 120ms, border-color 120ms, box-shadow 120ms;
-                    min-height: 96px;
-                }
-                .gp-hv2-tile:hover,
-                .gp-hv2-tile:focus-visible {
-                    outline: none;
-                    transform: translateY(-1px);
-                    border-color: rgba(20, 17, 12, 0.18);
-                    box-shadow: 0 8px 24px -14px rgba(20, 17, 12, 0.2);
-                }
-                .gp-hv2-tile:active { transform: translateY(0); }
-                .gp-hv2-tile-emoji {
-                    font-size: 22px; line-height: 1;
-                    width: 38px; height: 38px;
-                    display: inline-flex; align-items: center; justify-content: center;
-                    background: var(--gp-card-deep);
-                    border-radius: 10px;
-                }
-                .gp-hv2-tile-name {
-                    font-family: 'Inter', system-ui, sans-serif;
-                    font-size: 13.5px; font-weight: 600;
-                    color: var(--gp-ink);
-                    line-height: 1.25;
-                }
-                .gp-hv2-tile-sub {
-                    font-size: 11px; color: var(--gp-ink-mute);
-                    line-height: 1.35;
-                }
-
-                /* Foot line */
-                .gp-hv2-foot {
-                    margin-top: 32px;
-                    padding-top: 18px;
-                    border-top: 1px solid var(--gp-line);
-                    display: flex; align-items: center; justify-content: space-between;
-                    gap: 12px;
-                    font-family: ui-monospace, monospace;
-                    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
-                    color: var(--gp-ink-mute);
-                }
-                .gp-hv2-foot-mark {
-                    display: inline-flex; align-items: center; gap: 6px;
-                }
+                .gp-more { background: var(--gp-card); border: 1px solid var(--gp-line); border-radius: 14px; overflow: hidden; }
+                .gp-more-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 15px 16px; border: 0; background: transparent; color: var(--gp-ink); font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
+                .gp-more-row + .gp-more-row { border-top: 1px solid var(--gp-line); }
+                .gp-more-row svg { width: 19px; height: 19px; color: var(--gp-accent); flex-shrink: 0; }
+                .gp-more-row span { flex: 1; }
+                .gp-more-row small { font-weight: 400; color: var(--gp-ink-mute); }
             </style>
 
             <div data-testid="portal-step-home" class="gp-hv2"
                  @if (($lateProjection['kind'] ?? 'none') !== 'none') wire:poll.60s @endif>
 
-                {{-- Hello --}}
-                <p class="gp-hv2-eyebrow">Welcome to {{ $property?->name ?? 'the property' }}</p>
-                <h1 class="gp-hv2-hello">Hi, <em>{{ $firstName }}</em> 👋</h1>
-
-                {{-- Your stay card --}}
-                <section class="gp-hv2-stay" data-testid="portal-home-strip">
-                    <span class="gp-hv2-stay-eye">Your stay</span>
-                    <span class="gp-hv2-stay-ref">{{ $booking->booking_ref }}</span>
-                    <h2 class="gp-hv2-stay-title">
-                        @if ($nightsLeft > 0)
-                            {{ $nightsLeft }} night{{ $nightsLeft === 1 ? '' : 's' }} to go
-                        @else
-                            Last day
+                @php
+                    $hourNow = (int) now()->format('G');
+                    $greet = $hourNow < 12 ? 'Good morning' : ($hourNow < 17 ? 'Good afternoon' : 'Good evening');
+                    $nightsTotal = (int) ($booking->nights ?? 0);
+                    $nightNow = max(1, min($nightsTotal, $nightsTotal - $nightsLeft + 1));
+                    $outRaw = (string) (($property?->houseRules() ?? [])['check_out_to'] ?? '');
+                    $checkoutTime = preg_match('/^\d{1,2}:\d{2}$/', $outRaw) ? \Carbon\Carbon::createFromFormat('H:i', $outRaw)->format('g:i A') : null;
+                @endphp
+                <div class="gp-home-hero">
+                    <h1 class="gp-hv2-hello">{{ $greet }}, {{ $firstName }}.</h1>
+                    <p class="gp-home-sub">
+                        @if ($nightsLeft > 0 && $nightsTotal > 0)
+                            Night {{ $nightNow }} of {{ $nightsTotal }}.
+                        @elseif ($nightsLeft <= 0)
+                            It's your last day.
                         @endif
-                    </h2>
-                    <div class="gp-hv2-stay-grid">
-                        <div class="gp-hv2-stay-cell">
-                            <div class="k">Room</div>
-                            <div class="v">{{ $room?->room_number ?? '-' }}</div>
-                        </div>
-                        <div class="gp-hv2-stay-cell">
-                            <div class="k">Check-out</div>
-                            <div class="v">{{ $booking->checkout_date?->format('j M') ?? '-' }}</div>
-                        </div>
-                        <div class="gp-hv2-stay-cell {{ $displayBalance > 0 ? 'overdue' : '' }}">
-                            <div class="k">Balance</div>
-                            <div class="v">
-                                @if ($displayBalance > 0)
-                                    ₦{{ number_format($displayBalance) }}
-                                @else
-                                    <span class="paid-chip">✓ Paid</span>
-                                @endif
-                            </div>
-                            @if ($projectedLate > 0)
-                                <div class="sub">incl. ₦{{ number_format($projectedLate) }} late fee</div>
-                            @endif
+                        @if ($booking->checkout_date) Check out {{ $booking->checkout_date->format('l') }}@if ($checkoutTime) by {{ $checkoutTime }}@endif. @endif
+                    </p>
+                </div>
+
+                <section class="gp-hv2-stay" data-testid="portal-home-strip">
+                    <div style="min-width: 0;">
+                        <div class="gp-bill-label">Your bill</div>
+                        @if ($displayBalance > 0)
+                            <div class="gp-bill-amount">₦{{ number_format($displayBalance) }}</div>
+                        @else
+                            <div class="gp-bill-amount is-paid">All paid</div>
+                        @endif
+                        <div class="gp-bill-meta">
+                            {{ $booking->booking_ref }}@if ($room?->room_number), room {{ $room->room_number }}@endif
+                            @if ($projectedLate > 0)<br>Includes ₦{{ number_format($projectedLate) }} late check-out fee @endif
                         </div>
                     </div>
+                    @if ($displayBalance > 0)
+                        <button type="button" wire:click="openTile('bill')" class="gp-bill-pay" data-testid="tile-pay">Pay now</button>
+                    @endif
                 </section>
 
                 {{-- Late-checkout fee notice - same-day past cutoff.
@@ -856,133 +725,49 @@
                     </section>
                 @endif
 
-                {{-- Quick actions — the 9 redesigned tiles. Each is a
-                     plain <button> firing openTile(). --}}
-                <h2 class="gp-hv2-sec">
-                    Quick actions
-                    <span class="gp-hv2-sec-sub">No app to download.</span>
-                </h2>
-
+                <h2 class="gp-hv2-sec">What do you need?</h2>
                 <div class="gp-hv2-tiles">
-                    <button type="button" wire:click="openTile('complaint')" class="gp-hv2-tile" data-testid="tile-complaint">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🛎️</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Request service</span>
-                            <span class="gp-hv2-tile-sub">Tell us anything's off.</span>
-                        </span>
-                    </button>
                     <button type="button" wire:click="openTile('order')" class="gp-hv2-tile" data-testid="tile-order">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🍽️</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Order food</span>
-                            <span class="gp-hv2-tile-sub">From the kitchen.</span>
-                        </span>
-                    </button>
-                    <button type="button" wire:click="openTile('laundry')" class="gp-hv2-tile" data-testid="tile-laundry">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🧺</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Laundry</span>
-                            <span class="gp-hv2-tile-sub">Pickup + return.</span>
-                        </span>
-                    </button>
-                    <button type="button" wire:click="openTile('taxi')" class="gp-hv2-tile" data-testid="tile-taxi">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🚗</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Transport</span>
-                            <span class="gp-hv2-tile-sub">Front desk arranges.</span>
-                        </span>
+                        <span class="gp-tile-icon gp-t-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-1.7 1.3-2.5 3.3-2.5 6s1 3 2.5 3V3zM17 12v9"/></svg></span>
+                        <span><span class="gp-hv2-tile-name">Order food and drinks</span><span class="gp-hv2-tile-sub">From the kitchen.</span></span>
                     </button>
                     <button type="button" wire:click="openTile('housekeeping')" class="gp-hv2-tile" data-testid="tile-housekeeping">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🧹</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Housekeeping</span>
-                            <span class="gp-hv2-tile-sub">Fresh room, please.</span>
-                        </span>
+                        <span class="gp-tile-icon gp-t-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg></span>
+                        <span><span class="gp-hv2-tile-name">Housekeeping</span><span class="gp-hv2-tile-sub">Fresh towels, a tidy-up.</span></span>
                     </button>
-                    <button type="button" wire:click="openTile('bill')" class="gp-hv2-tile" data-testid="tile-bill">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🧾</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">View bill</span>
-                            <span class="gp-hv2-tile-sub">Folio + charges.</span>
-                        </span>
+                    <button type="button" wire:click="openTile('complaint')" class="gp-hv2-tile" data-testid="tile-complaint">
+                        <span class="gp-tile-icon gp-t-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span>
+                        <span><span class="gp-hv2-tile-name">Report an issue</span><span class="gp-hv2-tile-sub">Something not working?</span></span>
                     </button>
-                    @if ($displayBalance > 0)
-                        <button type="button" wire:click="openTile('bill')" class="gp-hv2-tile" data-testid="tile-pay"
-                                style="background: linear-gradient(135deg, rgba(173, 203, 82, 0.14), rgba(173, 203, 82, 0.04));
-                                       border-color: rgba(173, 203, 82, 0.35);">
-                            <span class="gp-hv2-tile-emoji" aria-hidden="true"
-                                  style="background: rgba(173, 203, 82, 0.22);">💳</span>
-                            <span>
-                                <span class="gp-hv2-tile-name">Pay balance</span>
-                                <span class="gp-hv2-tile-sub">₦{{ number_format($displayBalance) }} due.</span>
-                            </span>
-                        </button>
-                    @endif
+                    <button type="button" wire:click="openTile('laundry')" class="gp-hv2-tile" data-testid="tile-laundry">
+                        <span class="gp-tile-icon gp-t-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3l-4 3 2 4 2-1v12h8V9l2 1 2-4-4-3a4 4 0 0 1-8 0z"/></svg></span>
+                        <span><span class="gp-hv2-tile-name">Laundry</span><span class="gp-hv2-tile-sub">Pickup and return.</span></span>
+                    </button>
+                    <button type="button" wire:click="openTile('taxi')" class="gp-hv2-tile" data-testid="tile-taxi">
+                        <span class="gp-tile-icon gp-t-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14v-5l-2-5H7l-2 5zM5 12h14M7.5 17v2M16.5 17v2"/><circle cx="8" cy="14.5" r=".8"/><circle cx="16" cy="14.5" r=".8"/></svg></span>
+                        <span><span class="gp-hv2-tile-name">Transport</span><span class="gp-hv2-tile-sub">The desk arranges it.</span></span>
+                    </button>
                     <button type="button" wire:click="openTile('extend')" class="gp-hv2-tile" data-testid="tile-extend">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">📅</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Extend stay</span>
-                            <span class="gp-hv2-tile-sub">Stay another night.</span>
-                        </span>
-                    </button>
-                    <button type="button" wire:click="openTile('info')" class="gp-hv2-tile" data-testid="tile-info">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">📍</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Property info</span>
-                            <span class="gp-hv2-tile-sub">WiFi, breakfast, rules.</span>
-                        </span>
+                        <span class="gp-tile-icon gp-t-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 13v5M9.5 15.5h5"/></svg></span>
+                        <span><span class="gp-hv2-tile-name">Extend your stay</span><span class="gp-hv2-tile-sub">Stay another night.</span></span>
                     </button>
                     <button type="button" wire:click="openTile('contact')" class="gp-hv2-tile" data-testid="tile-contact">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">📞</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Contact reception</span>
-                            <span class="gp-hv2-tile-sub">Call or WhatsApp.</span>
-                        </span>
+                        <span class="gp-tile-icon gp-t-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg></span>
+                        <span><span class="gp-hv2-tile-name">Contact the desk</span><span class="gp-hv2-tile-sub">Call or WhatsApp.</span></span>
+                    </button>
+                    <button type="button" wire:click="openTile('info')" class="gp-hv2-tile" data-testid="tile-info">
+                        <span class="gp-tile-icon gp-t-slate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>
+                        <span><span class="gp-hv2-tile-name">Wi-Fi and house info</span><span class="gp-hv2-tile-sub">Wi-Fi, breakfast, rules.</span></span>
                     </button>
                 </div>
 
-                {{-- Secondary tiles (keep existing functionality accessible,
-                     but visually quieter). --}}
-                <h2 class="gp-hv2-sec">
-                    More
-                    <span class="gp-hv2-sec-sub">Requests, transfers, feedback.</span>
-                </h2>
-                <div class="gp-hv2-tiles">
-                    <button type="button" wire:click="openTile('reserve')" class="gp-hv2-tile" data-testid="tile-reserve">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🛏️</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Reserve room</span>
-                            <span class="gp-hv2-tile-sub">Another for a friend.</span>
-                        </span>
-                    </button>
-                    <button type="button" wire:click="openTile('transfer')" class="gp-hv2-tile" data-testid="tile-transfer">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🔀</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Change room</span>
-                            <span class="gp-hv2-tile-sub">Move to a different unit.</span>
-                        </span>
-                    </button>
-                    <button type="button" wire:click="openTile('rate')" class="gp-hv2-tile" data-testid="tile-rate">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">⭐</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Rate stay</span>
-                            <span class="gp-hv2-tile-sub">One tap. It helps.</span>
-                        </span>
-                    </button>
-                    <button type="button" wire:click="openTile('requests')" class="gp-hv2-tile" data-testid="tile-requests">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">📋</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">My requests</span>
-                            <span class="gp-hv2-tile-sub">See replies + cancel.</span>
-                        </span>
-                    </button>
-                    <button type="button" wire:click="openTile('checkout')" class="gp-hv2-tile" data-testid="tile-checkout">
-                        <span class="gp-hv2-tile-emoji" aria-hidden="true">🔑</span>
-                        <span>
-                            <span class="gp-hv2-tile-name">Check out</span>
-                            <span class="gp-hv2-tile-sub">Ready to leave.</span>
-                        </span>
-                    </button>
+                <h2 class="gp-hv2-sec">More</h2>
+                <div class="gp-more">
+                    <button type="button" wire:click="openTile('bill')" class="gp-more-row" data-testid="tile-bill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h3"/></svg><span>Your bill <small>Every charge so far</small></span></button>
+                    <button type="button" wire:click="openTile('requests')" class="gp-more-row" data-testid="tile-requests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg><span>Your requests <small>Replies and updates</small></span></button>
+                    <button type="button" wire:click="openTile('reserve')" class="gp-more-row" data-testid="tile-reserve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18V7M3 13h18v5M21 13v-1a4 4 0 0 0-4-4h-6v5"/><circle cx="7" cy="10" r="2"/></svg><span>Book another room <small>For a friend or colleague</small></span></button>
+                    <button type="button" wire:click="openTile('transfer')" class="gp-more-row" data-testid="tile-transfer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg><span>Change room <small>Move to a different room</small></span></button>
+                    <button type="button" wire:click="openTile('rate')" class="gp-more-row" data-testid="tile-rate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg><span>Rate your stay <small>One tap, it helps</small></span></button>
                 </div>
 
                 {{-- ── Where we are ────────────────────────────────
@@ -2030,7 +1815,7 @@
         <div class="gp-brand">
             <p style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0;">
                 Powered by
-                <a href="https://keverna.com" style="color: var(--gp-ink-soft); text-decoration: underline; text-underline-offset: 3px;">Keverna</a>
+                {{ config('brand.name') }}
             </p>
         </div>
 

@@ -28,8 +28,8 @@
          bar to match the portal's actual palette in both schemes. On
          iOS the OS reads the media-matching value; the operator brand
          primary still wins for the light default. --}}
-    <meta name="theme-color" content="{{ $primary }}" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#12100D" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#16324B" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0B1724" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="{{ $tenant?->name ?? 'Guest portal' }}">
@@ -37,21 +37,21 @@
     <title>{{ $tenant?->name ?? 'Guest portal' }}</title>
     @include('partials.favicons')
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family={{ str_replace(' ', '+', $fonts['display']) }}:wght@500;600;700&family={{ str_replace(' ', '+', $fonts['body']) }}:wght@400;500;600&display=swap">
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=bricolage-grotesque:500,600,700|hanken-grotesk:400,500,600,700&display=swap">
 
     <style>
         :root {
-            --display-font: '{{ $fonts['display'] }}', Georgia, serif;
-            --body-font:    '{{ $fonts['body'] }}', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            /* Centurion "Harbour" brand type (per-property font theme no
+               longer applies to the guest portal). */
+            --display-font: 'Bricolage Grotesque', system-ui, sans-serif;
+            --body-font:    'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
         }
         * { box-sizing: border-box; }
         html, body {
             margin: 0;
             font-family: var(--body-font);
-            background: #FCFAF5;
+            background: #EEF3F7;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
