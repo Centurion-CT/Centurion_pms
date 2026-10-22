@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    @include('partials.favicons')
     <meta charset="UTF-8">
     <title>Dashboard, {{ \App\Models\Tenant::current()?->name }}</title>
 </head>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @include('partials.favicons')
     <title>{{ $tenant->name }} · Choose a location</title>
     <meta name="description" content="{{ $tenant->name }} has {{ $branches->count() }} locations. Pick one to see rooms + book a stay.">
     <link rel="canonical" href="https://{{ $tenant->primaryHost() }}/">

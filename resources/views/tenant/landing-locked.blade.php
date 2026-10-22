@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('partials.favicons')
     <title>{{ $tenant->name }}, Temporarily unavailable</title>
 </head>
 <body>
