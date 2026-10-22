@@ -12,7 +12,7 @@
         if ($b->room) {
             return e($b->room->room_number).' <span class="cx-ad-muted">'.e($b->room->category?->name ?? '').'</span>';
         }
-        return '<span class="cx-ad-muted">Unassigned, '.e($b->roomCategory?->name ?? 'no category').'</span>';
+        return 'Unassigned <span class="cx-ad-muted">'.e($b->roomCategory?->name ?? '').'</span>';
     };
 @endphp
 <div x-data="{ tab: @js($adTab) }">

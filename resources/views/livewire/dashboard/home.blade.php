@@ -225,7 +225,7 @@
                         class="lp-pill"
                         style="background: var(--color-card);
                                color: var(--color-ink);
-                               border-color: var(--color-ink);
+                               border-color: var(--color-line);
                                font-weight: 600; gap: 8px;">
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none"
                          stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"
@@ -461,7 +461,7 @@
                         class="lp-pill"
                         style="background: var(--color-card);
                                color: var(--color-ink);
-                               border-color: var(--color-ink);
+                               border-color: var(--color-line);
                                font-weight: 600; gap: 8px;">
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none"
                          stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"
