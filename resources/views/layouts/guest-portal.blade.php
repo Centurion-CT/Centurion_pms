@@ -71,6 +71,7 @@
     @include('partials._wire-spinner')
     @include('partials._confirm-modal')
 
+    @include('partials.gp-otp-script')
     @livewireScripts
 
     {{-- Geo-fence coord capture. RoomPortal dispatches
