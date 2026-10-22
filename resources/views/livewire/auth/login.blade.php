@@ -3,12 +3,12 @@
     $property = $tenant?->property;
     $tenantDisplayName = $tenant?->name ?? 'Your property';
 
-    // The hotel's own photography fills the right side: first property
-    // gallery photo, else a room photo. With no photos yet the panel
-    // falls back to the brand bars motif rather than stock imagery.
+    // Right-hand photo: the hotel's own gallery photo, else a room photo,
+    // else the bundled default (public/brand/login-default.jpg — Unsplash
+    // photo-1611892440504, free to use under the Unsplash License).
     $photo = $property?->getMedia('gallery')->first()
         ?? $property?->rooms()->get()->flatMap(fn ($r) => $r->getMedia('gallery'))->first();
-    $photoUrl = $photo?->getUrl();
+    $photoUrl = $photo?->getUrl() ?? asset('brand/login-default.jpg');
     $photoCaption = $photo?->getCustomProperty('caption');
 
     $hour = (int) now()->format('G');
@@ -16,7 +16,7 @@
 @endphp
 
 {{-- ─── Staff sign-in (Centurion "Harbour") ───────────────────────────
-     Navy form slab on the left, the property's own photo on the right.
+     Navy form slab on the left, a photo on the right (the property's own, else a bundled default).
      Bindings (wire:model, authenticate, error states, password reveal,
      Enter-key safety net) are unchanged from the previous design. --}}
 <div class="cx-login">
@@ -90,11 +90,6 @@
     .cx-photo-caption { position: absolute; right: 40px; bottom: 40px; max-width: 300px; background: rgba(15, 36, 56, 0.85); border-radius: 8px; padding: 12px 16px; font-size: 14px; }
     .cx-photo-caption strong { display: block; font-weight: 600; }
     .cx-photo-caption span { color: var(--blue-200); }
-
-    /* Fallback when the property has no photos yet: the logo's three
-       rising bars, large and quiet. */
-    .cx-bars { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; gap: 28px; padding: 0 12%; }
-    .cx-bars span { width: 18%; max-width: 170px; background: var(--navy); border-radius: 14px 14px 0 0; }
 
     @media (prefers-reduced-motion: reduce) { .cx-input, .cx-submit { transition: none; } }
 </style>
@@ -185,13 +180,9 @@
         </footer>
     </section>
 
-    <aside class="cx-photo" @if ($photoUrl) style="background-image: url('{{ $photoUrl }}');" @endif aria-hidden="true">
-        @if ($photoUrl)
-            @if ($photoCaption)
-                <div class="cx-photo-caption"><strong>{{ $photoCaption }}</strong><span>{{ $tenantDisplayName }}</span></div>
-            @endif
-        @else
-            <div class="cx-bars"><span style="height: 78%"></span><span style="height: 56%"></span><span style="height: 36%"></span></div>
+    <aside class="cx-photo" style="background-image: url('{{ $photoUrl }}');" aria-hidden="true">
+        @if ($photoCaption)
+            <div class="cx-photo-caption"><strong>{{ $photoCaption }}</strong><span>{{ $tenantDisplayName }}</span></div>
         @endif
     </aside>
 </div>
