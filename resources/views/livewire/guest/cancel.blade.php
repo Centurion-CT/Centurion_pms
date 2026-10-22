@@ -1,53 +1,34 @@
-<div class="mx-auto max-w-xl px-4 py-12">
-    <div class="kv-card space-y-4">
-        <h1 class="kv-heading">Cancel booking, {{ $booking->booking_ref }}</h1>
+<div class="cx-gp">
+    @include('partials.public.guest-page-styles')
+    @php $back = '/guest/booking/'.$booking->booking_ref.'?token='.$token; @endphp
+    <div class="cx-gp-card">
+        <a href="{{ $back }}" wire:navigate class="cx-gp-back">← Back to your booking</a>
+        <p class="cx-gp-kicker">Booking {{ $booking->booking_ref }}</p>
+        <h1 class="cx-gp-title">Cancel booking</h1>
 
         @if ($cancelled)
-            <div role="status" class="kv-status space-y-2">
-                <p>Your booking has been cancelled.</p>
+            <div role="status" class="cx-gp-note cx-gp-note--ok" style="display: grid; gap: 6px;">
+                <span>Your booking has been cancelled.</span>
                 @if ($resultDepositForfeit)
-                    <p>
-                        Because check-in was less than 7 days away, the deposit of
-                        ₦{{ number_format($booking->deposit_amount) }} is forfeit per the cancellation policy.
-                    </p>
+                    <span>Because check-in was less than 7 days away, the deposit of ₦{{ number_format($booking->deposit_amount) }} is forfeit under the cancellation policy.</span>
                 @else
-                    <p>The host will be in touch about any refund within a few business days.</p>
+                    <span>The front desk will be in touch about any refund within a few business days.</span>
                 @endif
             </div>
-            <p>
-                <a href="/guest/booking/{{ $booking->booking_ref }}?token={{ $token }}"
-                   wire:navigate class="text-blue-600 hover:text-blue-700">← Back to booking</a>
-            </p>
         @elseif ($isAlreadyCancelled)
-            <p class="kv-alert">
-                This booking is already <strong>{{ $booking->booking_status->value }}</strong> and cannot be cancelled.
-            </p>
-            <p>
-                <a href="/guest/booking/{{ $booking->booking_ref }}?token={{ $token }}"
-                   wire:navigate class="text-blue-600 hover:text-blue-700">← Back to booking</a>
-            </p>
+            <p class="cx-gp-note cx-gp-note--warn">This booking is already <strong>{{ str_replace('_', ' ', $booking->booking_status->value) }}</strong> and can't be cancelled.</p>
         @else
-            <p class="text-slate-700">
-                You're about to cancel your stay at <strong>{{ $booking->room->name }}</strong> on
-                {{ $booking->checkin_date->toFormattedDateString() }}.
-            </p>
+            <p class="cx-gp-text">You're about to cancel your stay in <strong>{{ $booking->room->name }}</strong> from {{ $booking->checkin_date->format('D, j M Y') }}.</p>
 
             @if ($depositForfeitPreview)
-                <p role="alert" class="kv-alert">
-                    Check-in is less than 7 days away, so the deposit of
-                    ₦{{ number_format($booking->deposit_amount) }} will be <strong>forfeit</strong>.
-                </p>
+                <p role="alert" class="cx-gp-note cx-gp-note--bad">Check-in is less than 7 days away, so the deposit of ₦{{ number_format($booking->deposit_amount) }} will be <strong>forfeit</strong>.</p>
             @else
-                <p class="kv-status">
-                    You are outside the 7-day cancellation window, no penalty will be charged.
-                </p>
+                <p class="cx-gp-note cx-gp-note--ok">You're outside the 7-day cancellation window, so there's no penalty.</p>
             @endif
 
-            <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                <a href="/guest/booking/{{ $booking->booking_ref }}?token={{ $token }}" wire:navigate
-                   class="kv-btn-secondary">Keep my booking</a>
-                <button type="button" wire:click="confirm" wire:loading.attr="disabled"
-                        class="kv-btn-danger">Confirm cancellation</button>
+            <div class="cx-gp-actions">
+                <a href="{{ $back }}" wire:navigate class="cx-btn cx-btn--ghost">Keep my booking</a>
+                <button type="button" wire:click="confirm" wire:loading.attr="disabled" class="cx-btn cx-btn--danger">Cancel booking</button>
             </div>
         @endif
     </div>

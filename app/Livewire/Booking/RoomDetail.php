@@ -13,6 +13,7 @@ use App\Enums\DepositType;
 use App\Enums\PaymentType;
 use App\Enums\RoomStatus;
 use App\Livewire\Concerns\HasCorporateContext;
+use App\Livewire\Concerns\SeedsStayFromQuery;
 use App\Livewire\Concerns\HasDiscountLookup;
 use App\Models\Package;
 use App\Models\Review;
@@ -42,7 +43,7 @@ use Throwable;
  */
 class RoomDetail extends Component
 {
-    use HasCorporateContext;
+    use HasCorporateContext, SeedsStayFromQuery;
     use HasDiscountLookup;
 
     #[Locked]
@@ -93,6 +94,7 @@ class RoomDetail extends Component
         $this->checkin = Carbon::tomorrow()->toDateString();
         $this->checkout = Carbon::tomorrow()->addDays(2)->toDateString();
         $this->adults = 1;
+        $this->seedStayFromQuery((int) $room->capacity_adults, (int) $room->capacity_children);
     }
 
     /**

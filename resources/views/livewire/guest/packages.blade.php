@@ -1,88 +1,54 @@
-<div class="mx-auto max-w-2xl px-4 py-12">
-    <div class="kv-card space-y-6">
+<div class="cx-gp">
+    @include('partials.public.guest-page-styles')
+    @php $back = '/guest/booking/'.$booking->booking_ref.'?token='.$token; @endphp
+    <div class="cx-gp-card cx-gp-card--wide">
+        <a href="{{ $back }}" wire:navigate class="cx-gp-back">← Back to your booking</a>
         <div>
-            <a href="/guest/booking/{{ $booking->booking_ref }}?token={{ $token }}"
-               wire:navigate
-               class="text-sm text-slate-500 hover:text-slate-700">
-                &larr; Back to booking
-            </a>
-            <h1 class="kv-heading mt-2">Add-ons &amp; packages</h1>
-            <p class="kv-muted mt-1">
-                Booking {{ $booking->booking_ref }} &middot; {{ $booking->guest_name }}
-            </p>
+            <h1 class="cx-gp-title">Extras for your stay</h1>
+            <p class="cx-gp-kicker" style="margin-top: 6px;">Booking {{ $booking->booking_ref }}, {{ $booking->guest_name }}</p>
         </div>
 
         @error('package')
-            <p class="text-sm text-red-600" data-testid="guest-packages-error">{{ $message }}</p>
+            <p class="cx-gp-note cx-gp-note--bad" data-testid="guest-packages-error">{{ $message }}</p>
         @enderror
 
-        {{-- ── Already on the booking ──────────────────────────── --}}
         <section data-testid="selected-packages">
-            <h2 class="text-sm font-semibold text-slate-900">Already on your booking</h2>
+            <h2 class="cx-gp-h2">On your booking</h2>
             @if ($selected->isEmpty())
-                <p class="mt-2 text-sm text-slate-500">No add-ons yet.</p>
+                <p class="cx-gp-text">No extras yet.</p>
             @else
-                <ul class="mt-2 divide-y divide-slate-200 rounded-lg border border-slate-200">
+                <ul class="cx-gp-list">
                     @foreach ($selected as $line)
-                        <li class="flex items-start justify-between gap-3 px-3 py-2"
-                            data-testid="selected-line-{{ $line->id }}">
-                            <div>
-                                <p class="text-sm font-medium text-slate-900">{{ $line->name_snapshot }}</p>
-                                <p class="text-xs text-slate-500">
-                                    Qty {{ $line->quantity }}
-                                    @if ($line->added_at === 'post_booking')
-                                        &middot; added after booking
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="text-right text-sm">
-                                @if ($line->is_complimentary_snapshot)
-                                    <span class="font-medium text-emerald-700">Complimentary</span>
-                                @else
-                                    <span class="font-semibold text-slate-900">
-                                        ₦{{ number_format($line->line_total) }}
-                                    </span>
-                                @endif
-                            </div>
+                        <li data-testid="selected-line-{{ $line->id }}">
+                            <span>{{ $line->name_snapshot }}<small>Qty {{ $line->quantity }}@if ($line->added_at === 'post_booking'), added after booking @endif</small></span>
+                            <strong @if ($line->is_complimentary_snapshot) style="color: var(--emerald);" @endif>{{ $line->is_complimentary_snapshot ? 'Complimentary' : '₦'.number_format($line->line_total) }}</strong>
                         </li>
                     @endforeach
                 </ul>
             @endif
         </section>
 
-        {{-- ── Available to add ────────────────────────────────── --}}
         <section data-testid="available-packages">
-            <h2 class="text-sm font-semibold text-slate-900">Available add-ons</h2>
+            <h2 class="cx-gp-h2">Add to your stay</h2>
             @if ($available->isEmpty())
-                <p class="mt-2 text-sm text-slate-500">
-                    No more add-ons to choose from right now.
-                </p>
+                <p class="cx-gp-text">There are no more extras to add right now.</p>
             @else
-                <ul class="mt-2 divide-y divide-slate-200 rounded-lg border border-slate-200">
+                <ul class="cx-gp-list">
                     @foreach ($available as $pkg)
-                        <li class="flex items-start justify-between gap-3 px-3 py-2"
-                            data-testid="available-package-{{ $pkg->id }}">
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-slate-900">{{ $pkg->name }}</p>
-                                @if ($pkg->description)
-                                    <p class="text-xs text-slate-500">{{ $pkg->description }}</p>
-                                @endif
-                                <p class="mt-1 text-xs">
+                        <li data-testid="available-package-{{ $pkg->id }}" style="align-items: center;">
+                            <span style="flex: 1;">
+                                {{ $pkg->name }}
+                                @if ($pkg->description)<small>{{ $pkg->description }}</small>@endif
+                                <small>
                                     @if ($pkg->is_complimentary)
-                                        <span class="font-medium text-emerald-700">Complimentary</span>
+                                        <span style="color: var(--emerald); font-weight: 600;">Complimentary</span>
                                     @else
-                                        <span class="font-semibold text-slate-900">
-                                            ₦{{ number_format($pkg->effectivePrice()) }}
-                                        </span>
-                                        <span class="text-slate-500">&middot; added to your outstanding balance</span>
+                                        <strong style="color: var(--ink);">₦{{ number_format($pkg->effectivePrice()) }}</strong>, added to your balance
                                     @endif
-                                </p>
-                            </div>
-                            <button type="button"
-                                    wire:click="add({{ $pkg->id }})"
-                                    wire:loading.attr="disabled"
-                                    data-testid="add-package-{{ $pkg->id }}"
-                                    class="kv-btn-primary text-sm whitespace-nowrap">
+                                </small>
+                            </span>
+                            <button type="button" wire:click="add({{ $pkg->id }})" wire:loading.attr="disabled"
+                                    data-testid="add-package-{{ $pkg->id }}" class="cx-btn" style="min-height: 40px;">
                                 <span wire:loading.remove wire:target="add({{ $pkg->id }})">Add</span>
                                 <span wire:loading wire:target="add({{ $pkg->id }})">Adding…</span>
                             </button>
@@ -93,15 +59,9 @@
         </section>
 
         @if ($outstandingTotal > 0)
-            <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-sm">
-                <p class="font-semibold text-amber-800">
-                    Outstanding balance: ₦{{ number_format($outstandingTotal) }}
-                </p>
-                <a href="/guest/booking/{{ $booking->booking_ref }}/balance?token={{ $token }}"
-                   wire:navigate
-                   class="mt-1 inline-block font-medium text-amber-900 underline">
-                    Pay outstanding balance &rarr;
-                </a>
+            <div class="cx-gp-note cx-gp-note--warn" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center;">
+                <strong>Balance due: ₦{{ number_format($outstandingTotal) }}</strong>
+                <a href="/guest/booking/{{ $booking->booking_ref }}/balance?token={{ $token }}" wire:navigate style="font-weight: 600; color: inherit;">Pay balance</a>
             </div>
         @endif
     </div>
