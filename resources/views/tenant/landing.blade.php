@@ -194,8 +194,8 @@
         $tomorrow = \Illuminate\Support\Carbon::today()->addDay()->toDateString();
 
         // Three rising "windows" (the logo's bars) beside the hero: the
-        // property's own gallery first, then category photos. No stock
-        // imagery on the public site; empty slots render as brand bars.
+        // property's own gallery first, then category photos. With no
+        // uploads at all, the bundled default photo fills them (below).
         $windowUrls = collect($heroSlides)->pluck('url')
             ->merge($kind === 'stay' ? $categories->map(fn ($c) => $c->hero?->getUrl('medium'))->filter() : [])
             ->filter()->unique()->take(3)->values();
@@ -278,9 +278,20 @@
             </div>
 
             <div class="cx-windows" aria-hidden="true">
-                @for ($i = 0; $i < 3; $i++)
-                    <div class="cx-window" @if (isset($windowUrls[$i])) style="background-image: url('{{ $windowUrls[$i] }}');" @endif></div>
-                @endfor
+                @if ($windowUrls->isEmpty())
+                    {{-- Nothing uploaded yet: the bundled default photo (the
+                         same one the staff sign-in uses), seen as one
+                         picture through the three bars. --}}
+                    @for ($i = 0; $i < 3; $i++)
+                        <div class="cx-window cx-window--slice" data-testid="hero-default-photo">
+                            <img src="{{ asset('brand/login-default.jpg') }}" alt="" style="left: calc({{ -$i }} * (100% + 14px));">
+                        </div>
+                    @endfor
+                @else
+                    @for ($i = 0; $i < 3; $i++)
+                        <div class="cx-window" @if (isset($windowUrls[$i])) style="background-image: url('{{ $windowUrls[$i] }}');" @endif></div>
+                    @endfor
+                @endif
             </div>
         </div>
     </header>

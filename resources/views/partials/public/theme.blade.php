@@ -85,6 +85,10 @@
         .cx-window:nth-child(1) { height: 100%; }
         .cx-window:nth-child(2) { height: 72%; }
         .cx-window:nth-child(3) { height: 46%; }
+        /* Default-photo mode: each bar crops its own slice of one image sized
+           to the whole row (3 bars + 2 x 14px gaps), bottoms aligned. */
+        .cx-window--slice { position: relative; overflow: hidden; }
+        .cx-window--slice img { position: absolute; bottom: 0; width: calc(300% + 28px); max-width: none; height: 560px; object-fit: cover; }
 
         /* Sections */
         .cx-section { padding: 72px 0; }
