@@ -40,6 +40,12 @@
         @media (min-width: 900px) { .cx-nav { display: flex; } }
         .cx-top-cta { margin-left: auto; height: 40px; padding: 0 16px; border-radius: 8px; background: var(--white); color: var(--navy); font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; }
         @media (min-width: 900px) { .cx-top-cta { margin-left: 0; } }
+        .cx-top-login { margin-left: auto; height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--navy-line); color: var(--white); font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; }
+        .cx-top-login:hover { background: var(--navy-deep); }
+        .cx-top-login + .cx-top-cta { margin-left: 0; }
+        @media (min-width: 900px) { .cx-top-login { margin-left: 0; } }
+        @media (max-width: 899px) { .is-search-docked .cx-top-login { display: none; } }
+        @media (max-width: 479px) { .cx-top-inner { gap: 12px; } .cx-top-login { padding: 0 10px; border-color: transparent; } .cx-top-cta { padding: 0 12px; } }
 
         /* Docked search pill (appears once the hero form scrolls away) */
         .cx-docked { display: none; align-items: center; gap: 10px; height: 40px; padding: 0 6px 0 14px; border-radius: 8px; border: 1px solid var(--navy-line); background: var(--navy-deep); color: var(--blue-200); font: inherit; font-size: 14px; cursor: pointer; }

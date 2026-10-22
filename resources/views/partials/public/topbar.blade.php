@@ -40,6 +40,12 @@
             <a href="{{ $cxHome }}#good-to-know">Good to know</a>
             @if ($cxProperty?->isSectionVisible('contact_block'))<a href="{{ $cxHome }}#contact">Contact</a>@endif
         </div>
+        {{-- Staff way in. Signed-in staff go straight to the dashboard. --}}
+        @auth
+            <a href="{{ route('tenant.dashboard') }}" class="cx-top-login" data-testid="topbar-login">Dashboard</a>
+        @else
+            <a href="{{ route('tenant.login') }}" class="cx-top-login" data-testid="topbar-login">Log in</a>
+        @endauth
         <a href="{{ $cxOnLanding && $cxKind === 'stay' ? '#book' : route($cxBrowseRoute) }}" class="cx-top-cta">{{ $cxBrowseLabel }}</a>
     </div>
 </nav>
