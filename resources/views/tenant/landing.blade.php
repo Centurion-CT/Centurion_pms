@@ -30,10 +30,10 @@
         $locationBits = array_unique(array_filter([$property->city, $property->state]));
         $locationStr  = $locationBits ? implode(', ', $locationBits) : null;
 
-        // Browser tab / share title is the install's brand name
-        // (config/brand.php); the description still carries the
+        // Browser tab / share title is the install's guest-facing site
+        // title (config/brand.php); the description still carries the
         // property and location for search results.
-        $composedTitle = config('brand.name');
+        $composedTitle = config('brand.site_title') ?: config('brand.name');
 
         // Description: prefer tagline; else description; else compose
         // a sensible one from what we know.
@@ -54,7 +54,7 @@
     <meta property="og:title" content="{{ $composedTitle }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ $canonicalUrl }}">
-    <meta property="og:site_name" content="{{ config('brand.name') }}">
+    <meta property="og:site_name" content="{{ $composedTitle }}">
     <meta property="og:locale" content="en_NG">
     <meta property="og:description" content="{{ $composedDesc }}">
     @if ($ogImageUrl)

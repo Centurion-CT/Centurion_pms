@@ -20,6 +20,9 @@ return [
     'name' => env('BRAND_NAME', 'Centurion'),
     'url' => env('BRAND_URL'),
     'logo' => 'brand/logo.png',
+    // Guest-facing site title: the landing page's browser tab and link
+    // previews. Separate from `name`, which signs the software itself.
+    'site_title' => env('BRAND_SITE_TITLE', 'Centurion Apartments'),
     // Staff sidebar layout for operators who haven't picked one: 'list'
     // (rows with tinted icons, mockup 3A) or 'tiles' (the app-icon grid).
     'sidebar_default' => env('BRAND_SIDEBAR', 'list'),
