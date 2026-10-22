@@ -36,6 +36,26 @@ it('sends a password reset notification for a known email', function (): void {
     Notification::assertSentTo($operator, ResetPasswordNotification::class);
 });
 
+it('builds the reset email with a link to the staff reset page', function (): void {
+    Notification::fake();
+
+    $operator = Operator::factory()->for($this->tenant)->create([
+        'email' => 'test@x.test',
+    ]);
+
+    Livewire::test(ForgotPassword::class)
+        ->set('email', 'test@x.test')
+        ->call('sendResetLink')
+        ->assertHasNoErrors();
+
+    Notification::assertSentTo($operator, ResetPasswordNotification::class, function ($notification) use ($operator): bool {
+        $url = $notification->toMail($operator)->actionUrl;
+
+        return str_contains($url, '/password/reset/'.$notification->token)
+            && str_contains($url, 'email='.urlencode('test@x.test'));
+    });
+});
+
 it('errors when the email is not registered', function (): void {
     Notification::fake();
 

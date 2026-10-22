@@ -11,6 +11,7 @@ use App\Services\Dns\SystemDnsResolver;
 use App\Services\Identity\GuestClaimTokenSigner;
 use App\Services\Identity\TenantSsoTokenSigner;
 use App\Services\Sendpipe\SendpipeClient;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Mail;
@@ -59,6 +60,14 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // The staff reset page is named tenant.password.reset, not Laravel's
+        // default password.reset, so the reset email must be told where to
+        // link; without this, requesting a reset link throws.
+        ResetPassword::createUrlUsing(fn ($user, string $token): string => route('tenant.password.reset', [
+            'token' => $token,
+            'email' => $user->getEmailForPasswordReset(),
+        ]));
+
         // Behind TLS termination the app may not see the request as secure
         // (see keverna.force_https). Pin generated URLs to https whenever
         // APP_URL says so, so links, assets and Livewire calls never
