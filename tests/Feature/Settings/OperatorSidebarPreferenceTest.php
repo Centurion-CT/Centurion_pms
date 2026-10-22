@@ -25,7 +25,15 @@ beforeEach(function (): void {
 
 afterEach(fn () => Tenant::forgetCurrent());
 
-it('defaults to the tiles variant when no preference has been set', function (): void {
+it('defaults to the install\'s configured variant when no preference has been set', function (): void {
+    config(['brand.sidebar_default' => 'list']);
+    expect($this->operator->sidebarVariant())->toBe('list');
+
+    config(['brand.sidebar_default' => 'tiles']);
+    expect($this->operator->sidebarVariant())->toBe('tiles');
+
+    // An unknown install default falls back to tiles.
+    config(['brand.sidebar_default' => 'grid']);
     expect($this->operator->sidebarVariant())->toBe('tiles');
 });
 
@@ -58,7 +66,7 @@ it('rejects an unknown variant', function (): void {
     ]);
 
     $response->assertStatus(422);
-    expect($this->operator->fresh()->sidebarVariant())->toBe('tiles');
+    expect($this->operator->fresh()->preferences['sidebar_variant'] ?? null)->toBeNull();
 });
 
 it('refuses when nobody is signed in', function (): void {
@@ -69,7 +77,7 @@ it('refuses when nobody is signed in', function (): void {
     // Guest hit → redirect to login (302) or 401 depending on
     // middleware stack. Either way, the DB must not be touched.
     expect(in_array($response->status(), [302, 401, 419], true))->toBeTrue();
-    expect($this->operator->fresh()->sidebarVariant())->toBe('tiles');
+    expect($this->operator->fresh()->preferences['sidebar_variant'] ?? null)->toBeNull();
 });
 
 it('persists even when the tenant is in subscription-read-only mode', function (): void {

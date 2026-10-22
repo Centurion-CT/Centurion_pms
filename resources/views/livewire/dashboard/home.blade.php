@@ -5,7 +5,7 @@
     renders the dashboard's main column. All previous data-testids are
     preserved so existing operator tests keep passing.
 --}}
-<div class="lp-dash"
+<div class="lp-dash cx-home"
      wire:poll.30s="refresh"
      x-data="{
         /* Outstanding-balances panel is Alpine-driven so opening +
@@ -17,44 +17,8 @@
         outstandingOpen: @entangle('outstandingOpen'),
         openPartPayId: null,
      }">
+    @include('livewire.dashboard._partials.home-styles')
 
-    {{-- ── Shift ribbon ──────────────────────────────────────────────
-         Ties the operator to the day. Shows who's signed in + since
-         when + the property they're acting on. Small, mono, slots
-         above the welcome header so the operator sees "yes, this is
-         still me" every time they land on / after a wire:navigate.
-         Ramp/Toast pattern. --}}
-    @php
-        $operator = auth('web')->user();
-        $shiftName = $operator?->name ?? 'You';
-        $shiftInitials = collect(preg_split('/\s+/', trim((string) $shiftName)))
-            ->filter()
-            ->map(fn ($p) => mb_substr($p, 0, 1))
-            ->take(2)
-            ->join('');
-        $shiftInitials = mb_strtoupper($shiftInitials ?: 'Y');
-        $shiftSince = $operator?->last_login_at;
-        $shiftPropertyName = app(\App\Services\Properties\PropertyContext::class)->current()?->name
-            ?? \App\Models\Tenant::current()?->name;
-    @endphp
-    <div class="lp-shift-ribbon" data-testid="shift-ribbon"
-         aria-label="Current shift">
-        <span class="lp-shift-ribbon__monogram" aria-hidden="true">{{ $shiftInitials }}</span>
-        <span class="lp-shift-ribbon__pulse" aria-hidden="true"></span>
-        <span class="lp-shift-ribbon__name">{{ $shiftName }}</span>
-        @if ($shiftSince)
-            <span class="lp-shift-ribbon__meta">
-                <span class="lp-shift-ribbon__dot" aria-hidden="true">&middot;</span>
-                on shift since {{ $shiftSince->format('g:i A') }}
-            </span>
-        @endif
-        @if ($shiftPropertyName)
-            <span class="lp-shift-ribbon__meta">
-                <span class="lp-shift-ribbon__dot" aria-hidden="true">&middot;</span>
-                {{ $shiftPropertyName }}
-            </span>
-        @endif
-    </div>
 
     {{-- ── Page header ────────────────────────────────────────────── --}}
     @php
@@ -104,24 +68,17 @@
         $todayStr = \Illuminate\Support\Carbon::today()->toDateString();
     @endphp
 
-    <section class="lp-res-idx-hero" data-testid="dashboard-hero">
-        <div class="lp-res-idx-hero-body">
-            <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Today</span>
-                <h1 data-testid="dashboard-heading"
-                    class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
-                    style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
-                    Welcome{{ $firstName !== '' ? ', '.$firstName : '' }}.
-                </h1>
-                <p class="mt-2 text-[14px]" style="color: var(--color-ink-soft); max-width: 480px;">
-                    {{ $contextLine }}
-                </p>
-                <div class="lp-res-idx-hero-actions">
-                    {{-- Existing check-in / check-out / add-charge
-                         trigger set. Wrapped by lp-dash-quick so the
-                         old triggers keep their Alpine handlers but
-                         render as pills in the hero. --}}
-                    <div class="lp-dash-quick-wrap" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+    @php
+        $greetHour = (int) now()->format('G');
+        $greeting = $greetHour < 12 ? 'Good morning' : ($greetHour < 17 ? 'Good afternoon' : 'Good evening');
+    @endphp
+    <header class="cx-dh" data-testid="dashboard-hero">
+        <div>
+            <p class="cx-dh-date">{{ now()->format('l, j F') }}</p>
+            <h1 class="cx-dh-title" data-testid="dashboard-heading">{{ $greeting }}{{ $firstName !== '' ? ', '.$firstName : '' }}</h1>
+        </div>
+        {{-- Quick check-in / check-out / add-charge panels, unchanged. --}}
+        <div class="cx-dh-actions lp-dash-quick-wrap">
             {{-- Quick check-in - brand-coloured CTA + Alpine dropdown
                  of today's arrivals. Fires quickCheckIn(bookingId)
                  with a wire:confirm so a stray tap can't move the
@@ -723,84 +680,10 @@
             </div>
 
             <livewire:dashboard.notifications-bell />
-                    </div> {{-- /.lp-dash-quick-wrap --}}
-                </div> {{-- /.lp-res-idx-hero-identity --}}
-        </div> {{-- /.lp-res-idx-hero-body --}}
-    </section>
+        </div> {{-- /.cx-dh-actions --}}
+    </header>
 
-    {{-- ── Status pulse ────────────────────────────────────────────
-         Four wide tiles across the full page width — the original
-         layout, restored after the compressed hero-column variant
-         squeezed the numbers too small. Each tile keeps its
-         wire:navigate href OR alpineAction toggle unchanged. --}}
-    @php
-        $unassignedToday = (int) ($pulse['unassigned_today'] ?? 0);
-        $pulseTiles = [
-            ['label' => 'In-house',    'value' => $pulse['in_house'],    'dot' => 'var(--color-accent-deep)', 'sub' => 'guests staying',    'href' => route('tenant.in-house.index')],
-            ['label' => 'Arriving',    'value' => $pulse['arriving'],    'dot' => '#4B7BB0',                  'sub' => $unassignedToday > 0 ? 'today, '.$unassignedToday.' unassigned' : 'today', 'href' => route('tenant.reservations.index').'?tab=arrivals'],
-            ['label' => 'Departing',   'value' => $pulse['departing'],   'dot' => '#7A6EA7',                  'sub' => 'today',              'href' => route('tenant.reservations.index').'?tab=departures'],
-            ['label' => 'Outstanding', 'value' => $pulse['outstanding'], 'dot' => '#B85C42',                  'sub' => 'across open books',  'alpineAction' => 'outstandingOpen = true', 'money' => true],
-        ];
-    @endphp
-    <div class="grid gap-2 grid-cols-2 lg:grid-cols-4" data-testid="pulse-strip">
-        @foreach ($pulseTiles as $tile)
-            @if (isset($tile['alpineAction']))
-                <button type="button"
-                        x-on:click="{{ $tile['alpineAction'] }}"
-                        data-testid="pulse-tile-{{ \Illuminate\Support\Str::slug($tile['label']) }}"
-                        class="lp-dash-card"
-                        style="padding: 14px 18px; display: flex; align-items: center; gap: 14px;
-                               text-align: left; background: var(--color-card);
-                               border: 1px solid var(--color-line);
-                               border-radius: 14px; cursor: pointer; font-family: inherit;
-                               transition: border-color .15s ease;">
-                    <span aria-hidden style="width: 8px; height: 8px; border-radius: 999px;
-                                              background: {{ $tile['dot'] }};
-                                              box-shadow: 0 0 0 3px {{ $tile['dot'] }}22;
-                                              flex-shrink: 0;"></span>
-                    <div style="min-width: 0; flex: 1;">
-                        <p class="lp-num-lg text-[22px]" style="color: var(--color-ink);">
-                            @if (! empty($tile['money'])){{ money((int) $tile['value']) }}@else{{ number_format((int) $tile['value']) }}@endif
-                        </p>
-                        <p class="lp-mono text-[10.5px] tracking-[0.14em] uppercase"
-                           style="color: var(--color-ink-mute); margin-top: 2px;">
-                            {{ $tile['label'] }}
-                            <span style="text-transform: none; letter-spacing: 0; color: var(--color-ink-mute);
-                                         font-size: 11px; margin-left: 4px;">
-                                {{ $tile['sub'] }}
-                            </span>
-                        </p>
-                    </div>
-                </button>
-            @else
-                <a href="{{ $tile['href'] }}"
-                   wire:navigate
-                   data-testid="pulse-tile-{{ \Illuminate\Support\Str::slug($tile['label']) }}"
-                   class="lp-dash-card"
-                   style="padding: 14px 18px; display: flex; align-items: center; gap: 14px;
-                          text-decoration: none; transition: border-color .15s ease;
-                          border-color: var(--color-line);">
-                    <span aria-hidden style="width: 8px; height: 8px; border-radius: 999px;
-                                              background: {{ $tile['dot'] }};
-                                              box-shadow: 0 0 0 3px {{ $tile['dot'] }}22;
-                                              flex-shrink: 0;"></span>
-                    <div style="min-width: 0; flex: 1;">
-                        <p class="lp-num-lg text-[22px]" style="color: var(--color-ink);">
-                            @if (! empty($tile['money'])){{ money((int) $tile['value']) }}@else{{ number_format((int) $tile['value']) }}@endif
-                        </p>
-                        <p class="lp-mono text-[10.5px] tracking-[0.14em] uppercase"
-                           style="color: var(--color-ink-mute); margin-top: 2px;">
-                            {{ $tile['label'] }}
-                            <span style="text-transform: none; letter-spacing: 0; color: var(--color-ink-mute);
-                                         font-size: 11px; margin-left: 4px;">
-                                {{ $tile['sub'] }}
-                            </span>
-                        </p>
-                    </div>
-                </a>
-            @endif
-        @endforeach
-    </div>
+    @include('livewire.dashboard._partials.home-tonight')
 
     {{-- ── Outstanding-balances panel ────────────────────────────
          Right-side slide-out sheet with every open book. Alpine
@@ -1066,199 +949,8 @@
     </div>{{-- /outstanding-panel-root --}}
     </template>
 
-    {{-- ── Month-to-date revenue bar chart ────────────────────────
-         Daily cash-in across the full current month rendered as
-         rounded-top columns. Today's column is deep-fill + a soft
-         halo so the eye anchors; past days are muted-fill. A dashed
-         horizontal line marks the month's daily average through the
-         chart so a guest can spot above/below-average days at a
-         glance. Hover any column for a tooltip. --}}
-    @php
-        $mc = $monthChart ?? [
-            'points' => [], 'labels' => [], 'days' => [], 'iso' => [],
-            'max' => 0, 'total' => 0, 'delta_pct' => null, 'month_label' => '',
-            'today_index' => 0,
-        ];
-        $chartW = 900; $chartH = 160; $padT = 14; $padB = 26; $padL = 8; $padR = 8;
-        $innerW = $chartW - $padL - $padR;
-        $innerH = $chartH - $padT - $padB;
-        $ptCount = count($mc['points']);
-        $slotW = $ptCount > 0 ? ($innerW / $ptCount) : $innerW;
-        $barW = max(4, $slotW * 0.6);
-        $todayIdx = (int) ($mc['today_index'] ?? 0);
-        $baseY = $padT + $innerH;
-
-        // Bars for every day. Future days get a 1-pixel baseline nub
-        // instead of nothing so the eye tracks the empty part of the
-        // month rather than reading it as unrendered.
-        $bars = [];
-        for ($i = 0; $i < $ptCount; $i++) {
-            $v = (int) ($mc['points'][$i] ?? 0);
-            $isFuture = $i > $todayIdx;
-            $cx = $padL + ($i * $slotW) + ($slotW / 2);
-            $height = ($mc['max'] > 0 && $v > 0)
-                ? max(2, round(($v / $mc['max']) * $innerH, 2))
-                : ($isFuture ? 0 : 0);
-            $bars[] = [
-                'i' => $i,
-                'x' => $cx - ($barW / 2),
-                'y' => $baseY - $height,
-                'w' => $barW,
-                'h' => $height,
-                'cx' => $cx,
-                'v' => $v,
-                'is_today' => $i === $todayIdx,
-                'is_future' => $isFuture,
-            ];
-        }
-
-        // Daily average across days elapsed (excluding zero future
-        // days) — anchors "how am I doing this month" at a glance.
-        $daysElapsed = min($todayIdx + 1, $ptCount);
-        $avgY = null;
-        if ($daysElapsed > 0 && $mc['max'] > 0) {
-            $avg = $mc['total'] / max(1, $daysElapsed);
-            $avgY = round($baseY - (($avg / $mc['max']) * $innerH), 2);
-        }
-
-        $deltaColor = $mc['delta_pct'] === null
-            ? 'var(--color-ink-mute)'
-            : ($mc['delta_pct'] >= 0 ? 'var(--color-accent-deep)' : '#B85C42');
-        $deltaLabel = $mc['delta_pct'] === null
-            ? 'no prior-month data to compare'
-            : (($mc['delta_pct'] >= 0 ? '+' : '').$mc['delta_pct'].'% vs same days last month');
-    @endphp
-    {{-- Inventory / supply attention card. Silent when there's nothing
-         to say. Renders above the revenue widget so any incident,
-         a pending outlet request, or a bar/kitchen/trolley low on
-         stock, catches the operator's eye first thing on / after
-         wire:navigate. --}}
-    <livewire:dashboard.alerts-card />
-
-    <section class="lp-dash-card" data-testid="widget-month-revenue">
-        <div class="lp-dash-card-head">
-            <span class="lp-dash-card-title">Revenue · {{ $mc['month_label'] }}</span>
-            <span class="lp-dash-card-meta">daily cash collected · hover a day for detail</span>
-        </div>
-        <div class="flex flex-wrap items-baseline gap-4" style="margin-top: 4px;">
-            <p class="lp-num-lg" style="font-size: 26px; color: var(--color-ink); font-weight: 600;">
-                {{ money($mc['total']) }}
-            </p>
-            <p class="lp-mono text-[11px]" style="color: {{ $deltaColor }};">
-                {{ $deltaLabel }}
-            </p>
-        </div>
-
-        <div style="margin-top: 12px; position: relative;"
-             x-data="{
-                hover: null,
-                labels: @js($mc['labels']),
-                days: @js($mc['days']),
-                points: @js($mc['points']),
-                money(n) { return @js(currency_symbol()) + Number(n || 0).toLocaleString(); },
-             }">
-            {{-- Tooltip: sits INSIDE the chart wrapper (top: 6px)
-                 so it never overlaps the total-revenue number above.
-                 Pointer-events-none so it doesn't block the hover
-                 target. Clamped left/right by max/min so it stays
-                 within the chart at the edges. --}}
-            <div x-show="hover !== null" x-cloak
-                 :style="'position: absolute; top: 6px; left: ' + Math.max(4, Math.min(96, (hover?.leftPct || 0))) + '%; transform: translateX(-50%);'"
-                 style="background: var(--color-ink); color: var(--color-card);
-                        padding: 6px 10px; border-radius: 8px; font-size: 11.5px;
-                        white-space: nowrap; pointer-events: none; z-index: 5;
-                        box-shadow: 0 6px 18px rgba(0,0,0,0.14);"
-                 data-testid="month-revenue-tooltip">
-                <div style="font-weight: 600;" x-text="hover?.label"></div>
-                <div class="lp-mono" x-text="money(hover?.value || 0)"></div>
-            </div>
-
-            <svg viewBox="0 0 {{ $chartW }} {{ $chartH }}" preserveAspectRatio="none"
-                 style="width: 100%; height: 160px; display: block; overflow: visible;"
-                 data-testid="month-revenue-chart">
-                {{-- Baseline --}}
-                <line x1="{{ $padL }}" y1="{{ $baseY }}"
-                      x2="{{ $padL + $innerW }}" y2="{{ $baseY }}"
-                      stroke="var(--color-line)" stroke-width="1"/>
-
-                @if ($mc['max'] > 0)
-                    {{-- Bars: past days deep-fill at 65% opacity;
-                         today's bar is 100% + a soft halo behind it.
-                         Future days get nothing. Rounded top corners
-                         via rx/ry so the columns read as pills. --}}
-                    @foreach ($bars as $b)
-                        @if ($b['is_future'] || $b['h'] < 2)
-                            @continue
-                        @endif
-                        @if ($b['is_today'])
-                            <rect x="{{ $b['x'] - 4 }}" y="{{ $b['y'] - 4 }}"
-                                  width="{{ $b['w'] + 8 }}" height="{{ $b['h'] + 8 }}"
-                                  fill="var(--color-accent-deep)" opacity="0.12"
-                                  rx="4"/>
-                        @endif
-                        <rect x="{{ $b['x'] }}" y="{{ $b['y'] }}"
-                              width="{{ $b['w'] }}" height="{{ $b['h'] }}"
-                              rx="2" ry="2"
-                              fill="var(--color-accent-deep)"
-                              opacity="{{ $b['is_today'] ? '1' : '0.7' }}"
-                              @if ($b['is_today']) data-testid="month-revenue-today-bar" @endif/>
-                    @endforeach
-
-                    {{-- Dashed daily-average line so above/below-avg
-                         days pop at a glance. Only rendered when
-                         there's real data to average over. --}}
-                    @if ($avgY !== null)
-                        <line x1="{{ $padL }}" y1="{{ $avgY }}"
-                              x2="{{ $padL + $innerW }}" y2="{{ $avgY }}"
-                              stroke="var(--color-ink-mute)" stroke-width="1"
-                              stroke-dasharray="4 4" opacity="0.5"/>
-                        <text x="{{ $padL + $innerW - 4 }}" y="{{ $avgY - 4 }}"
-                              text-anchor="end"
-                              fill="var(--color-ink-mute)" font-size="9"
-                              font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-                            avg
-                        </text>
-                    @endif
-                @endif
-
-                {{-- Day-number axis with adaptive spacing. Today is
-                     bolded so the eye anchors on it. --}}
-                @php $step = $ptCount > 20 ? 3 : 2; @endphp
-                @foreach ($mc['days'] as $i => $d)
-                    @if ($i === 0 || $i === $ptCount - 1 || $i === $todayIdx || ($d % $step === 0))
-                        @php $cx = $padL + ($i * $slotW) + ($slotW / 2); @endphp
-                        <text x="{{ $cx }}" y="{{ $chartH - 8 }}"
-                              text-anchor="middle"
-                              fill="{{ $i === $todayIdx ? 'var(--color-ink)' : 'var(--color-ink-mute)' }}"
-                              font-size="10"
-                              font-weight="{{ $i === $todayIdx ? '600' : '400' }}"
-                              font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-                            {{ $d }}
-                        </text>
-                    @endif
-                @endforeach
-
-                {{-- Invisible per-day hit-areas for hover. One full
-                     column each so the target is easy to hit even on
-                     empty days. --}}
-                @foreach ($mc['days'] as $i => $d)
-                    @php
-                        $hitLeft = $padL + ($i * $slotW);
-                        $leftPct = round((($padL + ($i * $slotW) + $slotW / 2) / $chartW) * 100, 2);
-                    @endphp
-                    <rect x="{{ $hitLeft }}" y="0"
-                          width="{{ $slotW }}" height="{{ $chartH }}"
-                          fill="transparent"
-                          @mouseenter="hover = { label: labels[{{ $i }}], value: points[{{ $i }}], leftPct: {{ $leftPct }} }"
-                          @mouseleave="hover = null"
-                          style="cursor: pointer;"/>
-                @endforeach
-            </svg>
-        </div>
-    </section>
-
     {{-- ── Command centre: Today at a glance | Attention + Activity ── --}}
-    <div class="grid gap-4 lg:grid-cols-3" data-testid="command-centre">
+    <div class="cx-main-grid" data-testid="command-centre">
 
         {{-- Left column, one merged action-oriented list of every
              guest the front desk needs to touch today. Each row is a
@@ -1382,170 +1074,13 @@
 
             $todayPanelData = $schedulePanelData + $inHousePanelData;
         @endphp
-        <section class="lp-dash-card lg:col-span-2" data-testid="widget-today"
+        <section class="cx-card" data-testid="widget-today"
                  x-data="inHouseGuestPanel({
                     panels: {{ \Illuminate\Support\Js::from(array_values($todayPanelData)) }},
                     propertyName: @js((string) (\App\Models\Tenant::current()?->name ?? 'Property')),
                  })">
-            <div class="lp-dash-card-head">
-                <span class="lp-dash-card-title">Today at a glance</span>
-                <span class="lp-dash-card-meta">
-                    {{ $today['arrivals']->count() + $unassignedToday->count() }} in ·
-                    {{ $today['departures']->count() }} out ·
-                    {{ ($today['inHouse'] ?? collect())->count() }} in-house
-                </span>
-            </div>
+            @include('livewire.dashboard._partials.home-arrivals')
 
-
-            {{-- ── Spotlight: today's arrivals + departures ───────
-                 Capped at 6 rows so the dashboard card doesn't
-                 balloon on busy days (14+ arrivals/departures made
-                 the whole thing scroll past the fold). The full
-                 list still lives on /dashboard/reservations - a
-                 "+X more" link surfaces when the cap kicks in. --}}
-            @php
-                $scheduleLimit = 6;
-                $scheduleShown = $schedule->take($scheduleLimit);
-                $scheduleExtra = max(0, $schedule->count() - $scheduleLimit);
-            @endphp
-            @if ($schedule->isEmpty())
-                @include('livewire.dashboard._partials._empty', [
-                    'icon'    => 'calendar',
-                    'title'   => 'No arrivals or departures today.',
-                    'sub'     => 'Nothing to prep at the front desk right now.',
-                    'ctaLabel'=> 'See reservations',
-                    'ctaHref' => route('tenant.reservations.index'),
-                ])
-            @else
-                <ul class="divide-y" style="border-color: var(--color-line-soft);"
-                    data-testid="widget-today-schedule">
-                    @foreach ($scheduleShown as $entry)
-                        @php
-                            $b = $entry['booking'];
-                            $isArrival = $entry['kind'] === 'arrival';
-                            [$dotColor, $dotBg, $kindLabel] = $isArrival
-                                ? ['#1E40AF', '#DBEAFE', 'Arriving']
-                                : ['#7A6EA7', '#EDE9F5', 'Departing'];
-                            $bookingRef = $b->booking_ref;
-                            $balance = $isArrival ? (int) ($b->balance_due ?? 0) : $b->outstandingTotal();
-                        @endphp
-                        <li class="py-3" data-testid="schedule-row-{{ $bookingRef }}">
-                            {{-- Row body opens the shared panel below
-                                 via openId - same UX as the in-house
-                                 rows, no wire trip. --}}
-                            <button type="button"
-                                    @click="openId = {{ $b->id }}"
-                                    data-testid="schedule-row-open-{{ $bookingRef }}"
-                                    class="flex items-center gap-3"
-                                    style="width: 100%; background: transparent; border: 0;
-                                           padding: 0; font-family: inherit; text-align: left;
-                                           cursor: pointer;">
-                                <span class="lp-mono text-[10px] tracking-[0.08em] uppercase shrink-0"
-                                      style="padding: 3px 8px; border-radius: 999px;
-                                             background: {{ $dotBg }}; color: {{ $dotColor }};
-                                             font-weight: 600; min-width: 76px; text-align: center;">
-                                    {{ $kindLabel }}
-                                </span>
-                                <div style="min-width: 0; flex: 1;">
-                                    <p class="text-[14px]" style="color: var(--color-ink); font-weight: 500;">
-                                        {{ $b->guest_name }}
-                                    </p>
-                                    <p class="text-[11.5px] mt-0.5" style="color: var(--color-ink-mute);">
-                                        @if ($b->room)
-                                            Rm {{ $b->room->room_number }}
-                                        @elseif ($b->room_category_id)
-                                            {{ $b->roomCategory?->name ?? 'Category' }}
-                                            <span class="lp-tag" style="font-size: 9px; padding: 1px 5px; margin-left: 4px;
-                                                                        background: var(--color-surface-2);
-                                                                        color: var(--color-ink-mute);
-                                                                        text-transform: uppercase; letter-spacing: 0.05em;">
-                                                Unassigned
-                                            </span>
-                                        @else
-                                            &middot;
-                                        @endif
-                                        <span class="lp-mono" style="margin-left: 4px;">· {{ $bookingRef }}</span>
-                                        @if ($balance > 0)
-                                            <span style="color: #a36318; margin-left: 6px;">
-                                                · <span class="lp-num">{{ money($balance) }}</span> owed
-                                            </span>
-                                        @endif
-                                    </p>
-                                </div>
-                                <span class="lp-mono text-[11.5px] shrink-0"
-                                      style="color: var(--color-ink-mute);">
-                                    Open &rarr;
-                                </span>
-                            </button>
-                        </li>
-                    @endforeach
-                </ul>
-                @if ($scheduleExtra > 0)
-                    <a href="{{ route('tenant.reservations.index') }}" wire:navigate
-                       data-testid="widget-today-schedule-more"
-                       class="flex justify-between items-center py-2 mt-1"
-                       style="text-decoration: none;">
-                        <span class="lp-mono text-[11px]"
-                              style="color: var(--color-ink-mute); letter-spacing: 0.06em;
-                                     text-transform: uppercase;">
-                            + {{ $scheduleExtra }} more
-                        </span>
-                        <span class="lp-mono text-[11px]"
-                              style="color: var(--color-accent-deep); text-decoration: underline; text-underline-offset: 3px;">
-                            See all today →
-                        </span>
-                    </a>
-                @endif
-            @endif
-
-            {{-- ── In-house occupancy ────────────────────────────
-                 Guests already in the building whose booked
-                 checkout ISN'T today (those live in the spotlight
-                 above). Row body opens a client-side detail panel;
-                 the Extend / Check out buttons stay inline. --}}
-            @php
-                // Eager-load charges + payments once for the panel
-                // payload - bounded by the in-house count (typically
-                // a handful of guests) so N+1 cost is negligible.
-                $inHouseOthers->loadMissing(['charges', 'payments']);
-                $inHousePanelData = $inHouseOthers->map(function ($b) {
-                    $unsettled = $b->charges->where('settled', false)
-                        ->map(fn ($c) => [
-                            'description' => (string) $c->description,
-                            'amount' => (int) $c->amount,
-                        ])->values()->all();
-                    $recentPayments = $b->payments->sortByDesc('paid_at')->take(5)
-                        ->map(fn ($p) => [
-                            'amount' => (int) $p->amount,
-                            'method' => ucfirst((string) ($p->method ?? 'paystack')),
-                            'paid_at' => $p->paid_at?->format('j M · g:i A') ?? '-',
-                        ])->values()->all();
-                    return [
-                        'id' => $b->id,
-                        'kind' => 'in-house',
-                        'ref' => (string) $b->booking_ref,
-                        'guest_name' => (string) $b->guest_name,
-                        'guest_phone' => (string) ($b->guest_phone ?? ''),
-                        'room' => $b->room?->room_number ?? '-',
-                        'category' => (string) ($b->room?->category?->name ?? ''),
-                        'checkin' => $b->checkin_date?->format('j M Y') ?? '-',
-                        'checkout' => $b->checkout_date?->format('j M Y') ?? '-',
-                        'nights' => (int) ($b->nights ?? 0),
-                        'total' => (int) $b->total_amount,
-                        'deposit' => (int) $b->deposit_amount,
-                        'balance' => (int) $b->balance_due,
-                        'outstanding' => (int) $b->outstandingTotal(),
-                        'unsettled' => $unsettled,
-                        'payments' => $recentPayments,
-                        'url' => route('tenant.reservations.show', $b->booking_ref),
-                    ];
-                })->keyBy('id')->all();
-
-                // Combined map keyed by booking id - the Alpine panel
-                // reads from this so a click on ANY row (arrival,
-                // departure, in-house) opens the same detail surface.
-                $todayPanelData = $schedulePanelData + $inHousePanelData;
-            @endphp
             @if (! empty($todayPanelData))
                 @once
                     {{-- Alpine factory for the in-house detail panel.
@@ -1718,153 +1253,8 @@
                     </script>
                 @endonce
 
-                @if ($inHouseOthers->isNotEmpty())
-                <div class="lp-dash-card-head"
-                     style="border-top: 1px solid var(--color-line-soft);
-                            margin-top: 14px; padding-top: 14px; margin-bottom: 6px;">
-                    <span class="lp-dash-card-title" style="font-size: 13.5px;">
-                        Currently in-house
-                    </span>
-                    <a href="{{ route('tenant.in-house.index') }}" wire:navigate
-                       class="lp-mono text-[11px]"
-                       data-testid="widget-today-inhouse-all"
-                       style="color: var(--color-accent-deep); text-decoration: underline; text-underline-offset: 3px;">
-                        {{ $inHouseOthers->count() }} occupying rooms →
-                    </a>
-                </div>
-                @endif
-                @php
-                    // Same cap principle as the schedule above.
-                    $inHouseLimit = 5;
-                    $inHouseShown = $inHouseOthers->take($inHouseLimit);
-                    $inHouseExtra = max(0, $inHouseOthers->count() - $inHouseLimit);
-                @endphp
-                <ul class="divide-y"
-                    @if ($inHouseOthers->isEmpty()) style="display: none;" @endif
-                    style="border-color: var(--color-line-soft);"
-                    data-testid="widget-today-inhouse">
-                    @foreach ($inHouseShown as $g)
-                        @php
-                            $rowOutstanding = (int) $g->outstandingTotal();
-                            $canCheckoutRow = $rowOutstanding <= 0;
-                            $nightsLeft = $g->checkout_date
-                                ? (int) \Illuminate\Support\Carbon::today()
-                                    ->diffInDays($g->checkout_date, false)
-                                : null;
-                            $checkoutLabel = $nightsLeft === null
-                                ? '-'
-                                : ($nightsLeft <= 0
-                                    ? 'Leaves today'
-                                    : ($nightsLeft === 1
-                                        ? 'Leaves tomorrow'
-                                        : 'Leaves in '.$nightsLeft.' nights ·  '.$g->checkout_date->format('j M')));
-                            $confirmEarly = 'Early checkout - '.$g->guest_name."'s booked checkout is "
-                                .($g->checkout_date?->format('j M') ?? '-').'. Continue?';
-                        @endphp
-                        <li class="py-3"
-                            data-testid="widget-today-inhouse-row-{{ $g->booking_ref }}"
-                            style="display: flex; align-items: center; gap: 10px;">
-                            <span class="lp-mono text-[10px] tracking-[0.08em] uppercase shrink-0"
-                                  style="padding: 3px 8px; border-radius: 999px;
-                                         background: rgba(76, 129, 100, 0.14);
-                                         color: #2F5F45;
-                                         font-weight: 600; min-width: 76px; text-align: center;">
-                                In-house
-                            </span>
-                            {{-- Row body is a client-side button - no
-                                 wire trip; Alpine sets openId + the
-                                 panel below reads from the pre-loaded
-                                 map. Fast enough to feel instant even
-                                 on a laggy network. --}}
-                            <button type="button"
-                                    @click="openId = {{ $g->id }}"
-                                    data-testid="widget-today-inhouse-open-{{ $g->booking_ref }}"
-                                    style="min-width: 0; flex: 1; background: transparent;
-                                           border: 0; text-align: left; padding: 0;
-                                           font-family: inherit; cursor: pointer;">
-                                <p class="text-[14px]" style="color: var(--color-ink); font-weight: 500;">
-                                    {{ $g->guest_name }}
-                                </p>
-                                <p class="text-[11.5px] mt-0.5" style="color: var(--color-ink-mute);">
-                                    Rm {{ $g->room?->room_number ?? '-' }}
-                                    <span class="lp-mono" style="margin-left: 4px;">· {{ $g->booking_ref }}</span>
-                                    <span style="margin-left: 6px;">· {{ $checkoutLabel }}</span>
-                                    @if ($rowOutstanding > 0)
-                                        <span style="color: #a36318; margin-left: 6px;">
-                                            · <span class="lp-num">{{ money($rowOutstanding) }}</span> owed
-                                        </span>
-                                    @endif
-                                </p>
-                            </button>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <button type="button"
-                                        wire:click="openExtendModal({{ $g->id }})"
-                                        data-testid="widget-today-inhouse-extend-{{ $g->booking_ref }}"
-                                        style="background: transparent; color: var(--color-ink);
-                                               border: 1px solid var(--color-line);
-                                               padding: 5px 11px; border-radius: 999px;
-                                               font-family: inherit; font-size: 11.5px; font-weight: 500;
-                                               cursor: pointer;">
-                                    Extend
-                                </button>
-                                @if ($canCheckoutRow)
-                                    <button type="button"
-                                            wire:click="quickCheckOut({{ $g->id }})"
-                                            wire:confirm="{{ $confirmEarly }}"
-                                            wire:loading.attr="disabled"
-                                            wire:target="quickCheckOut({{ $g->id }})"
-                                            data-testid="widget-today-inhouse-checkout-{{ $g->booking_ref }}"
-                                            style="background: var(--color-ink);
-                                                   color: var(--color-card);
-                                                   border: 0; padding: 5px 12px;
-                                                   border-radius: 999px;
-                                                   font-family: inherit; font-size: 11.5px; font-weight: 600;
-                                                   cursor: pointer;">
-                                        <span wire:loading.remove wire:target="quickCheckOut({{ $g->id }})">
-                                            Check out
-                                        </span>
-                                        <span wire:loading wire:target="quickCheckOut({{ $g->id }})" x-cloak>
-                                            …
-                                        </span>
-                                    </button>
-                                @else
-                                    <a href="{{ route('tenant.reservations.show', $g->booking_ref) }}" wire:navigate
-                                       data-testid="widget-today-inhouse-settle-{{ $g->booking_ref }}"
-                                       style="background: transparent; color: var(--color-ink);
-                                              border: 1px solid #a36318;
-                                              padding: 5px 11px; border-radius: 999px;
-                                              font-size: 11.5px; font-weight: 500; color: #a36318;
-                                              text-decoration: none;">
-                                        Settle
-                                    </a>
-                                @endif
-                            </div>
-                        </li>
-                    @endforeach
-                    @if ($inHouseExtra > 0)
-                        <li class="py-2 flex justify-between items-center"
-                            data-testid="widget-today-inhouse-more">
-                            <span class="lp-mono text-[11px]"
-                                  style="color: var(--color-ink-mute); letter-spacing: 0.06em;
-                                         text-transform: uppercase;">
-                                + {{ $inHouseExtra }} more
-                            </span>
-                            <a href="{{ route('tenant.in-house.index') }}" wire:navigate
-                               class="lp-mono text-[11px]"
-                               style="color: var(--color-accent-deep);
-                                      text-decoration: underline; text-underline-offset: 3px;">
-                                See all in-house →
-                            </a>
-                        </li>
-                    @endif
-
-                    {{-- Client-side detail panel - pure Alpine, no
-                         wire trip. Reads from the pre-hydrated
-                         `panels` array; the row bodies above set
-                         `openId`. Teleports to <body> so the fixed
-                         side-sheet isn't trapped inside the widget's
-                         transform stacking context. --}}
-                    <template x-teleport="body">
+                {{-- Guest folio side panel (unchanged). --}}
+                <template x-teleport="body">
                     <div x-show="openId !== null"
                          x-cloak
                          @keydown.escape.window="openId = null"
@@ -2119,271 +1509,15 @@
                         </aside>
                     </div>
                     </template>
-                </ul>
             @endif
         </section>
 
-        {{-- Right rail, attention queue + activity feed. --}}
-        <div class="grid gap-4">
-            <section class="lp-dash-card" data-testid="widget-needs-attention">
-                <div class="lp-dash-card-head">
-                    <span class="lp-dash-card-title">Needs attention</span>
-                    <span class="lp-dash-card-meta">
-                        {{ count($needsAttention) }} {{ count($needsAttention) === 1 ? 'item' : 'items' }}
-                    </span>
-                </div>
-                @if (empty($needsAttention))
-                    <p data-testid="needs-none" class="text-[13.5px]" style="color: var(--color-ink-mute);">
-                        You're clear. Nothing urgent right now.
-                    </p>
-                @else
-                    <ul class="divide-y" style="border-color: var(--color-line-soft);">
-                        @foreach ($needsAttention as $item)
-                            <li data-testid="needs-row" class="py-2.5">
-                                <a href="{{ $item['href'] }}" wire:navigate
-                                   class="flex items-center justify-between gap-3 text-[13px]"
-                                   style="color: var(--color-ink); text-decoration: none;">
-                                    <span style="display: flex; align-items: center; gap: 10px; min-width: 0;">
-                                        <span aria-hidden style="display: inline-block; width: 6px; height: 6px; border-radius: 9999px;
-                                                                  background: {{ $item['urgency'] === 'critical' ? '#b85c42' : 'var(--color-accent-deep)' }};
-                                                                  flex-shrink: 0;"></span>
-                                        <span class="truncate">{{ $item['label'] }}</span>
-                                    </span>
-                                    <span class="lp-mono text-[11px] shrink-0" style="color: var(--color-ink-mute);">
-                                        {{ $item['count'] }} &rarr;
-                                    </span>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
-            </section>
-
-            <section class="lp-dash-card" data-testid="widget-activity">
-                <div class="lp-dash-card-head">
-                    <span class="lp-dash-card-title">Recent activity</span>
-                    <span class="lp-dash-card-meta">last {{ $activity->count() }}</span>
-                </div>
-                @if ($activity->isEmpty())
-                    @include('livewire.dashboard._partials._empty', [
-                        'icon'  => 'sparkle',
-                        'title' => 'Nothing has happened yet today.',
-                        'sub'   => 'Every check-in, check-out, and payment lands here as it clears.',
-                    ])
-                @else
-                    <ul class="divide-y" style="border-color: var(--color-line-soft);">
-                        @foreach ($activity as $event)
-                            @php
-                                // Human-readable action label from the event
-                                // slug. Falls back to the raw event so unknown
-                                // events don't render as blank.
-                                $eventLabels = [
-                                    'checked_in'                => ['label' => 'checked in',    'color' => '#1E40AF'],
-                                    'checked_out'               => ['label' => 'checked out',   'color' => '#7A6EA7'],
-                                    'confirmed'                 => ['label' => 'confirmed',     'color' => 'var(--color-accent-deep)'],
-                                    'cancelled'                 => ['label' => 'cancelled',     'color' => '#B85C42'],
-                                    'no_show'                   => ['label' => 'marked no-show','color' => '#B85C42'],
-                                    'manual_payment_recorded'   => ['label' => 'took payment',  'color' => 'var(--color-accent-deep)'],
-                                    'reassigned'                => ['label' => 'moved room',    'color' => '#4B7BB0'],
-                                    'charge_added'              => ['label' => 'added charge',  'color' => 'var(--color-ink)'],
-                                    'passed'                    => ['label' => 'passed inspection', 'color' => 'var(--color-accent-deep)'],
-                                    'failed'                    => ['label' => 'failed inspection', 'color' => '#B85C42'],
-                                ];
-                                $meta = $eventLabels[$event->event ?? ''] ?? ['label' => str_replace('_', ' ', (string) $event->event), 'color' => 'var(--color-ink-mute)'];
-                                $causer = $event->causer?->name ?? 'system';
-                                $props = $event->properties ?? collect();
-                                $ref = is_array($props) ? ($props['booking_ref'] ?? null) : $props->get('booking_ref');
-                            @endphp
-                            <li class="py-2" data-testid="activity-row">
-                                <div class="flex items-baseline gap-2 text-[12.5px]">
-                                    <span aria-hidden style="width: 4px; height: 4px; border-radius: 999px;
-                                                              background: {{ $meta['color'] }}; flex-shrink: 0;
-                                                              margin-top: 7px;"></span>
-                                    <div style="min-width: 0; flex: 1;">
-                                        <p class="truncate" style="color: var(--color-ink); white-space: normal;">
-                                            <span style="font-weight: 500;">{{ $causer }}</span>
-                                            <span style="color: var(--color-ink-soft);">{{ $meta['label'] }}</span>
-                                            @if ($ref)
-                                                <a href="{{ route('tenant.reservations.show', $ref) }}" wire:navigate
-                                                   class="lp-mono text-[11px]"
-                                                   style="color: var(--color-ink-mute); text-decoration: underline; text-underline-offset: 3px;">
-                                                    {{ $ref }}
-                                                </a>
-                                            @endif
-                                        </p>
-                                    </div>
-                                    <span class="lp-mono text-[10.5px] shrink-0" style="color: var(--color-ink-mute);">
-                                        {{ $event->created_at?->diffForHumans(short: true) }}
-                                    </span>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
-            </section>
-        </div>
+        @include('livewire.dashboard._partials.home-rail')
     </div>
 
-    {{-- ── Secondary metrics: compact KPI chips + trend charts ────────
-         The command centre above is the primary work surface. This
-         row is the "how are we trending" scan, smaller, quieter, but
-         still available without scrolling too far. --}}
-    @php
-        $upArrow   = '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3-4 3 4"/></svg>';
-        $downArrow = '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3 4 3-4"/></svg>';
+    @include('livewire.dashboard._partials.home-revenue')
 
-        $renderTrend = function (array $kpi, bool $invertColors = false) use ($upArrow, $downArrow) {
-            $dir = $kpi['direction'] ?? 'flat';
-            if ($dir === 'flat') {
-                return '<span style="color: var(--color-ink-mute); font-size: 11px;">-</span>';
-            }
-            $up = $invertColors ? '#8c1e1e' : 'var(--color-accent-deep)';
-            $down = $invertColors ? 'var(--color-accent-deep)' : '#8c1e1e';
-            $color = $dir === 'up' ? $up : $down;
-            $arrow = $dir === 'up' ? $upArrow : $downArrow;
-            return '<span style="display: inline-flex; align-items: center; gap: 3px; color: '.$color.'; font-size: 11px; font-weight: 500;">'
-                .$arrow.' '.$kpi['delta_pct'].'%</span>';
-        };
-    @endphp
-
-    <div class="grid gap-3 sm:grid-cols-3" data-testid="secondary-kpis">
-        <div class="lp-dash-card" style="padding: 14px 18px;">
-            <div style="display: flex; align-items: baseline; justify-content: space-between;">
-                <span class="lp-mono text-[10px] tracking-[0.16em] uppercase" style="color: var(--color-ink-mute);">
-                    30-day occupancy
-                </span>
-                {!! $renderTrend($kpis['occupancy']) !!}
-            </div>
-            <div class="mt-1.5 flex items-baseline gap-2">
-                <p data-testid="kpi-occupancy" class="lp-num-lg text-[22px]" style="color: var(--color-ink);">
-                    {{ $kpis['occupancy']['value'] }}<span class="lp-num" style="font-size: 13px; color: var(--color-ink-soft); margin-left: 2px; font-weight: 500;">%</span>
-                </p>
-                <span class="text-[11px]" style="color: var(--color-ink-mute);">
-                    {{ $occupancy['booked_nights'] }}/{{ $occupancy['total_nights'] }} nights
-                </span>
-            </div>
-        </div>
-
-        <div class="lp-dash-card" style="padding: 14px 18px;">
-            <div style="display: flex; align-items: baseline; justify-content: space-between;">
-                <span class="lp-mono text-[10px] tracking-[0.16em] uppercase" style="color: var(--color-ink-mute);">
-                    Revenue MTD
-                </span>
-                {!! $renderTrend($kpis['revenue_mtd']) !!}
-            </div>
-            <p data-testid="kpi-revenue" class="lp-num-lg text-[22px] mt-1.5" style="color: var(--color-ink);">
-                {{ money($kpis['revenue_mtd']['value']) }}
-            </p>
-        </div>
-
-        <div class="lp-dash-card" style="padding: 14px 18px;">
-            <div style="display: flex; align-items: baseline; justify-content: space-between;">
-                <span class="lp-mono text-[10px] tracking-[0.16em] uppercase" style="color: var(--color-ink-mute);">
-                    Arrivals · week Δ
-                </span>
-                {!! $renderTrend($kpis['arrivals_today']) !!}
-            </div>
-            <p data-testid="kpi-arrivals" class="lp-num-lg text-[22px] mt-1.5" style="color: var(--color-ink);">
-                {{ $kpis['arrivals_today']['value'] }}
-            </p>
-        </div>
-    </div>
-
-    {{-- ── Sparkline + today's category mix ───────────────────────── --}}
-    <div class="grid gap-4 lg:grid-cols-2">
-
-        <section data-testid="widget-revenue-spark" class="lp-dash-card">
-            <div class="lp-dash-card-head">
-                <span class="lp-dash-card-title">Revenue · last 30 days</span>
-                <span class="lp-dash-card-meta">{{ money($spark['total']) }}</span>
-            </div>
-            @if (array_sum($spark['points']) === 0)
-                <p class="text-[13.5px]" style="color: var(--color-ink-mute);">
-                    No bookings in the last 30 days.
-                </p>
-            @else
-                @php
-                    // Sparkbars in the same visual language as the
-                    // month-to-date chart above: rounded-top columns
-                    // deep-fill at 70% opacity, last bar (today) at
-                    // 100% so the eye lands on the most recent day.
-                    $sparkW = 320;
-                    $sparkH = 60;
-                    $pts = $spark['points'];
-                    $sparkCount = max(1, count($pts));
-                    $sparkSlot = $sparkW / $sparkCount;
-                    $sparkBarW = max(2, $sparkSlot * 0.6);
-                    $sparkMax = max(1, $spark['max']);
-                @endphp
-                <svg viewBox="0 0 {{ $sparkW }} {{ $sparkH }}" preserveAspectRatio="none"
-                     style="width: 100%; height: 64px; display: block; margin-top: 12px; overflow: visible;"
-                     data-testid="spark-svg">
-                    @foreach ($pts as $i => $v)
-                        @php
-                            $h = $v > 0
-                                ? max(2, round(($v / $sparkMax) * ($sparkH - 4), 2))
-                                : 0;
-                            $x = round(($i * $sparkSlot) + (($sparkSlot - $sparkBarW) / 2), 2);
-                            $y = $sparkH - $h;
-                            $isLast = $i === count($pts) - 1;
-                        @endphp
-                        @if ($h > 0)
-                            <rect x="{{ $x }}" y="{{ $y }}"
-                                  width="{{ $sparkBarW }}" height="{{ $h }}"
-                                  rx="1.5" ry="1.5"
-                                  fill="var(--color-accent-deep)"
-                                  opacity="{{ $isLast ? '1' : '0.7' }}"/>
-                        @endif
-                    @endforeach
-                    <line x1="0" y1="{{ $sparkH }}" x2="{{ $sparkW }}" y2="{{ $sparkH }}"
-                          stroke="var(--color-line)" stroke-width="1"/>
-                </svg>
-                <div class="flex items-baseline justify-between mt-2 lp-mono"
-                     style="font-size: 10.5px; color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">
-                    <span>{{ $spark['labels'][0] ?? '' }}</span>
-                    <span>{{ end($spark['labels']) ?: '' }}</span>
-                </div>
-            @endif
-        </section>
-
-        <section data-testid="widget-today-mix" class="lp-dash-card">
-            <div class="lp-dash-card-head">
-                <span class="lp-dash-card-title">Today by category</span>
-                @php
-                    $totalToday = collect($todayMix['rows'])->sum('total');
-                    $soldToday  = collect($todayMix['rows'])->sum('sold');
-                @endphp
-                <span class="lp-dash-card-meta">
-                    {{ $soldToday }} / {{ $totalToday }} rooms sold
-                </span>
-            </div>
-            @if (empty($todayMix['rows']))
-                <p class="text-[13.5px]" style="color: var(--color-ink-mute);">
-                    Add active rooms to see today's mix.
-                </p>
-            @else
-                <ul class="divide-y mt-2" style="border-color: var(--color-line-soft);">
-                    @foreach ($todayMix['rows'] as $row)
-                        @php
-                            $pct = $row['total'] > 0 ? round(($row['sold'] / $row['total']) * 100) : 0;
-                        @endphp
-                        <li class="py-3" data-testid="mix-row">
-                            <div class="flex items-baseline justify-between text-[13px]" style="color: var(--color-ink);">
-                                <span style="font-weight: 500;">{{ $row['name'] }}</span>
-                                <span class="lp-mono" style="color: var(--color-ink-soft); font-size: 11.5px;">
-                                    {{ $row['sold'] }} / {{ $row['total'] }} · {{ $pct }}%
-                                </span>
-                            </div>
-                            <div style="margin-top: 6px; height: 6px; background: var(--color-card-deep); border-radius: 999px; overflow: hidden;">
-                                <div style="width: {{ $pct }}%; height: 100%; background: var(--color-accent-deep);"></div>
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </section>
-    </div>
-
+    <div class="cx-bottom-grid">
     {{-- ── Rooms needing attention ──────────────────────────────
          Replaces the mini heatmap. Every open room inspection with
          its progress through the 3-signer chain (housekeeper →
@@ -2463,8 +1597,6 @@
         @endif
     </section>
 
-    {{-- ── Outstanding balances + recent bookings ─────────────────── --}}
-    <div class="grid gap-4 lg:grid-cols-2">
 
         <section data-testid="widget-outstanding" class="lp-dash-card">
             <div class="lp-dash-card-head">
@@ -2516,40 +1648,6 @@
             @endif
         </section>
 
-        <section data-testid="widget-recent" class="lp-dash-card">
-            <div class="lp-dash-card-head">
-                <span class="lp-dash-card-title">Recent bookings</span>
-                <a href="{{ route('tenant.bookings.index') }}" wire:navigate
-                   class="text-[12px]" style="color: var(--color-ink-soft); text-decoration: underline; text-underline-offset: 4px;">
-                    See all
-                </a>
-            </div>
-            @if ($recent->isEmpty())
-                <p data-testid="no-recent" class="text-[13.5px]" style="color: var(--color-ink-mute);">
-                    No bookings yet, share your room URLs to start taking reservations.
-                </p>
-            @else
-                <ul class="divide-y" style="border-color: var(--color-line-soft);">
-                    @foreach ($recent as $b)
-                        <li data-testid="recent-row" class="py-3">
-                            <a href="{{ route('tenant.bookings.show', $b->booking_ref) }}" wire:navigate
-                               class="grid grid-cols-[auto_1fr_auto] items-baseline gap-3">
-                                <span class="lp-mono text-[10.5px] tracking-[0.12em] uppercase" style="color: var(--color-ink-mute);">
-                                    {{ $b->booking_ref }}
-                                </span>
-                                <span class="text-[13.5px] font-medium truncate" style="color: var(--color-ink);">
-                                    {{ $b->guest_name }}
-                                </span>
-                                <span class="lp-mono text-[10.5px] tracking-[0.12em] uppercase"
-                                      style="color: var(--color-accent-deep);">
-                                    {{ $b->booking_status->value }}
-                                </span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </section>
     </div>
 
     @include('livewire.dashboard._partials.calendar-sheets')

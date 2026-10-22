@@ -11,37 +11,33 @@
 [x-cloak] { display: none !important; }
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    /* Centurion "Harbour" (approved mockup 3A, "Daylight"): Bricolage
+       Grotesque for display, Hanken Grotesk for everything else. */
+    --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    /* Marketing landing — rounded card-stack with olive-lime accent.
-       Fraunces is the display face (used at semibold for confidence).
-       Inter is the quiet body voice. */
-    --font-display: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
-    --font-body:    'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+    --font-body:    'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
 
-    /* Palette: cream + ink + dark coffee for inverted cards, single
-       olive-lime accent across the page. Tokens stay scoped to `.lp-page`
-       so the operator dashboard is unaffected. */
-    /* Cream palette dialled down a notch so the dashboard reads less
-       saturated against dark sidebar + content cards. Cards stay
-       distinguishable from the page (small luminance gap preserved). */
-    --color-paper:       #FFFFFF;   /* page background — pure white so cards read as raised cream against it */
-    --color-card:        #FAFAF9;   /* card surface — neutral so the nav tile colours and brand blue carry */
-    --color-card-deep:   #F0F1F2;   /* nested band inside a card */
-    --color-ink:         #14171A;
-    --color-ink-soft:    #3A4148;
-    --color-ink-mute:    #6E767D;
-    --color-ink-deep:    #17191C;   /* graphite for sidebar / inverted hero / CTA */
-    --color-ink-deep-2:  #24272B;
+    /* Palette: mist page, white cards, ink text, harbour navy for the
+       inverted surfaces (dark cards, primary CTA) and Centurion blue as
+       the accent. Tokens stay scoped to `.lp-page`. */
+    --color-paper:       #EEF3F7;   /* page background (mist) */
+    --color-card:        #FFFFFF;   /* card surface */
+    --color-card-deep:   #F4F7FA;   /* nested band inside a card */
+    --color-ink:         #1A2430;
+    --color-ink-soft:    #4A5563;
+    --color-ink-mute:    #6B7785;
+    --color-ink-deep:    #16324B;   /* harbour navy: inverted cards / CTA */
+    --color-ink-deep-2:  #0F2438;
     /* Brand accent — Centurion blue (see config/brand.php). */
     --color-accent:         #336799;
     --color-accent-deep:    #285480;   /* text/borders on light surfaces */
-    --color-accent-soft:    rgba(51, 103, 153, 0.14);
-    --color-accent-on-dark: #8DB6DE;   /* accent text/marks on ink surfaces */
+    --color-accent-soft:    rgba(51, 103, 153, 0.12);
+    --color-accent-on-dark: #8DB6DE;   /* accent text/marks on navy surfaces */
     --color-on-accent:      #FFFFFF;   /* text/icons sitting on --color-accent */
-    --color-line:        rgba(20,23,26,0.10);
-    --color-line-soft:   rgba(20,23,26,0.06);
-    --color-line-on-dark: rgba(250, 250, 250, 0.10);
+    --color-line:        rgba(26, 36, 48, 0.10);
+    --color-line-soft:   rgba(26, 36, 48, 0.06);
+    --color-line-on-dark: rgba(255, 255, 255, 0.12);
 }
 
 /*
@@ -1264,7 +1260,10 @@
     }
     html[data-sidebar-variant="list"] .lp-page .lp-nav-tile-icon {
         width: 20px; height: 20px;
-        background: transparent !important;
+        /* No !important: this selector already outranks the tile
+           gradient, and a layered !important would block installs
+           from tinting the square (see the Harbour shell block). */
+        background: transparent;
         box-shadow: none;
         color: rgba(236, 237, 239, 0.62);
         border-radius: 4px;
@@ -7518,3 +7517,189 @@
 [x-cloak] { display: none !important; }
 
 
+
+/* ═══════════════════════════════════════════════════════════════════
+   Centurion "Harbour" staff shell (approved mockup 3A, "Daylight").
+   A full-height white sidebar against the mist page, list rows with
+   each module's colour as a tinted icon square, and a calm topbar.
+   Unlayered on purpose: it sits after the layered component rules
+   above and overrides the old floating graphite sidebar for both
+   sidebar variants (list = the 3A default; tiles still available).
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Shell: sidebar flush to the left edge, no floating-card gutter. */
+.lp-page.lp-shell-dash { padding: 0; gap: 0; grid-template-columns: 300px 1fr; }
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash { grid-template-columns: 260px 1fr; }
+@media (max-width: 1099px) {
+    .lp-page.lp-shell-dash { grid-template-columns: 276px 1fr; }
+    html[data-sidebar-variant="list"] .lp-page.lp-shell-dash { grid-template-columns: 236px 1fr; }
+}
+
+/* Sidebar surface. */
+.lp-page.lp-shell-dash .lp-sidebar {
+    background: #FFFFFF;
+    color: var(--color-ink);
+    box-shadow: none;
+    padding: 0 12px 12px;
+    gap: 6px;
+}
+@media (min-width: 901px) {
+    .lp-page.lp-shell-dash .lp-sidebar {
+        position: sticky; top: 0;
+        height: 100vh; max-height: 100vh;
+        border-radius: 0;
+        border-right: 1px solid var(--color-line);
+    }
+}
+@media (max-width: 900px) {
+    .lp-page.lp-shell-dash .lp-sidebar { border-radius: 16px; box-shadow: 0 30px 60px -24px rgba(15, 36, 56, 0.45); }
+    .lp-page.lp-shell-dash .lp-drawer-backdrop { background: rgba(15, 36, 56, 0.40); }
+}
+.lp-page.lp-shell-dash .lp-sidebar::-webkit-scrollbar-thumb { background: rgba(26, 36, 48, 0.12); }
+.lp-page.lp-shell-dash .lp-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(26, 36, 48, 0.22); }
+
+/* Brand block: logo, hotel name, live status. */
+.lp-page.lp-shell-dash .lp-sidebar-brand {
+    min-height: 72px; margin: 0 -12px; padding: 0 20px;
+    border-bottom: 1px solid var(--color-line);
+    gap: 12px;
+}
+.lp-page.lp-shell-dash .lp-sidebar-brand-mark { width: 36px; height: 36px; padding: 5px; border-radius: 10px; border: 1px solid var(--color-line); }
+.lp-page.lp-shell-dash .lp-sidebar-brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+.lp-page.lp-shell-dash .lp-sidebar-brand-text .name { color: var(--color-ink); font-size: 16px; line-height: 1.15; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.lp-page.lp-shell-dash .lp-sidebar-brand-text .sub,
+.lp-page.lp-shell-dash .lp-sidebar-brand-text .kv-op-led {
+    color: var(--color-ink-mute); font-size: 12px; letter-spacing: 0; text-transform: none;
+}
+.lp-page.lp-shell-dash .kv-op-led-dot { width: 6px; height: 6px; background: #1F7A50; box-shadow: none; }
+.lp-page.lp-shell-dash .kv-op-led-dot::before { background: rgba(31, 122, 80, 0.28); }
+
+/* Branch switcher. */
+.lp-page.lp-shell-dash .lp-sidebar-branches { margin: 8px 0 0; }
+.lp-page.lp-shell-dash .lp-sidebar-branches-trigger { background: var(--color-paper); border-color: var(--color-line); color: var(--color-ink); }
+.lp-page.lp-shell-dash .lp-sidebar-branches-trigger:hover { background: #E3EAF1; }
+.lp-page.lp-shell-dash .lp-sidebar-branches-trigger .eyebrow { color: var(--color-ink-mute); font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.lp-page.lp-shell-dash .lp-sidebar-branches-trigger .name { color: var(--color-ink); font-size: 14px; font-weight: 600; }
+
+/* Nav search. */
+.lp-page.lp-shell-dash .lp-sidebar-search-wrap { margin-top: 10px; }
+.lp-page.lp-shell-dash .lp-sidebar-search {
+    background: var(--color-paper); border: 1px solid transparent; color: var(--color-ink);
+    font-size: 14px; border-radius: 8px;
+}
+.lp-page.lp-shell-dash .lp-sidebar-search::placeholder { color: var(--color-ink-mute); }
+.lp-page.lp-shell-dash .lp-sidebar-search:focus { background: #FFFFFF; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+.lp-page.lp-shell-dash .lp-sidebar-search-icon { color: var(--color-ink-mute); }
+.lp-page.lp-shell-dash .lp-sidebar-search-clear { color: var(--color-ink-mute); }
+.lp-page.lp-shell-dash .lp-sidebar-empty { color: var(--color-ink-mute); }
+
+/* Section headings: sentence case, quiet. */
+.lp-page.lp-shell-dash .lp-nav-section-head,
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-section-head {
+    padding: 14px 8px 6px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none;
+    color: var(--color-ink-mute);
+}
+
+/* Tiles variant on the light surface: keep the gradient app icons. */
+.lp-page.lp-shell-dash .lp-nav-tile:hover { background: var(--color-paper); }
+.lp-page.lp-shell-dash .lp-nav-tile-label { color: var(--color-ink-soft); font-size: 11.5px; }
+.lp-page.lp-shell-dash .lp-nav-tile:hover .lp-nav-tile-label,
+.lp-page.lp-shell-dash .lp-nav-tile.is-active .lp-nav-tile-label { color: var(--color-ink); }
+.lp-page.lp-shell-dash .lp-nav-tile-icon { box-shadow: 0 4px 10px -5px rgba(15, 36, 56, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.14); }
+.lp-page.lp-shell-dash .lp-nav-tile-badge { box-shadow: 0 0 0 2px #FFFFFF; }
+.lp-page.lp-shell-dash .lp-nav-tile-badge--urgent { background: #C2414B; color: #FFFFFF; }
+.lp-page.lp-shell-dash .lp-nav-tile-badge--info { background: var(--color-paper); color: var(--color-ink-soft); }
+
+/* List variant (3A): 36px rows, tinted icon squares in each module's
+   own colour, counts at the right edge, urgent counts as a red pill. */
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-sidebar { padding: 0 12px 12px; gap: 4px; }
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-grid { gap: 2px; }
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile {
+    position: relative;
+    grid-template-columns: 28px 1fr auto;
+    gap: 12px; padding: 4px 8px; min-height: 36px;
+    border-radius: 8px;
+}
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile:hover { background: var(--color-paper); }
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-icon {
+    position: static;
+    width: 28px; height: 28px; border-radius: 7px;
+    background: color-mix(in srgb, var(--tile-from, #64748B) 16%, #FFFFFF);
+    color: var(--tile-to, #334155);
+}
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-icon svg {
+    width: 16px; height: 16px; stroke-width: 1.7; color: inherit; filter: none;
+}
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-label {
+    font-size: 14px; font-weight: 500; color: var(--color-ink); max-width: none;
+    -webkit-line-clamp: 1;
+}
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile:hover .lp-nav-tile-label { color: var(--color-ink); }
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile.is-active {
+    background: #EAF1F8; box-shadow: none;
+}
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile.is-active .lp-nav-tile-label { color: #1C3D5E; font-weight: 600; }
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile.is-active .lp-nav-tile-icon {
+    background: var(--tile-to, #336799); color: #FFFFFF;
+}
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile.is-active .lp-nav-tile-icon svg { color: #FFFFFF; }
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    min-width: 20px; height: 20px; padding: 0 6px;
+    font-family: var(--font-body); font-size: 12px; font-weight: 500;
+    box-shadow: none; border-radius: 999px;
+}
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge--warn,
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge--info {
+    background: transparent; color: var(--color-ink-mute);
+}
+html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge--urgent {
+    background: #C2414B; color: #FFFFFF; font-weight: 600; font-size: 11px;
+}
+
+/* Sidebar foot: layout toggle, signed-in person, links. */
+.lp-page.lp-shell-dash .lp-sidebar-foot { border-top: 1px solid var(--color-line); margin: auto -12px 0; padding: 10px 12px 0; }
+.lp-page.lp-shell-dash .lp-sidebar-foot .lp-sidebar-variant-toggle {
+    border-color: var(--color-line); color: var(--color-ink-mute); font-size: 12px; letter-spacing: 0;
+}
+.lp-page.lp-shell-dash .lp-sidebar-foot .lp-sidebar-variant-toggle:hover { color: var(--color-ink); background: var(--color-paper); border-color: var(--color-line); }
+.lp-page.lp-shell-dash .lp-sidebar-link { color: var(--color-ink-soft); font-size: 14px; }
+.lp-page.lp-shell-dash .lp-sidebar-link svg { color: var(--color-ink-mute); }
+.lp-page.lp-shell-dash .lp-sidebar-link:hover { background: var(--color-paper); color: var(--color-ink); }
+.lp-page.lp-shell-dash .lp-sidebar-link:hover svg { color: var(--color-ink); }
+.lp-page.lp-shell-dash .lp-sidebar-me {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px; margin-bottom: 2px; border-radius: 8px;
+}
+.lp-page.lp-shell-dash .lp-sidebar-me-avatar {
+    width: 32px; height: 32px; flex-shrink: 0; border-radius: 999px;
+    display: grid; place-items: center;
+    background: var(--color-ink-deep); color: #FFFFFF;
+    font-size: 12px; font-weight: 600;
+}
+.lp-page.lp-shell-dash .lp-sidebar-me-name { display: block; font-size: 13.5px; font-weight: 600; color: var(--color-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lp-page.lp-shell-dash .lp-sidebar-me-role { display: block; font-size: 12.5px; color: var(--color-ink-mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Topbar: mist glass, search in the middle, bell + Reserve on the right. */
+.lp-page.lp-shell-dash .lp-topbar {
+    min-height: 72px; padding: 0 32px;
+    background: color-mix(in srgb, var(--color-paper) 86%, transparent);
+    border-bottom: 1px solid var(--color-line);
+}
+@media (max-width: 900px) { .lp-page.lp-shell-dash .lp-topbar { min-height: 60px; padding: 0 16px; } }
+.lp-page.lp-shell-dash .lp-topbar-title { font-family: var(--font-display); font-weight: 600; }
+.lp-page.lp-shell-dash .lp-topbar-reserve {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 40px; padding: 0 16px; border-radius: 8px;
+    background: var(--color-accent); color: #FFFFFF;
+    font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap;
+}
+.lp-page.lp-shell-dash .lp-topbar-reserve:hover { background: var(--color-accent-deep); }
+.lp-page.lp-shell-dash .lp-topbar-reserve:focus-visible { outline: 3px solid var(--color-accent-soft); outline-offset: 2px; }
+@media (max-width: 640px) { .lp-page.lp-shell-dash .lp-topbar-reserve span { display: none; } .lp-page.lp-shell-dash .lp-topbar-reserve { padding: 0 12px; } }
+
+/* Cards across every staff page: 12px radius, white, display titles. */
+.lp-page .lp-dash-card { border-radius: 12px; border-color: var(--color-line); }
+.lp-page .lp-dash-card-title { font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: -0.005em; }
+.lp-page .lp-dash-card-meta { font-size: 12.5px; }

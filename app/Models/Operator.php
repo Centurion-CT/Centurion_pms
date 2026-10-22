@@ -85,8 +85,13 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
      */
     public function sidebarVariant(): string
     {
-        $v = $this->preferences['sidebar_variant'] ?? 'tiles';
-        return in_array($v, ['tiles', 'list'], true) ? $v : 'tiles';
+        // Install default comes from config/brand.php (Centurion ships
+        // the 3A list); an operator's own pick always wins.
+        $default = in_array(config('brand.sidebar_default'), ['tiles', 'list'], true)
+            ? config('brand.sidebar_default')
+            : 'tiles';
+        $v = $this->preferences['sidebar_variant'] ?? $default;
+        return in_array($v, ['tiles', 'list'], true) ? $v : $default;
     }
 
     /** True if the operator can still sign in. */

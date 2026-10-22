@@ -229,6 +229,44 @@
                 ],
             ];
 
+            // Centurion grouping (mockup 3A): regroup the items above by
+            // the job the front desk is doing rather than one long
+            // "Operate" list. Item definitions (route, module gate,
+            // colour, icon) are untouched; only their section changes.
+            // Anything not named here stays in its original section.
+            $navGroupOrder = [
+                'Front desk' => ['Dashboard', 'Portfolio', 'Reservations', 'In-house', 'Guest requests', 'Approvals', 'Bookings', 'Calendar'],
+                'Rooms'      => ['Rooms', 'Categories', 'Rates', 'Housekeeping', 'Inspections', 'Supplies'],
+                'Workspace'  => [],
+                'Residential' => [],
+                'Money'      => ['Invoices', 'Payments', 'Refunds', 'Wallets', 'Finance', 'Accounting', 'Summary', 'Reports'],
+                'Guests'     => ['Customers', 'Corporates', 'Credit lines', 'Complimentary', 'Membership'],
+                'Bar & stores' => ['POS', 'Store', 'Reconciliation', 'Inventory'],
+                'Marketing'  => [],
+                'Content'    => [],
+                'Settings'   => [],
+            ];
+            $navSectionRename = ['Operate' => 'Front desk', 'Relationships' => 'Guests', 'Business' => 'Settings'];
+            $navGrouped = array_fill_keys(array_keys($navGroupOrder), []);
+            foreach ($nav as $origSection => $items) {
+                foreach ($items as $item) {
+                    $target = $navSectionRename[$origSection] ?? $origSection;
+                    foreach ($navGroupOrder as $group => $labels) {
+                        if (in_array($item['label'], $labels, true)) {
+                            $target = $group;
+                            break;
+                        }
+                    }
+                    $navGrouped[$target][] = $item;
+                }
+            }
+            foreach ($navGrouped as $group => $items) {
+                $order = array_flip($navGroupOrder[$group] ?? []);
+                usort($items, fn ($a, $b) => ($order[$a['label']] ?? 999) <=> ($order[$b['label']] ?? 999));
+                $navGrouped[$group] = $items;
+            }
+            $nav = $navGrouped;
+
             // Sidebar filtering is the intersection of:
             //  1. modules the current operator's role can access, and
             //  2. modules the property's type exposes (a Workspace-type
@@ -790,34 +828,16 @@
                          than an afterthought.  --}}
                     @if ($currentOperator !== null)
                         @php
-                            $signedInInitial = mb_strtoupper(mb_substr((string) $currentOperator->name, 0, 1));
+                            $signedInInitial = mb_strtoupper(collect(preg_split('/\s+/', trim((string) $currentOperator->name)))
+                                ->filter()->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->join(''));
                             $signedInRoleLabel = $currentRole->label();
                         @endphp
 
-                        <div data-testid="sidebar-signed-in"
-                             style="display: flex; align-items: center; gap: 10px;
-                                    padding: 10px 12px; margin-bottom: 6px;
-                                    border-radius: 10px; background: rgba(255,255,255,0.05);">
-                            <span aria-hidden
-                                  style="display: inline-flex; align-items: center; justify-content: center;
-                                         width: 30px; height: 30px; flex-shrink: 0; border-radius: 999px;
-                                         background: var(--color-accent-deep); color: var(--color-card);
-                                         font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em;">
-                                {{ $signedInInitial !== '' ? $signedInInitial : '?' }}
-                            </span>
-                            <span style="display: grid; gap: 1px; min-width: 0; flex: 1;">
-                                <span style="color: var(--color-card); font-size: 12.5px; font-weight: 500;
-                                             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-                                      title="{{ $currentOperator->name }}">
-                                    {{ $currentOperator->name }}
-                                </span>
-                                <span data-testid="sidebar-signed-in-role"
-                                      class="lp-mono"
-                                      style="color: var(--color-accent); font-size: 10px;
-                                             letter-spacing: 0.08em; text-transform: uppercase;
-                                             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                    {{ $signedInRoleLabel }}
-                                </span>
+                        <div data-testid="sidebar-signed-in" class="lp-sidebar-me">
+                            <span aria-hidden class="lp-sidebar-me-avatar">{{ $signedInInitial !== '' ? $signedInInitial : '?' }}</span>
+                            <span style="display: grid; min-width: 0; flex: 1;">
+                                <span class="lp-sidebar-me-name" title="{{ $currentOperator->name }}">{{ $currentOperator->name }}</span>
+                                <span class="lp-sidebar-me-role" data-testid="sidebar-signed-in-role">{{ $signedInRoleLabel }}@if ($currentOperator->last_login_at) &middot; on shift since {{ $currentOperator->last_login_at->format('g:i A') }}@endif</span>
                             </span>
                         </div>
                     @endif
@@ -939,14 +959,14 @@
                             </div>
                         @endif
 
-                        {{-- Email shows on tablet+ only, the phone
-                             topbar has no horizontal room left after
-                             the hamburger + property name, and the
-                             info isn't actionable. --}}
-                        <span class="lp-mono text-[10.5px] tracking-[0.16em] uppercase hidden md:inline"
-                              style="color: var(--color-ink-mute);">
-                            {{ auth()->user()?->email }}
-                        </span>
+                        {{-- New reservations start on the calendar: pick a room
+                             and dates there. --}}
+                        @if ($canSeeModule('calendar') && $propertyType->exposesModule('calendar'))
+                            <a href="{{ route('tenant.calendar') }}" wire:navigate class="lp-topbar-reserve" data-testid="dash-topbar-reserve">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                                <span>Reserve a room</span>
+                            </a>
+                        @endif
                     </div>
                 </header>
 
