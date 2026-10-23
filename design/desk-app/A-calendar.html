@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>A Calendar</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="a.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<script src="rooms.js"></script><script src="bookings.js"></script>
+<style>
+  .tools { display: flex; align-items: center; gap: 10px; }
+  .tools .range { font: 600 16px var(--display); margin: 0 6px; }
+  .cal { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+  .head, .grow { display: grid; grid-template-columns: 172px repeat(14, 1fr); }
+  .head { border-bottom: 1px solid var(--line); background: #fff; position: relative; }
+  .head .c { padding: 8px 0 6px; text-align: center; border-left: 1px solid var(--line-soft); display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .head .c b { font-size: 15px; font-weight: 700; }
+  .head .c small { font-size: 11.5px; color: var(--ink-mute); }
+  .head .c.wk { background: #F7F9FB; }
+  .head .c.today { background: var(--blue-soft); }
+  .head .c.today b, .head .c.today small { color: var(--blue-deep); }
+  .occ { height: 30px; display: flex; align-items: flex-end; }
+  .occ i { width: 30px; border-radius: 2px 2px 0 0; background: #A9C3DC; display: block; }
+  .today .occ i { background: var(--blue); }
+  .head .lab { padding: 10px 14px; font-size: 12px; color: var(--ink-mute); display: flex; flex-direction: column; justify-content: flex-end; }
+  .rows { position: relative; flex: 1; overflow: hidden; }
+  .grow { height: 29px; border-bottom: 1px solid var(--line-soft); }
+  .grow > div { border-left: 1px solid var(--line-soft); }
+  .grow .wk { background: #F9FBFC; }
+  .grow .rl { border-left: 0; padding: 0 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .grow .rl b { font-weight: 700; width: 30px; }
+  .grow.cat { background: var(--card-deep); height: 30px; }
+  .grow.cat .rl { font-weight: 600; font-size: 12.5px; color: var(--ink-soft); }
+  .grow.cat > div:not(.rl) { font-size: 11.5px; color: var(--ink-mute); display: grid; place-items: center; }
+  .todayline { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--blue); opacity: .55; }
+  .stay { position: absolute; z-index: 2; height: 23px; border-radius: 6px; font-size: 12px; font-weight: 600; padding: 0 8px; display: flex; align-items: center; gap: 5px; white-space: nowrap; overflow: hidden; }
+  .k-in { background: var(--navy); color: #fff; }
+  .k-booked { background: var(--blue); color: #fff; }
+  .k-owed { background: var(--blue); color: #fff; box-shadow: inset 0 -3px 0 var(--gold); }
+  .k-co { background: #DCE9F5; color: var(--blue-deep); border: 1px solid #A9C3DC; }
+  .k-hold { background: #fff; color: var(--blue-deep); border: 1.5px dashed var(--blue); }
+  .k-ooo { background: repeating-linear-gradient(135deg, #C9D2DB 0 4px, #EDF1F4 4px 8px); color: var(--ink-soft); }
+  .k-over { background: var(--navy); color: #fff; box-shadow: inset -4px 0 0 var(--rose); }
+  .stay.cut { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+  .stay.ghost { background: transparent; border: 1.5px dashed #A9C3DC; color: transparent; box-shadow: none; }
+  .stay.lift { box-shadow: 0 8px 22px rgba(15,36,56,.28), 0 0 0 2px #fff; transform: translateY(-2px) rotate(-.6deg); z-index: 3; }
+  .drop { position: absolute; background: rgba(51,103,153,.10); outline: 2px solid var(--blue); border-radius: 6px; z-index: 1; }
+  .tip { position: absolute; z-index: 4; width: 300px; background: var(--navy-2); color: #fff; border-radius: 10px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(15,36,56,.3); font-size: 13px; }
+  .tip b { font-weight: 600; display: block; margin-bottom: 4px; font-size: 13.5px; }
+  .tip p { color: #C5D6E6; }
+  .tip .k { margin-top: 8px; display: flex; gap: 12px; white-space: nowrap; font-size: 12px; color: #C5D6E6; }
+  .tip kbd { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); color: #fff; }
+  .foot { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-mute); background: #fff; }
+  .legend i { width: 18px; height: 10px; border-radius: 3px; }
+</style></head>
+<body data-nav="calendar">
+<main class="main">
+  <div class="top">
+    <div class="crumb"><small>Drag a stay to move it or change dates. Click an empty night to book it.</small><h1>Next two weeks</h1></div>
+    <div class="tools">
+      <div class="seg"><span class="on">2 weeks</span><span>Month</span></div>
+      <button class="btn btn-line btn-sm"><i data-lucide="chevron-left" class="s16"></i></button>
+      <span class="range">23 Oct to 5 Nov</span>
+      <button class="btn btn-line btn-sm"><i data-lucide="chevron-right" class="s16"></i></button>
+      <button class="btn btn-line btn-sm">Today <kbd>T</kbd></button>
+    </div>
+    <button class="btn btn-primary"><i data-lucide="plus" class="s16"></i>New booking <kbd>F2</kbd></button>
+  </div>
+  <div class="content" style="padding-bottom:16px">
+    <section class="card cal">
+      <div class="head" id="head"></div>
+      <div class="rows" id="rows"></div>
+      <div class="foot">
+        <div class="legend">
+          <span><i class="k-in"></i>In-house</span><span><i class="k-booked"></i>Booked, paid</span>
+          <span><i class="k-owed"></i>Booked, money owed</span><span><i class="k-co"></i>Company account</span>
+          <span><i class="k-hold"></i>Hold, not confirmed</span><span><i class="k-over"></i>Past checkout</span><span><i class="k-ooo"></i>Out of order</span>
+        </div>
+        
+      </div>
+    </section>
+  </div>
+</main>
+<script>
+  const COLW = (1160 - 2 - 172) / 14, ROWH = 29, CATH = 30;
+  const head = document.getElementById('head');
+  head.innerHTML = '<div class="lab">Booked each night</div>' + DAYS.map((d, i) => {
+    const n = nightsBooked(i);
+    return `<div class="c ${i === 0 ? 'today' : ''} ${d.wknd ? 'wk' : ''}"><div class="occ"><i style="height:${Math.round(n / 24 * 30)}px" title="${n} of 24"></i></div>
+      <small>${d.dow}</small><b>${d.day}</b></div>`;
+  }).join('');
+
+  const rows = document.getElementById('rows');
+  let y = 0, html = '', pos = {};
+  HOUSE.forEach(([name, rooms]) => {
+    html += `<div class="grow cat"><div class="rl">${name}</div>${DAYS.map((d, i) => {
+      const free = rooms.filter(([r]) => !STAYS.some(([sr, s, n]) => sr === r && s <= i && i < s + n)).length;
+      return `<div>${free} free</div>`; }).join('')}</div>`;
+    y += CATH;
+    rooms.forEach(([r]) => {
+      pos[r] = y;
+      html += `<div class="grow"><div class="rl"><b>${r}</b><span class="muted">${name.split(' ')[0] === 'Deluxe' ? 'Studio' : name.startsWith('One') ? 'One-bed' : 'Two-bed'}</span></div>${DAYS.map(d => `<div class="${d.wknd ? 'wk' : ''}"></div>`).join('')}</div>`;
+      y += ROWH;
+    });
+  });
+  rows.innerHTML = html;
+  const x = (day) => 172 + Math.max(0, day) * COLW;
+  STAYS.forEach(([r, s, n, g, k]) => {
+    const start = Math.max(0, s), end = Math.min(14, s + n);
+    if (end <= 0) return;
+    const half = s >= 0 ? COLW * .5 : 0;              // check-in afternoon: start mid-cell
+    const left = x(start) + half + 2, right = 172 + end * COLW + (s + n <= 14 ? COLW * .5 : 0) - 2;
+    let cls = `stay k-${k} ${s < 0 ? 'cut' : ''}`;
+    if (r === '103' && s === 4) cls = 'stay ghost';
+    const label = k === 'owed' ? `${g} <span style="color:var(--gold)">₦ owed</span>` : g;
+    rows.insertAdjacentHTML('beforeend', `<div class="${cls}" style="top:${pos[r] + 3}px;left:${left}px;width:${right - left}px">${label}</div>`);
+  });
+  // dragging Sade Lawal from 103 to 207
+  const l = x(4) + COLW * .5 + 2, w = 3 * COLW - 4;
+  rows.insertAdjacentHTML('beforeend', `<div class="drop" style="top:${pos['207'] + 1}px;left:${l - 2}px;width:${w + 4}px;height:27px"></div>
+    <div class="stay k-booked lift" style="top:${pos['207'] + 3}px;left:${l + 10}px;width:${w}px"><i data-lucide="grip-vertical" class="s14"></i>Sade Lawal</div>
+    <div class="tip" style="top:${pos['207'] - 60}px;left:${l + w + 26}px"><b>Move Sade Lawal to 207?</b>
+      <p>One-bedroom suite, 27 to 30 Oct. The new room costs ₦12,000 more a night, so ₦36,000 is added to her bill.</p>
+      <div class="k"><span><kbd>Enter</kbd> move</span><span><kbd>Esc</kbd> cancel</span><span><kbd>Shift</kbd> keep old price</span></div></div>
+    <div class="todayline" style="left:${172 + COLW * .5}px"></div>`);
+</script>
+<script src="a-chrome.js"></script>
+</body></html>

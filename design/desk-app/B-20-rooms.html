@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Rooms</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .bar { display: flex; align-items: center; gap: 8px; }
+  .chip { height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .chip.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .chip b { font-weight: 700; color: var(--ink); }
+  .chip.on b { color: #fff; }
+  .chip i.sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .live { margin-left: auto; font-size: 12.5px; color: var(--ink-mute); display: inline-flex; align-items: center; gap: 6px; }
+  .staff { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .sc { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; display: flex; align-items: center; gap: 12px; }
+  .sc b { font-weight: 600; display: block; }
+  .sc small { color: var(--ink-mute); font-size: 12.5px; }
+  .sc .w { flex: 1; }
+  .prog { height: 5px; background: var(--card-deep); border-radius: 3px; margin-top: 5px; }
+  .prog i { display: block; height: 100%; border-radius: 3px; background: var(--green); }
+  .floors { flex: 1; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px 16px 14px; display: flex; flex-direction: column; min-height: 0; }
+  .fl { padding-top: 10px; }
+  .fl h3 { font: 600 13px var(--body); color: var(--ink-soft); margin-bottom: 7px; display: flex; gap: 8px; }
+  .fl h3 span { color: var(--ink-mute); font-weight: 500; }
+  .tiles { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; }
+  .tl { height: 112px; border-radius: 10px; border: 1px solid var(--line); padding: 8px 9px; display: flex; flex-direction: column; gap: 2px; position: relative; overflow: hidden; }
+  .tl b { font: 700 17px var(--display); display: flex; align-items: center; justify-content: space-between; }
+  .tl .st { font-size: 11.5px; font-weight: 600; }
+  .tl small { font-size: 11px; color: var(--ink-mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tl .who { margin-top: auto; white-space: nowrap; display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink-soft); }
+  .tl .who .avatar { width: 18px; height: 18px; font-size: 8.5px; }
+  .tl .prog { margin-top: 3px; }
+  .occ { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .occ small, .occ .who { color: #B8CBDD; }
+  .occ .st { color: var(--blue-on-dark); }
+  .arr { background: #EAF2FA; border-color: #A9C3DC; }
+  .arr .st { color: var(--blue-deep); }
+  .leave { background: var(--gold-soft); border-color: #EBCF96; }
+  .leave .st { color: var(--gold-ink); }
+  .clean { background: #fff; border: 1.5px solid var(--green); }
+  .clean .st { color: var(--green); }
+  .porter { background: #fff; border: 1.5px dashed var(--blue); }
+  .porter .st { color: var(--blue-deep); }
+  .ready { background: #fff; }
+  .ready .st { color: var(--green); }
+  .ooo { background: repeating-linear-gradient(135deg, #EEF1F4 0 5px, #fff 5px 10px); border-style: dashed; }
+  .ooo .st { color: var(--ink-soft); }
+  .over { box-shadow: inset 0 -4px 0 var(--rose); }
+  .sel { outline: 3px solid var(--gold); outline-offset: 1px; }
+  .menu { position: absolute; z-index: 5; width: 250px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgba(15,36,56,.22); padding: 6px; }
+  .menu h5 { font: 600 12px var(--body); color: var(--ink-mute); padding: 6px 8px 4px; }
+  .menu a { display: flex; gap: 10px; align-items: center; padding: 8px; border-radius: 8px; font-size: 13.5px; }
+  .menu a.on { background: var(--blue-soft); }
+  .menu a small { margin-left: auto; color: var(--ink-mute); font-size: 12px; }
+  .menu a .avatar { width: 24px; height: 24px; font-size: 10px; }
+  .menu hr { border: 0; border-top: 1px solid var(--line-soft); margin: 4px 0; }
+</style></head>
+<body data-nav="housekeeping" data-tabs='[["Today",null,false],["Housekeeping",null,true],["Emeka Nwosu, 205","#D92D5B",false]]'>
+<main class="main">
+  <div class="content" style="position:relative">
+    <div class="ph">
+      <div class="t"><small>Cleaning and checks come in live from the Centurion Staff app</small><h1>Rooms and housekeeping</h1></div>
+      <div class="bar"><button class="btn btn-line btn-sm"><i data-lucide="wrench" class="s14"></i>Mark out of order</button><button class="btn btn-line btn-sm"><i data-lucide="printer" class="s14"></i>Print room list</button></div>
+    </div>
+    <div class="bar">
+      <span class="chip on">All rooms <b>24</b></span>
+      <span class="chip"><i class="sw" style="background:var(--navy)"></i>Occupied <b>14</b></span>
+      <span class="chip"><i class="sw" style="background:#A9C3DC"></i>Arriving <b>4</b></span>
+      <span class="chip"><i class="sw" style="background:var(--gold)"></i>Leaving <b>2</b></span>
+      <span class="chip"><i class="sw" style="background:var(--green)"></i>Being cleaned <b>2</b></span>
+      <span class="chip"><i class="sw" style="border:1.5px dashed var(--blue)"></i>For porter check <b>1</b></span>
+      <span class="chip"><i class="sw" style="background:var(--free)"></i>Free <b>3</b></span>
+      <span class="live"><span class="dot" style="background:var(--green)"></span>Updated a few seconds ago</span>
+    </div>
+    <div class="staff">
+      <div class="sc"><span class="avatar" style="background:var(--green-soft);color:var(--green)">B</span><div class="w"><b>Blessing, housekeeper</b><small>Cleaning 103 for Chiamaka, 3 of 10 done</small><div class="prog"><i style="width:30%"></i></div></div><span class="pill pill-grey">5 today</span></div>
+      <div class="sc"><span class="avatar" style="background:var(--green-soft);color:var(--green)">A</span><div class="w"><b>Ada, housekeeper</b><small>Cleaning 301 for Tunde, 6 of 10 done</small><div class="prog"><i style="width:60%"></i></div></div><span class="pill pill-grey">4 today</span></div>
+      <div class="sc"><span class="avatar" style="background:var(--blue-soft);color:var(--blue-deep)">M</span><div class="w"><b>Musa, porter</b><small>305 is waiting for his check</small></div><span class="pill pill-grey">6 checked</span></div>
+    </div>
+    <section class="floors" id="floors"></section>
+  </div>
+</main>
+<script>
+  // [room, cls, state line, small line, who, progress]
+  const F = [
+    ['Floor 1', 'Deluxe studios', [
+      ['101', 'occ', 'Occupied', 'Oluwaseun, serviced 10:20', 'Ada'],
+      ['102', 'occ', 'Occupied', 'Do not disturb'],
+      ['103', 'clean', 'Being cleaned', 'Chiamaka arrives today', 'Blessing', 30],
+      ['104', 'occ', 'Occupied', 'Service after 4 pm'],
+      ['105', 'ready', 'Ready', 'Checked 9:40 by Musa'],
+      ['106', 'leave sel', 'Leaving', 'Yusuf, keys at desk', 'No one yet'],
+      ['107', 'occ', 'Occupied', 'Grace Ekpo'],
+      ['108', 'occ', 'Occupied', 'Leaves tomorrow']]],
+    ['Floor 2', 'One-bedroom suites', [
+      ['201', 'occ', 'Occupied', 'Femi Akande'],
+      ['202', 'occ', 'Occupied', 'Ada Nnamdi'],
+      ['203', 'occ', 'Occupied', 'Dangote Group'],
+      ['204', 'arr', 'Ready, arriving', 'Adaeze, 2:00 pm', 'Musa 1:48'],
+      ['205', 'occ over', 'Past checkout', 'Emeka, due 12:00'],
+      ['206', 'occ', 'Occupied', 'Joy Okon'],
+      ['207', 'ready', 'Ready', 'Free tonight'],
+      ['208', 'arr', 'Ready, arriving', 'Ibrahim, about 11 pm', 'Musa 12:30'],
+      ['209', 'occ', 'Occupied', 'Kunle Bello'],
+      ['210', 'leave', 'Leaving, late', 'Ngozi, settling', 'Ada next']]],
+    ['Floor 3', 'Two-bedroom apartments', [
+      ['301', 'clean', 'Being cleaned', 'Tunde arrives today', 'Ada', 60],
+      ['302', 'occ', 'Occupied', 'Towels asked 1:10'],
+      ['303', 'ooo', 'Out of order', 'Plumbing, until Tue 27'],
+      ['304', 'occ', 'Occupied', 'Segun Alabi party'],
+      ['305', 'porter', 'Porter check', 'Cleaned 1:30 by Blessing', 'Musa'],
+      ['306', 'occ', 'Occupied', 'Chidi Okeke']]],
+  ];
+  document.getElementById('floors').innerHTML = F.map(([f, name, rooms]) =>
+    `<div class="fl"><h3>${f} <span>${name}</span></h3><div class="tiles">${rooms.map(([r, cls, st, sm, who, pg]) =>
+      `<div class="tl ${cls}" ${r === '106' ? 'id="t106"' : ''}><b>${r}${cls.includes('clean') ? '<i data-lucide="sparkles" class="s14"></i>' : cls === 'ready' ? '<i data-lucide="check" class="s14" style="color:var(--green)"></i>' : ''}</b><span class="st">${st}</span><small>${sm}</small>` +
+      (who ? `<span class="who">${who === 'No one yet' ? '<i data-lucide="user-plus" class="s14"></i>Assign cleaner' : `<span class="avatar" style="background:var(--green-soft);color:var(--green)">${who[0]}</span>${who}`}</span>` : '') +
+      (pg ? `<div class="prog"><i style="width:${pg}%"></i></div>` : '') + '</div>').join('')}</div></div>`).join('');
+  // assign-cleaner menu opened on 106
+  const t = document.getElementById('t106'), c = document.querySelector('.content');
+  const tr = t.getBoundingClientRect(), cr = c.getBoundingClientRect();
+  c.insertAdjacentHTML('beforeend', `<div class="menu" style="left:${tr.left - cr.left}px;top:${tr.bottom - cr.top + 6}px">
+    <h5>Who cleans 106 after Yusuf leaves?</h5>
+    <a class="on"><span class="avatar" style="background:var(--green-soft);color:var(--green)">B</span>Blessing<small>1 in progress</small></a>
+    <a><span class="avatar" style="background:var(--green-soft);color:var(--green)">A</span>Ada<small>1 in progress, 210 next</small></a>
+    <a><i data-lucide="users" class="s16 soft" style="margin:0 4px"></i>Anyone free<small>first to start it</small></a>
+    <hr><a><i data-lucide="wrench" class="s16 soft" style="margin:0 4px"></i>Mark out of order</a></div>`);
+</script>
+<script src="b-chrome.js"></script>
+</body></html>

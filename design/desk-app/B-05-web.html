@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Web dashboard</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .webbar { flex: none; height: 40px; background: #fff; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; padding: 0 16px; font-size: 13px; color: var(--ink-soft); }
+  .webbar .url { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 7px; background: var(--card-deep); color: var(--ink-mute); font-size: 12.5px; }
+  .webbar .nav { display: flex; gap: 2px; color: var(--ink-mute); }
+  .webbar .nav span { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 6px; }
+  .webbar .msg { display: inline-flex; gap: 6px; align-items: center; }
+  .webbar .msg svg.lucide { color: var(--green); }
+  .webbar .end { margin-left: auto; display: flex; gap: 8px; }
+  .frame { flex: 1; display: flex; min-height: 0; background: var(--mist); }
+  .wside { width: 228px; background: #fff; border-right: 1px solid var(--line); flex: none; display: flex; flex-direction: column; }
+  .wside .br { display: flex; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); }
+  .wside .br img { width: 22px; height: 26px; }
+  .wside .br b { font: 600 14px/1.15 var(--display); }
+  .wside h6 { font: 600 11.5px var(--body); color: var(--ink-mute); padding: 12px 18px 5px; }
+  .wside a { display: flex; align-items: center; gap: 10px; height: 33px; margin: 0 8px; padding: 0 8px; border-radius: 8px; font-size: 13.5px; }
+  .wside a.on { background: var(--blue-soft); font-weight: 600; }
+  .wside a i.t { width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; }
+  .wside a i.t svg.lucide { width: 14px; height: 14px; }
+  .wmain { flex: 1; padding: 22px 28px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .wh { display: flex; align-items: flex-end; gap: 12px; }
+  .wh div { flex: 1; }
+  .wh small { color: var(--ink-mute); font-size: 12.5px; }
+  .wh h1 { font-size: 24px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; color: var(--ink-mute); font-weight: 600; padding: 9px 16px; background: var(--card-deep); border-bottom: 1px solid var(--line-soft); }
+  td { padding: 11px 16px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+  td b { font-weight: 600; display: block; }
+  td small { color: var(--ink-mute); font-size: 12px; }
+  .r { text-align: right; }
+  .cell { display: inline-flex; height: 32px; align-items: center; padding: 0 10px; border: 1px solid rgba(26,36,48,.14); border-radius: 7px; min-width: 112px; justify-content: flex-end; font-weight: 600; }
+  .cell.ed { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(51,103,153,.15); }
+  .seasons .it { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-top: 1px solid var(--line-soft); font-size: 13.5px; }
+  .seasons .it:first-of-type { border-top: 0; }
+  .seasons .it b { font-weight: 600; }
+  .seasons .it .muted { font-size: 12.5px; }
+  .seasons .it .pill { margin-left: auto; }
+</style></head>
+<body data-nav="" data-tabs='[["Today",null,false],["Emeka Nwosu, 205","#D92D5B",false],["Rates, web dashboard","#8DB6DE",true]]'>
+<main class="main">
+  <div class="webbar">
+    <div class="nav"><span><i data-lucide="arrow-left" class="s16"></i></span><span><i data-lucide="arrow-right" class="s16"></i></span><span><i data-lucide="rotate-cw" class="s16"></i></span></div>
+    <span class="url"><i data-lucide="lock" class="s14"></i>centurionapartments.com/dashboard/rates</span>
+    <span class="msg"><i data-lucide="circle-check" class="s14"></i>Signed in as Tobi on the web dashboard. Changes here are the same as on the website.</span>
+    <div class="end"><button class="btn btn-line btn-sm"><i data-lucide="external-link" class="s14"></i>Open in browser</button></div>
+  </div>
+  <div class="frame">
+    <aside class="wside">
+      <div class="br"><img src="assets/logo.png" alt=""><b>Centurion<br>Apartments</b></div>
+      <h6>Rooms</h6>
+      <a><i class="t t-orange" style="background:#FDEBDF;color:#C2531B"><i data-lucide="bed-double"></i></i>Rooms &amp; categories</a>
+      <a class="on"><i class="t" style="background:#E4EEF8;color:#2F6AA3"><i data-lucide="tag"></i></i>Rates</a>
+      <a><i class="t" style="background:#EFEBFB;color:#6B4BC4"><i data-lucide="badge-percent"></i></i>Discounts</a>
+      <h6>Money</h6>
+      <a><i class="t" style="background:#DDF2F0;color:#107468"><i data-lucide="chart-column"></i></i>Reports</a>
+      <a><i class="t" style="background:#DEF3EC;color:#0E7A57"><i data-lucide="book-open"></i></i>Accounting</a>
+      <a><i class="t" style="background:#FCE9EE;color:#C8355D"><i data-lucide="package"></i></i>Inventory</a>
+      <h6>Hotel</h6>
+      <a><i class="t" style="background:#DDF2F0;color:#107468"><i data-lucide="building"></i></i>Corporate accounts</a>
+      <a><i class="t" style="background:#EBEFF3;color:#4A5563"><i data-lucide="settings"></i></i>Settings</a>
+    </aside>
+    <div class="wmain">
+      <div class="wh"><div><small>Rooms</small><h1>Rates</h1></div><button class="btn btn-line">Cancel</button><button class="btn btn-primary">Save changes</button></div>
+      <section class="card" style="overflow:hidden">
+        <table>
+          <tr><th>Room type</th><th class="r">Rack rate a night</th><th class="r">Weekend (Fri, Sat)</th><th class="r">7 nights or more</th><th class="r">Rooms</th></tr>
+          <tr><td><b>Deluxe studio</b><small>2 adults</small></td><td class="r"><span class="cell">₦85,000</span></td><td class="r"><span class="cell">₦95,000</span></td><td class="r"><span class="cell">₦76,500</span></td><td class="r">8</td></tr>
+          <tr><td><b>One-bedroom suite</b><small>2 adults, 1 child</small></td><td class="r"><span class="cell ed">₦120,000</span></td><td class="r"><span class="cell">₦132,000</span></td><td class="r"><span class="cell">₦108,000</span></td><td class="r">10</td></tr>
+          <tr><td><b>Two-bedroom apartment</b><small>4 adults</small></td><td class="r"><span class="cell">₦180,000</span></td><td class="r"><span class="cell">₦198,000</span></td><td class="r"><span class="cell">₦162,000</span></td><td class="r">6</td></tr>
+        </table>
+      </section>
+      <section class="card seasons">
+        <div class="it" style="border-bottom:1px solid var(--line-soft)"><b style="font:600 15px var(--display)">Seasons</b><span class="muted">Override the prices above between two dates</span><button class="btn btn-line btn-sm" style="margin-left:auto">Add a season</button></div>
+        <div class="it"><b>December peak</b><span class="muted">15 Dec to 5 Jan, plus 20%</span><span class="pill pill-gold">Starts in 53 days</span></div>
+        <div class="it"><b>Easter</b><span class="muted">2 Apr to 6 Apr 2027, plus 10%</span><span class="pill pill-grey">Later</span></div>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+</body></html>

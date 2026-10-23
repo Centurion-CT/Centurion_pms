@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Check in</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  iframe { position: absolute; z-index: 0; inset: 0; filter: brightness(.62) saturate(.85); width: 1440px; height: 900px; border: 0; }
+  .dim { position: absolute; z-index: 1; left: 0; right: 0; top: 32px; bottom: 0; background: rgba(15, 36, 56, .45); }
+  .sheet { position: absolute; z-index: 2; top: 32px; right: 0; bottom: 0; width: 660px; background: var(--mist); box-shadow: -12px 0 40px rgba(15,36,56,.3); display: flex; flex-direction: column; }
+  .sh { background: #fff; padding: 18px 24px 0; border-bottom: 1px solid var(--line); }
+  .sh .r1 { display: flex; align-items: flex-start; gap: 12px; }
+  .sh small { font-size: 12.5px; color: var(--ink-mute); }
+  .sh h2 { font-size: 22px; font-weight: 600; display: flex; gap: 10px; align-items: center; }
+  .sh .x { margin-left: auto; }
+  .stepper { display: flex; margin-top: 16px; }
+  .stepper div { flex: 1; display: flex; align-items: center; gap: 8px; padding: 10px 0 12px; font-weight: 600; font-size: 13.5px; color: var(--ink-mute); border-bottom: 3px solid transparent; }
+  .stepper div span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: var(--card-deep); }
+  .stepper div.on { color: var(--ink); border-color: var(--blue); }
+  .stepper div.on span { background: var(--blue); color: #fff; }
+  .sb { flex: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; }
+  .scanrow { display: flex; gap: 16px; }
+  .idcard { width: 250px; height: 158px; border-radius: 12px; background: linear-gradient(135deg, #E9F3EC, #F7FBF8 60%, #E4EEF6); border: 1px solid var(--line); padding: 12px; position: relative; flex: none; overflow: hidden; }
+  .idcard .flag { display: flex; gap: 2px; width: 26px; height: 16px; }
+  .idcard .flag i { flex: 1; background: #138A4B; } .idcard .flag i:nth-child(2) { background: #fff; }
+  .idcard .t { font-size: 8px; font-weight: 700; color: #2B4A3A; letter-spacing: .02em; position: absolute; left: 44px; top: 13px; }
+  .idcard .photo { position: absolute; left: 12px; top: 40px; width: 62px; height: 78px; border-radius: 6px; background: #C9D6CF; display: grid; place-items: end center; overflow: hidden; }
+  .idcard .photo::after { content: ''; width: 44px; height: 46px; border-radius: 22px 22px 6px 6px; background: #9FB2A8; }
+  .idcard .lines { position: absolute; left: 86px; top: 44px; right: 12px; display: flex; flex-direction: column; gap: 7px; }
+  .idcard .lines i { height: 6px; border-radius: 3px; background: rgba(43,74,58,.18); }
+  .idcard .nin { position: absolute; left: 86px; bottom: 16px; font: 700 11px var(--body); color: #2B4A3A; letter-spacing: .08em; }
+  .idcard .scanline { position: absolute; left: 0; right: 0; top: 96px; height: 2px; background: var(--blue); box-shadow: 0 0 12px var(--blue); opacity: .7; }
+  .scanok { flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+  .scanok b { font: 600 17px var(--display); }
+  .scanok p { color: var(--ink-soft); font-size: 13px; }
+  .form { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form .full { grid-column: span 2; }
+  .from { font-size: 11px; font-weight: 600; color: var(--green); display: inline-flex; align-items: center; gap: 3px; margin-left: 6px; }
+  .note { font-size: 12.5px; color: var(--ink-mute); display: flex; gap: 6px; }
+  .sf { background: #fff; border-top: 1px solid var(--line); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+  .sf .muted { flex: 1; font-size: 13px; }
+</style></head>
+<body>
+<iframe src="B-today.html" title="Today behind the sheet"></iframe>
+
+<aside class="sheet">
+  <div class="sh">
+    <div class="r1">
+      <div><small>Check in, CA-4K2M, room 204</small><h2>Adaeze Okafor <span class="pill pill-green">Paid in full</span></h2></div>
+      <button class="btn btn-ghost x">Close <kbd>Esc</kbd></button>
+    </div>
+    <div class="stepper">
+      <div class="on"><span>1</span>ID</div><div><span>2</span>Room</div><div><span>3</span>Card</div><div><span>4</span>Keys</div>
+    </div>
+  </div>
+  <div class="sb">
+    <div class="scanrow">
+      <div class="idcard"><div class="flag"><i></i><i></i><i></i></div><span class="t">FEDERAL REPUBLIC OF NIGERIA<br>NATIONAL IDENTITY CARD</span><div class="photo"></div><div class="lines"><i style="width:80%"></i><i style="width:60%"></i><i style="width:70%"></i><i style="width:45%"></i></div><span class="nin">7012 4458 210</span><div class="scanline"></div></div>
+      <div class="scanok">
+        <span class="pill pill-green" style="align-self:flex-start"><i data-lucide="scan-line" class="s14"></i>Scanned 1:52 pm</span>
+        <b>National ID card read</b>
+        <p>Check the details against the guest in front of you. Change anything the scanner got wrong.</p>
+        <button class="btn btn-line btn-sm" style="align-self:flex-start"><i data-lucide="rotate-ccw" class="s14"></i>Scan again</button>
+      </div>
+    </div>
+    <div class="form">
+      <div class="field"><label>Full name <span class="from"><i data-lucide="check" class="s14"></i>from scan</span></label><div class="input">Adaeze Chinwe Okafor</div></div>
+      <div class="field"><label>NIN <span class="from"><i data-lucide="check" class="s14"></i>from scan</span></label><div class="input">7012 4458 210</div></div>
+      <div class="field"><label>Date of birth <span class="from"><i data-lucide="check" class="s14"></i>from scan</span></label><div class="input">14 Mar 1991</div></div>
+      <div class="field"><label>Nationality</label><div class="input">Nigerian</div></div>
+      <div class="field full"><label>Home address</label><div class="input focus">14 Admiralty Way, Lekki Phase 1, Lagos</div></div>
+      <div class="field"><label>Coming from</label><div class="input">Abuja</div></div>
+      <div class="field"><label>Car plate</label><div class="input"><span class="ph">If parking</span></div></div>
+    </div>
+    <div class="note"><i data-lucide="shield-check" class="s14"></i>The scan image is not kept, only these details. Front desk and managers can see them; they are deleted 12 months after checkout.</div>
+  </div>
+  <div class="sf">
+    <span class="muted">Next: room 204, checked ready by Musa at 1:48 pm</span>
+    <button class="btn btn-line">Skip ID for now</button>
+    <button class="btn btn-primary btn-lg">Next, room <kbd>Enter</kbd></button>
+  </div>
+</aside>
+<script>lucide.createIcons();</script>
+</body></html>

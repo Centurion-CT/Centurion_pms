@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Guest requests</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .wrap { flex: 1; display: grid; grid-template-columns: 350px 1fr 272px; gap: 16px; min-height: 0; }
+  .pane { background: #fff; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .lh { padding: 12px; border-bottom: 1px solid var(--line-soft); }
+  .item { display: flex; gap: 11px; padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
+  .item.on { background: #F1F6FB; box-shadow: inset 3px 0 0 var(--blue); }
+  .item .ic { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; flex: none; }
+  .item .w { flex: 1; min-width: 0; }
+  .item .top1 { display: flex; align-items: center; gap: 6px; }
+  .item b { font-weight: 600; font-size: 13.5px; }
+  .item .tm { margin-left: auto; font-size: 12px; color: var(--ink-mute); white-space: nowrap; }
+  .item p { font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .item .meta { display: flex; gap: 5px; margin-top: 5px; }
+  .item.done { opacity: .6; }
+  .grp { font: 600 12px var(--body); color: var(--ink-mute); padding: 10px 14px 6px; background: #FBFCFD; border-bottom: 1px solid var(--line-soft); }
+  .ch { padding: 14px 18px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; gap: 12px; }
+  .ch h2 { font-size: 17px; font-weight: 600; }
+  .ch small { color: var(--ink-mute); font-size: 12.5px; display: block; }
+  .msgs { flex: 1; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; background: #FBFCFD; }
+  .m { max-width: 72%; padding: 10px 13px; border-radius: 12px; font-size: 13.5px; line-height: 1.45; }
+  .m small { display: block; font-size: 11.5px; margin-top: 4px; }
+  .m.g { background: #fff; border: 1px solid var(--line); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .m.g small { color: var(--ink-mute); }
+  .m.d { background: var(--navy); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .m.d small { color: #9FB6CC; }
+  .sys { align-self: center; font-size: 12px; color: var(--ink-mute); display: flex; gap: 6px; align-items: center; background: var(--card-deep); padding: 4px 10px; border-radius: 12px; }
+  .compose { border-top: 1px solid var(--line); padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .quick { display: flex; gap: 6px; flex-wrap: wrap; }
+  .quick span { height: 28px; padding: 0 10px; border-radius: 14px; border: 1px solid var(--line); font-size: 12.5px; font-weight: 600; color: var(--ink-soft); display: inline-flex; align-items: center; }
+  .box { display: flex; gap: 8px; align-items: flex-end; }
+  .box .ta { flex: 1; min-height: 64px; border: 1px solid var(--blue); box-shadow: 0 0 0 3px rgba(51,103,153,.15); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; }
+  .det { padding: 16px; gap: 12px; }
+  .det .rm { font: 700 34px/1 var(--display); }
+  .det .l { display: flex; justify-content: space-between; font-size: 13px; padding: 7px 0; border-top: 1px solid var(--line-soft); }
+  .det .l span:first-child { color: var(--ink-mute); }
+  .det .l b { font-weight: 600; text-align: right; }
+  .sel { height: 38px; border: 1px solid rgba(26,36,48,.16); border-radius: 8px; display: flex; align-items: center; gap: 8px; padding: 0 10px; font-size: 13.5px; }
+  .sel .avatar { width: 24px; height: 24px; font-size: 10px; }
+  .sel svg.lucide:last-child { margin-left: auto; }
+  .det .btn { justify-content: center; }
+</style></head>
+<body data-nav="requests" data-tabs='[["Today",null,false],["Guest requests",null,true],["Emeka Nwosu, 205","#D92D5B",false]]'>
+<main class="main">
+  <div class="content">
+    <div class="ph"><div class="t"><small>From the guest page, phone calls and the front desk. Replies go to the guest by SMS.</small><h1>Guest requests</h1></div>
+      <button class="btn btn-primary btn-sm"><i data-lucide="plus" class="s14"></i>Log a request <kbd>N</kbd></button></div>
+    <div class="wrap">
+      <section class="pane">
+        <div class="lh"><div class="seg" style="width:100%"><span class="on" style="flex:1;justify-content:center">Open 3</span><span style="flex:1;justify-content:center">Waiting 1</span><span style="flex:1;justify-content:center">Done 6</span></div></div>
+        <div class="item on"><span class="ic" style="background:var(--rose-soft);color:var(--rose)"><i data-lucide="thermometer-sun" class="s16"></i></span><div class="w"><div class="top1"><b>206, AC not cooling</b><span class="tm">12:58</span></div><p>Joy Okon: Thank you. Please hurry, it's very hot.</p><div class="meta"><span class="pill pill-rose">Urgent</span><span class="pill pill-grey">Emmanuel</span></div></div></div>
+        <div class="item"><span class="ic" style="background:var(--blue-soft);color:var(--blue)"><i data-lucide="car" class="s16"></i></span><div class="w"><div class="top1"><b>104, airport pickup</b><span class="tm">11:20</span></div><p>Segun Alabi: Flight lands 5:15 pm, Lagos MM2.</p><div class="meta"><span class="pill pill-gold">Today 6:00 pm</span><span class="pill pill-grey">No driver yet</span></div></div></div>
+        <div class="item"><span class="ic" style="background:var(--green-soft);color:var(--green)"><i data-lucide="bath" class="s16"></i></span><div class="w"><div class="top1"><b>302, extra towels</b><span class="tm">1:10</span></div><p>Grace Ekpo: 4 bath towels and 2 hand towels please</p><div class="meta"><span class="pill pill-green">Ada, on the Staff app</span></div></div></div>
+        <div class="grp">Waiting on the guest</div>
+        <div class="item"><span class="ic" style="background:var(--card-deep);color:var(--ink-soft)"><i data-lucide="clock" class="s16"></i></span><div class="w"><div class="top1"><b>102, late checkout Wed</b><span class="tm">10:05</span></div><p>You: We can hold the room until 2 pm for ₦20,000.</p></div></div>
+        <div class="grp">Done today</div>
+        <div class="item done"><span class="ic" style="background:var(--card-deep);color:var(--ink-soft)"><i data-lucide="wifi" class="s16"></i></span><div class="w"><div class="top1"><b>201, Wi-Fi password</b><span class="tm">9:12</span></div><p>Sent by SMS. Resolved by Joy.</p></div></div>
+      </section>
+
+      <section class="pane">
+        <div class="ch"><span class="avatar" style="background:var(--rose-soft);color:var(--rose)">JO</span><div style="flex:1"><h2>Joy Okon, room 206</h2><small>AC not cooling. Sent from the guest page at 12:58 pm</small></div><span class="pill pill-rose">Urgent, 54 min open</span></div>
+        <div class="msgs">
+          <div class="m g">The AC in my room is blowing warm air since this morning. I've tried the remote.<small>Joy, 12:58 pm</small></div>
+          <div class="m d">Sorry about that, Joy. Our technician is coming up within 30 minutes to check it.<small>Tobi, 1:05 pm, by SMS</small></div>
+          <div class="sys"><i data-lucide="user-check" class="s14"></i>Tobi gave this to Emmanuel, maintenance, 1:06 pm</div>
+          <div class="sys"><i data-lucide="wrench" class="s14"></i>Emmanuel: gas is low, needs a top-up from the AC company</div>
+          <div class="m g">Thank you. Please hurry, it's very hot.<small>Joy, 1:31 pm</small></div>
+        </div>
+        <div class="compose">
+          <div class="quick"><span>Offer another room</span><span>Bring a standing fan</span><span>On our way</span><span>Fixed, please check</span></div>
+          <div class="box"><div class="ta">The AC needs a part. We can move you to 207, the same type, right now. Your things can stay until you're ready.</div><button class="btn btn-primary">Send <kbd>Ctrl Enter</kbd></button></div>
+        </div>
+      </section>
+
+      <section class="pane det">
+        <div style="display:flex;align-items:baseline;gap:8px"><span class="rm">206</span><span class="soft" style="font-size:13px">One-bedroom suite</span></div>
+        <div>
+          <div class="l"><span>Guest</span><b>Joy Okon</b></div>
+          <div class="l"><span>Stay</span><b>Night 2 of 3</b></div>
+          <div class="l"><span>Kind</span><b>Repair</b></div>
+          <div class="l"><span>Phone</span><b>0809 330 1187</b></div>
+        </div>
+        <div class="field"><label>Who's on it</label><div class="sel"><span class="avatar" style="background:var(--amber-soft);color:var(--amber)">EM</span>Emmanuel, maintenance<i data-lucide="chevron-down" class="s16 muted"></i></div></div>
+        <button class="btn btn-line btn-sm"><i data-lucide="arrow-right-left" class="s14"></i>Move her to 207</button>
+        <button class="btn btn-line btn-sm"><i data-lucide="wrench" class="s14"></i>Mark 206 out of order</button>
+        <button class="btn btn-navy" style="margin-top:auto"><i data-lucide="check" class="s16"></i>Mark resolved <kbd style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">Ctrl R</kbd></button>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+</body></html>

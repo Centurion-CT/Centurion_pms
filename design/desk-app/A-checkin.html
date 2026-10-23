@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>A Check in</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="a.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .top h1 { display: flex; align-items: center; gap: 10px; }
+  .wrap { flex: 1; display: grid; grid-template-columns: 1.15fr 1fr 380px; gap: 16px; min-height: 0; }
+  .card.p { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .card h2 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .card h2 .ok { margin-left: auto; }
+  .scan { display: flex; gap: 12px; align-items: center; padding: 12px; border: 1.5px dashed #A9C3DC; border-radius: 10px; background: #F7FAFD; }
+  .scan .ico { width: 40px; height: 40px; border-radius: 9px; background: var(--blue-soft); color: var(--blue); display: grid; place-items: center; }
+  .scan b { font-weight: 600; display: block; }
+  .scan small { color: var(--ink-mute); font-size: 12.5px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .note { font-size: 12px; color: var(--ink-mute); display: flex; gap: 6px; align-items: flex-start; }
+  .roombig { display: flex; align-items: center; gap: 14px; }
+  .roombig .no { font: 700 40px/1 var(--display); letter-spacing: -.02em; }
+  .trail { display: flex; flex-direction: column; }
+  .trail > div { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; font-size: 13px; }
+  .trail i.d { width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex: none; }
+  .trail b { font-weight: 600; }
+  .trail small { color: var(--ink-mute); display: block; font-size: 12px; }
+  .money { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: 10px; background: var(--green-soft); }
+  .money b { font-weight: 700; color: var(--green); }
+  .toggle { width: 34px; height: 20px; border-radius: 10px; background: #C9D2DB; position: relative; flex: none; }
+  .toggle::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 2px; left: 2px; }
+  .toggle.on { background: var(--blue); }
+  .toggle.on::after { left: 16px; }
+  .opt { display: flex; align-items: center; gap: 10px; font-size: 13.5px; }
+  .opt span:nth-child(2) { flex: 1; }
+  .opt .step { display: flex; align-items: center; border: 1px solid rgba(26,36,48,.16); border-radius: 8px; height: 32px; }
+  .opt .step span { width: 28px; text-align: center; color: var(--ink-soft); }
+  .opt .step b { width: 22px; text-align: center; }
+  .reg { padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--card-deep); }
+  .paper { background: #fff; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 2px 8px rgba(26,36,48,.08); padding: 18px 18px 14px; font-size: 10.5px; color: var(--ink-soft); flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .paper .ph { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--navy); padding-bottom: 8px; }
+  .paper .ph b { font: 600 13px var(--display); color: var(--ink); display: block; }
+  .paper .ph img { width: 20px; height: 24px; }
+  .paper .g { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+  .paper .g div { border-bottom: 1px solid var(--line-soft); padding-bottom: 4px; }
+  .paper .g small { display: block; font-size: 9px; color: var(--ink-mute); }
+  .paper .g span { color: var(--ink); font-weight: 600; font-size: 11px; }
+  .paper .rules { font-size: 9.5px; line-height: 1.45; color: var(--ink-mute); }
+  .paper .sig { margin-top: auto; display: flex; gap: 18px; }
+  .paper .sig div { flex: 1; border-top: 1px solid var(--ink-soft); padding-top: 4px; font-size: 9.5px; }
+  .reg .btn { justify-content: center; }
+</style></head>
+<body data-nav="today">
+<main class="main">
+  <div class="top">
+    <div class="crumb"><small>Check in, booking CA-4K2M</small><h1>Adaeze Okafor <span class="pill pill-green">Paid in full</span></h1></div>
+    <span class="soft" style="font-size:13.5px">Fri 23 to Mon 26 Oct, 3 nights, 2 adults</span>
+    <button class="btn btn-ghost">Cancel <kbd>Esc</kbd></button>
+  </div>
+  <div class="content">
+    <div class="wrap">
+      <section class="card p">
+        <h2>Guest ID <span class="pill pill-grey ok">Needed for the card</span></h2>
+        <div class="scan"><span class="ico"><i data-lucide="scan-line"></i></span><div><b>Put the ID on the scanner</b><small>It fills in the fields, or type them</small></div><span class="pill pill-green" style="margin-left:auto">Scanner ready</span></div>
+        <div class="field"><label>ID type</label><div class="seg"><span class="on">NIN</span><span>Passport</span><span>Driver's licence</span><span>Voter's card</span></div></div>
+        <div class="two">
+          <div class="field"><label>ID number</label><div class="input focus">7012 4458 210</div></div>
+          <div class="field"><label>Nationality</label><div class="input">Nigerian</div></div>
+        </div>
+        <div class="field"><label>Home address</label><div class="input">14 Admiralty Way, Lekki Phase 1, Lagos</div></div>
+        <div class="two">
+          <div class="field"><label>Coming from</label><div class="input">Abuja</div></div>
+          <div class="field"><label>Car plate</label><div class="input"><span class="ph">If parking</span></div></div>
+        </div>
+        <div class="note" style="margin-top:auto"><i data-lucide="shield-check" class="s14"></i>Only front desk and managers can see ID details. They are deleted 12 months after checkout.</div>
+      </section>
+
+      <section class="card p">
+        <h2>Room and keys</h2>
+        <div class="roombig"><span class="no">204</span><div><b style="font-weight:600">One-bedroom suite</b><div class="muted" style="font-size:13px">2nd floor, city side</div></div><span class="pill pill-green" style="margin-left:auto"><i data-lucide="check" class="s14"></i>Ready</span></div>
+        <div class="trail">
+          <div><i class="d" style="background:var(--gold)"></i><div><b>Previous guest left</b><small>Kunle Bello, 11:05 am</small></div></div>
+          <div><i class="d" style="background:var(--green)"></i><div><b>Cleaned by Blessing</b><small>1:22 pm, 34 minutes, all 10 jobs done</small></div></div>
+          <div><i class="d" style="background:var(--blue)"></i><div><b>Checked by Musa, ready</b><small>1:48 pm, on the Centurion Staff app</small></div></div>
+        </div>
+        <button class="btn btn-line btn-sm" style="align-self:flex-start"><i data-lucide="arrow-right-left" class="s14"></i>Give a different room</button>
+        <div class="money"><span>Paid online, 18 Oct</span><b style="white-space:nowrap">Nothing to collect</b></div>
+        <div class="opt"><span class="toggle"></span><span>Hold a deposit for extras</span><span class="muted">₦20,000</span></div>
+        <div class="opt"><span class="toggle on"></span><span>Send Wi-Fi details by SMS</span></div>
+        <div class="opt"><i data-lucide="key-round" class="s16 soft"></i><span>Key cards</span><span class="step"><span>−</span><b>2</b><span>+</span></span></div>
+      </section>
+
+      <section class="card reg">
+        <h2>Registration card <span class="muted" style="font:500 12.5px var(--body);margin-left:auto">A4, HP LaserJet</span></h2>
+        <div class="paper">
+          <div class="ph"><div><b>Centurion Apartments</b>Guest registration, CA-4K2M</div><img src="assets/logo.png" alt=""></div>
+          <div class="g">
+            <div><small>Guest</small><span>Adaeze Okafor</span></div><div><small>Phone</small><span>0806 221 4410</span></div>
+            <div><small>Room</small><span>204, One-bedroom</span></div><div><small>Guests</small><span>2 adults</span></div>
+            <div><small>Arrival</small><span>Fri 23 Oct 2026</span></div><div><small>Departure</small><span>Mon 26 Oct, 12:00 pm</span></div>
+            <div><small>ID</small><span>NIN 7012 4458 210</span></div><div><small>Nationality</small><span>Nigerian</span></div>
+            <div style="grid-column:span 2"><small>Address</small><span>14 Admiralty Way, Lekki Phase 1, Lagos</span></div>
+            <div><small>Paid</small><span>₦360,000, card</span></div><div><small>Checked in by</small><span>Tobi Adewale</span></div>
+          </div>
+          <div class="rules">Checkout is 12:00 pm. Late checkout is charged by the hour. No smoking in the rooms. Visitors leave by 10:00 pm. The hotel is not responsible for valuables left outside the safe.</div>
+          <div class="sig"><div>Guest signature</div><div>Front desk</div></div>
+        </div>
+        <button class="btn btn-primary btn-lg">Print card and check in <kbd>Enter</kbd></button>
+        <button class="btn btn-ghost btn-sm">Check in without printing</button>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="a-chrome.js"></script>
+</body></html>

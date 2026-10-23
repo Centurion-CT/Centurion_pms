@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Booking</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .wrap { flex: 1; display: grid; grid-template-columns: 262px 1fr 344px; gap: 16px; min-height: 0; }
+  .col { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+  .who { background: var(--navy); color: #fff; border-radius: 12px; padding: 16px; }
+  .who small { color: var(--blue-on-dark); font-size: 12px; }
+  .who h2 { font-size: 20px; font-weight: 600; margin: 2px 0 8px; }
+  .who .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .who .rm { display: flex; align-items: baseline; gap: 8px; margin-top: 14px; }
+  .who .rm b { font: 700 34px/1 var(--display); }
+  .who .rm span { color: #C5D6E6; font-size: 13px; }
+  .who .nights { display: flex; gap: 4px; align-items: flex-end; margin-top: 14px; }
+  .who .nights div { flex: 1; display: flex; flex-direction: column; gap: 4px; align-items: center; font-size: 10.5px; color: #9FB6CC; }
+  .who .nights i { width: 100%; height: 34px; border-radius: 3px 3px 0 0; display: block; }
+  .who .cap { font-size: 11.5px; color: #9FB6CC; margin-top: 8px; }
+  .facts { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px 14px; }
+  .facts div { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 13px; }
+  .facts div:first-child { border-top: 0; }
+  .facts span { color: var(--ink-mute); white-space: nowrap; }
+  .facts b { font-weight: 600; text-align: right; }
+  .mid { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+  .card2 { background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+  .card2 header { padding: 14px 18px 8px; display: flex; align-items: center; }
+  .card2 header h2 { font-size: 17px; font-weight: 600; flex: 1; }
+  .ent { display: flex; align-items: center; gap: 10px; padding: 8px 18px; }
+  .ent .ic { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; flex: none; }
+  .ent .ic svg.lucide { width: 14px; height: 14px; }
+  .ent .w { flex: 1; }
+  .ent b { font-weight: 600; font-size: 13.5px; display: block; }
+  .ent small { color: var(--ink-mute); font-size: 12px; }
+  .ent .amt { font-weight: 600; text-align: right; width: 100px; }
+  .ent.pay .amt { color: var(--green); }
+  .tot { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); margin-top: 6px; }
+  .tot div { padding: 12px 18px; }
+  .tot div + div { border-left: 1px solid var(--line-soft); }
+  .tot small { display: block; font-size: 12px; color: var(--ink-mute); }
+  .tot b { font: 700 18px var(--display); }
+  .tl { padding: 4px 18px 14px; }
+  .tl > div { display: flex; gap: 10px; padding: 6px 0; font-size: 13px; }
+  .tl i.d { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex: none; }
+  .tl b { font-weight: 600; }
+  .tl small { color: var(--ink-mute); }
+  .acts { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .acts h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .act { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 9px; font-weight: 600; font-size: 13.5px; }
+  .act small { display: block; font-weight: 500; color: var(--ink-mute); font-size: 12px; }
+  .act kbd { margin-left: auto; }
+  .act.danger { color: var(--rose); }
+  .rules { background: var(--card-deep); border: 1px solid var(--line-soft); border-radius: 12px; padding: 12px 14px; font-size: 12.5px; color: var(--ink-soft); }
+  .rules b { color: var(--ink); font-weight: 600; display: block; margin-bottom: 4px; font-size: 13px; }
+  .rules div { display: flex; justify-content: space-between; padding: 3px 0; }
+</style></head>
+<body data-nav="reservations" data-tabs='[["Today",null,false],["Reservations",null,false],["Sade Lawal, 103","#336799",true]]'>
+<main class="main">
+  <div class="content">
+    <div class="wrap">
+      <div class="col">
+        <section class="who">
+          <small>Booking CA-4Q7S</small>
+          <h2>Sade Lawal</h2>
+          <div class="chips"><span class="pill" style="background:rgba(255,255,255,.12);color:#fff">Confirmed</span><span class="pill" style="background:var(--gold);color:var(--navy)">Deposit paid</span></div>
+          <div class="rm"><b>103</b><span>Deluxe studio</span></div>
+          <div class="nights">
+            <div><i style="background:#fff"></i>Tue</div>
+            <div><i style="background:linear-gradient(to top,#fff 0 50%,rgba(255,255,255,.18) 50%)"></i>Wed</div>
+            <div><i style="background:rgba(255,255,255,.18)"></i>Thu</div>
+          </div>
+          <div class="cap">Arrives in 4 days. White is paid for.</div>
+        </section>
+        <section class="facts">
+          <div><span>Stay</span><b>Tue 27 to Fri 30 Oct</b></div>
+          <div><span>Guests</span><b>1 adult</b></div>
+          <div><span>Arrival</span><b>About 4:00 pm</b></div>
+          <div><span>Phone</span><b>0812 559 0381</b></div>
+          <div><span>Email</span><b>sade.lawal@yahoo.com</b></div>
+          <div><span>Booked</span><b>Website, 16 Oct</b></div>
+        </section>
+      </div>
+
+      <div class="mid">
+        <section class="card2">
+          <header><h2>Bill so far</h2><button class="btn btn-line btn-sm"><i data-lucide="plus" class="s14"></i>Add charge <kbd>F8</kbd></button></header>
+          <div class="ent"><span class="ic" style="background:var(--blue-soft);color:var(--blue)"><i data-lucide="bed-double"></i></span><div class="w"><b>Room 103, 3 nights</b><small>₦85,000 a night, website rate</small></div><span class="amt">₦255,000</span></div>
+          <div class="ent pay"><span class="ic" style="background:var(--green-soft);color:var(--green)"><i data-lucide="credit-card"></i></span><div class="w"><b>Deposit, card online</b><small>Paystack, 16 Oct, ref PSK-81204</small></div><span class="amt">−₦127,500</span></div>
+          <div class="tot"><div><small>Charges</small><b>₦255,000</b></div><div><small>Paid</small><b style="color:var(--green)">₦127,500</b></div><div><small>Due at check-in</small><b style="color:var(--rose)">₦127,500</b></div></div>
+        </section>
+        <section class="card2" style="flex:1">
+          <header><h2>Notes and history</h2><button class="btn btn-ghost btn-sm"><i data-lucide="pen-line" class="s14"></i>Add a note</button></header>
+          <div class="ent" style="background:var(--gold-soft);margin:0 12px;border-radius:9px;padding:10px 12px"><span class="ic" style="background:#fff;color:var(--gold-ink)"><i data-lucide="sticky-note"></i></span><div class="w"><b>From the guest</b><small>Ground floor if possible, I have a bad knee. Late arrival on Tuesday.</small></div></div>
+          <div class="tl">
+            <div><i class="d" style="background:var(--green)"></i><div><b>Booked on the website</b><br><small>Thu 16 Oct, 9:12 pm, deposit paid by card</small></div></div>
+            <div><i class="d" style="background:var(--blue)"></i><div><b>Confirmation sent</b><br><small>Email and SMS, Thu 16 Oct</small></div></div>
+            <div><i class="d" style="background:var(--blue)"></i><div><b>Moved from 104 to 103 for the ground floor</b><br><small>by Joy, Sat 17 Oct</small></div></div>
+            <div><i class="d" style="background:#C9D2DB"></i><div><b>Reminder goes out Monday</b><br><small>SMS the day before arrival, with directions</small></div></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="acts">
+          <h3>What do you want to do?</h3>
+          <div class="act"><i data-lucide="calendar-range" class="s16 soft"></i><div>Change dates<small>103 is free 25 Oct to 1 Nov</small></div><kbd>D</kbd></div>
+          <div class="act"><i data-lucide="arrow-right-left" class="s16 soft"></i><div>Move room<small>Ground floor studios: 101 to 108</small></div><kbd>M</kbd></div>
+          <div class="act"><i data-lucide="log-in" class="s16 soft"></i><div>Check in early<small>103 is booked until Sun 25 Oct</small></div><kbd>F5</kbd></div>
+          <div class="act"><i data-lucide="send" class="s16 soft"></i><div>Resend confirmation<small>Email and SMS</small></div><kbd>R</kbd></div>
+          <div class="act"><i data-lucide="user-x" class="s16 soft"></i><div>Mark as no-show<small>From Tue 27 Oct, 11:59 pm</small></div></div>
+          <div class="act danger"><i data-lucide="circle-x" class="s16"></i><div>Cancel the booking<small>Refund depends on the notice given</small></div></div>
+        </section>
+        <section class="rules">
+          <b>If she cancels</b>
+          <div><span>More than 48 hours before</span><span>Full refund, ₦127,500</span></div>
+          <div><span>Within 48 hours</span><span>Keep 1 night, ₦85,000</span></div>
+          <div><span>No-show</span><span>Keep the deposit</span></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+</body></html>

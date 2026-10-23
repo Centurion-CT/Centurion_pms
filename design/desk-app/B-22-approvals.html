@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Approvals</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .wrap { flex: 1; display: grid; grid-template-columns: 400px 1fr; gap: 16px; min-height: 0; }
+  .list { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+  .lt { font: 600 12.5px var(--body); color: var(--ink-mute); padding: 4px 2px 0; }
+  .rq { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; }
+  .rq.on { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(51,103,153,.14); }
+  .rq .ic { width: 36px; height: 36px; border-radius: 9px; display: grid; place-items: center; flex: none; }
+  .rq .w { flex: 1; min-width: 0; }
+  .rq .t1 { display: flex; align-items: center; gap: 8px; }
+  .rq b { font-weight: 600; }
+  .rq .amt { margin-left: auto; font-weight: 700; white-space: nowrap; }
+  .rq small { display: block; color: var(--ink-mute); font-size: 12.5px; margin-top: 2px; }
+  .rq.past { padding: 9px 14px; }
+  .rq.past .ic { width: 28px; height: 28px; }
+  .det { background: #fff; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .dh { padding: 18px 22px; border-bottom: 1px solid var(--line-soft); display: flex; gap: 14px; align-items: flex-start; }
+  .dh h2 { font-size: 21px; font-weight: 600; }
+  .dh small { color: var(--ink-mute); font-size: 13px; }
+  .db { padding: 18px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; flex: 1; min-height: 0; align-content: start; }
+  .why { grid-column: span 2; background: var(--card-deep); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+  .why .by { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-mute); margin-bottom: 6px; }
+  .why .by .avatar { width: 22px; height: 22px; font-size: 9px; }
+  .box h3 { font: 600 13px var(--body); color: var(--ink-soft); margin-bottom: 8px; }
+  .l { display: flex; justify-content: space-between; font-size: 13.5px; padding: 7px 0; border-top: 1px solid var(--line-soft); }
+  .l:first-of-type { border-top: 0; }
+  .l span:first-child { color: var(--ink-soft); }
+  .l b { font-weight: 600; }
+  .l.t { border-top: 1px solid var(--line); font-weight: 700; }
+  .l .was { text-decoration: line-through; color: var(--ink-mute); font-weight: 500; margin-right: 8px; }
+  .hist { display: flex; gap: 5px; align-items: flex-end; height: 40px; margin: 4px 0 6px; }
+  .hist i { width: 26px; border-radius: 3px 3px 0 0; background: var(--blue-light); display: block; }
+  .hist i.now { background: var(--navy); }
+  .df { border-top: 1px solid var(--line); padding: 14px 22px; display: flex; gap: 10px; align-items: center; }
+  .df .input { flex: 1; }
+  .rule { display: flex; gap: 8px; align-items: center; padding: 10px 14px; border-radius: 10px; background: #fff; border: 1px dashed var(--line); font-size: 12.5px; color: var(--ink-soft); }
+</style></head>
+<body data-nav="approvals" data-tabs='[["Today",null,false],["Approvals",null,true]]'>
+<main class="main">
+  <div class="content">
+    <div class="ph"><div class="t"><small>Discounts, refunds and waivers the front desk asked for. Only managers decide.</small><h1>Approvals</h1></div>
+      <div class="seg"><span class="on">Waiting 3</span><span>Decided today 2</span><span>All</span></div></div>
+    <div class="wrap">
+      <div class="list">
+        <div class="lt">Waiting for you</div>
+        <div class="rq on"><span class="ic" style="background:#EFEBFB;color:#6B4BC4"><i data-lucide="badge-percent" class="s16"></i></span><div class="w"><div class="t1"><b>10% off for Kemi Ogunleye</b><span class="amt">₦51,000</span></div><small>102, asked by Tobi at 10:12 am</small></div></div>
+        <div class="rq"><span class="ic" style="background:var(--gold-soft);color:var(--gold-ink)"><i data-lucide="clock" class="s16"></i></span><div class="w"><div class="t1"><b>Waive late checkout, Ngozi Chukwu</b><span class="amt">₦20,000</span></div><small>210, asked by Tobi at 1:53 pm</small></div></div>
+        <div class="rq"><span class="ic" style="background:var(--rose-soft);color:var(--rose)"><i data-lucide="undo-2" class="s16"></i></span><div class="w"><div class="t1"><b>Refund one night, Peter Udo</b><span class="amt">₦85,000</span></div><small>105, booking for 26 Oct, asked by Joy at 9:30 am</small></div></div>
+        <div class="lt" style="margin-top:8px">Decided today</div>
+        <div class="rq past"><span class="ic" style="background:var(--green-soft);color:var(--green)"><i data-lucide="check" class="s14"></i></span><div class="w"><div class="t1"><b>Bill Dangote Group later, 203</b><span class="pill pill-green">Approved</span></div><small>By you at 8:40 am</small></div></div>
+        <div class="rq past"><span class="ic" style="background:var(--rose-soft);color:var(--rose)"><i data-lucide="x" class="s14"></i></span><div class="w"><div class="t1"><b>Free airport pickup, 104</b><span class="pill pill-rose">Declined</span></div><small>By you at 11:35 am: not in the corporate rate</small></div></div>
+        <div class="rule" style="margin-top:auto"><i data-lucide="info" class="s16"></i>Front desk sees the answer and your reason on their own Approvals page and on the guest's bill.</div>
+      </div>
+
+      <section class="det">
+        <div class="dh">
+          <div style="flex:1"><small>Discount, booking CA-3T7K</small><h2>10% off for Kemi Ogunleye</h2><small>102, Studio. In-house, Thu 22 to Wed 28 Oct, night 2 of 6</small></div>
+          <span class="pill pill-gold">Waiting 3 h 38 min</span>
+        </div>
+        <div class="db">
+          <div class="why"><div class="by"><span class="avatar" style="background:var(--blue);color:#fff">TA</span>Tobi Adewale, front desk, 10:12 am</div>"She complained about generator noise on the first night. She's a returning guest, 3rd stay. I moved her higher up the list for a quiet room if one frees up."</div>
+          <div class="box">
+            <h3>What changes on her bill</h3>
+            <div class="l"><span>6 nights at ₦85,000</span><b>₦510,000</b></div>
+            <div class="l"><span>Discount, 10%</span><b style="color:var(--green)">−₦51,000</b></div>
+            <div class="l"><span>Already paid</span><b>₦510,000</b></div>
+            <div class="l t"><span>She gets back</span><b>₦51,000 to her wallet</b></div>
+          </div>
+          <div class="box">
+            <h3>Kemi with us</h3>
+            <div class="hist" title="Nights per stay"><i style="height:16px"></i><i style="height:24px"></i><i class="now" style="height:40px"></i></div>
+            <div class="l"><span>Stays</span><b>3, since March 2025</b></div>
+            <div class="l"><span>Spent with us</span><b>₦1,240,000</b></div>
+            <div class="l"><span>Discounts before</span><b>None</b></div>
+          </div>
+        </div>
+        <div class="df">
+          <div class="input"><span class="ph">Reason for Tobi, needed to decline</span></div>
+          <div class="seg"><span class="on">10%</span><span>5%</span><span>Other</span></div>
+          <button class="btn btn-line">Decline <kbd>D</kbd></button>
+          <button class="btn btn-primary">Approve 10% <kbd>A</kbd></button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+<script>
+  // Seen by a manager: swap the operator card and the badge count.
+  const me = document.querySelector('.side .me');
+  me.querySelector('.avatar').textContent = 'BA';
+  me.querySelector('b').textContent = 'Bola Adamu';
+  me.querySelector('small').textContent = 'Manager';
+  document.querySelectorAll('.side a').forEach(a => { if (a.textContent.includes('Approvals')) a.querySelector('.badge').textContent = '3'; });
+</script>
+</body></html>

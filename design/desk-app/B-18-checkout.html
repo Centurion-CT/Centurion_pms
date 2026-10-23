@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Check out</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  iframe { position: absolute; z-index: 0; inset: 0; width: 1440px; height: 900px; border: 0; filter: brightness(.62) saturate(.85); }
+  .sheet { position: absolute; z-index: 2; top: 32px; right: 0; bottom: 0; width: 660px; background: var(--mist); box-shadow: -12px 0 40px rgba(15,36,56,.3); display: flex; flex-direction: column; }
+  .sh { background: #fff; padding: 18px 24px 16px; border-bottom: 1px solid var(--line); }
+  .sh .r1 { display: flex; align-items: flex-start; gap: 12px; }
+  .sh small { font-size: 12.5px; color: var(--ink-mute); }
+  .sh h2 { font-size: 22px; font-weight: 600; display: flex; gap: 10px; align-items: center; }
+  .sh .x { margin-left: auto; }
+  .sb { flex: 1; padding: 14px 24px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .bill { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+  .bill .l { display: flex; justify-content: space-between; font-size: 13.5px; padding: 3px 0; }
+  .bill .l span:first-child { color: var(--ink-soft); }
+  .bill .l.t { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 9px; font-weight: 700; }
+  .settle { background: #fff; border: 1px solid var(--blue); box-shadow: 0 0 0 3px rgba(51,103,153,.12); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .settle .hd { display: flex; align-items: center; gap: 10px; }
+  .settle .hd b { font: 600 15px var(--display); flex: 1; }
+  .settle .hd .amt { font: 700 22px var(--display); color: var(--rose); }
+  .methods { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .m { height: 44px; border: 1px solid var(--line); border-radius: 9px; display: flex; align-items: center; gap: 8px; padding: 0 10px; font-weight: 600; font-size: 13px; }
+  .m.on { border: 2px solid var(--blue); background: #F5F9FC; padding: 0 9px; }
+  .m.off { opacity: .45; }
+  .m kbd { margin-left: auto; }
+  .row2 { display: flex; gap: 10px; align-items: center; }
+  .row2 .input { flex: 1; }
+  .q { background: var(--gold-soft); border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .q b { font-weight: 600; }
+  .q .w { flex: 1; }
+  .q small { color: var(--gold-ink); display: block; font-size: 12px; }
+  .checks { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 2px 16px; }
+  .ck { display: flex; align-items: center; gap: 12px; padding: 7px 0; border-top: 1px solid var(--line-soft); font-size: 13.5px; }
+  .ck:first-child { border-top: 0; }
+  .ck .w { flex: 1; }
+  .ck .w b { font-weight: 600; display: block; }
+  .ck .w small { color: var(--ink-mute); font-size: 12px; }
+  .tick { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid rgba(26,36,48,.3); flex: none; display: grid; place-items: center; }
+  .tick.on { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .step { display: flex; align-items: center; border: 1px solid rgba(26,36,48,.16); border-radius: 7px; height: 30px; }
+  .step span { width: 26px; text-align: center; color: var(--ink-soft); }
+  .step b { width: 40px; text-align: center; font-size: 13px; }
+  .sf { background: #fff; border-top: 1px solid var(--line); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+  .lock { flex: 1; display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--rose); font-weight: 600; }
+  .btn[disabled] { background: #C9D2DB; color: #fff; cursor: not-allowed; }
+  .btn[disabled] kbd { background: rgba(255,255,255,.2); border-color: rgba(255,255,255,.3); color: #fff; }
+</style></head>
+<body>
+<iframe src="B-today.html" title="Today behind the sheet"></iframe>
+<aside class="sheet">
+  <div class="sh">
+    <div class="r1">
+      <div><small>Check out, CA-6W1N, room 210</small><h2>Ngozi Chukwu <span class="pill pill-gold">Leaving today</span><span class="pill pill-rose">Late</span></h2><div class="soft" style="font-size:13px;margin-top:2px">Tue 20 to Fri 23 Oct, 3 nights, One-bedroom suite</div></div>
+      <button class="btn btn-ghost x">Close <kbd>Esc</kbd></button>
+    </div>
+  </div>
+  <div class="sb">
+    <section class="bill">
+      <div class="l"><span>Room 210, 3 nights at ₦120,000</span><span>₦360,000</span></div>
+      <div class="l"><span>Bar &amp; kitchen, 3 receipts</span><span>₦29,500</span></div>
+      <div class="l"><span>Laundry</span><span>₦12,000</span></div>
+      <div class="l"><span>Paid, card on booking</span><span class="paid">−₦360,000</span></div>
+      <div class="l t"><span>Still to pay</span><span style="color:var(--rose)">₦41,500</span></div>
+    </section>
+    <section class="settle">
+      <div class="hd"><b>Settle the bill</b><span class="amt">₦41,500</span></div>
+      <div class="methods">
+        <div class="m"><i data-lucide="banknote" class="s16 soft"></i>Cash<kbd>1</kbd></div>
+        <div class="m on"><i data-lucide="landmark" class="s16" style="color:var(--blue)"></i>Transfer<kbd>3</kbd></div>
+        <div class="m"><i data-lucide="credit-card" class="s16 soft"></i>POS card<kbd>2</kbd></div>
+        <div class="m off"><i data-lucide="wallet" class="s16 soft"></i>Wallet ₦0</div>
+      </div>
+      <div class="row2"><div class="input focus"><span class="ph">Transfer reference or sender name</span></div><button class="btn btn-primary">Take ₦41,500 <kbd>Ctrl Enter</kbd></button></div>
+    </section>
+    <div class="q"><i data-lucide="clock" class="s16" style="color:var(--gold-ink)"></i><div class="w"><b>Late checkout, due out 12:00 pm</b><small>It's 1:52 pm. Charge for the extra time, or waive it with a manager's OK.</small></div><button class="btn btn-line btn-sm">Add ₦20,000</button><button class="btn btn-ghost btn-sm">Ask to waive</button></div>
+    <section class="checks">
+      <div class="ck"><span class="tick on"><i data-lucide="check" class="s14"></i></span><div class="w"><b>Key cards returned</b><small>2 given at check-in</small></div><span class="step"><span>−</span><b>2 of 2</b><span>+</span></span></div>
+      <div class="ck"><span class="tick on"><i data-lucide="check" class="s14"></i></span><div class="w"><b>Send 210 to housekeeping</b><small>Ada is next in the Staff app. Ayo Fashola arrives in 210 on Mon 26.</small></div><span class="pill pill-green">Ada</span></div>
+      <div class="ck"><span class="tick on"><i data-lucide="check" class="s14"></i></span><div class="w"><b>Print the receipt</b><small>80 mm on the TM-T20, and email a copy</small></div></div>
+      <div class="ck"><span class="tick on"><i data-lucide="check" class="s14"></i></span><div class="w"><b>Ask for feedback by SMS</b><small>Tomorrow at 10:00 am, a two-question survey</small></div></div>
+    </section>
+  </div>
+  <div class="sf">
+    <span class="lock"><i data-lucide="lock" class="s16"></i>Locked until ₦41,500 is paid</span>
+    <button class="btn btn-line">Bill it later, ask a manager</button>
+    <button class="btn btn-lg" disabled><i data-lucide="log-out" class="s16"></i>Check out <kbd>F6</kbd></button>
+  </div>
+</aside>
+<script>lucide.createIcons();</script>
+</body></html>

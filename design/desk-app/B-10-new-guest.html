@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B New booking, guest</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .wrap { flex: 1; display: grid; grid-template-columns: 1fr 330px; gap: 22px; min-height: 0; }
+  .steps { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+  .st { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 13px 16px; display: flex; align-items: center; gap: 14px; }
+  .st .no { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; flex: none; }
+  .st.done .no { background: var(--green-soft); color: var(--green); }
+  .st.todo .no { background: var(--card-deep); color: var(--ink-mute); }
+  .st.todo { color: var(--ink-mute); }
+  .st b { font-weight: 600; }
+  .st .sum { color: var(--ink-soft); flex: 1; }
+  .st.cur { flex-direction: column; align-items: stretch; padding: 16px; flex: 1; min-height: 0; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(51,103,153,.12); gap: 14px; }
+  .st.cur .hd { display: flex; align-items: center; gap: 14px; }
+  .st.cur .no { background: var(--blue); color: #fff; }
+  .st.cur h2 { font-size: 17px; font-weight: 600; flex: 1; }
+  .foot { margin-top: auto; display: flex; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
+  .foot .muted { flex: 1; font-size: 13px; }
+  .look { display: grid; grid-template-columns: 260px 1fr; gap: 14px; align-items: stretch; }
+  .match { border: 2px solid var(--green); background: #F4FBF7; border-radius: 10px; padding: 10px 12px; display: flex; gap: 12px; align-items: center; }
+  .match b { font-weight: 600; }
+  .match small { color: var(--ink-soft); font-size: 12.5px; display: block; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .who-pays { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opt { border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; display: flex; gap: 11px; align-items: flex-start; }
+  .opt.on { border: 2px solid var(--blue); padding: 10px 12px; background: #F5F9FC; }
+  .opt .rad { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(26,36,48,.3); margin-top: 2px; flex: none; }
+  .opt.on .rad { border: 5px solid var(--blue); }
+  .opt b { font-weight: 600; display: block; }
+  .opt small { color: var(--ink-mute); font-size: 12.5px; }
+  .sublabel { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+  .rcpt-wrap { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .rcpt-wrap > small { font-size: 12.5px; color: var(--ink-mute); align-self: flex-start; }
+  .rcpt { width: 300px; background: #fff; padding: 22px 20px 26px; font: 12.5px/1.55 ui-monospace, 'Cascadia Mono', Consolas, monospace; color: #222; box-shadow: 0 1px 3px rgba(26,36,48,.12), 0 8px 24px rgba(26,36,48,.08);
+    -webkit-mask: radial-gradient(circle 6px at 50% 100%, transparent 5.5px, #000 6px) 0 0 / 14px 100% repeat-x; }
+  .rcpt .c { text-align: center; }
+  .rcpt img { width: 26px; height: 30px; display: block; margin: 0 auto 6px; filter: grayscale(1) contrast(1.4); }
+  .rcpt hr { border: 0; border-top: 1px dashed #999; margin: 9px 0; }
+  .rcpt .l { display: flex; justify-content: space-between; }
+  .rcpt .big { font-weight: 700; font-size: 15px; }
+  .rcpt .pend { color: #999; }
+  .rcpt .new { background: #FFF3C4; }
+</style></head>
+<body data-nav="reservations" data-tabs='[["Today",null,false],["Emeka Nwosu, 205","#D92D5B",false],["New booking",null,true]]'>
+<main class="main">
+  <div class="content">
+    <div class="ph"><div class="t"><small>Phone booking. Nothing is booked until step 4.</small><h1>New booking</h1></div>
+      <span class="muted" style="font-size:13px"><kbd>Enter</kbd> next step, <kbd>Shift Tab</kbd> back, <kbd>Ctrl W</kbd> close tab</span></div>
+    <div class="wrap">
+      <div class="steps">
+        <div class="st done"><span class="no"><i data-lucide="check" class="s16"></i></span><b>Dates and guests</b><span class="sum">Sat 31 Oct to Tue 3 Nov, 3 nights, 2 adults</span><button class="btn btn-ghost btn-sm">Change</button></div>
+        <div class="st done"><span class="no"><i data-lucide="check" class="s16"></i></span><b>Room</b><span class="sum">207, One-bedroom suite, ₦120,000 a night</span><button class="btn btn-ghost btn-sm">Change</button></div>
+        <div class="st cur">
+          <div class="hd"><span class="no">3</span><h2>Guest</h2><span class="muted" style="font-size:13px">Type a phone number or a name</span></div>
+          <div class="look">
+            <div class="field"><label>Phone number</label><div class="input focus">0803 412 7756</div></div>
+            <div class="match"><span class="avatar" style="background:#fff;color:var(--green)">TB</span><div style="flex:1"><b>Tolani Bankole, stayed twice</b><small>June and August, both in 207. Works at Dangote Group. Likes extra pillows.</small></div><span class="pill pill-green">Matched</span><button class="btn btn-line btn-sm">Someone else</button></div>
+          </div>
+          <div class="grid3">
+            <div class="field"><label>Full name</label><div class="input">Tolani Bankole</div></div>
+            <div class="field"><label>Email for the confirmation</label><div class="input">tolani.bankole@dangote.com</div></div>
+            <div class="field"><label>Second guest (optional)</label><div class="input"><span class="ph">Name</span></div></div>
+          </div>
+          <span class="sublabel">Who pays</span>
+          <div class="who-pays">
+            <div class="opt on"><span class="rad"></span><div><b>Tolani pays</b><small>₦120,000 a night. Take a deposit or the full amount in the next step.</small></div></div>
+            <div class="opt"><span class="rad"></span><div><b>Bill to Dangote Group</b><small>Company rate ₦102,000 a night, invoiced monthly. Needs their booking letter or LPO number.</small></div></div>
+          </div>
+          <div class="field"><label>Note for the desk and housekeeping</label><div class="input">Extra pillows. Arriving from the airport around 7 pm.</div></div>
+          <div class="foot"><span class="muted">Returning guests keep their history, wallet and preferences. New numbers create a guest record.</span><button class="btn btn-primary">Next, payment <kbd>Enter</kbd></button></div>
+        </div>
+        <div class="st todo"><span class="no">4</span><b>Payment and confirm</b><span class="sum">Cash, transfer, card on POS or wallet. Or hold for 2 hours.</span></div>
+      </div>
+      <div class="rcpt-wrap">
+        <small>What the receipt will say</small>
+        <div class="rcpt">
+          <img src="assets/logo.png" alt="">
+          <div class="c"><b>CENTURION APARTMENTS</b><br>Booking receipt<br>Fri 23 Oct 2026, 1:53 pm</div>
+          <hr>
+          <div class="l new"><span>Guest</span><span>Tolani Bankole</span></div>
+          <div class="l new"><span>Phone</span><span>0803 412 7756</span></div>
+          <hr>
+          <div class="l"><span>Room</span><span>207 One-bed</span></div>
+          <div class="l"><span>Arrive</span><span>Sat 31 Oct</span></div>
+          <div class="l"><span>Leave</span><span>Tue 3 Nov</span></div>
+          <div class="l"><span>Guests</span><span>2 adults</span></div>
+          <hr>
+          <div class="l"><span>3 nights x 120,000</span><span>360,000</span></div>
+          <div class="l pend"><span>Discount</span><span>none</span></div>
+          <hr>
+          <div class="l big"><span>TOTAL NGN</span><span>360,000</span></div>
+          <div class="l pend"><span>Paid</span><span>step 4</span></div>
+          <hr>
+          <div class="c">Served by Tobi<br>Checkout 12:00 noon<br>Thank you for staying with us</div>
+        </div>
+        <span class="muted" style="font-size:12.5px">Yellow lines changed in this step</span>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+</body></html>

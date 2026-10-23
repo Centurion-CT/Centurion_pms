@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Calendar</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<script src="rooms.js"></script><script src="bookings.js"></script>
+<style>
+  .wrap { flex: 1; display: grid; grid-template-columns: 1fr 312px; gap: 16px; min-height: 0; }
+  .cal { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+  .head, .grow { display: grid; grid-template-columns: 112px repeat(14, 1fr); }
+  .head { background: var(--navy); color: #fff; }
+  .head .c { padding: 8px 0 7px; display: flex; flex-direction: column; align-items: center; gap: 2px; border-left: 1px solid rgba(255,255,255,.06); }
+  .head .c small { font-size: 11px; color: #9FB6CC; }
+  .head .c b { font: 700 15px var(--display); }
+  .head .c.today { background: var(--blue); }
+  .head .c.today small { color: #DCE7F1; }
+  .head .c.wk { background: rgba(255,255,255,.04); }
+  .occ { height: 26px; display: flex; align-items: flex-end; margin-bottom: 4px; }
+  .occ i { width: 22px; display: block; background: #8DB6DE; border-radius: 2px 2px 0 0; }
+  .today .occ i { background: #fff; }
+  .head .lab { padding: 10px 12px; font-size: 11.5px; color: #9FB6CC; display: flex; align-items: flex-end; }
+  .rows { position: relative; flex: 1; overflow: hidden; }
+  .grow { height: 30px; border-bottom: 1px solid var(--line-soft); }
+  .grow > div { border-left: 1px solid var(--line-soft); }
+  .grow .wk { background: #F8FAFC; }
+  .grow .td { background: rgba(51,103,153,.05); }
+  .grow .rl { border-left: 0; padding: 0 12px; display: flex; align-items: center; font: 700 13.5px var(--display); }
+  .grow.cat { height: 26px; background: var(--card-deep); }
+  .grow.cat .rl { font: 600 12px var(--body); color: var(--ink-soft); grid-column: span 15; }
+  .stay { position: absolute; height: 24px; border-radius: 12px; font-size: 11.5px; font-weight: 600; padding: 0 8px 0 3px; display: flex; align-items: center; gap: 5px; white-space: nowrap; overflow: hidden; z-index: 2; }
+  .stay .ini { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 8.5px; font-weight: 700; flex: none; background: rgba(255,255,255,.22); }
+  .k-in { background: var(--navy); color: #fff; }
+  .k-booked { background: var(--blue); color: #fff; }
+  .k-owed { background: var(--blue); color: #fff; }
+  .k-owed .ini { background: var(--gold); color: var(--navy); }
+  .k-co { background: #DCE9F5; color: var(--blue-deep); }
+  .k-co .ini { background: #fff; }
+  .k-hold { background: #fff; color: var(--blue-deep); border: 1.5px dashed var(--blue); }
+  .k-hold .ini { background: var(--blue-soft); }
+  .k-ooo { background: repeating-linear-gradient(135deg, #C9D2DB 0 4px, #EDF1F4 4px 8px); color: var(--ink-soft); }
+  .k-ooo .ini { display: none; }
+  .k-over { background: var(--rose); color: #fff; }
+  .stay.cut { border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
+  .stay.sel { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--gold); }
+  .stay.sel::before, .stay.sel::after { content: ''; position: absolute; top: 5px; width: 3px; height: 14px; border-radius: 2px; background: rgba(255,255,255,.7); }
+  .stay.sel::after { right: 4px; }
+  .stay.sel::before { display: none; }
+  .bar { display: flex; align-items: center; gap: 10px; }
+  .bar .range { font: 600 15px var(--display); }
+  .drawer { background: #fff; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
+  .drawer .dh { background: var(--navy); color: #fff; padding: 16px; }
+  .drawer .dh small { color: var(--blue-on-dark); font-size: 12px; }
+  .drawer .dh h2 { font-size: 19px; font-weight: 600; margin: 2px 0 2px; }
+  .drawer .dh p { color: #C5D6E6; font-size: 13px; }
+  .nights { display: flex; gap: 3px; margin-top: 12px; align-items: flex-end; }
+  .nights i { flex: 1; height: 26px; border-radius: 3px 3px 0 0; background: rgba(255,255,255,.18); }
+  .nights i.p { background: #fff; }
+  .nights i.t { background: var(--gold); }
+  .drawer .db { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .drawer .ln { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--line-soft); }
+  .drawer .ln span:first-child { color: var(--ink-mute); }
+  .drawer .ln b { font-weight: 600; }
+  .drawer .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .drawer .acts .btn { justify-content: center; }
+  .hint { margin-top: auto; font-size: 12.5px; color: var(--ink-mute); display: flex; gap: 8px; align-items: flex-start; padding-top: 12px; }
+</style></head>
+<body data-nav="calendar" data-tabs='[["Today",null,false],["Room calendar",null,true],["Emeka Nwosu, 205","#D92D5B",false]]'>
+<main class="main">
+  <div class="content">
+    <div class="ph">
+      <div class="t"><small>Click a stay to see it, drag its ends to change dates, drag it up or down to move rooms</small><h1>Room calendar</h1></div>
+      <div class="bar">
+        <div class="seg"><span>Week</span><span class="on">2 weeks</span><span>Month</span></div>
+        <button class="btn btn-line btn-sm"><i data-lucide="chevron-left" class="s16"></i></button>
+        <span class="range">23 Oct to 5 Nov</span>
+        <button class="btn btn-line btn-sm"><i data-lucide="chevron-right" class="s16"></i></button>
+        <div class="seg"><span class="on">All rooms</span><span>Free only</span></div>
+      </div>
+    </div>
+    <div class="wrap">
+      <section class="cal"><div class="head" id="head"></div><div class="rows" id="rows"></div></section>
+      <aside class="drawer">
+        <div class="dh">
+          <small>In-house, CA-3T7K</small>
+          <h2>Kemi Ogunleye</h2>
+          <p>102, Studio. Thu 22 to Wed 28 Oct</p>
+          <div class="nights" title="Each bar is a night"><i class="p"></i><i class="t"></i><i></i><i></i><i></i><i></i></div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#9FB6CC;margin-top:4px"><span>Thu</span><span>tonight</span><span>Wed</span></div>
+        </div>
+        <div class="db">
+          <div class="ln"><span>Nights</span><b>6, night 2 tonight</b></div>
+          <div class="ln"><span>Room total</span><b>₦510,000</b></div>
+          <div class="ln"><span>Paid</span><b class="paid">₦510,000</b></div>
+          <div class="ln"><span>Bar tab</span><b class="due">₦18,500</b></div>
+          <div class="ln"><span>Booked</span><b>Website, 9 Oct</b></div>
+          <div class="acts">
+            <button class="btn btn-primary btn-sm">Open in a tab <kbd>Enter</kbd></button>
+            <button class="btn btn-line btn-sm">Take ₦18,500</button>
+            <button class="btn btn-line btn-sm">Extend</button>
+            <button class="btn btn-line btn-sm">Move room</button>
+          </div>
+          <div class="hint"><i data-lucide="mouse-pointer-2" class="s16"></i>Free nights show as gaps. Click one, or drag across several, to start a booking there.</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+<script>
+  const LAB = 112, W = (1180 - 312 - 16 - 2 - LAB) / 14, RH = 30, CH = 26;
+  document.getElementById('head').innerHTML = '<div class="lab">Booked</div>' + DAYS.map((d, i) => {
+    const n = nightsBooked(i);
+    return `<div class="c ${i === 0 ? 'today' : d.wknd ? 'wk' : ''}"><div class="occ"><i style="height:${Math.round(n / 24 * 26)}px"></i></div><small>${d.dow}</small><b>${d.day}</b></div>`;
+  }).join('');
+  const rows = document.getElementById('rows');
+  let y = 0, html = '', pos = {};
+  HOUSE.forEach(([name, rooms]) => {
+    html += `<div class="grow cat"><div class="rl">${name}</div></div>`; y += CH;
+    rooms.forEach(([r]) => { pos[r] = y; y += RH;
+      html += `<div class="grow"><div class="rl">${r}</div>${DAYS.map((d, i) => `<div class="${i === 0 ? 'td' : d.wknd ? 'wk' : ''}"></div>`).join('')}</div>`; });
+  });
+  rows.innerHTML = html;
+  const ini = g => g.split(/[ ,]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  STAYS.forEach(([r, s, n, g, k]) => {
+    const end = Math.min(14, s + n); if (end <= 0) return;
+    const left = LAB + Math.max(0, s) * W + (s >= 0 ? W * .5 : 0) + 2;
+    const right = LAB + end * W + (s + n <= 14 ? W * .5 : 0) - 2;
+    const sel = r === '102' && s === -1 ? 'sel' : '';
+    rows.insertAdjacentHTML('beforeend', `<div class="stay k-${k} ${s < 0 ? 'cut' : ''} ${sel}" style="top:${pos[r] + 3}px;left:${left}px;width:${right - left}px"><span class="ini">${ini(g)}</span>${g}</div>`);
+  });
+</script>
+<script src="b-chrome.js"></script>
+</body></html>

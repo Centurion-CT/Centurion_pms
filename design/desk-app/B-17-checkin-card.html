@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Check in, card and keys</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  iframe { position: absolute; z-index: 0; inset: 0; width: 1440px; height: 900px; border: 0; filter: brightness(.62) saturate(.85); }
+  .sheet { position: absolute; z-index: 2; top: 32px; right: 0; bottom: 0; width: 660px; background: var(--mist); box-shadow: -12px 0 40px rgba(15,36,56,.3); display: flex; flex-direction: column; }
+  .sh { background: #fff; padding: 18px 24px 0; border-bottom: 1px solid var(--line); }
+  .sh .r1 { display: flex; align-items: flex-start; gap: 12px; }
+  .sh small { font-size: 12.5px; color: var(--ink-mute); }
+  .sh h2 { font-size: 22px; font-weight: 600; display: flex; gap: 10px; align-items: center; }
+  .sh .x { margin-left: auto; }
+  .stepper { display: flex; margin-top: 16px; }
+  .stepper div { flex: 1; display: flex; align-items: center; gap: 8px; padding: 10px 0 12px; font-weight: 600; font-size: 13.5px; color: var(--ink-mute); border-bottom: 3px solid transparent; }
+  .stepper div span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: var(--card-deep); }
+  .stepper div.on { color: var(--ink); border-color: var(--blue); }
+  .stepper div.on span { background: var(--blue); color: #fff; }
+  .stepper div.done { color: var(--ink-soft); }
+  .stepper div.done span { background: var(--green-soft); color: var(--green); }
+  .sb { flex: 1; padding: 18px 24px; display: grid; grid-template-columns: 1fr 236px; gap: 16px; overflow: hidden; }
+  .paper { background: #fff; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 2px 10px rgba(26,36,48,.1); padding: 20px 20px 16px; font-size: 10.5px; color: var(--ink-soft); display: flex; flex-direction: column; gap: 9px; }
+  .paper .ph { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--navy); padding-bottom: 8px; }
+  .paper .ph b { font: 600 13px var(--display); color: var(--ink); display: block; }
+  .paper .ph img { width: 20px; height: 24px; }
+  .paper .g { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+  .paper .g div { border-bottom: 1px solid var(--line-soft); padding-bottom: 4px; }
+  .paper .g small { display: block; font-size: 9px; color: var(--ink-mute); }
+  .paper .g span { color: var(--ink); font-weight: 600; font-size: 11px; }
+  .paper .rules { font-size: 9.5px; line-height: 1.45; color: var(--ink-mute); }
+  .paper .sig { margin-top: auto; display: flex; gap: 18px; padding-top: 26px; }
+  .paper .sig div { flex: 1; border-top: 1px solid var(--ink-soft); padding-top: 4px; font-size: 9.5px; }
+  .side2 { display: flex; flex-direction: column; gap: 12px; }
+  .box { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .box h3 { font-size: 14.5px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .box p { font-size: 12.5px; color: var(--ink-mute); }
+  .pr { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .pr .dot { background: var(--green); }
+  .step { display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(26,36,48,.16); border-radius: 9px; height: 44px; }
+  .step span { width: 44px; display: grid; place-items: center; color: var(--ink-soft); font-size: 18px; }
+  .step b { font: 700 22px var(--display); }
+  .enc { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 9px; background: var(--card-deep); font-size: 12.5px; color: var(--ink-soft); }
+  .enc .ico { width: 30px; height: 30px; border-radius: 7px; background: #fff; display: grid; place-items: center; color: var(--blue); flex: none; }
+  .sum { background: var(--navy); color: #fff; border: 0; }
+  .sum .l { display: flex; justify-content: space-between; font-size: 12.5px; color: #C5D6E6; }
+  .sum .l b { color: #fff; font-weight: 600; }
+  .sf { background: #fff; border-top: 1px solid var(--line); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+  .sf .muted { flex: 1; font-size: 13px; }
+</style></head>
+<body>
+<iframe src="B-today.html" title="Today behind the sheet"></iframe>
+<aside class="sheet">
+  <div class="sh">
+    <div class="r1">
+      <div><small>Check in, CA-4K2M, room 204</small><h2>Adaeze Okafor <span class="pill pill-green">Paid in full</span></h2></div>
+      <button class="btn btn-ghost x">Close <kbd>Esc</kbd></button>
+    </div>
+    <div class="stepper">
+      <div class="done"><span><i data-lucide="check" class="s14"></i></span>ID</div><div class="done"><span><i data-lucide="check" class="s14"></i></span>Room</div><div class="on"><span>3</span>Card</div><div class="on"><span>4</span>Keys</div>
+    </div>
+  </div>
+  <div class="sb">
+    <div class="paper">
+      <div class="ph"><div><b>Centurion Apartments</b>Guest registration, CA-4K2M</div><img src="assets/logo.png" alt=""></div>
+      <div class="g">
+        <div><small>Guest</small><span>Adaeze Chinwe Okafor</span></div><div><small>Phone</small><span>0806 221 4410</span></div>
+        <div><small>Room</small><span>204, One-bedroom</span></div><div><small>Guests</small><span>2 adults</span></div>
+        <div><small>Arrival</small><span>Fri 23 Oct 2026</span></div><div><small>Departure</small><span>Mon 26 Oct, 12:00 pm</span></div>
+        <div><small>ID</small><span>NIN 7012 4458 210</span></div><div><small>Nationality</small><span>Nigerian</span></div>
+        <div style="grid-column:span 2"><small>Address</small><span>14 Admiralty Way, Lekki Phase 1, Lagos</span></div>
+        <div><small>Coming from</small><span>Abuja</span></div><div><small>Car plate</small><span>None</span></div>
+        <div><small>Paid</small><span>₦360,000, card online</span></div><div><small>Checked in by</small><span>Tobi Adewale</span></div>
+      </div>
+      <div class="rules">Checkout is 12:00 pm. Late checkout is charged by the hour. No smoking in the rooms. Visitors leave by 10:00 pm. The hotel is not responsible for valuables left outside the safe. By signing, the guest agrees to these house rules.</div>
+      <div class="sig"><div>Guest signature</div><div>Front desk</div></div>
+    </div>
+    <div class="side2">
+      <div class="box">
+        <h3><i data-lucide="printer" class="s16"></i>Print the card</h3>
+        <div class="pr"><span class="dot"></span>HP LaserJet front office, A4</div>
+        <button class="btn btn-line btn-sm" style="justify-content:center">Print now <kbd>Ctrl P</kbd></button>
+        <p>She signs the paper copy. Keep it in the day folder.</p>
+      </div>
+      <div class="box">
+        <h3><i data-lucide="key-round" class="s16"></i>Key cards</h3>
+        <div class="step"><span>−</span><b>2</b><span>+</span></div>
+        <div class="enc"><span class="ico"><i data-lucide="nfc" class="s16"></i></span>Tap each card on the encoder. Works until Mon 26 Oct, noon.</div>
+      </div>
+      <div class="box sum">
+        <div class="l"><span>Deposit for extras</span><b>None</b></div>
+        <div class="l"><span>Wi-Fi by SMS</span><b>Yes</b></div>
+        <div class="l"><span>Owed</span><b>₦0</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="sf">
+    <span class="muted">Last step. 204 shows as occupied everywhere after this.</span>
+    <button class="btn btn-line">Back <kbd>Shift Tab</kbd></button>
+    <button class="btn btn-primary btn-lg"><i data-lucide="log-in" class="s16"></i>Check in Adaeze <kbd>Enter</kbd></button>
+  </div>
+</aside>
+<script>lucide.createIcons();</script>
+</body></html>

@@ -1,0 +1,41 @@
+/* Direction B "Harbour": navy window and sidebar, and a tab strip so
+   several guests can be open at once (Ctrl Tab to switch). */
+.win { background: var(--navy-2); color: #B8CBDD; }
+
+.side { width: 216px; background: var(--navy); color: #DCE7F1; display: flex; flex-direction: column; flex: none; }
+.side .brand { display: flex; gap: 10px; align-items: center; padding: 14px 14px 12px; }
+.side .brand .lg { width: 36px; height: 36px; border-radius: 9px; background: #fff; display: grid; place-items: center; }
+.side .brand .lg img { width: 20px; height: 24px; }
+.side .brand b { font: 600 14.5px/1.15 var(--display); color: #fff; }
+.side nav { padding: 4px 10px; flex: 1; }
+.side h6 { font: 600 11.5px var(--body); color: #7F9AB4; padding: 12px 8px 5px; }
+.side a { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px; border-radius: 8px; font-weight: 500; font-size: 13.5px; }
+.side a.on { background: rgba(141, 182, 222, .16); color: #fff; font-weight: 600; box-shadow: inset 3px 0 0 var(--blue-on-dark); }
+.side a svg.lucide { width: 16px; height: 16px; }
+.side a .n { margin-left: auto; font-size: 12px; color: #7F9AB4; }
+.side a .badge { margin-left: auto; min-width: 19px; height: 19px; border-radius: 10px; background: var(--rose); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 5px; }
+.side .me { margin: 10px; padding: 10px; border-radius: 10px; background: rgba(255,255,255,.06); display: flex; align-items: center; gap: 10px; }
+.side .me b { font-weight: 600; color: #fff; font-size: 13px; display: block; }
+.side .me small { font-size: 11.5px; color: #9FB6CC; }
+.side .me .lockb { margin-left: auto; width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #DCE7F1; }
+
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.tabs { height: 46px; background: var(--navy); display: flex; align-items: flex-end; gap: 2px; padding: 0 12px 0 0; flex: none; }
+.tab { height: 38px; padding: 0 12px 0 14px; border-radius: 9px 9px 0 0; display: flex; align-items: center; gap: 8px; color: #B8CBDD; font-size: 13px; font-weight: 600; max-width: 230px; white-space: nowrap; }
+.tab .x { opacity: .6; }
+.tab.on { background: var(--mist); color: var(--ink); }
+.tab .tdot { width: 7px; height: 7px; border-radius: 50%; }
+.tabs .plus { height: 38px; width: 34px; display: grid; place-items: center; color: #B8CBDD; }
+.tabs .right { margin-left: auto; display: flex; align-items: center; gap: 12px; align-self: center; color: #B8CBDD; font-size: 12.5px; }
+.tabs .search { width: 300px; height: 32px; border-radius: 8px; background: rgba(255,255,255,.08); display: flex; align-items: center; gap: 8px; padding: 0 10px; color: #9FB6CC; }
+.tabs .search span { flex: 1; }
+.tabs kbd { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.16); color: #C5D6E6; }
+.tabs .ic { display: inline-flex; align-items: center; gap: 5px; }
+.content { flex: 1; padding: 18px 22px; overflow: hidden; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+.ph { display: flex; align-items: flex-end; gap: 12px; }
+.ph .t { flex: 1; }
+.ph small { font-size: 12.5px; color: var(--ink-mute); display: block; }
+.ph h1 { font-size: 24px; font-weight: 600; line-height: 1.15; display: flex; align-items: center; gap: 10px; }
+
+.g-blue { color: #7FB0E0; } .g-rose { color: #F08BA6; } .g-cyan { color: #6FD0DE; } .g-amber { color: #F2C066; }
+.g-violet { color: #B7A4F0; } .g-orange { color: #F4A273; } .g-green { color: #7DD39A; } .g-emerald { color: #5ED1A8; } .g-teal { color: #63CFC3; }

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Check in, room</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  iframe { position: absolute; z-index: 0; inset: 0; width: 1440px; height: 900px; border: 0; filter: brightness(.62) saturate(.85); }
+  .sheet { position: absolute; z-index: 2; top: 32px; right: 0; bottom: 0; width: 660px; background: var(--mist); box-shadow: -12px 0 40px rgba(15,36,56,.3); display: flex; flex-direction: column; }
+  .sh { background: #fff; padding: 18px 24px 0; border-bottom: 1px solid var(--line); }
+  .sh .r1 { display: flex; align-items: flex-start; gap: 12px; }
+  .sh small { font-size: 12.5px; color: var(--ink-mute); }
+  .sh h2 { font-size: 22px; font-weight: 600; display: flex; gap: 10px; align-items: center; }
+  .sh .x { margin-left: auto; }
+  .stepper { display: flex; margin-top: 16px; }
+  .stepper div { flex: 1; display: flex; align-items: center; gap: 8px; padding: 10px 0 12px; font-weight: 600; font-size: 13.5px; color: var(--ink-mute); border-bottom: 3px solid transparent; }
+  .stepper div span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: var(--card-deep); }
+  .stepper div.on { color: var(--ink); border-color: var(--blue); }
+  .stepper div.on span { background: var(--blue); color: #fff; }
+  .stepper div.done { color: var(--ink-soft); }
+  .stepper div.done span { background: var(--green-soft); color: var(--green); }
+  .sb { flex: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+  .card.p { padding: 16px; }
+  .room { display: flex; gap: 16px; align-items: center; }
+  .room .no { width: 76px; height: 76px; border-radius: 12px; background: var(--navy); color: #fff; display: grid; place-items: center; font: 700 30px var(--display); flex: none; }
+  .room b { font: 600 17px var(--display); display: block; }
+  .room .soft { font-size: 13px; }
+  .room .pill { margin-left: auto; }
+  .trail { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); display: flex; flex-direction: column; }
+  .trail h4 { font: 600 12.5px var(--body); color: var(--ink-soft); margin-bottom: 6px; display: flex; gap: 6px; align-items: center; }
+  .trail .t { display: flex; gap: 12px; position: relative; padding: 6px 0 6px; }
+  .trail .t::before { content: ''; position: absolute; left: 5px; top: 20px; bottom: -6px; width: 2px; background: var(--line); }
+  .trail .t:last-child::before { display: none; }
+  .trail .d { width: 12px; height: 12px; border-radius: 50%; margin-top: 3px; flex: none; position: relative; z-index: 1; box-shadow: 0 0 0 3px #fff; }
+  .trail .t b { font-weight: 600; font-size: 13.5px; }
+  .trail .t small { color: var(--ink-mute); font-size: 12.5px; display: block; }
+  .trail .t .when { margin-left: auto; font-size: 12.5px; color: var(--ink-soft); font-weight: 600; white-space: nowrap; }
+  .alt { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-soft); }
+  .alt .chips { display: flex; gap: 6px; }
+  .alt .chips span { height: 28px; padding: 0 10px; border-radius: 7px; border: 1px solid var(--line); background: #fff; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--ink); font-size: 12.5px; }
+  .opts { padding: 4px 16px; }
+  .opt { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line-soft); font-size: 13.5px; }
+  .opt:first-child { border-top: 0; }
+  .opt .w { flex: 1; }
+  .opt .w b { font-weight: 600; display: block; }
+  .opt .w small { color: var(--ink-mute); font-size: 12.5px; }
+  .toggle { width: 36px; height: 21px; border-radius: 11px; background: #C9D2DB; position: relative; flex: none; }
+  .toggle::after { content: ''; position: absolute; width: 17px; height: 17px; border-radius: 50%; background: #fff; top: 2px; left: 2px; }
+  .toggle.on { background: var(--blue); }
+  .toggle.on::after { left: 17px; }
+  .amt { height: 32px; padding: 0 10px; border: 1px solid rgba(26,36,48,.16); border-radius: 7px; display: inline-flex; align-items: center; font-weight: 600; color: var(--ink-mute); }
+  .sf { background: #fff; border-top: 1px solid var(--line); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+  .sf .muted { flex: 1; font-size: 13px; }
+</style></head>
+<body>
+<iframe src="B-today.html" title="Today behind the sheet"></iframe>
+<aside class="sheet">
+  <div class="sh">
+    <div class="r1">
+      <div><small>Check in, CA-4K2M, room 204</small><h2>Adaeze Okafor <span class="pill pill-green">Paid in full</span></h2></div>
+      <button class="btn btn-ghost x">Close <kbd>Esc</kbd></button>
+    </div>
+    <div class="stepper">
+      <div class="done"><span><i data-lucide="check" class="s14"></i></span>ID</div><div class="on"><span>2</span>Room</div><div><span>3</span>Card</div><div><span>4</span>Keys</div>
+    </div>
+  </div>
+  <div class="sb">
+    <section class="card p">
+      <div class="room"><span class="no">204</span><div><b>One-bedroom suite</b><div class="soft">2nd floor, city side. Booked as One-bed, 3 nights.</div></div><span class="pill pill-green"><i data-lucide="check" class="s14"></i>Ready</span></div>
+      <div class="trail">
+        <h4><i data-lucide="smartphone" class="s14"></i>Today, from the Centurion Staff app</h4>
+        <div class="t"><i class="d" style="background:var(--gold)"></i><div><b>Previous guest left</b><small>Tolani Ade checked out at the desk</small></div><span class="when">11:05 am</span></div>
+        <div class="t"><i class="d" style="background:var(--green)"></i><div><b>Cleaned by Blessing</b><small>34 minutes, all 10 jobs ticked</small></div><span class="when">1:22 pm</span></div>
+        <div class="t"><i class="d" style="background:var(--blue)"></i><div><b>Checked by Musa, ready for a guest</b><small>Porter check passed first time</small></div><span class="when">1:48 pm</span></div>
+      </div>
+    </section>
+    <div class="alt"><span>Give another room instead:</span><div class="chips"><span>207 One-bed, ready</span><span>202 One-bed, ready</span><span><i data-lucide="search" class="s14"></i>Other</span></div></div>
+    <section class="card opts">
+      <div class="opt"><span class="toggle"></span><div class="w"><b>Hold a deposit for extras</b><small>For the bar, kitchen and laundry. Given back at checkout if unused.</small></div><span class="amt">₦20,000</span></div>
+      <div class="opt"><span class="toggle on"></span><div class="w"><b>Send Wi-Fi details by SMS</b><small>To 0806 221 4410. Network Centurion-Guest, password changes weekly.</small></div></div>
+      <div class="opt"><span class="toggle on"></span><div class="w"><b>Tell housekeeping she is in</b><small>204 shows as occupied in the Staff app straight away</small></div></div>
+    </section>
+  </div>
+  <div class="sf">
+    <span class="muted">Next: the registration card for her to sign</span>
+    <button class="btn btn-line">Back <kbd>Shift Tab</kbd></button>
+    <button class="btn btn-primary btn-lg">Next, card <kbd>Enter</kbd></button>
+  </div>
+</aside>
+<script>lucide.createIcons();</script>
+</body></html>

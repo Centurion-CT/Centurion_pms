@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>A Folio</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="a.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .top h1 { display: flex; align-items: center; gap: 10px; }
+  .wrap { flex: 1; display: grid; grid-template-columns: 1fr 336px; gap: 16px; min-height: 0; }
+  .col { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+  .stay { padding: 16px 20px; display: flex; gap: 28px; align-items: flex-end; }
+  .fact small { font-size: 12px; color: var(--ink-mute); display: block; margin-bottom: 2px; }
+  .fact b { font-weight: 600; font-size: 14.5px; }
+  .fact span { color: var(--ink-soft); font-size: 13px; display: block; }
+  .nightstrip { margin-left: auto; display: flex; gap: 5px; align-items: flex-end; }
+  .nightstrip .n { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nightstrip i { width: 34px; height: 46px; border-radius: 4px 4px 0 0; display: block; }
+  .nightstrip small { font-size: 11px; color: var(--ink-mute); font-weight: 600; }
+  .ledger { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .ledger header { display: flex; align-items: center; padding: 14px 20px; gap: 10px; }
+  .ledger header h2 { font-size: 17px; font-weight: 600; flex: 1; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-mute); padding: 8px 20px; background: var(--card-deep); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+  td { padding: 11px 20px; border-bottom: 1px solid var(--line-soft); }
+  td:first-child { white-space: nowrap; }
+  td small { display: block; color: var(--ink-mute); font-size: 12.5px; }
+  .r { text-align: right; }
+  tr.pay td:nth-child(5) { color: var(--green); font-weight: 600; }
+  tr.new td { background: #FFFBF2; }
+  .totals { margin-top: auto; display: flex; justify-content: flex-end; gap: 36px; padding: 14px 20px; border-top: 1px solid var(--line); }
+  .totals div { text-align: right; }
+  .totals small { font-size: 12px; color: var(--ink-mute); display: block; }
+  .totals b { font: 700 18px var(--display); }
+  .owe { background: var(--navy); color: #fff; border: 0; padding: 18px; }
+  .owe small { color: var(--blue-on-dark); font-size: 12.5px; }
+  .owe .amt { font: 700 34px/1.1 var(--display); color: var(--gold); margin: 4px 0 4px; letter-spacing: -.02em; }
+  .owe p { font-size: 12.5px; color: #C5D6E6; margin-bottom: 14px; }
+  .owe .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .owe .btn { justify-content: center; }
+  .btn-white { background: #fff; color: var(--navy); }
+  .btn-dark-line { border: 1px solid var(--line-dark); color: #DCE7F1; }
+  .acts { padding: 6px; }
+  .acts a { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; font-weight: 500; }
+  .acts a:hover { background: var(--card-deep); }
+  .acts a kbd { margin-left: auto; }
+  .acts a .muted { margin-left: auto; font-size: 12px; }
+  .acts hr { border: 0; border-top: 1px solid var(--line-soft); margin: 4px 8px; }
+  .guest { padding: 14px 16px; font-size: 13px; }
+  .guest .gl { display: flex; justify-content: space-between; padding: 5px 0; color: var(--ink-soft); }
+  .guest .gl b { color: var(--ink); font-weight: 600; }
+</style></head>
+<body data-nav="inhouse">
+<main class="main">
+  <div class="top">
+    <div class="crumb"><small>In-house, booking CA-8M2D</small><h1>Emeka Nwosu <span class="pill pill-blue">In-house</span><span class="pill pill-rose"><i data-lucide="clock-alert" class="s14"></i>Past checkout, due out 12:00 pm</span></h1></div>
+    <button class="btn btn-line"><i data-lucide="printer" class="s16"></i>Print <kbd>Ctrl P</kbd></button>
+    <button class="btn btn-line">Extend stay</button>
+    <button class="btn btn-primary"><i data-lucide="log-out" class="s16"></i>Check out <kbd>F6</kbd></button>
+  </div>
+  <div class="content">
+    <div class="wrap">
+      <div class="col">
+        <section class="card stay">
+          <div class="fact"><small>Room</small><b>205</b><span>One-bedroom suite</span></div>
+          <div class="fact"><small>Stay</small><b>Mon 19 to Fri 23 Oct</b><span>4 nights, 1 adult</span></div>
+          <div class="fact"><small>Booked</small><b>By phone</b><span>Tobi, 14 Oct</span></div>
+          <div class="fact"><small>Rate</small><b>₦120,000</b><span>Rack rate a night</span></div>
+          <div class="nightstrip" title="Each bar is a night: navy is paid for, gold still owed">
+            <div class="n"><i class="st-in"></i><small>Mon</small></div>
+            <div class="n"><i class="st-in"></i><small>Tue</small></div>
+            <div class="n"><i class="st-in" style="background:linear-gradient(to top,var(--navy) 0 83%,var(--gold) 83%)"></i><small>Wed</small></div>
+            <div class="n"><i class="st-leave"></i><small>Thu</small></div>
+            <div class="n"><i style="border:1.5px dashed var(--rose);height:22px"></i><small style="color:var(--rose)">Late</small></div>
+          </div>
+        </section>
+        <section class="card ledger">
+          <header><h2>Bill</h2><span class="muted" style="font-size:13px">Navy nights are paid for, gold nights are still owed</span><div class="seg"><span class="on">Everything</span><span>Charges</span><span>Payments</span></div></header>
+          <table>
+            <tr><th style="width:84px">Date</th><th>What</th><th>By</th><th class="r">Charge</th><th class="r">Payment</th><th class="r">Balance</th></tr>
+            <tr><td>Mon 19</td><td>Room 205, 4 nights at ₦120,000<small>Rack rate</small></td><td class="soft">Tobi</td><td class="r">₦480,000</td><td class="r"></td><td class="r">₦480,000</td></tr>
+            <tr class="pay"><td>Mon 19</td><td>Transfer to Access Bank<small>Ref 0012 4471 confirmed</small></td><td class="soft">Tobi</td><td class="r"></td><td class="r">₦240,000</td><td class="r">₦240,000</td></tr>
+            <tr><td>Tue 20</td><td>Bar &amp; kitchen, charged to room<small>Jollof rice, 2 Malt. Receipt S-1182</small></td><td class="soft">Ruth</td><td class="r">₦18,500</td><td class="r"></td><td class="r">₦258,500</td></tr>
+            <tr><td>Wed 21</td><td>Laundry, 6 items</td><td class="soft">Musa</td><td class="r">₦6,000</td><td class="r"></td><td class="r">₦264,500</td></tr>
+            <tr class="pay"><td>Thu 22</td><td>Cash at the desk</td><td class="soft">Joy</td><td class="r"></td><td class="r">₦100,000</td><td class="r">₦164,500</td></tr>
+            <tr class="new"><td>Fri 23</td><td>Late checkout until 2:00 pm<small>Not added yet. Add it, or let it go.</small></td><td></td><td class="r"><button class="btn btn-line btn-sm">Add ₦20,000</button></td><td class="r"></td><td class="r muted">₦184,500</td></tr>
+          </table>
+          <div class="totals">
+            <div><small>Charges</small><b>₦504,500</b></div>
+            <div><small>Paid</small><b style="color:var(--green)">₦340,000</b></div>
+            <div><small>Still to pay</small><b style="color:var(--rose)">₦164,500</b></div>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="card owe">
+          <small>Still to pay before checkout</small>
+          <div class="amt">₦164,500</div>
+          <p>Checkout stays locked until this is paid or a manager agrees to bill it later.</p>
+          <div class="btns"><button class="btn btn-white">Take payment <kbd style="background:var(--card-deep)">F7</kbd></button><button class="btn btn-dark-line">Add charge <kbd style="background:transparent;color:#C5D6E6;border-color:var(--line-dark)">F8</kbd></button></div>
+        </section>
+        <section class="card acts">
+          <a><i data-lucide="calendar-plus" class="s16 soft"></i>Extend the stay</a>
+          <a><i data-lucide="arrow-right-left" class="s16 soft"></i>Move to another room</a>
+          <a><i data-lucide="badge-percent" class="s16 soft"></i>Give a discount<span class="muted">needs a manager</span></a>
+          <a><i data-lucide="undo-2" class="s16 soft"></i>Refund money</a>
+          <hr>
+          <a><i data-lucide="file-text" class="s16 soft"></i>Print invoice, A4</a>
+          <a><i data-lucide="receipt" class="s16 soft"></i>Print bill, 80 mm</a>
+          <a><i data-lucide="mail" class="s16 soft"></i>Email the bill to Emeka</a>
+        </section>
+        <section class="card guest">
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px"><span class="avatar" style="background:var(--blue-soft);color:var(--blue-deep)">EN</span><div><b style="font-weight:600">Emeka Nwosu</b><div class="muted" style="font-size:12.5px">2nd stay, first in March</div></div></div>
+          <div class="gl"><span>Phone</span><b>0802 114 9073</b></div>
+          <div class="gl"><span>ID</span><b>Passport, checked in by Joy</b></div>
+          <div class="gl"><span>Wallet</span><b>₦0</b></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="a-chrome.js"></script>
+</body></html>

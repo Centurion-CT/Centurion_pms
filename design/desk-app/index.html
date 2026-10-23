@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Desk designs</title>
+<link href="https://fonts.bunny.net/css?family=bricolage-grotesque:500,600,700|hanken-grotesk:400,500,600&display=swap" rel="stylesheet">
+<style>
+  :root { --mist: #EEF3F7; --ink: #1A2430; --soft: #4A5563; --mute: #6B7785; --navy: #16324B; --blue: #336799; --line: rgba(26,36,48,.1); }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 15px/1.5 'Hanken Grotesk', system-ui, sans-serif; color: var(--ink); background: var(--mist); }
+  header { background: var(--navy); color: #fff; padding: 36px 40px 30px; }
+  header .in { max-width: 1500px; margin: 0 auto; display: flex; gap: 18px; align-items: center; }
+  header img { width: 40px; height: 47px; background: #fff; border-radius: 10px; padding: 6px; box-sizing: content-box; }
+  h1, h2, h3 { font-family: 'Bricolage Grotesque', system-ui, sans-serif; letter-spacing: -.01em; }
+  header h1 { font-size: 30px; font-weight: 600; }
+  header p { color: #C5D6E6; max-width: 80ch; }
+  main { max-width: 1500px; margin: 0 auto; padding: 28px 40px 60px; }
+  section { margin-bottom: 44px; }
+  section h2 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  section > p { color: var(--soft); margin-bottom: 14px; max-width: 90ch; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px 20px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  figure a { display: block; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 2px 10px rgba(26,36,48,.06); }
+  figure img { display: block; width: 100%; height: auto; }
+  figcaption { font-size: 13.5px; color: var(--mute); margin-top: 6px; }
+  figcaption b { color: var(--ink); font-weight: 600; }
+  details { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }
+  summary { cursor: pointer; font-weight: 600; }
+  details .pair { margin-top: 14px; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 700px) { .grid, .pair { grid-template-columns: 1fr; } main, header { padding-left: 16px; padding-right: 16px; } }
+</style></head>
+<body>
+<header><div class="in"><img src="assets/logo.png" alt="Centurion">
+  <div><h1>Centurion Desk, direction B "Harbour"</h1><p>The full screen set for approval. One mock day: Friday 23 October, about 1:50 pm, Tobi Adewale on the front desk. Click any screen for full size.</p></div></div></header>
+<main>
+  <section><h2>Getting in</h2><p>A manager sets the PC up once. After that, staff unlock with their staff PIN, the same one they use in the Staff app.</p><div class="grid" id="g1"></div></section>
+  <section><h2>Today</h2><p>The home tab, Ctrl K search from anywhere, and what happens when the internet drops.</p><div class="grid" id="g2"></div></section>
+  <section><h2>Bookings</h2><p>Each booking opens in its own tab. New bookings are four steps with the receipt beside them.</p><div class="grid" id="g3"></div></section>
+  <section><h2>The stay</h2><p>Check-in and check-out are side sheets over the tab you're in. Checkout stays locked while money is owed.</p><div class="grid" id="g4"></div></section>
+  <section><h2>In-house</h2><p>Guests, rooms live from the Staff app, guest requests, and approvals as a manager sees them.</p><div class="grid" id="g5"></div></section>
+  <section><h2>Shift and web dashboard</h2><p>End-of-shift handover, and the rarely used web pages opened inside the app, already signed in.</p><div class="grid" id="g6"></div></section>
+  <details><summary>Direction A "Daylight", not chosen</summary><div class="pair" id="ga"></div></details>
+</main>
+<script>
+  const groups = {
+    g1: [['B-01-setup', 'Set up this desk', 'once, by a manager or front desk officer'], ['B-02-locked', "Who's at the desk", 'staff PIN, locks after 5 minutes idle']],
+    g2: [['B-today', 'Today', 'arriving, in the house, leaving, money'], ['B-03-search', 'Search', 'Ctrl K, guests, bookings, rooms, actions'], ['B-04-offline', 'Offline', 'keeps working, 3 changes waiting to send']],
+    g3: [['B-08-reservations', 'Reservations', 'filters, sources, keyboard'], ['B-calendar', 'Room calendar', 'drag to move or change dates'], ['B-09-booking', 'Upcoming booking', 'change dates, cancel, no-show'],
+         ['B-new', 'New booking, room', 'step 2, rooms by floor'], ['B-10-new-guest', 'New booking, guest', 'step 3, returning guest, company'], ['B-11-new-pay', 'New booking, payment', 'step 4, deposit, transfer, discount request'],
+         ['B-15-guest', 'Guest profile', 'stays, wallet, notes, ID on file']],
+    g4: [['B-checkin', 'Check in, ID', 'step 1, scanner fills the form'], ['B-16-checkin-room', 'Check in, room', 'step 2, readiness from the Staff app'], ['B-17-checkin-card', 'Check in, card and keys', 'registration card prints'],
+         ['B-folio', 'Guest bill', 'charges, payments, take payment'], ['B-14-charge', 'Add a charge', 'laundry, late checkout, pickup'], ['B-12-extend', 'Extend stay', 'nights as bars, room availability'],
+         ['B-13-move', 'Move room', 'price difference, housekeeping told'], ['B-06-print', 'Print', 'A4 invoice, printer choice'], ['B-18-checkout', 'Check out', 'locked until paid, room to housekeeping']],
+    g5: [['B-19-inhouse', 'In-house', 'all guests, nights, balances'], ['B-20-rooms', 'Rooms and housekeeping', 'live cleaning and checks, assign a cleaner'], ['B-21-requests', 'Guest requests', 'reply, assign, resolve'], ['B-22-approvals', 'Approvals', "a manager's view"]],
+    g6: [['B-07-shift', 'My shift', 'money by method, hand over'], ['B-05-web', 'Web dashboard', 'rates, reports and settings inside the app']],
+    ga: [['A-today', 'Today'], ['A-calendar', 'Room calendar'], ['A-new', 'New booking'], ['A-folio', 'Guest bill'], ['A-checkin', 'Check in']],
+  };
+  for (const [id, items] of Object.entries(groups)) {
+    document.getElementById(id).innerHTML = items.map(([f, t, d]) =>
+      `<figure><a href="${f}.png"><img src="${f}.png" alt="${t}" loading="lazy"></a><figcaption><b>${t}.</b> ${d || ''}</figcaption></figure>`).join('');
+  }
+</script>
+</body></html>

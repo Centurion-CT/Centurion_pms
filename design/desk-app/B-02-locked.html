@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Locked</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  body { background: var(--navy-2); }
+  .stage { height: 868px; background: radial-gradient(ellipse at 30% 0%, #1E3F5C 0%, var(--navy) 50%, var(--navy-2) 100%); display: grid; grid-template-columns: 1fr 420px; gap: 0; color: #fff; }
+  .left { padding: 44px 56px; display: flex; flex-direction: column; }
+  .top { display: flex; align-items: center; gap: 12px; }
+  .top .lg { width: 40px; height: 40px; border-radius: 10px; background: #fff; display: grid; place-items: center; }
+  .top .lg img { width: 22px; height: 26px; }
+  .top b { font: 600 15px var(--display); display: block; }
+  .top small { color: #9FB6CC; font-size: 12.5px; }
+  .clock { margin-left: auto; text-align: right; }
+  .clock b { font: 600 30px/1 var(--display); }
+  .clock small { display: block; margin-top: 4px; }
+  h1 { font: 600 34px var(--display); letter-spacing: -.02em; margin: 52px 0 6px; }
+  .lede { color: #C5D6E6; margin-bottom: 26px; }
+  .people { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .p { border-radius: 12px; padding: 14px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); display: flex; gap: 12px; align-items: center; }
+  .p .avatar { width: 44px; height: 44px; font-size: 15px; }
+  .p b { font-weight: 600; display: block; }
+  .p small { color: #9FB6CC; font-size: 12.5px; display: block; }
+  .p .on { color: #7DD39A; }
+  .p.sel { background: #fff; color: var(--ink); border-color: #fff; box-shadow: 0 0 0 3px rgba(141,182,222,.45); }
+  .p.sel small { color: var(--ink-mute); }
+  .p.dim { opacity: .55; }
+  .notes { margin-top: auto; display: flex; gap: 28px; color: #9FB6CC; font-size: 13px; }
+  .notes span { display: inline-flex; gap: 7px; align-items: center; }
+  .pad { background: #fff; color: var(--ink); margin: 28px 28px 28px 0; border-radius: 18px; padding: 28px; display: flex; flex-direction: column; align-items: center; }
+  .pad .avatar { width: 64px; height: 64px; font-size: 21px; background: var(--blue); color: #fff; }
+  .pad h2 { font-size: 22px; font-weight: 600; margin-top: 12px; }
+  .pad .role { color: var(--ink-mute); font-size: 13.5px; }
+  .dots { display: flex; gap: 16px; margin: 26px 0 8px; }
+  .dots i { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #A9C3DC; display: block; }
+  .dots i.f { background: var(--navy); border-color: var(--navy); }
+  .hint { font-size: 12.5px; color: var(--ink-mute); margin-bottom: 20px; }
+  .keys { display: grid; grid-template-columns: repeat(3, 84px); gap: 10px; }
+  .keys span { height: 62px; border-radius: 12px; background: var(--card-deep); border: 1px solid var(--line-soft); display: grid; place-items: center; font: 600 24px var(--display); }
+  .keys span.k2 { background: var(--blue-soft); border-color: rgba(51,103,153,.3); }
+  .keys span.lt { font: 600 13px var(--body); color: var(--ink-soft); background: transparent; border: 0; }
+  .small { margin-top: auto; font-size: 12.5px; color: var(--ink-mute); text-align: center; line-height: 1.5; }
+  .small b { color: var(--ink-soft); font-weight: 600; }
+</style></head>
+<body>
+<div class="win"><img src="assets/logo.png" alt=""><span class="wtitle">Centurion Desk</span>
+  <span class="wctl"><span><i data-lucide="minus"></i></span><span><i data-lucide="square"></i></span><span><i data-lucide="x"></i></span></span></div>
+<div class="stage">
+  <div class="left">
+    <div class="top"><span class="lg"><img src="assets/logo.png" alt=""></span><div><b>Centurion Apartments</b><small>Reception desk 1, locked</small></div>
+      <div class="clock"><b>1:50 pm</b><small>Friday 23 October</small></div></div>
+    <h1>Who's at the desk?</h1>
+    <p class="lede">Pick your name and enter your staff PIN. Everything you do is recorded against you.</p>
+    <div class="people">
+      <div class="p sel"><span class="avatar" style="background:var(--blue);color:#fff">TA</span><div><b>Tobi Adewale</b><small>Front desk</small><small style="color:var(--green)">Active, since 7:02 am</small></div></div>
+      <div class="p"><span class="avatar" style="background:#2E5A82;color:#fff">JO</span><div><b>Joy Okon</b><small>Front desk</small><small class="on">Unlocked at 7:00 am</small></div></div>
+      <div class="p"><span class="avatar" style="background:#4B3B8A;color:#fff">BA</span><div><b>Bola Adamu</b><small>Manager</small><small>Unlocked at 9:10 am</small></div></div>
+      <div class="p"><span class="avatar" style="background:#1D6B5F;color:#fff">FA</span><div><b>Femi Ajayi</b><small>Reservations</small><small>Not in yet today</small></div></div>
+      <div class="p"><span class="avatar" style="background:#7A4A1E;color:#fff">KU</span><div><b>Kunle Uba</b><small>Front desk, nights</small><small>Locked at 7:05 am</small></div></div>
+      <div class="p dim"><span class="avatar" style="background:#3A4A5A;color:#fff">RA</span><div><b>Ruth Ade</b><small>Front desk</small><small>No PIN yet</small></div></div>
+    </div>
+    <div class="notes">
+      <span><i data-lucide="timer" class="s16"></i>Locks itself after 5 minutes with no one using it</span>
+      <span><i data-lucide="users" class="s16"></i>Switch person any time with Ctrl L</span>
+    </div>
+  </div>
+  <aside class="pad">
+    <span class="avatar">TA</span>
+    <h2>Tobi Adewale</h2>
+    <span class="role">Front desk</span>
+    <div class="dots"><i class="f"></i><i class="f"></i><i></i><i></i></div>
+    <div class="hint">Type on the keyboard or tap the numbers</div>
+    <div class="keys">
+      <span>1</span><span class="k2">2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+      <span class="lt">Not me</span><span>0</span><span class="lt"><i data-lucide="delete" class="s16"></i></span>
+    </div>
+    <div class="small">Wrong PIN 5 times locks your name for 15 minutes.<br><b>No PIN yet?</b> A manager sets it on the Staff page.</div>
+  </aside>
+</div>
+<script>lucide.createIcons();</script>
+</body></html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Reservations</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .bar { display: flex; align-items: center; gap: 10px; }
+  .filters { display: flex; align-items: center; gap: 10px; }
+  .chip { height: 32px; padding: 0 11px; border-radius: 8px; border: 1px solid var(--line); background: #fff; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+  .chip.on { border-color: var(--blue); color: var(--blue-deep); background: #F5F9FC; }
+  .find { flex: 1; height: 36px; border: 1px solid rgba(26,36,48,.16); border-radius: 9px; background: #fff; display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--ink-mute); max-width: 340px; }
+  .counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .cnt { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; align-items: baseline; gap: 10px; }
+  .cnt b { font: 700 24px var(--display); }
+  .cnt span { color: var(--ink-soft); font-size: 13px; }
+  .cnt.money b { color: var(--rose); }
+  .tbl { background: #fff; border: 1px solid var(--line); border-radius: 12px; flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-mute); padding: 9px 14px; background: var(--card-deep); border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; white-space: nowrap; }
+  td b { font-weight: 600; display: block; }
+  td small { color: var(--ink-mute); font-size: 12px; }
+  .ref { font-weight: 600; color: var(--ink-soft); font-size: 12.5px; }
+  .r { text-align: right; }
+  tr.focus td { background: #F1F6FB; }
+  tr.focus td:first-child { box-shadow: inset 3px 0 0 var(--blue); }
+  .src { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-soft); }
+  .tf { margin-top: auto; display: flex; gap: 16px; padding: 10px 14px; border-top: 1px solid var(--line-soft); font-size: 12.5px; color: var(--ink-mute); }
+  .tf span { display: inline-flex; gap: 5px; align-items: center; }
+  .tf .pg { margin-left: auto; }
+</style></head>
+<body data-nav="reservations" data-tabs='[["Today",null,false],["Reservations",null,true],["Emeka Nwosu, 205","#D92D5B",false]]'>
+<main class="main">
+  <div class="content">
+    <div class="ph">
+      <div class="t"><small>Every booking, from the website, the phone, walk-ins and companies</small><h1>Reservations</h1></div>
+      <button class="btn btn-line"><i data-lucide="download" class="s16"></i>Export</button>
+      <button class="btn btn-primary"><i data-lucide="plus" class="s16"></i>New booking <kbd>F2</kbd></button>
+    </div>
+    <div class="filters">
+      <div class="seg"><span class="on">Upcoming 31</span><span>In-house 14</span><span>Past</span><span>Cancelled</span><span>No-show</span></div>
+      <span class="chip"><i data-lucide="calendar" class="s14"></i>Next 30 days</span>
+      <span class="chip on">All sources<i data-lucide="chevron-down" class="s14"></i></span>
+      <span class="chip">Money owed only</span>
+      <div class="find" style="margin-left:auto"><i data-lucide="search" class="s16"></i><span>Name, phone or ref</span><kbd style="margin-left:auto">/</kbd></div>
+    </div>
+    <div class="counts">
+      <div class="cnt"><b>31</b><span>upcoming in the next 30 days</span></div>
+      <div class="cnt"><b>5</b><span>arriving today</span></div>
+      <div class="cnt"><b>2</b><span>holds that expire today</span></div>
+      <div class="cnt money"><b>₦1,042,000</b><span>still to collect</span></div>
+    </div>
+    <section class="tbl">
+      <table>
+        <tr><th>Ref</th><th>Guest</th><th>Room</th><th>Dates</th><th>Nights</th><th>Status</th><th class="r">Money</th><th>Source</th></tr>
+        <tr><td class="ref">CA-4K2M</td><td><b>Adaeze Okafor</b><small>0806 221 4410</small></td><td>204 One-bed</td><td>Today to Mon 26 Oct</td><td>3</td><td><span class="pill pill-blue">Arriving today</span></td><td class="r paid">Paid</td><td><span class="src"><i data-lucide="globe" class="s14"></i>Website</span></td></tr>
+        <tr><td class="ref">CA-2H5W</td><td><b>Chiamaka Eze</b><small>0809 330 1182</small></td><td>103 Studio</td><td>Today to Sun 25 Oct</td><td>2</td><td><span class="pill pill-blue">Arriving today</span></td><td class="r due">₦63,000 owed</td><td><span class="src"><i data-lucide="globe" class="s14"></i>Website</span></td></tr>
+        <tr><td class="ref">CA-5R8T</td><td><b>Funmilayo Adeyemi</b><small>0813 440 2290</small></td><td class="muted">One-bed, type only</td><td>Today to Tue 27 Oct</td><td>4</td><td><span class="pill pill-gold">Hold, ends 1:00 pm</span></td><td class="r due">₦272,000 owed</td><td><span class="src"><i data-lucide="footprints" class="s14"></i>Walk-in</span></td></tr>
+        <tr><td class="ref">CA-7P9Q</td><td><b>Tunde Bakare</b><small>Dangote Group</small></td><td>301 Two-bed</td><td>Today to Fri 30 Oct</td><td>7</td><td><span class="pill pill-blue">Arriving today</span></td><td class="r soft">Company</td><td><span class="src"><i data-lucide="building" class="s14"></i>Company</span></td></tr>
+        <tr><td class="ref">CA-6B1N</td><td><b>Bayo Ola</b><small>0802 771 0045</small></td><td>207 One-bed</td><td>Sat 24 to Sun 25 Oct</td><td>1</td><td><span class="pill pill-green">Confirmed</span></td><td class="r paid">Paid</td><td><span class="src"><i data-lucide="phone" class="s14"></i>Phone</span></td></tr>
+        <tr><td class="ref">CA-9F4C</td><td><b>Bisi Ojo</b><small>0705 118 6621</small></td><td>106 Studio</td><td>Sat 24 to Thu 29 Oct</td><td>5</td><td><span class="pill pill-green">Confirmed</span></td><td class="r paid">Paid</td><td><span class="src"><i data-lucide="globe" class="s14"></i>Website</span></td></tr>
+        <tr><td class="ref">CA-1J6R</td><td><b>Rita Asuquo</b><small>0816 902 3317</small></td><td>208 One-bed</td><td>Sun 25 to Fri 30 Oct</td><td>5</td><td><span class="pill pill-green">Confirmed</span></td><td class="r due">₦300,000 owed</td><td><span class="src"><i data-lucide="phone" class="s14"></i>Phone</span></td></tr>
+        <tr><td class="ref">CA-3V8H</td><td><b>Halima Garba</b><small>0806 004 7712</small></td><td>205 One-bed</td><td>Mon 26 to Thu 29 Oct</td><td>3</td><td><span class="pill pill-green">Confirmed</span></td><td class="r paid">Paid</td><td><span class="src"><i data-lucide="globe" class="s14"></i>Website</span></td></tr>
+        <tr class="focus"><td class="ref">CA-4Q7S</td><td><b>Sade Lawal</b><small>0812 559 0381</small></td><td>103 Studio</td><td>Tue 27 to Fri 30 Oct</td><td>3</td><td><span class="pill pill-green">Confirmed</span></td><td class="r"><span class="due">₦127,500 owed</span><br><small>deposit paid</small></td><td><span class="src"><i data-lucide="globe" class="s14"></i>Website</span></td></tr>
+      </table>
+      <div class="tf"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open in a tab</span><span><kbd>Ctrl Enter</kbd> open in the background</span><span><kbd>C</kbd> check in</span><span class="pg">9 of 31, scroll for more</span></div>
+    </section>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+</body></html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B My shift</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .wrap { flex: 1; display: grid; grid-template-columns: 1fr 360px; gap: 16px; min-height: 0; }
+  .col { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .tile { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .tile .h { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft); }
+  .tile .h .i { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; }
+  .tile b { font: 700 22px/1.2 var(--display); display: block; margin-top: 8px; letter-spacing: -.01em; }
+  .tile small { font-size: 12px; color: var(--ink-mute); }
+  .tile .bar { height: 4px; border-radius: 2px; background: var(--card-deep); margin-top: 10px; overflow: hidden; }
+  .tile .bar i { display: block; height: 100%; }
+  .sum { background: var(--navy); color: #fff; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 24px; }
+  .sum small { color: var(--blue-on-dark); font-size: 12.5px; display: block; }
+  .sum b { font: 700 26px var(--display); letter-spacing: -.02em; }
+  .sum .sp { flex: 1; }
+  .sum .m { text-align: right; }
+  .sum .m b { font-size: 17px; }
+  .list { background: #fff; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .list header { display: flex; align-items: center; padding: 12px 16px; gap: 10px; }
+  .list header h2 { font-size: 16px; font-weight: 600; flex: 1; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; color: var(--ink-mute); font-weight: 600; padding: 7px 16px; background: var(--card-deep); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+  td { padding: 9px 16px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+  td small { color: var(--ink-mute); font-size: 12px; }
+  .r { text-align: right; }
+  .done { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .done div { padding: 12px 16px; border-left: 1px solid var(--line-soft); }
+  .done div:first-child { border-left: 0; }
+  .done b { font: 700 20px var(--display); }
+  .done small { display: block; color: var(--ink-mute); font-size: 12.5px; }
+  .done span { display: block; font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
+  .ho { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .ho h2 { font-size: 17px; font-weight: 600; }
+  .ho .lede { font-size: 13px; color: var(--ink-soft); margin-top: -8px; }
+  .cash { border-radius: 10px; background: var(--card-deep); padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+  .cash .l { display: flex; justify-content: space-between; }
+  .cash .l span:first-child { color: var(--ink-soft); }
+  .cash .l.t { border-top: 1px solid var(--line); padding-top: 7px; font-weight: 700; }
+  .match { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--green); font-weight: 600; }
+  .to { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
+  .to b { font-weight: 600; display: block; font-size: 13.5px; }
+  .to small { color: var(--ink-mute); font-size: 12px; }
+  .note { min-height: 70px; border: 1px solid rgba(26,36,48,.16); border-radius: 8px; padding: 9px 12px; font-size: 13px; line-height: 1.5; }
+  .ho .go { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+  .ho .go .btn { justify-content: center; }
+</style></head>
+<body data-nav="shift" data-tabs='[["Today",null,false],["My shift",null,true]]'>
+<main class="main">
+  <div class="content">
+    <div class="ph"><div class="t"><small>Tobi Adewale at reception desk 1, since 7:02 am (6 h 48 m)</small><h1>My shift</h1></div>
+      <div class="seg"><span class="on">This shift</span><span>Today, everyone</span></div>
+      <button class="btn btn-line"><i data-lucide="printer" class="s16"></i>Print</button></div>
+    <div class="wrap">
+      <div class="col">
+        <div class="sum"><div><small>Taken this shift</small><b>₦811,500</b></div><div class="sp"></div>
+          <div class="m"><small>Payments</small><b>5</b></div><div class="m"><small>Refunds</small><b>₦0</b></div><div class="m"><small>Charges added</small><b>₦10,500</b></div></div>
+        <div class="tiles">
+          <div class="tile"><div class="h"><span class="i" style="background:var(--green-soft);color:var(--green)"><i data-lucide="banknote" class="s14"></i></span>Cash</div><b>₦86,500</b><small>2 payments, in the drawer</small><div class="bar"><i style="width:11%;background:var(--green)"></i></div></div>
+          <div class="tile"><div class="h"><span class="i" style="background:var(--blue-soft);color:var(--blue)"><i data-lucide="credit-card" class="s14"></i></span>POS card</div><b>₦170,000</b><small>1 payment, Moniepoint</small><div class="bar"><i style="width:21%;background:var(--blue)"></i></div></div>
+          <div class="tile"><div class="h"><span class="i" style="background:#EFEBFB;color:#6B4BC4"><i data-lucide="landmark" class="s14"></i></span>Transfer</div><b>₦540,000</b><small>1 payment, confirmed</small><div class="bar"><i style="width:67%;background:#6B4BC4"></i></div></div>
+          <div class="tile"><div class="h"><span class="i" style="background:var(--gold-soft);color:var(--gold-ink)"><i data-lucide="wallet" class="s14"></i></span>Wallet</div><b>₦15,000</b><small>1 payment</small><div class="bar"><i style="width:2%;background:var(--gold)"></i></div></div>
+        </div>
+        <section class="list" style="flex:1">
+          <header><h2>Payments I took</h2><div class="seg"><span class="on">All</span><span>Cash</span><span>POS card</span><span>Transfer</span></div></header>
+          <table>
+            <tr><th>Time</th><th>Guest</th><th>For</th><th>How</th><th class="r">Amount</th></tr>
+            <tr><td>10:44</td><td>Ngozi Chukwu<small> 210</small></td><td>Balance before checkout</td><td>Cash</td><td class="r">₦41,500</td></tr>
+            <tr><td>9:40</td><td>Segun Alabi<small> 104</small></td><td>Room, nights 4 to 7</td><td>POS card<small> slip 4471</small></td><td class="r">₦170,000</td></tr>
+            <tr><td>9:05</td><td>Grace Ekpo family<small> 302</small></td><td>Room, whole stay</td><td>Transfer<small> GTBank</small></td><td class="r">₦540,000</td></tr>
+            <tr><td>8:31</td><td>Peter Udo<small> 105</small></td><td>Deposit for 26 Oct</td><td>Cash</td><td class="r">₦45,000</td></tr>
+            <tr><td>7:48</td><td>Yusuf Bello<small> 106</small></td><td>Bar &amp; kitchen tab</td><td>Wallet</td><td class="r">₦15,000</td></tr>
+          </table>
+        </section>
+        <section class="list">
+          <div class="done">
+            <div><small>Checked in</small><b>0</b><span>Adaeze at 2:00 pm is next</span></div>
+            <div><small>Checked out</small><b>1</b><span>Bimpe Ogun, 207, at 8:15</span></div>
+            <div><small>Bookings made</small><b>2</b><span>Sade Lawal, Kola Adeniyi</span></div>
+          </div>
+        </section>
+      </div>
+      <aside class="ho">
+        <h2>Hand over</h2>
+        <p class="lede">Count the drawer, add a note, and the next person gets the summary when they unlock.</p>
+        <div class="cash">
+          <div class="l"><span>Float at start</span><span>₦20,000</span></div>
+          <div class="l"><span>Cash taken</span><span>₦86,500</span></div>
+          <div class="l"><span>Cash paid out</span><span>₦0</span></div>
+          <div class="l t"><span>Should be in the drawer</span><span>₦106,500</span></div>
+        </div>
+        <div class="field"><label>Cash in the drawer, counted</label><div class="input focus" style="font-weight:600">₦106,500</div></div>
+        <div class="match"><i data-lucide="circle-check" class="s16"></i>Matches. Nothing to explain.</div>
+        <div class="to"><span class="avatar" style="background:#2E5A82;color:#fff">JO</span><div><b>Joy Okon takes over</b><small>Afternoon shift, from 3:00 pm</small></div><span class="muted" style="margin-left:auto;font-size:12.5px">Change</span></div>
+        <div class="field"><label>Note for Joy</label><div class="note">Emeka in 205 is past checkout and owes ₦164,500. Funmilayo still needs a room, she is on hold until 4:00 pm.</div></div>
+        <div class="go">
+          <button class="btn btn-primary btn-lg">Hand over and lock <kbd>Ctrl Enter</kbd></button>
+          <button class="btn btn-line">Print the handover sheet</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+</body></html>

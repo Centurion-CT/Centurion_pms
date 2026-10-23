@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Folio</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .wrap { flex: 1; display: grid; grid-template-columns: 262px 1fr 344px; gap: 16px; min-height: 0; }
+  .col { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+  .who { background: var(--navy); color: #fff; border-radius: 12px; padding: 16px; }
+  .who small { color: var(--blue-on-dark); font-size: 12px; }
+  .who h2 { font-size: 20px; font-weight: 600; margin: 2px 0 8px; }
+  .who .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .who .rm { display: flex; align-items: baseline; gap: 8px; margin-top: 14px; }
+  .who .rm b { font: 700 34px/1 var(--display); }
+  .who .rm span { color: #C5D6E6; font-size: 13px; }
+  .who .nights { display: flex; gap: 4px; align-items: flex-end; margin-top: 14px; }
+  .who .nights div { flex: 1; display: flex; flex-direction: column; gap: 4px; align-items: center; font-size: 10.5px; color: #9FB6CC; }
+  .who .nights i { width: 100%; height: 34px; border-radius: 3px 3px 0 0; display: block; }
+  .facts { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px 14px; }
+  .facts div { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 13px; }
+  .facts div:first-child { border-top: 0; }
+  .facts span { color: var(--ink-mute); }
+  .facts b { font-weight: 600; text-align: right; }
+  .links { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 4px; }
+  .links a { display: flex; gap: 9px; align-items: center; padding: 8px 10px; font-size: 13.5px; font-weight: 500; border-radius: 8px; }
+  .links a .muted { margin-left: auto; font-size: 11.5px; }
+  .ledger { background: #fff; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; min-height: 0; }
+  .ledger header { padding: 14px 18px 10px; display: flex; align-items: center; }
+  .ledger header h2 { font-size: 17px; font-weight: 600; flex: 1; }
+  .day { padding: 0 18px; }
+  .day h4 { font: 600 12px var(--body); color: var(--ink-mute); padding: 10px 0 4px; border-top: 1px solid var(--line-soft); }
+  .ent { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+  .ent .ic { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; flex: none; }
+  .ent .ic svg.lucide { width: 14px; height: 14px; }
+  .ent .w { flex: 1; min-width: 0; }
+  .ent b { font-weight: 600; font-size: 13.5px; display: block; }
+  .ent small { color: var(--ink-mute); font-size: 12px; }
+  .ent .amt { font-weight: 600; text-align: right; width: 92px; }
+  .ent .bal { text-align: right; width: 84px; color: var(--ink-mute); font-size: 12.5px; }
+  .ent.pay .amt { color: var(--green); }
+  .ent.sug { background: var(--gold-soft); border-radius: 8px; padding: 6px 8px; margin: 0 -8px; }
+  .tot { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+  .tot div { padding: 12px 18px; }
+  .tot div + div { border-left: 1px solid var(--line-soft); }
+  .tot small { display: block; font-size: 12px; color: var(--ink-mute); }
+  .tot b { font: 700 18px var(--display); }
+  .paypanel { background: #fff; border: 1px solid var(--blue); box-shadow: 0 0 0 3px rgba(51,103,153,.12); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .paypanel h2 { font-size: 16px; font-weight: 600; display: flex; align-items: center; }
+  .paypanel h2 kbd { margin-left: auto; }
+  .amtbox { border: 1px solid rgba(26,36,48,.16); border-radius: 10px; padding: 10px 14px; }
+  .amtbox small { font-size: 12px; color: var(--ink-mute); }
+  .amtbox b { font: 700 32px/1.1 var(--display); display: block; letter-spacing: -.02em; }
+  .chipsrow { display: flex; gap: 6px; }
+  .chipsrow span { flex: 1; height: 32px; border-radius: 8px; border: 1px solid var(--line); display: grid; place-items: center; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+  .chipsrow span.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .methods { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .m { height: 54px; border: 1px solid var(--line); border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 0 12px; font-weight: 600; font-size: 13.5px; }
+  .m small { display: block; font-weight: 500; color: var(--ink-mute); font-size: 11.5px; }
+  .m.on { border: 2px solid var(--blue); background: #F5F9FC; padding: 0 11px; }
+  .m.off { opacity: .45; }
+  .m kbd { margin-left: auto; }
+  .paypanel .btn-lg { justify-content: center; margin-top: auto; }
+  .after { font-size: 12.5px; color: var(--ink-mute); display: flex; gap: 6px; }
+</style></head>
+<body data-nav="inhouse" data-tabs='[["Today",null,false],["Emeka Nwosu, 205","#D92D5B",true],["New booking",null,false]]'>
+<main class="main">
+  <div class="content">
+    <div class="wrap">
+      <div class="col">
+        <section class="who">
+          <small>Booking CA-8M2D</small>
+          <h2>Emeka Nwosu</h2>
+          <div class="chips"><span class="pill" style="background:rgba(255,255,255,.12);color:#fff">In-house</span><span class="pill" style="background:var(--rose);color:#fff">Past checkout</span></div>
+          <div class="rm"><b>205</b><span>One-bedroom suite</span></div>
+          <div class="nights" title="Each bar is a night: white paid, gold owed">
+            <div><i style="background:#fff"></i>Mon</div><div><i style="background:#fff"></i>Tue</div>
+            <div><i style="background:linear-gradient(to top,#fff 0 83%,var(--gold) 83%)"></i>Wed</div><div><i style="background:var(--gold)"></i>Thu</div>
+            <div><i style="border:1.5px dashed #F08BA6;height:18px"></i><span style="color:#F08BA6">Late</span></div>
+          </div>
+        </section>
+        <section class="facts">
+          <div><span>Stay</span><b>19 to 23 Oct, 4 nights</b></div>
+          <div><span>Due out</span><b class="due">12:00 pm, 1 h 41 m ago</b></div>
+          <div><span>Phone</span><b>0802 114 9073</b></div>
+          <div><span>ID</span><b>Passport on file</b></div>
+        </section>
+        <section class="links">
+          <a><i data-lucide="calendar-plus" class="s16 soft"></i>Extend the stay</a>
+          <a><i data-lucide="arrow-right-left" class="s16 soft"></i>Move room</a>
+          <a><i data-lucide="badge-percent" class="s16 soft"></i>Discount<span class="muted">needs a manager</span></a>
+          <a><i data-lucide="undo-2" class="s16 soft"></i>Refund</a>
+          <a><i data-lucide="printer" class="s16 soft"></i>Print bill or invoice</a>
+        </section>
+      </div>
+
+      <section class="ledger">
+        <header><h2>Bill</h2><button class="btn btn-line btn-sm"><i data-lucide="plus" class="s14"></i>Add charge <kbd>F8</kbd></button></header>
+        <div class="day"><h4>Monday 19 October</h4>
+          <div class="ent"><span class="ic" style="background:var(--blue-soft);color:var(--blue)"><i data-lucide="bed-double"></i></span><div class="w"><b>Room 205, 4 nights</b><small>₦120,000 a night, by Tobi</small></div><span class="amt">₦480,000</span><span class="bal">₦480,000</span></div>
+          <div class="ent pay"><span class="ic" style="background:var(--green-soft);color:var(--green)"><i data-lucide="landmark"></i></span><div class="w"><b>Transfer, Access Bank</b><small>Ref 0012 4471, by Tobi</small></div><span class="amt">−₦240,000</span><span class="bal">₦240,000</span></div>
+        </div>
+        <div class="day"><h4>Tuesday 20 October</h4>
+          <div class="ent"><span class="ic" style="background:#FCE9EE;color:#C8355D"><i data-lucide="utensils"></i></span><div class="w"><b>Bar &amp; kitchen, to room</b><small>Jollof rice, 2 Malt. S-1182, by Ruth</small></div><span class="amt">₦18,500</span><span class="bal">₦258,500</span></div>
+        </div>
+        <div class="day"><h4>Wednesday 21 October</h4>
+          <div class="ent"><span class="ic" style="background:var(--card-deep);color:var(--ink-soft)"><i data-lucide="shirt"></i></span><div class="w"><b>Laundry, 6 items</b><small>by Musa</small></div><span class="amt">₦6,000</span><span class="bal">₦264,500</span></div>
+        </div>
+        <div class="day"><h4>Thursday 22 October</h4>
+          <div class="ent pay"><span class="ic" style="background:var(--green-soft);color:var(--green)"><i data-lucide="banknote"></i></span><div class="w"><b>Cash at the desk</b><small>by Joy</small></div><span class="amt">−₦100,000</span><span class="bal">₦164,500</span></div>
+        </div>
+        <div class="day"><h4>Today</h4>
+          <div class="ent sug"><span class="ic" style="background:#fff;color:var(--gold-ink)"><i data-lucide="clock-alert"></i></span><div class="w"><b>Late checkout until 2:00 pm?</b><small>Not on the bill yet</small></div><button class="btn btn-line btn-sm">Add ₦20,000</button><button class="btn btn-ghost btn-sm">Let it go</button></div>
+        </div>
+        <div class="tot"><div><small>Charges</small><b>₦504,500</b></div><div><small>Paid</small><b style="color:var(--green)">₦340,000</b></div><div><small>Still to pay</small><b style="color:var(--rose)">₦164,500</b></div></div>
+      </section>
+
+      <section class="paypanel">
+        <h2>Take payment <kbd>F7</kbd></h2>
+        <div class="amtbox"><small>Amount</small><b>₦164,500</b></div>
+        <div class="chipsrow"><span class="on">All of it</span><span>₦100,000</span><span>Other</span></div>
+        <div class="methods">
+          <div class="m"><i data-lucide="banknote" class="soft"></i><div>Cash</div><kbd>1</kbd></div>
+          <div class="m on"><i data-lucide="credit-card" style="color:var(--blue)"></i><div>POS card<small>Moniepoint</small></div><kbd>2</kbd></div>
+          <div class="m"><i data-lucide="landmark" class="soft"></i><div>Transfer</div><kbd>3</kbd></div>
+          <div class="m off"><i data-lucide="wallet" class="soft"></i><div>Wallet<small>₦0</small></div></div>
+        </div>
+        <div class="field"><label>POS slip number (optional)</label><div class="input focus"><span class="ph">Last 4 digits or slip ref</span></div></div>
+        <div class="after"><i data-lucide="unlock" class="s14"></i>Paying in full unlocks checkout. A receipt prints on the TM-T20.</div>
+        <button class="btn btn-primary btn-lg">Take ₦164,500 <kbd>Ctrl Enter</kbd></button>
+        <button class="btn btn-ghost btn-sm" style="justify-content:center">Take it and check out now</button>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+</body></html>

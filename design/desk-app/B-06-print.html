@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Print</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  iframe { position: absolute; z-index: 0; inset: 0; width: 1440px; height: 900px; border: 0; filter: brightness(.62) saturate(.85); }
+  .dlg { position: absolute; z-index: 2; top: 64px; left: 50%; transform: translateX(-45%); width: 1000px; height: 804px; background: var(--mist); border-radius: 14px; box-shadow: 0 24px 60px rgba(15,36,56,.4); display: grid; grid-template-columns: 1fr 320px; overflow: hidden; }
+  .prev { padding: 22px; display: flex; justify-content: center; align-items: flex-start; overflow: hidden; background: #DCE3EA; }
+  .a4 { width: 520px; height: 736px; background: #fff; box-shadow: 0 2px 10px rgba(26,36,48,.18); padding: 36px 38px; font-size: 10.5px; color: var(--ink-soft); display: flex; flex-direction: column; gap: 14px; }
+  .a4 .hd { display: flex; justify-content: space-between; align-items: flex-start; }
+  .a4 .hd img { width: 28px; height: 33px; }
+  .a4 .hd b { font: 600 15px var(--display); color: var(--ink); display: block; margin-top: 6px; }
+  .a4 .hd .inv { text-align: right; }
+  .a4 .hd .inv b { font: 700 20px var(--display); color: var(--navy); margin: 0 0 4px; }
+  .a4 .to { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 10px 0; border-top: 2px solid var(--navy); border-bottom: 1px solid var(--line); }
+  .a4 .to small { display: block; font-size: 9px; color: var(--ink-mute); }
+  .a4 .to span { color: var(--ink); font-weight: 600; font-size: 11px; }
+  .a4 table { width: 100%; border-collapse: collapse; }
+  .a4 th { text-align: left; font-size: 9px; color: var(--ink-mute); font-weight: 600; padding: 5px 0; border-bottom: 1px solid var(--line); }
+  .a4 td { padding: 6px 0; border-bottom: 1px solid var(--line-soft); color: var(--ink); font-size: 10.5px; }
+  .a4 .r { text-align: right; }
+  .a4 .tot { margin-left: auto; width: 230px; }
+  .a4 .tot div { display: flex; justify-content: space-between; padding: 4px 0; }
+  .a4 .tot .due { border-top: 2px solid var(--navy); margin-top: 4px; padding-top: 7px; font: 700 14px var(--display); color: var(--rose); }
+  .a4 .pay { font-size: 9.5px; line-height: 1.5; background: var(--card-deep); padding: 8px 10px; border-radius: 4px; }
+  .a4 .ft { margin-top: auto; font-size: 9px; color: var(--ink-mute); border-top: 1px solid var(--line); padding-top: 8px; display: flex; justify-content: space-between; }
+  .opts { background: #fff; padding: 22px; display: flex; flex-direction: column; gap: 16px; border-left: 1px solid var(--line); }
+  .opts h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; }
+  .opts h2 kbd { margin-left: auto; }
+  .opts .sub { font-size: 13px; color: var(--ink-soft); margin-top: -10px; }
+  .prn { display: flex; flex-direction: column; gap: 6px; }
+  .prn .o { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 13.5px; }
+  .prn .o b { font-weight: 600; display: block; }
+  .prn .o small { color: var(--ink-mute); font-size: 12px; }
+  .prn .o.on { border: 2px solid var(--blue); padding: 9px 11px; background: #F5F9FC; }
+  .prn .o .rd { margin-left: auto; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(26,36,48,.3); }
+  .prn .o.on .rd { border: 5px solid var(--blue); }
+  .prn .o.off { opacity: .55; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .step { display: flex; align-items: center; height: 38px; border: 1px solid rgba(26,36,48,.16); border-radius: 8px; }
+  .step span { width: 36px; text-align: center; color: var(--ink-soft); }
+  .step b { flex: 1; text-align: center; font-weight: 600; }
+  .chk { display: flex; gap: 8px; align-items: center; font-size: 13.5px; }
+  .box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid rgba(26,36,48,.3); display: grid; place-items: center; }
+  .box.on { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .go { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+  .go .btn { justify-content: center; }
+</style></head>
+<body>
+<iframe src="B-folio.html" title="Bill behind print"></iframe>
+<div class="dlg">
+  <div class="prev" style="position:relative">
+    <div class="a4">
+      <div class="hd"><div><img src="assets/logo.png" alt=""><b>Centurion Apartments</b>12 Ajose Adeogun Street, Victoria Island, Lagos<br>frontdesk@centurionapartments.com, 0700 236 8784</div>
+        <div class="inv"><b>Invoice</b>INV-2026-0418<br>Fri 23 October 2026</div></div>
+      <div class="to"><div><small>Bill to</small><span>Emeka Nwosu</span><br>0802 114 9073</div><div><small>Stay</small><span>Room 205, One-bedroom suite</span><br>Mon 19 to Fri 23 Oct, 4 nights<br>Booking <span style="white-space:nowrap">CA-8M2D</span></div></div>
+      <table>
+        <tr><th>Date</th><th>Description</th><th class="r">Amount</th></tr>
+        <tr><td>19 Oct</td><td>Room 205, 4 nights at ₦120,000</td><td class="r">₦480,000</td></tr>
+        <tr><td>20 Oct</td><td>Bar &amp; kitchen, receipt S-1182</td><td class="r">₦18,500</td></tr>
+        <tr><td>21 Oct</td><td>Laundry, 6 items</td><td class="r">₦6,000</td></tr>
+        <tr><td>19 Oct</td><td>Paid by transfer, Access Bank, ref 0012 4471</td><td class="r">−₦240,000</td></tr>
+        <tr><td>22 Oct</td><td>Paid in cash</td><td class="r">−₦100,000</td></tr>
+      </table>
+      <div class="tot"><div><span>Charges</span><span>₦504,500</span></div><div><span>Paid</span><span>₦340,000</span></div><div class="due"><span>Balance due</span><span>₦164,500</span></div></div>
+      <div class="pay">Pay by transfer to Centurion Apartments Ltd, Access Bank 0123 456 789, using CA-8M2D as the reference. Prices include VAT.</div>
+      <div class="ft"><span>Printed by Tobi Adewale, 1:52 pm</span><span>Page 1 of 1</span></div>
+    </div>
+  </div>
+  <aside class="opts">
+    <h2>Print invoice <kbd>Esc</kbd></h2>
+    <div class="sub">Emeka Nwosu, CA-8M2D, A4</div>
+    <div class="prn">
+      <div class="o on"><i data-lucide="printer" class="s16 soft"></i><div><b>HP LaserJet front office</b><small>A4, ready</small></div><span class="rd"></span></div>
+      <div class="o off"><i data-lucide="receipt" class="s16 soft"></i><div><b>Epson TM-T20</b><small>80 mm receipts only</small></div><span class="rd"></span></div>
+      <div class="o"><i data-lucide="file-down" class="s16 soft"></i><div><b>Save as PDF</b><small>To Documents, Centurion</small></div><span class="rd"></span></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Copies</label><div class="step"><span>−</span><b>1</b><span>+</span></div></div>
+      <div class="field"><label>Paper</label><div class="input">A4</div></div>
+    </div>
+    <div class="chk"><span class="box on"><i data-lucide="check" class="s14"></i></span>Include payments</div>
+    <div class="chk"><span class="box"></span>Show bar &amp; kitchen items one by one</div>
+    <div class="go">
+      <button class="btn btn-primary btn-lg"><i data-lucide="printer" class="s16"></i>Print <kbd>Enter</kbd></button>
+      <button class="btn btn-line"><i data-lucide="mail" class="s16"></i>Email instead</button>
+    </div>
+  </aside>
+</div>
+<script>lucide.createIcons();</script>
+</body></html>

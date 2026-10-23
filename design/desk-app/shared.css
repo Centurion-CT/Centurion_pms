@@ -1,0 +1,104 @@
+/* Centurion Desk mockups: tokens and pieces both directions share.
+   Built from .superdesign/design-system.md (Daylight / Harbour). */
+@import url('https://fonts.bunny.net/css?family=bricolage-grotesque:500,600,700|hanken-grotesk:400,500,600,700&display=swap');
+
+:root {
+  --mist: #EEF3F7;
+  --card: #FFFFFF;
+  --card-deep: #F4F7FA;
+  --ink: #1A2430;
+  --ink-soft: #4A5563;
+  --ink-mute: #6B7785;
+  --navy: #16324B;
+  --navy-2: #0F2438;
+  --navy-3: #1E3F5C;
+  --blue: #336799;
+  --blue-deep: #285480;
+  --blue-soft: rgba(51, 103, 153, .12);
+  --blue-light: #6E9FCB;
+  --blue-on-dark: #8DB6DE;
+  --gold: #E3A83A;
+  --gold-soft: #FBF1DE;
+  --gold-ink: #8A5A0B;
+  --green: #0F8A5F;
+  --green-soft: #E3F4EC;
+  --rose: #D92D5B;
+  --rose-soft: #FCE8EE;
+  --amber: #B86A05;
+  --amber-soft: #FDF0DC;
+  --free: #DCE5EE;
+  --line: rgba(26, 36, 48, .10);
+  --line-soft: rgba(26, 36, 48, .06);
+  --line-dark: rgba(255, 255, 255, .12);
+  --display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --body: 'Hanken Grotesk', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1440px; height: 900px; overflow: hidden; }
+body { font: 14px/1.4 var(--body); color: var(--ink); background: var(--mist); font-feature-settings: 'tnum' 1; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3, .display { font-family: var(--display); letter-spacing: -.01em; }
+.num { font-variant-numeric: tabular-nums; }
+svg.lucide { width: 18px; height: 18px; stroke-width: 1.9; flex: none; }
+.s14 svg.lucide, svg.lucide.s14 { width: 14px; height: 14px; }
+.s16 svg.lucide, svg.lucide.s16 { width: 16px; height: 16px; }
+
+/* Windows 11 title bar */
+.win { height: 32px; display: flex; align-items: center; padding-left: 12px; font-size: 12px; user-select: none; }
+.win img { width: 14px; height: 16px; margin-right: 10px; }
+.win .wtitle { flex: 1; }
+.win .wctl { display: flex; height: 100%; }
+.win .wctl span { width: 46px; display: grid; place-items: center; }
+.win .wctl svg.lucide { width: 15px; height: 15px; stroke-width: 1.4; }
+
+.app { height: 900px; display: flex; flex-direction: column; }
+.body { flex: 1; display: flex; min-height: 0; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 8px; font-weight: 600; font-size: 14px; white-space: nowrap; }
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-navy { background: var(--navy); color: #fff; }
+.btn-line { background: var(--card); border: 1px solid var(--line); color: var(--ink); }
+.btn-ghost { color: var(--ink-soft); }
+.btn-lg { height: 44px; padding: 0 18px; font-size: 15px; }
+.btn-sm { height: 30px; padding: 0 10px; font-size: 13px; border-radius: 7px; }
+kbd { font: 600 11px/1 var(--body); padding: 3px 5px; border-radius: 4px; border: 1px solid var(--line); background: var(--card-deep); color: var(--ink-mute); }
+.btn-primary kbd, .btn-navy kbd { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.85); }
+
+/* Cards and misc */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.muted { color: var(--ink-mute); }
+.soft { color: var(--ink-soft); }
+.due { color: var(--rose); font-weight: 600; }
+.paid { color: var(--green); font-weight: 600; }
+.pill { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pill-green { background: var(--green-soft); color: var(--green); }
+.pill-rose { background: var(--rose-soft); color: var(--rose); }
+.pill-gold { background: var(--gold-soft); color: var(--gold-ink); }
+.pill-blue { background: var(--blue-soft); color: var(--blue-deep); }
+.pill-grey { background: var(--card-deep); color: var(--ink-soft); border: 1px solid var(--line-soft); }
+.avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+.input { height: 38px; border: 1px solid rgba(26,36,48,.16); border-radius: 8px; background: #fff; padding: 0 12px; display: flex; align-items: center; gap: 8px; }
+.input.focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(51,103,153,.18); }
+.input .ph { color: var(--ink-mute); }
+.seg { display: inline-flex; background: var(--card-deep); border: 1px solid var(--line-soft); border-radius: 9px; padding: 3px; gap: 2px; }
+.seg span { height: 28px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; border-radius: 7px; font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+.seg span.on { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(26,36,48,.08); }
+.hatch-gold { background: repeating-linear-gradient(135deg, var(--gold) 0 3px, #F6DFAF 3px 6px); }
+.hatch-grey { background: repeating-linear-gradient(135deg, #B8C3CE 0 3px, #E7ECF1 3px 6px); }
+
+/* Room-state colours used by every "house" view */
+.st-in { background: var(--navy); }
+.st-arr { background: var(--blue-light); }
+.st-leave { background: var(--gold); }
+.st-clean { background: repeating-linear-gradient(135deg, var(--gold) 0 3px, #F6DFAF 3px 6px); }
+.st-free { background: var(--free); }
+.st-ooo { background: repeating-linear-gradient(135deg, #B8C3CE 0 3px, #E7ECF1 3px 6px); }
+.legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--ink-soft); flex-wrap: wrap; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }

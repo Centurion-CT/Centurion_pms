@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>A New booking</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="a.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .wrap { flex: 1; display: grid; grid-template-columns: 1fr 372px; gap: 16px; min-height: 0; }
+  .form { padding: 4px 22px; overflow: hidden; }
+  .sec { padding: 16px 0 18px; border-bottom: 1px solid var(--line-soft); }
+  .sec:last-child { border-bottom: 0; }
+  .sec h2 { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .sec h2 .muted { font: 500 13px var(--body); }
+  .row { display: flex; gap: 12px; align-items: flex-end; }
+  .nights { white-space: nowrap; height: 38px; display: flex; align-items: center; padding: 0 12px; border-radius: 8px; background: var(--blue-soft); color: var(--blue-deep); font-weight: 600; }
+  .step { display: flex; align-items: center; height: 38px; border: 1px solid rgba(26,36,48,.16); border-radius: 8px; background: #fff; }
+  .step span { width: 34px; display: grid; place-items: center; color: var(--ink-soft); }
+  .step b { width: 34px; text-align: center; font-weight: 600; }
+  .cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .catc { border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; display: flex; gap: 12px; align-items: center; }
+  .catc.on { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(51,103,153,.15); background: #F7FAFD; }
+  .catc .mini { display: flex; gap: 3px; align-items: flex-end; height: 26px; }
+  .catc .mini i { width: 6px; border-radius: 1.5px 1.5px 0 0; background: var(--navy); display: block; }
+  .catc .mini i.f { background: var(--free); }
+  .catc b { font-weight: 600; display: block; white-space: nowrap; }
+  .catc small { color: var(--ink-mute); font-size: 12.5px; }
+  .catc .price { margin-left: auto; text-align: right; font-weight: 700; }
+  .rooms { display: flex; gap: 8px; margin-top: 12px; }
+  .room { width: 128px; border: 1px solid var(--line); border-radius: 9px; padding: 8px 11px; }
+  .room b { font: 700 17px var(--display); }
+  .room small { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--ink-soft); }
+  .room.on { border: 2px solid var(--blue); padding: 7px 10px; background: #F7FAFD; }
+  .room.off { opacity: .5; }
+  .found { margin-top: 10px; display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--green-soft); }
+  .found b { font-weight: 600; }
+  .found small { color: var(--ink-soft); font-size: 12.5px; display: block; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--ink-soft); margin-top: 12px; }
+  .box { width: 16px; height: 16px; border: 1.5px solid rgba(26,36,48,.3); border-radius: 4px; }
+  .sum { background: var(--navy); color: #fff; border: 0; display: flex; flex-direction: column; padding: 20px; }
+  .sum small { color: var(--blue-on-dark); font-size: 12.5px; }
+  .sum h2 { font-size: 20px; font-weight: 600; margin-top: 2px; }
+  .sum .ln { display: flex; justify-content: space-between; padding: 9px 0; border-top: 1px solid var(--line-dark); font-size: 13.5px; }
+  .sum .ln span:first-child { color: #C5D6E6; }
+  .sum .tot { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0 14px; border-top: 1px solid var(--line-dark); }
+  .sum .tot b { font: 700 30px var(--display); color: var(--gold); letter-spacing: -.02em; }
+  .meth { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .meth span { height: 40px; border-radius: 8px; border: 1px solid var(--line-dark); display: flex; align-items: center; gap: 8px; padding: 0 12px; font-weight: 600; font-size: 13.5px; color: #DCE7F1; }
+  .meth span.on { background: #fff; color: var(--navy); border-color: #fff; }
+  .amt { margin-top: 10px; height: 44px; border-radius: 8px; background: var(--navy-2); display: flex; align-items: center; padding: 0 14px; justify-content: space-between; font-size: 13px; color: #C5D6E6; }
+  .amt b { font: 700 18px var(--display); color: #fff; }
+  .sum .go { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+  .sum .go .btn { justify-content: center; }
+  .btn-white { background: #fff; color: var(--navy); }
+  .btn-dark-line { border: 1px solid var(--line-dark); color: #DCE7F1; }
+</style></head>
+<body data-nav="reservations">
+<main class="main">
+  <div class="top">
+    <div class="crumb"><small>Reservations</small><h1>New booking</h1></div>
+    <span class="muted" style="font-size:13px">Saved as you type. <kbd>Esc</kbd> to leave, nothing is booked until you confirm.</span>
+  </div>
+  <div class="content">
+    <div class="wrap">
+      <section class="card form">
+        <div class="sec">
+          <h2>When and who</h2>
+          <div class="row">
+            <div class="field" style="width:170px"><label>Check-in, today</label><div class="input"><i data-lucide="calendar" class="s16 muted"></i>Fri 23 Oct</div></div>
+            <div class="field" style="width:170px"><label>Check-out</label><div class="input focus"><i data-lucide="calendar" class="s16 muted"></i>Mon 26 Oct</div></div>
+            <div class="nights">3 nights</div>
+            <div class="field"><label>Adults</label><div class="step"><span>−</span><b>2</b><span>+</span></div></div>
+            <div class="field"><label>Children</label><div class="step"><span>−</span><b>0</b><span>+</span></div></div>
+          </div>
+        </div>
+        <div class="sec">
+          <h2>Room <span class="muted">free for all 3 nights</span></h2>
+          <div class="cats">
+            <div class="catc"><div class="mini"><i style="height:26px"></i><i style="height:26px"></i><i style="height:26px"></i><i style="height:26px"></i><i style="height:20px"></i><i class="f" style="height:8px"></i><i class="f" style="height:8px"></i><i style="height:26px"></i></div><div><b>Studio</b><small>2 free</small></div><div class="price">₦85,000<small style="display:block;font-weight:500">a night</small></div></div>
+            <div class="catc on"><div class="mini"><i style="height:26px"></i><i style="height:26px"></i><i style="height:26px"></i><i style="height:22px"></i><i style="height:26px"></i><i style="height:26px"></i><i class="f" style="height:8px"></i><i style="height:14px"></i><i style="height:26px"></i><i class="f" style="height:8px"></i></div><div><b>One-bed</b><small>2 free</small></div><div class="price">₦120,000<small style="display:block;font-weight:500">a night</small></div></div>
+            <div class="catc"><div class="mini"><i style="height:26px"></i><i style="height:26px"></i><i class="f" style="height:8px"></i><i style="height:26px"></i><i class="f" style="height:8px"></i><i style="height:26px"></i></div><div><b>Two-bed</b><small>1 free</small></div><div class="price">₦180,000<small style="display:block;font-weight:500">a night</small></div></div>
+          </div>
+          <div class="rooms">
+            <div class="room on"><b>207</b><small><span class="dot" style="background:var(--green)"></span>Ready, inspected</small></div>
+            <div class="room"><b>210</b><small><span class="dot" style="background:var(--gold)"></span>Guest leaves today</small></div>
+            <div class="room off"><b>205</b><small>Taken 26 Oct</small></div>
+            <div class="room off"><b>202</b><small>Taken 29 Oct</small></div>
+            <div style="margin-left:auto;align-self:center;font-size:13px" class="soft">or <u>book the category</u>, choose the room at check-in</div>
+          </div>
+        </div>
+        <div class="sec">
+          <h2>Guest <span class="seg" style="margin-left:auto;font-family:var(--body)"><span class="on">Walk-in</span><span>Phone</span><span>Email</span><span>Company</span></span></h2>
+          <div class="row">
+            <div class="field" style="width:250px"><label>Phone number</label><div class="input focus">0803 555 0142</div></div>
+            <div class="found" style="flex:1;margin-top:0"><span class="avatar" style="background:#fff;color:var(--green)">KO</span><div><b>Kemi Ogunleye, stayed 3 times</b><small>Last in August, 102. ₦15,000 in her wallet. Prefers a high floor.</small></div><button class="btn btn-line btn-sm" style="margin-left:auto">Not her</button></div>
+          </div>
+          <div class="grid3">
+            <div class="field"><label>Full name</label><div class="input">Kemi Ogunleye</div></div>
+            <div class="field"><label>Email for the receipt</label><div class="input">kemi.ogunleye@gmail.com</div></div>
+            <div class="field"><label>Note for the front desk</label><div class="input"><span class="ph">Late arrival, airport pickup...</span></div></div>
+          </div>
+          <div class="check"><span class="box"></span>Bill this stay to a company account</div>
+        </div>
+      </section>
+
+      <aside class="card sum">
+        <small>Booking summary</small>
+        <h2>207, One-bedroom suite</h2>
+        <div style="color:#C5D6E6;font-size:13.5px;margin:2px 0 12px">Fri 23 to Mon 26 Oct, 2 adults, Kemi Ogunleye</div>
+        <div class="ln"><span>3 nights at ₦120,000</span><span>₦360,000</span></div>
+        <div class="ln"><span>Discount</span><span style="color:var(--blue-on-dark)">Add, needs a manager</span></div>
+        <div class="tot"><span style="color:#C5D6E6">Total</span><b>₦360,000</b></div>
+        <small>Take payment now</small>
+        <div class="meth">
+          <span class="on"><i data-lucide="credit-card" class="s16"></i>Card on POS</span>
+          <span><i data-lucide="banknote" class="s16"></i>Cash</span>
+          <span><i data-lucide="landmark" class="s16"></i>Transfer</span>
+          <span><i data-lucide="wallet" class="s16"></i>Wallet ₦15,000</span>
+        </div>
+        <div class="amt"><span>Amount</span><b>₦360,000</b></div>
+        <div class="ln" style="margin-top:14px"><span>Print</span><span>80 mm receipt, registration card</span></div>
+        <div class="ln"><span>Send</span><span>Receipt by email and SMS</span></div>
+        <div class="go">
+          <button class="btn btn-white btn-lg">Confirm, take payment, check in <kbd style="background:var(--card-deep)">Ctrl Enter</kbd></button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-dark-line">Confirm only</button><button class="btn btn-dark-line">Hold 2 hours</button></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+<script src="a-chrome.js"></script>
+</body></html>

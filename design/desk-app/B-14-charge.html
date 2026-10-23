@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Add a charge</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  iframe { position: absolute; z-index: 0; inset: 0; filter: brightness(.62) saturate(.85); width: 1440px; height: 900px; border: 0; }
+  .modal { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -46%); width: 560px; background: #fff; border-radius: 14px; box-shadow: 0 24px 60px rgba(15,36,56,.35); overflow: hidden; }
+  .mh { padding: 18px 22px 12px; display: flex; align-items: flex-start; }
+  .mh small { font-size: 12.5px; color: var(--ink-mute); }
+  .mh h2 { font-size: 21px; font-weight: 600; }
+  .mh .x { margin-left: auto; }
+  .mb { padding: 4px 22px 18px; display: flex; flex-direction: column; gap: 14px; }
+  .picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .pk { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; gap: 10px; align-items: center; }
+  .pk .ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; flex: none; }
+  .pk .ic svg.lucide { width: 16px; height: 16px; }
+  .pk b { font-weight: 600; font-size: 13.5px; display: block; }
+  .pk small { color: var(--ink-mute); font-size: 12px; }
+  .pk.on { border: 2px solid var(--blue); padding: 9px 11px; background: #F5F9FC; }
+  .row { display: grid; grid-template-columns: 1.3fr .7fr 1fr; gap: 12px; }
+  .step { display: flex; align-items: center; height: 38px; border: 1px solid rgba(26,36,48,.16); border-radius: 8px; }
+  .step span { width: 34px; text-align: center; color: var(--ink-soft); }
+  .step b { flex: 1; text-align: center; font-weight: 600; }
+  .total { height: 38px; border-radius: 8px; background: var(--card-deep); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 13px; color: var(--ink-mute); }
+  .total b { font: 700 17px var(--display); color: var(--ink); }
+  .pos { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: var(--ink-soft); background: var(--blue-soft); border-radius: 8px; padding: 9px 11px; }
+  .mf { border-top: 1px solid var(--line); padding: 14px 22px; display: flex; align-items: center; gap: 10px; background: var(--card-deep); }
+  .mf .muted { flex: 1; font-size: 13px; }
+</style></head>
+<body>
+<iframe src="B-folio.html" title="Emeka's bill behind the dialog"></iframe>
+<div class="modal" role="dialog" aria-label="Add a charge">
+  <div class="mh"><div><small>Emeka Nwosu, 205</small><h2>Add a charge</h2></div><button class="btn btn-ghost btn-sm x">Close <kbd>Esc</kbd></button></div>
+  <div class="mb">
+    <div class="picks">
+      <div class="pk"><span class="ic" style="background:var(--card-deep);color:var(--ink-soft)"><i data-lucide="shirt"></i></span><div><b>Laundry</b><small>₦1,000 an item</small></div></div>
+      <div class="pk on"><span class="ic" style="background:var(--gold-soft);color:var(--gold-ink)"><i data-lucide="clock"></i></span><div><b>Late checkout</b><small>₦10,000 an hour</small></div></div>
+      <div class="pk"><span class="ic" style="background:var(--blue-soft);color:var(--blue)"><i data-lucide="car"></i></span><div><b>Airport pickup</b><small>₦35,000</small></div></div>
+      <div class="pk"><span class="ic" style="background:#FCE9EE;color:#C8355D"><i data-lucide="wine"></i></span><div><b>Minibar</b><small>Pick items</small></div></div>
+      <div class="pk"><span class="ic" style="background:var(--rose-soft);color:var(--rose)"><i data-lucide="hammer"></i></span><div><b>Damage</b><small>Needs a note</small></div></div>
+      <div class="pk"><span class="ic" style="background:var(--card-deep);color:var(--ink-soft)"><i data-lucide="plus"></i></span><div><b>Other</b><small>Type it in</small></div></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Amount each</label><div class="input">₦10,000</div></div>
+      <div class="field"><label>Hours</label><div class="step"><span>−</span><b>2</b><span>+</span></div></div>
+      <div class="field"><label>Adds to the bill</label><div class="total"><span>Total</span><b>₦20,000</b></div></div>
+    </div>
+    <div class="field"><label>Note on the bill</label><div class="input focus">Late checkout until 2:00 pm, agreed with Tobi</div></div>
+    <div class="pos"><i data-lucide="utensils" class="s16"></i>Bar &amp; kitchen charges come from the POS automatically when staff choose "charge to room".</div>
+  </div>
+  <div class="mf">
+    <span class="muted">He will owe ₦184,500</span>
+    <button class="btn btn-line">Add and take payment</button>
+    <button class="btn btn-primary">Add ₦20,000 <kbd>Enter</kbd></button>
+  </div>
+</div>
+<script>lucide.createIcons();</script>
+</body></html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Move room</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  iframe { position: absolute; z-index: 0; inset: 0; filter: brightness(.62) saturate(.85); width: 1440px; height: 900px; border: 0; }
+  .sheet { position: absolute; z-index: 2; top: 32px; right: 0; bottom: 0; width: 620px; background: var(--mist); box-shadow: -12px 0 40px rgba(15,36,56,.3); display: flex; flex-direction: column; }
+  .sh { background: #fff; padding: 18px 24px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: flex-start; gap: 12px; }
+  .sh small { font-size: 12.5px; color: var(--ink-mute); }
+  .sh h2 { font-size: 22px; font-weight: 600; }
+  .sh .x { margin-left: auto; }
+  .sb { flex: 1; padding: 18px 24px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+  .lbl { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); display: flex; justify-content: space-between; }
+  .lbl span { font-weight: 500; color: var(--ink-mute); }
+  .rm { background: #fff; border: 1px solid var(--line); border-radius: 11px; padding: 11px 14px; display: flex; align-items: center; gap: 14px; }
+  .rm .no { font: 700 22px/1 var(--display); width: 48px; }
+  .rm .w { flex: 1; }
+  .rm b { font-weight: 600; display: block; }
+  .rm small { color: var(--ink-mute); font-size: 12.5px; }
+  .rm .pr { text-align: right; font-weight: 600; font-size: 13.5px; }
+  .rm .pr small { display: block; font-weight: 500; }
+  .rm.on { border: 2px solid var(--blue); padding: 10px 13px; background: #F5F9FC; }
+  .rm.off { opacity: .5; border-style: dashed; }
+  .row { display: flex; gap: 12px; }
+  .row .field { flex: 1; }
+  .what { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .what h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .what div { display: flex; gap: 10px; padding: 5px 0; font-size: 13px; color: var(--ink-soft); align-items: flex-start; }
+  .what svg.lucide { width: 15px; height: 15px; margin-top: 2px; }
+  .sf { background: #fff; border-top: 1px solid var(--line); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+  .sf .muted { flex: 1; font-size: 13px; }
+</style></head>
+<body>
+<iframe src="B-calendar.html" title="Calendar behind the sheet"></iframe>
+<aside class="sheet">
+  <div class="sh">
+    <div><small>Joy Okon, 206, leaves Sun 25 Oct</small><h2>Move to another room</h2></div>
+    <button class="btn btn-ghost x">Close <kbd>Esc</kbd></button>
+  </div>
+  <div class="sb">
+    <div class="lbl">Same type, One-bedroom suite<span>free for her last 2 nights, Fri 23 and Sat 24</span></div>
+    <div class="rm on"><span class="no">210</span><div class="w"><b>Ready about 1:30 pm</b><small>Ngozi Chukwu leaves today. Ada cleans it next.</small></div><div class="pr">Same price<small>₦120,000 a night</small></div><i data-lucide="circle-check" style="color:var(--blue)"></i></div>
+    <div class="rm off"><span class="no">207</span><div class="w"><b>Taken Sat 24</b><small>Bayo Ola, 1 night</small></div><div class="pr muted">Not free</div></div>
+    <div class="lbl" style="margin-top:4px">Other types</div>
+    <div class="rm"><span class="no">305</span><div class="w"><b>Two-bedroom apartment, ready now</b><small>Upgrade. Free of charge needs a manager.</small></div><div class="pr" style="color:var(--rose)">+₦120,000<small>₦60,000 more a night</small></div></div>
+    <div class="rm"><span class="no">105</span><div class="w"><b>Deluxe studio, ready now</b><small>Smaller. The difference goes to her wallet.</small></div><div class="pr" style="color:var(--green)">−₦70,000<small>₦35,000 less a night</small></div></div>
+    <div class="row">
+      <div class="field"><label>Why</label><div class="seg"><span class="on">Something broken</span><span>Guest asked</span><span>Upgrade</span><span>Overbooked</span></div></div>
+    </div>
+    <div class="field"><label>What's wrong in 206</label><div class="input focus">Shower not draining</div></div>
+    <div class="what">
+      <h3>When you move her</h3>
+      <div><i data-lucide="sparkles" style="color:var(--green)"></i>206 goes on the Staff app to be cleaned, and is flagged for repair until someone clears it.</div>
+      <div><i data-lucide="key-round" style="color:var(--blue)"></i>Make 2 new key cards for 210. The 206 cards stop working.</div>
+      <div><i data-lucide="receipt-text" style="color:var(--ink-soft)"></i>Her bill keeps the same rate. The move shows on the booking history.</div>
+    </div>
+  </div>
+  <div class="sf">
+    <span class="muted">She can wait in the lounge until 210 is ready.</span>
+    <button class="btn btn-line">Move later today</button>
+    <button class="btn btn-primary btn-lg">Move to 210 <kbd>Enter</kbd></button>
+  </div>
+</aside>
+<script>lucide.createIcons();</script>
+</body></html>

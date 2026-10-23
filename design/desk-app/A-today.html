@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>A Today</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="a.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<script src="rooms.js"></script>
+<style>
+  .house { padding: 18px 22px 16px; display: flex; gap: 28px; }
+  .house .lead { width: 220px; flex: none; display: flex; flex-direction: column; }
+  .house .lead h2 { font-size: 19px; font-weight: 600; }
+  .house .lead p { color: var(--ink-soft); font-size: 13px; margin-top: 4px; }
+  .house .big { font: 700 52px/1 var(--display); margin-top: auto; letter-spacing: -.03em; }
+  .house .big small { font: 500 13px var(--body); color: var(--ink-soft); letter-spacing: 0; }
+  .bars { flex: 1; display: flex; gap: 22px; }
+  .cat { display: flex; flex-direction: column; }
+  .cat .row { display: flex; gap: 5px; align-items: flex-end; height: 132px; border-bottom: 1px solid var(--line); }
+  .bar { width: 27px; border-radius: 4px 4px 0 0; position: relative; }
+  .bar.over { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--rose); }
+  .bar.sel { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--blue); }
+  .nums { display: flex; gap: 5px; margin-top: 5px; }
+  .nums span { width: 27px; text-align: center; font-size: 11.5px; color: var(--ink-mute); font-weight: 600; }
+  .cat .cname { font-size: 12.5px; color: var(--ink-soft); margin-top: 6px; }
+  .grid2 { flex: 1; display: grid; grid-template-columns: 1fr 336px; gap: 16px; min-height: 0; }
+  .tbl { display: flex; flex-direction: column; min-height: 0; }
+  .tbl header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
+  .tbl header h2 { font-size: 17px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-mute); padding: 8px 18px; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); background: var(--card-deep); }
+  td { padding: 10px 18px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+  td b { font-weight: 600; display: block; }
+  td small { color: var(--ink-mute); font-size: 12.5px; }
+  tr.focus td { background: #F1F6FB; }
+  tr.focus td:first-child { box-shadow: inset 3px 0 0 var(--blue); }
+  .r { text-align: right; }
+  .tfoot { margin-top: auto; padding: 10px 18px; font-size: 12.5px; color: var(--ink-mute); display: flex; gap: 14px; border-top: 1px solid var(--line-soft); }
+  .tfoot span { display: inline-flex; gap: 5px; align-items: center; }
+  .collect { background: var(--navy); color: #fff; border: 0; padding: 18px; }
+  .collect small { color: var(--blue-on-dark); font-size: 12.5px; }
+  .collect .amt { font: 700 32px/1.1 var(--display); color: var(--gold); margin: 4px 0 12px; letter-spacing: -.02em; }
+  .collect li { list-style: none; display: flex; justify-content: space-between; padding: 7px 0; border-top: 1px solid var(--line-dark); font-size: 13px; }
+  .collect li span:last-child { font-weight: 600; }
+  .att { padding: 14px 16px; flex: 1; }
+  .att h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .att .it { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line-soft); }
+  .att .it:first-of-type { border-top: 0; }
+  .att .ico { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; flex: none; }
+  .att .ico svg.lucide { width: 15px; height: 15px; }
+  .att b { font-weight: 600; font-size: 13.5px; display: block; }
+  .att small { color: var(--ink-mute); font-size: 12.5px; }
+  .prog { height: 4px; background: var(--card-deep); border-radius: 2px; margin-top: 5px; width: 160px; }
+  .prog i { display: block; height: 100%; width: 60%; background: var(--green); border-radius: 2px; }
+</style></head>
+<body data-nav="today">
+<main class="main">
+  <div class="top">
+    <div class="crumb"><small>Friday 23 October, morning shift</small><h1>Good morning, Tobi</h1></div>
+    <div class="search"><i data-lucide="search" class="s16"></i><span>Find a guest, booking, room or phone</span><kbd>Ctrl K</kbd></div>
+    <button class="btn btn-line">Check out <kbd>F6</kbd></button>
+    <button class="btn btn-line">Check in <kbd>F5</kbd></button>
+    <button class="btn btn-primary"><i data-lucide="plus" class="s16"></i>New booking <kbd>F2</kbd></button>
+  </div>
+  <div class="content">
+    <section class="card house">
+      <div class="lead">
+        <h2>Tonight's house</h2>
+        <p>Each bar is a room. Taller bars are booked for more of the next 7 nights. Click one to open it.</p>
+        <div class="big">75%<small> 18 of 24 rooms</small></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+        <div class="bars" id="bars"></div>
+        <div class="legend">
+          <span><i class="st-in"></i>In-house 14</span><span><i class="st-arr"></i>Arriving 3</span>
+          <span><i class="st-leave"></i>Leaving today 2</span><span><i class="st-clean"></i>Being cleaned 1</span>
+          <span><i class="st-free"></i>Free 3</span><span><i class="st-ooo"></i>Out of order 1</span>
+          <span><i style="box-shadow:0 0 0 2px var(--rose);background:#fff"></i>Past checkout 1</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid2">
+      <section class="card tbl">
+        <header><h2>Arrivals and departures</h2>
+          <div class="seg"><span class="on">Arriving 5</span><span>Leaving 2</span><span>In-house 14</span><span>Past checkout 1</span></div></header>
+        <table>
+          <tr><th>Guest</th><th>Room</th><th>Stay</th><th class="r">Balance</th><th></th></tr>
+          <tr class="focus"><td><b>Adaeze Okafor</b><small>CA-4K2M · expected 2:00 pm</small></td><td>204 <span class="muted">One-bed</span></td><td>3 nights</td><td class="r paid">Paid</td><td class="r"><button class="btn btn-primary btn-sm">Check in <kbd>Enter</kbd></button></td></tr>
+          <tr><td><b>Tunde Bakare</b><small>CA-7P9Q · Dangote Group account</small></td><td>301 <span class="muted">Two-bed</span></td><td>7 nights</td><td class="r soft">Bill to company</td><td class="r"><button class="btn btn-line btn-sm">Check in</button></td></tr>
+          <tr><td><b>Chiamaka Eze</b><small>CA-2H5W · deposit paid online</small></td><td>103 <span class="muted">Studio</span></td><td>2 nights</td><td class="r due">₦63,000 due</td><td class="r"><button class="btn btn-line btn-sm">Take payment</button></td></tr>
+          <tr><td><b>Ibrahim Musa</b><small>CA-9D3L · late arrival, about 11 pm</small></td><td>208 <span class="muted">One-bed</span></td><td>1 night</td><td class="r paid">Paid</td><td class="r"><button class="btn btn-line btn-sm">Check in</button></td></tr>
+          <tr><td><b>Funmilayo Adeyemi</b><small>CA-5R8T · walk-in hold</small></td><td class="muted">No room yet</td><td>4 nights</td><td class="r due">₦272,000 due</td><td class="r"><button class="btn btn-line btn-sm">Assign a room</button></td></tr>
+        </table>
+        <div class="tfoot"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>Enter</kbd> check in</span><span><kbd>Space</kbd> open booking</span><span><kbd>Tab</kbd> next list</span></div>
+      </section>
+
+      <div style="display:flex;flex-direction:column;gap:16px;min-height:0">
+        <section class="card collect">
+          <small>Still to collect today</small>
+          <div class="amt">₦335,000</div>
+          <ul><li><span>Funmilayo Adeyemi, no room</span><span>₦272,000</span></li><li><span>Chiamaka Eze, 103</span><span>₦63,000</span></li></ul>
+        </section>
+        <section class="card att">
+          <h3>Needs attention</h3>
+          <div class="it"><span class="ico" style="background:var(--rose-soft);color:var(--rose)"><i data-lucide="clock-alert"></i></span><div><b>Room 205 is past checkout</b><small>Emeka Nwosu, was due out at 12:00 pm. Extend or check out.</small></div></div>
+          <div class="it"><span class="ico" style="background:var(--green-soft);color:var(--green)"><i data-lucide="sparkles"></i></span><div><b>204 being cleaned for Adaeze, 2:00 pm</b><small>Blessing, 6 of 10 done, started 10:14</small><div class="prog"><i></i></div></div></div>
+          <div class="it"><span class="ico" style="background:var(--amber-soft);color:var(--amber)"><i data-lucide="message-square"></i></span><div><b>2 guest requests</b><small>Extra towels (302), airport pickup (104)</small></div></div>
+          <div class="it"><span class="ico" style="background:#EFEBFB;color:#6B4BC4"><i data-lucide="circle-check"></i></span><div><b>1 discount waiting for a manager</b><small>10% off for Kemi Ogunleye, asked by you</small></div></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  document.getElementById('bars').innerHTML = HOUSE.map(([name, rooms]) =>
+    `<div class="cat"><div class="row">${rooms.map(([n, s, nights, flag]) =>
+      `<div class="bar st-${s} ${flag || ''} ${n === '204' ? 'sel' : ''}" style="height:${Math.max(8, nights / 7 * 124)}px" title="${n}"></div>`).join('')}</div>
+      <div class="nums">${rooms.map(([n]) => `<span>${n}</span>`).join('')}</div><div class="cname">${name}</div></div>`).join('');
+</script>
+<script src="a-chrome.js"></script>
+</body></html>

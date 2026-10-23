@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B In-house</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  .bar { display: flex; align-items: center; gap: 10px; }
+  .chips { display: flex; gap: 6px; }
+  .chip { height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .chip.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .chip b { font-weight: 700; color: var(--ink); }
+  .chip.on b { color: #fff; }
+  .filter { height: 32px; width: 240px; border: 1px solid var(--line); background: #fff; border-radius: 8px; display: flex; align-items: center; gap: 8px; padding: 0 10px; color: var(--ink-mute); font-size: 13px; }
+  .sort { margin-left: auto; font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 8px; }
+  .tbl { flex: 1; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-mute); padding: 9px 14px; background: var(--card-deep); border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+  th.s { color: var(--ink); }
+  td { padding: 0 14px; height: 41px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; white-space: nowrap; }
+  td.rm { font: 700 15px var(--display); width: 64px; }
+  td b { font-weight: 600; }
+  td .sub { color: var(--ink-mute); font-size: 12.5px; margin-left: 6px; }
+  .r { text-align: right; }
+  .nights { display: inline-flex; gap: 2px; vertical-align: middle; margin-right: 8px; }
+  .nights i { width: 6px; height: 14px; border-radius: 1.5px; background: var(--free); display: block; }
+  .nights i.d { background: var(--navy); }
+  .nights i.t { background: var(--blue-light); }
+  tr.group td { height: 30px; background: #FBFCFD; font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+  tr.focus td { background: #F1F6FB; }
+  tr.focus td:first-child { box-shadow: inset 3px 0 0 var(--blue); }
+  .flags { display: flex; gap: 5px; }
+  .acts { display: inline-flex; gap: 6px; }
+  .acts .btn { height: 28px; }
+  .foot { margin-top: auto; padding: 10px 14px; border-top: 1px solid var(--line-soft); font-size: 12.5px; color: var(--ink-mute); display: flex; gap: 16px; }
+  .foot span { display: inline-flex; gap: 5px; align-items: center; }
+</style></head>
+<body data-nav="inhouse" data-tabs='[["Today",null,false],["In-house",null,true],["Emeka Nwosu, 205","#D92D5B",false]]'>
+<main class="main">
+  <div class="content">
+    <div class="ph">
+      <div class="t"><small>Tonight 16 rooms have a guest. 2 of them leave today.</small><h1>In-house</h1></div>
+      <div class="bar"><button class="btn btn-line btn-sm"><i data-lucide="printer" class="s14"></i>Print the house list</button></div>
+    </div>
+    <div class="bar">
+      <div class="filter"><i data-lucide="search" class="s16"></i>Filter by name, room or company</div>
+      <div class="chips">
+        <span class="chip on">All <b>16</b></span>
+        <span class="chip">Owes money <b>4</b></span>
+        <span class="chip">Leaving today <b>2</b></span>
+        <span class="chip">Open requests <b>2</b></span>
+        <span class="chip">Company <b>1</b></span>
+      </div>
+      <div class="sort">Sort <div class="seg"><span class="on">Leaving soonest</span><span>Room</span><span>Balance</span></div></div>
+    </div>
+    <section class="tbl">
+      <table>
+        <tr><th>Room</th><th>Guest</th><th>Night</th><th class="s">Leaves <i data-lucide="arrow-down" class="s14" style="vertical-align:-2px"></i></th><th class="r">Balance</th><th>Notes</th><th class="r"></th></tr>
+        <tr class="group"><td colspan="7">Past checkout or leaving today</td></tr>
+        <tr class="focus"><td class="rm" style="color:var(--rose)">205</td><td><b>Emeka Nwosu</b><span class="sub">One-bed</span></td><td><span class="nights"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></span>4 of 4</td><td class="due">Was 12:00 pm</td><td class="r due">₦164,500</td><td><div class="flags"><span class="pill pill-rose">Past checkout</span></div></td><td class="r"><span class="acts"><button class="btn btn-line btn-sm">Take payment</button><button class="btn btn-navy btn-sm">Check out</button></span></td></tr>
+        <tr><td class="rm">210</td><td><b>Ngozi Chukwu</b><span class="sub">One-bed</span></td><td><span class="nights"><i class="d"></i><i class="d"></i><i class="d"></i></span>3 of 3</td><td>Today 12:00 pm</td><td class="r due">₦41,500</td><td><div class="flags"><span class="pill pill-gold">Leaving today</span></div></td><td class="r"><span class="acts"><button class="btn btn-navy btn-sm">Settle and check out</button></span></td></tr>
+        <tr><td class="rm">106</td><td><b>Yusuf Bello</b><span class="sub">Studio</span></td><td><span class="nights"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></span>4 of 4</td><td>Today 12:00 pm</td><td class="r paid">Settled</td><td><div class="flags"><span class="pill pill-gold">Leaving today</span><span class="pill pill-grey">Keys at desk</span></div></td><td class="r"><span class="acts"><button class="btn btn-line btn-sm">Check out</button></span></td></tr>
+        <tr class="group"><td colspan="7">Staying on</td></tr>
+        <tr><td class="rm">108</td><td><b>Musa Danjuma</b><span class="sub">Studio</span></td><td><span class="nights"><i class="d"></i><i class="d"></i><i class="t"></i></span>3 of 3</td><td>Sat 24 Oct</td><td class="r paid">Paid</td><td></td><td class="r"><span class="acts"><button class="btn btn-ghost btn-sm">Add charge</button></span></td></tr>
+        <tr><td class="rm">206</td><td><b>Joy Okon</b><span class="sub">One-bed</span></td><td><span class="nights"><i class="d"></i><i class="t"></i><i></i></span>2 of 3</td><td>Sun 25 Oct</td><td class="r paid">Paid</td><td></td><td class="r"><span class="acts"><button class="btn btn-ghost btn-sm">Add charge</button></span></td></tr>
+        <tr><td class="rm">202</td><td><b>Ada Nnamdi</b><span class="sub">One-bed</span></td><td><span class="nights"><i class="d"></i><i class="t"></i><i></i><i></i></span>2 of 4</td><td>Mon 26 Oct</td><td class="r paid">Paid</td><td></td><td class="r"><span class="acts"><button class="btn btn-ghost btn-sm">Add charge</button></span></td></tr>
+        <tr><td class="rm">107</td><td><b>Grace Ekpo</b><span class="sub">Studio</span></td><td><span class="nights"><i class="d"></i><i class="t"></i><i></i><i></i><i></i></span>2 of 5</td><td>Tue 27 Oct</td><td class="r paid">Paid</td><td><div class="flags"><span class="pill pill-grey">With 302</span></div></td><td class="r"><span class="acts"><button class="btn btn-ghost btn-sm">Add charge</button></span></td></tr>
+        <tr><td class="rm">304</td><td><b>Segun Alabi party</b><span class="sub">Two-bed</span></td><td><span class="nights"><i class="d"></i><i class="t"></i><i></i><i></i><i></i></span>2 of 5</td><td>Tue 27 Oct</td><td class="r paid">Paid</td><td><div class="flags"><span class="pill pill-grey">With 104</span></div></td><td class="r"><span class="acts"><button class="btn btn-ghost btn-sm">Add charge</button></span></td></tr>
+        <tr><td class="rm">209</td><td><b>Kunle Bello</b><span class="sub">One-bed</span></td><td><span class="nights"><i class="d"></i><i class="d"></i><i class="t"></i><i></i><i></i><i></i></span>3 of 6</td><td>Wed 28 Oct</td><td class="r due">₦9,000</td><td><div class="flags"><span class="pill pill-grey">Laundry</span></div></td><td class="r"><span class="acts"><button class="btn btn-line btn-sm">Take payment</button></span></td></tr>
+        <tr><td class="rm">102</td><td><b>Kemi Ogunleye</b><span class="sub">Studio</span></td><td><span class="nights"><i class="d"></i><i class="t"></i><i></i><i></i><i></i><i></i></span>2 of 6</td><td>Wed 28 Oct</td><td class="r due">₦18,500</td><td><div class="flags"><span class="pill pill-blue">Discount asked</span></div></td><td class="r"><span class="acts"><button class="btn btn-line btn-sm">Take payment</button></span></td></tr>
+        <tr><td class="rm">104</td><td><b>Segun Alabi</b><span class="sub">Studio</span></td><td><span class="nights"><i class="d"></i><i class="d"></i><i class="t"></i><i></i><i></i><i></i><i></i></span>3 of 7</td><td>Thu 29 Oct</td><td class="r paid">Paid</td><td><div class="flags"><span class="pill pill-amber" style="background:var(--amber-soft);color:var(--amber)">Airport pickup 6:00 pm</span></div></td><td class="r"><span class="acts"><button class="btn btn-ghost btn-sm">Add charge</button></span></td></tr>
+        <tr><td class="rm">302</td><td><b>Grace Ekpo family</b><span class="sub">Two-bed</span></td><td><span class="nights"><i class="d"></i><i class="d"></i><i class="t"></i><i></i><i></i><i></i><i></i></span>3 of 7</td><td>Thu 29 Oct</td><td class="r paid">Paid</td><td><div class="flags"><span class="pill" style="background:var(--amber-soft);color:var(--amber)">Request: towels</span></div></td><td class="r"><span class="acts"><button class="btn btn-ghost btn-sm">Add charge</button></span></td></tr>
+        <tr><td class="rm">101</td><td><b>Oluwaseun Adebayo</b><span class="sub">Studio</span></td><td><span class="nights"><i class="d"></i><i class="d"></i><i class="d"></i><i class="t"></i><i></i><i></i><i></i><i></i><i></i></span>4 of 9</td><td>Sun 1 Nov</td><td class="r paid">Paid</td><td></td><td class="r"><span class="acts"><button class="btn btn-ghost btn-sm">Add charge</button></span></td></tr>
+      </table>
+      <div class="foot"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open in a tab</span><span><kbd>F7</kbd> take payment</span><span><kbd>F8</kbd> add charge</span><span style="margin-left:auto">Scroll for 3 more: 201, 306 and 203</span></div>
+    </section>
+  </div>
+</main>
+<script src="b-chrome.js"></script>
+</body></html>

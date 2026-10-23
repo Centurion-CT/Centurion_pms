@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>B Set up desk</title>
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="b.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+  body { background: var(--navy-2); }
+  .stage { height: 868px; background: radial-gradient(ellipse at 50% 0%, #1E3F5C 0%, var(--navy) 45%, var(--navy-2) 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .bars { position: absolute; bottom: 0; left: 0; right: 0; display: flex; gap: 10px; align-items: flex-end; justify-content: center; opacity: .07; }
+  .bars i { width: 38px; background: #fff; border-radius: 4px 4px 0 0; display: block; }
+  .card2 { width: 460px; background: #fff; border-radius: 16px; padding: 32px 34px 28px; box-shadow: 0 24px 60px rgba(0,0,0,.35); position: relative; }
+  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .brand img { width: 30px; height: 35px; }
+  .brand b { font: 600 16px/1.15 var(--display); display: block; }
+  .brand small { font-size: 12.5px; color: var(--ink-mute); }
+  h1 { font-size: 26px; font-weight: 600; letter-spacing: -.02em; }
+  .lede { color: var(--ink-soft); margin: 6px 0 20px; font-size: 14px; }
+  .f { display: flex; flex-direction: column; gap: 14px; }
+  .input { height: 42px; }
+  .row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .row a { color: var(--blue-deep); font-weight: 600; }
+  .name { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--card-deep); border: 1px solid var(--line-soft); font-size: 13.5px; }
+  .name b { font-weight: 600; }
+  .btn-lg { width: 100%; justify-content: center; height: 46px; margin-top: 4px; }
+  .after { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); display: flex; gap: 10px; font-size: 13px; color: var(--ink-soft); }
+  .after svg.lucide { color: var(--blue); margin-top: 1px; }
+  .foot { position: absolute; bottom: 22px; left: 0; right: 0; text-align: center; color: #7F9AB4; font-size: 12.5px; }
+</style></head>
+<body>
+<div class="win"><img src="assets/logo.png" alt=""><span class="wtitle">Centurion Desk</span>
+  <span class="wctl"><span><i data-lucide="minus"></i></span><span><i data-lucide="square"></i></span><span><i data-lucide="x"></i></span></span></div>
+<div class="stage">
+  <div class="bars"><i style="height:70px"></i><i style="height:110px"></i><i style="height:60px"></i><i style="height:130px"></i><i style="height:90px"></i><i style="height:150px"></i><i style="height:100px"></i></div>
+  <div class="card2">
+    <div class="brand"><img src="assets/logo.png" alt="Centurion"><div><b>Centurion Apartments</b><small>Centurion Desk for Windows</small></div></div>
+    <h1>Set up this desk</h1>
+    <p class="lede">A manager or front desk officer signs in once to connect this PC to the hotel.</p>
+    <div class="f">
+      <div class="field"><label>Email</label><div class="input focus">tobi.adewale@centurionapartments.com</div></div>
+      <div class="field"><label>Password</label><div class="input">••••••••••••<i data-lucide="eye" class="s16 muted" style="margin-left:auto"></i></div></div>
+      <div class="field"><label>Name this desk</label><div class="name"><i data-lucide="monitor" class="s16 soft"></i><b>Reception desk 1</b><span class="muted" style="margin-left:auto">Change</span></div></div>
+      <button class="btn btn-primary btn-lg">Sign in and set up <kbd>Enter</kbd></button>
+      <div class="row"><span class="muted">Connects to centurionapartments.com</span><a>Forgot password</a></div>
+    </div>
+    <div class="after"><i data-lucide="key-round" class="s16"></i><span>After this, staff unlock the desk with their own staff PIN. Nobody types a password at reception again.</span></div>
+  </div>
+  <div class="foot">Version 1.0.0. Only managers and front desk officers can set up a desk.</div>
+</div>
+<script>lucide.createIcons();</script>
+</body></html>
