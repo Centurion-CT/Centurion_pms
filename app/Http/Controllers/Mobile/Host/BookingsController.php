@@ -12,6 +12,7 @@ use App\Actions\Bookings\ExtendBooking;
 use App\Actions\Bookings\MarkCheckedIn;
 use App\Actions\Bookings\MarkCheckedOut;
 use App\Actions\Bookings\MarkNoShow;
+use App\Actions\Bookings\ResendBookingConfirmation;
 use App\Actions\Bookings\SettleCharges;
 use App\Enums\BookingChargeType;
 use App\Enums\BookingSource;
@@ -23,7 +24,8 @@ use App\Enums\RoomInspectionStatus;
 use App\Models\Booking;
 use App\Models\BookingCharge;
 use App\Models\Customer;
-use App\Models\Operator;
+use App\Models\GuestRequest;
+use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomInspection;
@@ -33,6 +35,7 @@ use App\Services\Bookings\EarlyCheckoutQuote;
 use App\Services\Corporates\CorporateResolver;
 use App\Services\Customers\CustomerLinker;
 use App\Services\Dashboard\DashboardSnapshot;
+use App\Services\Guests\GuestIdDocuments;
 use App\Services\Payments\BookingPayments;
 use App\Services\Pricing\PricingCalculator;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,6 +44,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 /**
@@ -57,6 +61,9 @@ class BookingsController extends HostController
 
     private const UPCOMING_DAYS = 14;
 
+    /** Desk bookings list views (`view` param). */
+    private const VIEWS = ['upcoming', 'in_house', 'past', 'cancelled', 'all'];
+
     /** Statuses that are still waiting to arrive. */
     private const ARRIVING_STATUSES = [
         BookingStatus::Pending, BookingStatus::Confirmed, BookingStatus::OnHold,
@@ -68,6 +75,9 @@ class BookingsController extends HostController
 
     public function index(Request $request): JsonResponse
     {
+        if ($request->filled('view')) {
+            return $this->listView($request);
+        }
         $data = $request->validate([
             'segment' => ['nullable', Rule::in(self::SEGMENTS)],
             'q' => ['nullable', 'string', 'max:120'],
@@ -100,6 +110,64 @@ class BookingsController extends HostController
         return response()->json([
             'data' => $rows->values()->map(fn (Booking $b) => BookingPresenter::card($b))->all(),
             'counts' => $counts,
+        ]);
+    }
+
+    /**
+     * Keverna Desk bookings list (docs/desk-app/PHASE-2.md, 6):
+     * `view` upcoming | in_house | past | cancelled | all, plus q (name,
+     * phone, ref, email, room), source, from / to (stays overlapping the
+     * range) and page. Rows are the phone's BookingCard plus nights_left
+     * and flags; the `segment` mode above is unchanged for the phone.
+     */
+    private function listView(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'view' => ['required', Rule::in(self::VIEWS)],
+            'q' => ['nullable', 'string', 'max:120'],
+            'source' => ['nullable', Rule::in(array_map(fn (BookingSource $s) => $s->value, BookingSource::cases()))],
+            'from' => ['nullable', 'date_format:Y-m-d'],
+            'to' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:from'],
+            'page' => ['nullable', 'integer', 'min:1'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:200'],
+        ]);
+        $view = $data['view'];
+        $property = $this->property($request);
+        $page = (int) ($data['page'] ?? 1);
+        $perPage = (int) ($data['per_page'] ?? 50);
+
+        $counts = [];
+        foreach (self::VIEWS as $v) {
+            $counts[$v] = $this->viewQuery($property, $v, $data)->count();
+        }
+
+        $today = Carbon::today()->toDateString();
+        $query = $this->viewQuery($property, $view, $data)->with(['room.category', 'roomCategory', 'corporate']);
+        match ($view) {
+            'upcoming' => $query->orderBy('checkin_date')->orderBy('guest_name'),
+            // Overdue (checkout already passed) first: they are urgent.
+            'in_house' => $query->orderByRaw('CASE WHEN checkout_date < ? THEN 0 ELSE 1 END', [$today])
+                ->orderBy('checkout_date')->orderBy('guest_name'),
+            default => $query->orderByDesc('checkin_date')->orderByDesc('id'),
+        };
+        $total = $counts[$view];
+        $rows = $query->forPage($page, $perPage)->get();
+
+        $openRequests = GuestRequest::query()
+            ->whereIn('booking_id', $rows->pluck('id'))
+            ->where('status', 'open')
+            ->pluck('booking_id')->map(fn ($id) => (int) $id)->unique()->all();
+
+        return response()->json([
+            'data' => $rows->map(fn (Booking $b) => BookingPresenter::listRow($b, in_array((int) $b->id, $openRequests, true)))->values()->all(),
+            'counts' => $counts,
+            'meta' => [
+                'view' => $view,
+                'page' => $page,
+                'per_page' => $perPage,
+                'total' => $total,
+                'has_more' => $page * $perPage < $total,
+            ],
         ]);
     }
 
@@ -190,6 +258,9 @@ class BookingsController extends HostController
             return $this->notFound();
         }
 
+        // The new payment rows' ids, so the desk can print the right receipt.
+        $before = (int) Payment::query()->where('booking_id', $booking->id)->max('id');
+
         try {
             if ($booking->booking_status === BookingStatus::Pending) {
                 $this->payments->confirmAndPay($booking, $operator, (int) $data['amount'], $data['method'], $data['reference_note'] ?? null);
@@ -200,17 +271,45 @@ class BookingsController extends HostController
             return response()->json(['error' => 'payment_failed', 'detail' => $e->getMessage()], 422);
         }
 
-        return $this->ok($request, $booking);
+        $paymentIds = Payment::query()->where('booking_id', $booking->id)->where('id', '>', $before)
+            ->orderBy('id')->pluck('id')->map(fn ($id) => (int) $id)->values()->all();
+
+        return $this->ok($request, $booking, ['payment_ids' => $paymentIds]);
     }
 
-    public function checkIn(Request $request, string $ref, MarkCheckedIn $action, CustomerLinker $linker): JsonResponse
+    /**
+     * Send the booking confirmation to the guest again (same as the web
+     * reservation page: email + WhatsApp listeners on BookingConfirmed).
+     */
+    public function resendConfirmation(Request $request, string $ref, ResendBookingConfirmation $action): JsonResponse
+    {
+        $booking = $this->find($request, $ref);
+        if ($booking === null) {
+            return $this->notFound();
+        }
+        if (! in_array($booking->booking_status, [BookingStatus::Confirmed, BookingStatus::OnHold, BookingStatus::CheckedIn], true)) {
+            return $this->fail('action_failed', 'Only a confirmed booking can be sent again.');
+        }
+        $action->handle($booking, $this->operator($request));
+
+        return $this->ok($request, $booking, ['sent' => true]);
+    }
+
+    public function checkIn(Request $request, string $ref, MarkCheckedIn $action, CustomerLinker $linker, GuestIdDocuments $ids): JsonResponse
     {
         $data = $request->validate([
             'payment' => ['nullable', 'array'],
             'payment.amount' => ['required_with:payment', 'integer', 'min:1'],
             'payment.method' => ['required_with:payment', Rule::in(PaymentMethod::takeValues())],
             'payment.reference_note' => ['nullable', 'string', 'max:500'],
+            // Keverna Desk phase 2: ID seen at the desk + key cards.
+            'keys_given' => ['nullable', 'integer', 'min:0', 'max:20'],
+            ...GuestIdDocuments::rules('id_document'),
         ]);
+        $idDocument = $data['id_document'] ?? null;
+        if (is_array($idDocument)) {
+            $ids->assertImage($idDocument);
+        }
         $operator = $this->operator($request);
         $booking = $this->find($request, $ref);
         if ($booking === null) {
@@ -243,7 +342,7 @@ class BookingsController extends HostController
         // payment back so a retry never double-charges.
         $stage = 'payment';
         try {
-            DB::transaction(function () use ($booking, $operator, $payment, $action, &$stage): void {
+            DB::transaction(function () use ($booking, $operator, $payment, $action, $ids, $idDocument, $data, &$stage): void {
                 if ($payment !== null) {
                     if ($booking->booking_status === BookingStatus::Pending) {
                         $this->payments->confirmAndPay($booking, $operator, (int) $payment['amount'], $payment['method'], $payment['reference_note'] ?? null);
@@ -253,7 +352,15 @@ class BookingsController extends HostController
                 }
                 $stage = 'check_in';
                 $action->handle($booking->refresh(), $operator);
+                if (isset($data['keys_given'])) {
+                    $booking->forceFill(['keys_given' => (int) $data['keys_given']])->save();
+                }
+                if (is_array($idDocument) && $idDocument !== []) {
+                    $ids->record($booking->refresh(), $operator, $idDocument);
+                }
             });
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (Throwable $e) {
             return $this->fail($stage === 'payment' ? 'payment_failed' : 'action_failed', $e->getMessage());
         }
@@ -273,10 +380,11 @@ class BookingsController extends HostController
         return $this->ok($request, $booking, ['warning' => $warning]);
     }
 
-    public function checkOut(Request $request, string $ref, MarkCheckedOut $action, CustomerLinker $linker, EarlyCheckoutQuote $quote): JsonResponse
+    public function checkOut(Request $request, string $ref, MarkCheckedOut $action, CustomerLinker $linker, EarlyCheckoutQuote $quote, GuestIdDocuments $ids): JsonResponse
     {
         $data = $request->validate([
             'early_mode' => ['nullable', Rule::in(['keep', 'wallet', 'cash'])],
+            'keys_returned' => ['nullable', 'integer', 'min:0', 'max:20'],
         ]);
         $operator = $this->operator($request);
         $booking = $this->find($request, $ref);
@@ -325,6 +433,12 @@ class BookingsController extends HostController
 
             return $this->fail('action_failed', $e->getMessage());
         }
+
+        if (isset($data['keys_returned'])) {
+            $booking->forceFill(['keys_returned' => (int) $data['keys_returned']])->save();
+        }
+        // NDPA retention runs from the real check-out.
+        $ids->stampCheckout($booking);
 
         $linker->recordBookingEvent(
             booking: $booking->refresh(),
@@ -622,6 +736,49 @@ class BookingsController extends HostController
                 ->whereDate('checkin_date', '<=', $today->copy()->addDays(self::UPCOMING_DAYS)->toDateString()),
         };
 
+        $this->applySearch($query, $q);
+
+        return $query;
+    }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return Builder<Booking>
+     */
+    private function viewQuery(Property $property, string $view, array $filters): Builder
+    {
+        $today = Carbon::today()->toDateString();
+        $query = BookingPresenter::scopeToBranch(Booking::query(), $property);
+
+        match ($view) {
+            'upcoming' => $query->whereIn('booking_status', self::ARRIVING_STATUSES)
+                ->whereDate('checkin_date', '>=', $today),
+            'in_house' => $query->where('booking_status', BookingStatus::CheckedIn->value),
+            'past' => $query->whereIn('booking_status', [BookingStatus::CheckedOut->value, BookingStatus::NoShow->value]),
+            'cancelled' => $query->where('booking_status', BookingStatus::Cancelled->value),
+            default => $query,
+        };
+        if (! empty($filters['source'])) {
+            $query->where('source', $filters['source']);
+        }
+        if (! empty($filters['from'])) {
+            $query->whereDate('checkout_date', '>', $filters['from']);
+        }
+        if (! empty($filters['to'])) {
+            $query->whereDate('checkin_date', '<=', $filters['to']);
+        }
+        $this->applySearch($query, trim((string) ($filters['q'] ?? '')));
+
+        return $query;
+    }
+
+    /**
+     * Name, ref, email, room number, or phone digits (3+).
+     *
+     * @param  Builder<Booking>  $query
+     */
+    private function applySearch(Builder $query, string $q): void
+    {
         if ($q !== '') {
             $needle = '%'.mb_strtolower($q).'%';
             $digits = preg_replace('/\D+/', '', $q) ?? '';
@@ -638,8 +795,6 @@ class BookingsController extends HostController
                 }
             });
         }
-
-        return $query;
     }
 
     private function find(Request $request, string $ref): ?Booking

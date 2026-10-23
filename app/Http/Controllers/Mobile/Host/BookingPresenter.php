@@ -9,12 +9,16 @@ use App\Enums\HousekeepingStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Enums\RoomInspectionStatus;
+use App\Models\Activity;
 use App\Models\Booking;
 use App\Models\BookingCharge;
+use App\Models\GuestIdDocument;
 use App\Models\Operator;
 use App\Models\Payment;
 use App\Models\Property;
 use App\Models\RoomInspection;
+use App\Models\Tenant;
+use App\Services\Guests\GuestIdDocuments;
 use App\Services\Payments\BookingPayments;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -83,7 +87,7 @@ class BookingPresenter
      */
     public static function detail(Booking $b, Operator $operator): array
     {
-        $b->loadMissing(['room.category', 'roomCategory', 'customer.wallet', 'corporate']);
+        $b->loadMissing(['room.category', 'room.property', 'roomCategory.property', 'customer.wallet', 'corporate']);
         $card = self::card($b);
         $owed = (int) $card['balance_due'];
         $customer = $b->customer;
@@ -98,6 +102,8 @@ class BookingPresenter
         $arrived = $b->checkin_date !== null && $b->checkin_date->copy()->startOfDay()->lte($today);
         $caps = HostController::capabilities($operator);
         $live = ! in_array($status, [BookingStatus::Cancelled, BookingStatus::NoShow], true);
+        $preArrival = in_array($status, [BookingStatus::Pending, BookingStatus::Confirmed, BookingStatus::OnHold], true);
+        $idDoc = app(GuestIdDocuments::class)->forBooking($b);
 
         return $card + [
             'adults' => (int) $b->adults,
@@ -148,11 +154,212 @@ class BookingPresenter
                 'no_show' => in_array($status, [BookingStatus::Pending, BookingStatus::Confirmed, BookingStatus::OnHold], true)
                     && $arrived,
                 'cancel' => $status->holdsInventory() && $status !== BookingStatus::CheckedIn,
+                'move_room' => $b->room_id !== null && ($preArrival || $status === BookingStatus::CheckedIn),
+                'change_dates' => $preArrival,
+                // Gives money away directly (else 403 needs_manager).
+                'discount' => ($preArrival || $status === BookingStatus::CheckedIn)
+                    && (int) $b->total_amount > 0 && HostController::canApproveDiscount($operator),
+                'free_upgrade' => HostController::canApproveDiscount($operator),
             ],
             'payment_options' => [
                 'methods' => PaymentMethod::takeOptions($walletBalance),
                 'wallet_available' => $walletBalance,
             ],
+            // ── Keverna Desk phase 2 (docs/desk-app/PHASE-2.md, 3) ──
+            'history' => self::history($b),
+            'guest' => self::guest($b, $walletBalance),
+            'id_document' => $idDoc !== null ? GuestIdDocuments::present($idDoc, $b) : null,
+            'keys' => [
+                'given' => $b->keys_given !== null ? (int) $b->keys_given : null,
+                'returned' => $b->keys_returned !== null ? (int) $b->keys_returned : null,
+            ],
+            'registration_card' => self::registrationCard($b, $operator, $idDoc, $paidTotal, $owed),
+        ];
+    }
+
+    /**
+     * Desk bookings list row: the BookingCard plus what the desk's
+     * in-house / bookings tables show.
+     *
+     * @return array<string, mixed>
+     */
+    public static function listRow(Booking $b, bool $requestOpen = false): array
+    {
+        $card = self::card($b);
+        $today = Carbon::today();
+        $nightsLeft = $b->booking_status === BookingStatus::CheckedIn && $b->checkout_date !== null
+            ? max(0, (int) $today->diffInDays($b->checkout_date->copy()->startOfDay(), absolute: false))
+            : null;
+
+        return $card + [
+            'source' => $b->source?->value,
+            'nights_left' => $nightsLeft,
+            'flags' => [
+                'owing' => (int) $card['balance_due'] > 0,
+                'overdue' => (bool) $card['overdue'],
+                'company' => $b->corporate_id !== null,
+                'discount' => (int) $b->manual_discount_amount > 0,
+                'request_open' => $requestOpen,
+            ],
+        ];
+    }
+
+    /**
+     * Activity log of the booking, newest first, in desk wording.
+     *
+     * @return list<array{at: ?string, text: string, by: ?string, via: ?string}>
+     */
+    public static function history(Booking $b): array
+    {
+        $rows = Activity::query()
+            ->where('subject_type', $b->getMorphClass())
+            ->where('subject_id', $b->id)
+            ->with('causer')
+            ->orderByDesc('id')
+            ->limit(100)
+            ->get();
+
+        $out = [];
+        foreach ($rows as $a) {
+            $text = self::historyText($a);
+            if ($text === null) {
+                continue;
+            }
+            $props = $a->properties ?? collect();
+            $causer = $a->causer;
+            $out[] = [
+                'at' => $a->created_at?->toIso8601String(),
+                'text' => $text,
+                'by' => $causer !== null && isset($causer->name) ? (string) $causer->name : null,
+                'via' => $props->get('via'),
+            ];
+        }
+        $out[] = [
+            'at' => $b->created_at?->toIso8601String(),
+            'text' => 'Booked'.($b->source !== null ? ' ('.$b->source->label().')' : ''),
+            'by' => null,
+            'via' => null,
+        ];
+
+        return $out;
+    }
+
+    private static function historyText(Activity $a): ?string
+    {
+        $p = $a->properties ?? collect();
+        $money = fn (string $key): string => '₦'.number_format((int) $p->get($key, 0));
+
+        return match ((string) $a->event) {
+            'created', 'updated' => null,
+            'checked_in' => 'Checked in',
+            'checked_out' => 'Checked out',
+            'confirmed' => 'Confirmed',
+            'cancelled' => 'Cancelled',
+            'no_show' => 'Marked no-show',
+            'manual_payment_recorded' => 'Payment '.$money('amount').self::methodSuffix($p->get('method')),
+            'part_payment_recorded' => 'Part payment '.$money('amount').self::methodSuffix($p->get('method')),
+            'extended' => 'Stay extended (+'.$money('extension_charged').')',
+            'extension_cancelled' => 'Extension cancelled',
+            'room_reassigned' => 'Moved from room '.$p->get('old_room', '-').' to '.$p->get('new_room', '-')
+                .((int) $p->get('rate_delta', 0) !== 0 ? ' ('.((int) $p->get('rate_delta') > 0 ? '+' : '-').'₦'.number_format(abs((int) $p->get('rate_delta'))).')' : ''),
+            'room_upgrade_free' => 'Free upgrade, '.$money('rate_delta_waived').' not charged',
+            'post_checkin_discount_applied' => 'Discount '.$money('amount').($p->get('reason') ? ': '.$p->get('reason') : ''),
+            'dates_changed' => 'Dates changed to '.Carbon::parse((string) $p->get('new_checkin'))->format('j M').' - '.Carbon::parse((string) $p->get('new_checkout'))->format('j M'),
+            'category_changed' => 'Category changed to '.$p->get('new_category', '-'),
+            'id_document_recorded' => 'ID recorded ('.(GuestIdDocument::TYPES[(string) $p->get('type')] ?? 'ID').')',
+            default => trim(str_replace([' — ', '—', '–'], [', ', ', ', '-'], (string) $a->description)) ?: null,
+        };
+    }
+
+    private static function methodSuffix(mixed $method): string
+    {
+        return is_string($method) && $method !== '' ? ', '.PaymentMethod::labelFor($method) : '';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function guest(Booking $b, int $walletBalance): array
+    {
+        $customer = $b->customer;
+        $stays = $customer !== null ? (int) $customer->bookings()->count() : 0;
+        $returning = $customer !== null && Booking::query()
+            ->where('customer_id', $customer->id)
+            ->where('id', '!=', $b->id)
+            ->where('booking_status', BookingStatus::CheckedOut->value)
+            ->exists();
+
+        return [
+            'customer_id' => $customer?->id !== null ? (int) $customer->id : null,
+            'name' => (string) $b->guest_name,
+            'phone' => $b->guest_phone ?: ($customer?->phone ?: null),
+            'email' => $b->guest_email ?: ($customer?->email ?: null),
+            'stays_count' => $stays,
+            'returning' => $returning,
+            'is_vip' => (bool) ($customer?->is_vip ?? false),
+            'wallet_balance' => $walletBalance,
+            'notes' => $customer?->notes,
+        ];
+    }
+
+    /**
+     * Everything the desk prints on the A4 registration card (rendered
+     * by the desk itself; there is no web page for it). The ID number is
+     * masked on paper.
+     *
+     * @return array<string, mixed>
+     */
+    private static function registrationCard(Booking $b, Operator $operator, ?GuestIdDocument $idDoc, int $paid, int $owed): array
+    {
+        $property = $b->room?->property ?? $b->roomCategory?->property;
+        $checkedIn = Activity::query()
+            ->where('subject_type', $b->getMorphClass())
+            ->where('subject_id', $b->id)
+            ->where('event', 'checked_in')
+            ->with('causer')
+            ->latest('id')
+            ->first();
+        $nights = max(1, (int) $b->nights);
+        $address = $property !== null
+            ? collect([$property->address, $property->city, $property->state])->filter(fn ($v) => trim((string) $v) !== '')->implode(', ')
+            : '';
+        $tenant = Tenant::current();
+
+        return [
+            'hotel' => [
+                'name' => (string) ($property?->name ?? $tenant?->name ?? ''),
+                'address' => $address !== '' ? $address : null,
+                'phone' => $tenant?->phone ?: null,
+                'email' => $tenant?->email ?: null,
+            ],
+            'booking_ref' => (string) $b->booking_ref,
+            'guest' => [
+                'name' => (string) $b->guest_name,
+                'phone' => $b->guest_phone ?: null,
+                'email' => $b->guest_email ?: null,
+                'address' => $b->customer?->address,
+                'nationality' => $idDoc !== null && ! $idDoc->isPurged() ? $idDoc->nationality : null,
+                'id_type' => $idDoc?->typeLabel(),
+                'id_number_masked' => $idDoc?->maskedNumber(),
+            ],
+            'company' => $b->corporate?->name,
+            'room' => $b->room?->room_number,
+            'category' => $b->room?->category?->name ?? $b->roomCategory?->name,
+            'arrival' => $b->checkin_date?->toDateString(),
+            'departure' => $b->checkout_date?->toDateString(),
+            'nights' => (int) $b->nights,
+            'adults' => (int) $b->adults,
+            'children' => (int) $b->children,
+            'rate_per_night' => intdiv(max(0, (int) $b->room_total), $nights),
+            'total' => (int) $b->total_amount,
+            'paid' => $paid,
+            'balance' => $owed,
+            'keys_given' => $b->keys_given !== null ? (int) $b->keys_given : null,
+            'special_requests' => $b->special_requests,
+            'checked_in_at' => $checkedIn?->created_at?->toIso8601String(),
+            'checked_in_by' => $checkedIn?->causer?->name,
+            'printed_by' => (string) $operator->name,
+            'printed_at' => Carbon::now()->toIso8601String(),
         ];
     }
 

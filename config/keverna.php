@@ -108,9 +108,9 @@ return [
         // pay + processing). 5% on bookings <= 100k, 2.5% above.
         // Threshold + tier percents are envvar-overridable so we
         // can tune per market / partner deal without a code change.
-        'stays_fee_percent_default'      => (float) env('STAYS_FEE_PERCENT_DEFAULT', 2.5),
-        'stays_fee_percent_high_tier'    => (float) env('STAYS_FEE_PERCENT_HIGH_TIER', 2.5),
-        'stays_fee_tier_threshold_ngn'   => (int) env('STAYS_FEE_TIER_THRESHOLD_NGN', 100_000),
+        'stays_fee_percent_default' => (float) env('STAYS_FEE_PERCENT_DEFAULT', 2.5),
+        'stays_fee_percent_high_tier' => (float) env('STAYS_FEE_PERCENT_HIGH_TIER', 2.5),
+        'stays_fee_tier_threshold_ngn' => (int) env('STAYS_FEE_TIER_THRESHOLD_NGN', 100_000),
     ],
 
     /*
@@ -172,4 +172,17 @@ return [
             'contact_block' => 'Contact block',
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Guest ID documents (Centurion Desk check-in)
+    |--------------------------------------------------------------------------
+    |
+    | How long the ID seen at check-in (number, nationality, date of
+    | birth, expiry, scan) is kept after the guest checks out, under the
+    | Nigeria Data Protection Act. `guests:purge-id-documents` wipes it
+    | daily once that passes, keeping only that an ID of a type was seen.
+    | 12 months is a placeholder until the owner confirms the period.
+    */
+    'guest_id_retention_months' => (int) env('KEVERNA_GUEST_ID_RETENTION_MONTHS', 12),
 ];

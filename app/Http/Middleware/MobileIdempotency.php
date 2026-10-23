@@ -25,6 +25,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class MobileIdempotency
 {
+    /**
+     * Request attribute a controller sets when its response must never
+     * be stored for replay (desk/unlock: the body carries a bearer token,
+     * which must not sit in the cache store for 24 h).
+     */
+    public const NO_STORE = 'mobile_idempotency_no_store';
+
     public function handle(Request $request, Closure $next): Response
     {
         // GETs, HEAD, OPTIONS — never mutate, safe to skip.
@@ -55,6 +62,9 @@ class MobileIdempotency
         // Only cache 2xx + 4xx. 5xx should retry — never freeze a
         // transient server failure into the idempotency cache.
         $status = $response->getStatusCode();
+        if ($request->attributes->get(self::NO_STORE) === true) {
+            return $response;
+        }
         if (($status >= 200 && $status < 300) || ($status >= 400 && $status < 500)) {
             Cache::put($cacheKey, [
                 'body' => $response->getContent(),

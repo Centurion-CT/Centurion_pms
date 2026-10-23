@@ -272,4 +272,3 @@ it('does not decide held money on another branch', function (): void {
     inboxDecide($this, $this->manager, 'held_money:'.$b->id, ['action' => 'refund', 'amount' => 1_000, 'method' => 'cash'])->assertStatus(404);
     expect(app(HeldMoney::class)->heldFor($b))->toBe(50_000);
 });
-

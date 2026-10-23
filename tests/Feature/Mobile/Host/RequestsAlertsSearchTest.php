@@ -6,7 +6,6 @@ use App\Enums\BookingStatus;
 use App\Enums\CustomerLifecycle;
 use App\Enums\GuestRequestKind;
 use App\Enums\OperatorRole;
-use App\Livewire\Dashboard\GuestRequests\Index as GuestRequestsIndex;
 use App\Models\Customer;
 use App\Models\GuestActionApproval;
 use App\Models\GuestRequest;
@@ -19,7 +18,6 @@ use App\Services\GuestPortal\GuestNotifier;
 use App\Services\Sendpipe\SendpipeClient;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Carbon;
-use Livewire\Livewire;
 
 require_once __DIR__.'/HostTestHelpers.php';
 
@@ -142,7 +140,6 @@ it('replies on the portal thread and nudges the guest on WhatsApp', function ():
         ->assertStatus(404);
     expect(GuestRequestMessage::query()->count())->toBe(1);
 });
-
 
 it('resolves with the WhatsApp notice and reopens, 409 on repeats', function (): void {
     $req = reqMake($this, $this->rooms[0], GuestRequestKind::Taxi);

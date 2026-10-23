@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Mobile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EnsureHostAppOperator;
 use App\Http\Resources\Mobile\OperatorResource;
 use App\Http\Resources\Mobile\TenantResource;
 use App\Models\IdentityAccount;
@@ -59,7 +60,7 @@ class LoginController extends Controller
             // Optional on the first call — required on the second when
             // the client is completing a multi-tenant pick.
             'tenant_id' => ['nullable', 'integer'],
-            'platform' => ['required', Rule::in(['ios', 'android', 'web'])],
+            'platform' => ['required', Rule::in(['ios', 'android', 'web', 'desktop'])],
             'device_name' => ['required', 'string', 'max:120'],
             'app_version' => ['required', 'string', 'max:32'],
             'push_token' => ['nullable', 'string', 'max:500'],
@@ -115,6 +116,15 @@ class LoginController extends Controller
             ], 403);
         }
 
+        // Centurion Desk: only host roles may set up a desk, so the picker
+        // only offers properties where this person can do that.
+        if (self::appFromRequest($request) === MobileDevice::APP_DESK) {
+            $links = self::deskLinks($links);
+            if ($links->isEmpty()) {
+                return self::deskRoleResponse();
+            }
+        }
+
         // Multi-tenant path: if no tenant_id was passed, hand back
         // the picker payload. 300 Multiple Choices is the RFC-correct
         // status for "the request is ambiguous — pick one of these".
@@ -138,14 +148,36 @@ class LoginController extends Controller
     }
 
     /**
-     * Which mobile app is signing in, from the `X-Keverna-App` header
-     * (host | staff). Anything else (or no header) stays null.
+     * Which app is signing in, from the `X-Keverna-App` header
+     * (host | staff | desk). Anything else (or no header) stays null.
      */
     public static function appFromRequest(Request $request): ?string
     {
         $app = strtolower(trim((string) $request->header('X-Keverna-App', '')));
 
-        return in_array($app, [MobileDevice::APP_HOST, MobileDevice::APP_STAFF], true) ? $app : null;
+        return in_array($app, [MobileDevice::APP_HOST, MobileDevice::APP_STAFF, MobileDevice::APP_DESK], true) ? $app : null;
+    }
+
+    /**
+     * Links whose seat may set up a Centurion Desk (manager, front desk,
+     * reservation officer).
+     *
+     * @param  Collection<int, IdentityOperatorLink>  $links
+     * @return Collection<int, IdentityOperatorLink>
+     */
+    private static function deskLinks(Collection $links): Collection
+    {
+        return $links
+            ->filter(fn ($link) => in_array($link->operator?->role, EnsureHostAppOperator::ALLOWED_ROLES, true))
+            ->values();
+    }
+
+    private static function deskRoleResponse(): JsonResponse
+    {
+        return response()->json([
+            'error' => 'role_not_supported',
+            'detail' => 'Only a manager or front desk officer can set up this desk.',
+        ], 403);
     }
 
     /**
@@ -188,6 +220,11 @@ class LoginController extends Controller
             ], 500);
         }
 
+        $app = self::appFromRequest($request);
+        if ($app === MobileDevice::APP_DESK && ! in_array($operator->role, EnsureHostAppOperator::ALLOWED_ROLES, true)) {
+            return self::deskRoleResponse();
+        }
+
         // Make the tenant current for the token-mint side-effects —
         // MobileDevice::create needs Tenant::current() for its
         // BelongsToTenant global scope to populate tenant_id.
@@ -202,7 +239,7 @@ class LoginController extends Controller
                 'app_version' => $data['app_version'],
                 // `X-Keverna-App: host` marks a Keverna for Hosts install;
                 // only those rows receive host push notifications.
-                'app' => self::appFromRequest($request),
+                'app' => $app,
                 'push_token' => $data['push_token'] ?? null,
                 'push_platform' => ! empty($data['push_token']) && in_array($data['platform'], ['ios', 'android'], true) ? $data['platform'] : null,
                 'push_token_updated_at' => ! empty($data['push_token']) ? now() : null,

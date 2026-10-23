@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Dashboard\Staff;
 
 use App\Enums\OperatorRole;
+use App\Http\Middleware\EnsureHostAppOperator;
 use App\Mail\Operators\OperatorInviteMail;
 use App\Models\IdentityAccount;
 use App\Models\IdentityOperatorLink;
@@ -253,6 +254,38 @@ class Index extends Component
             '%s can sign in to the staff app with %s and the new PIN.',
             $op->name,
             $phone,
+        ), kind: 'ok');
+    }
+
+    /**
+     * PIN that unlocks the desk app on the shared reception PC
+     * (DeskController::unlock). Same column as the staff-app PIN; the
+     * desk picks the person by name, so no phone number is needed.
+     * Managers may set their own.
+     */
+    public function setDeskPin(int $operatorId, string $pin): void
+    {
+        if (($op = $this->guardActionable($operatorId, allowSelfIfManager: true)) === null) {
+            return;
+        }
+        if (! in_array($op->role, EnsureHostAppOperator::ALLOWED_ROLES, true)) {
+            $this->dispatch('notify', title: 'Couldn\'t complete', message: 'Only managers, front desk and reservation officers use the desk app.', kind: 'err');
+
+            return;
+        }
+        $pin = trim($pin);
+        if (preg_match('/^\d{4,6}$/', $pin) !== 1) {
+            $this->dispatch('notify', title: 'Couldn\'t complete', message: 'The PIN must be 4 to 6 digits.', kind: 'err');
+
+            return;
+        }
+
+        $op->setStaffPin($pin);
+
+        $this->dispatch('notify', title: 'Done', message: sprintf(
+            '%s can unlock %s Desk with the new PIN.',
+            $op->name,
+            config('brand.name'),
         ), kind: 'ok');
     }
 

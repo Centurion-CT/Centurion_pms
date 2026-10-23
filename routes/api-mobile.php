@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Mobile\AuthController;
 use App\Http\Controllers\Mobile\BookingsController;
+use App\Http\Controllers\Mobile\DeskController;
 use App\Http\Controllers\Mobile\Host\BookingsController as HostBookingsController;
 use App\Http\Controllers\Mobile\Host\CalendarController as HostCalendarController;
 use App\Http\Controllers\Mobile\Host\DeviceController;
+use App\Http\Controllers\Mobile\Host\FolioController as HostFolioController;
 use App\Http\Controllers\Mobile\Host\GuestRequestsController as HostGuestRequestsController;
 use App\Http\Controllers\Mobile\Host\InboxController as HostInboxController;
 use App\Http\Controllers\Mobile\Host\LookupController as HostLookupController;
@@ -150,8 +152,19 @@ Route::middleware(['auth:sanctum', 'mobile.device', 'mobile.idempotency', 'host.
         Route::post('bookings/{ref}/extend', [HostBookingsController::class, 'extend'])->name('mobile.host.bookings.extend');
         Route::post('bookings/{ref}/no-show', [HostBookingsController::class, 'noShow'])->name('mobile.host.bookings.no-show');
         Route::post('bookings/{ref}/cancel', [HostBookingsController::class, 'cancel'])->name('mobile.host.bookings.cancel');
+        Route::post('bookings/{ref}/resend-confirmation', [HostBookingsController::class, 'resendConfirmation'])->name('mobile.host.bookings.resend-confirmation');
 
         Route::post('web-handoff', [HostWebHandoffController::class, 'issue'])->name('mobile.host.web-handoff');
+
+        // ── Keverna Desk phase 2: folio (docs/desk-app/PHASE-2.md, Server) ──
+        Route::get('bookings/{ref}/move-options', [HostFolioController::class, 'moveOptions'])->name('mobile.host.bookings.move-options');
+        Route::post('bookings/{ref}/move-room', [HostFolioController::class, 'moveRoom'])->name('mobile.host.bookings.move-room');
+        Route::post('bookings/{ref}/dates', [HostFolioController::class, 'changeDates'])->name('mobile.host.bookings.dates');
+        Route::post('bookings/{ref}/discount-request', [HostFolioController::class, 'discountRequest'])->name('mobile.host.bookings.discount-request');
+        Route::post('bookings/{ref}/id-document', [HostFolioController::class, 'recordIdDocument'])->name('mobile.host.bookings.id-document');
+        Route::get('bookings/{ref}/id-document/image', [HostFolioController::class, 'idDocumentImage'])->name('mobile.host.bookings.id-document.image');
+        Route::get('bookings/{ref}/invoice', [HostFolioController::class, 'invoice'])->name('mobile.host.bookings.invoice');
+        Route::get('payments/{id}/receipt', [HostFolioController::class, 'receipt'])->whereNumber('id')->name('mobile.host.payments.receipt');
 
         // ── Phase 3: calendar, rooms, inbox, alerts, search (docs/host-app/PHASE-3.md) ──
         Route::get('calendar', HostCalendarController::class)->name('mobile.host.calendar');
@@ -182,4 +195,21 @@ Route::middleware(['auth:sanctum', 'mobile.device', 'mobile.idempotency', 'host.
         Route::put('device/push', [DeviceController::class, 'push'])->name('mobile.host.device.push');
         Route::get('device/notifications', [DeviceController::class, 'notifications'])->name('mobile.host.device.notifications');
         Route::put('device/notifications', [DeviceController::class, 'updateNotifications'])->name('mobile.host.device.notifications.update');
+    });
+
+// ── Centurion Desk (shared reception PC) ───────────────────────
+// docs/desk-app/PLAN.md. The desk's own token (central login with
+// X-Keverna-App: desk) only reaches session / property / operators /
+// unlock; unlock issues that operator's own 12 h token, which reaches
+// the host API (pinned to the desk's branch) and desk/lock.
+Route::middleware(['auth:sanctum', 'mobile.device', 'mobile.idempotency'])
+    ->prefix('desk')
+    ->group(function (): void {
+        Route::middleware('desk:device')->group(function (): void {
+            Route::get('session', [DeskController::class, 'session'])->name('mobile.desk.session');
+            Route::post('property', [DeskController::class, 'property'])->name('mobile.desk.property');
+            Route::get('operators', [DeskController::class, 'operators'])->name('mobile.desk.operators');
+            Route::post('unlock', [DeskController::class, 'unlock'])->name('mobile.desk.unlock');
+        });
+        Route::post('lock', [DeskController::class, 'lock'])->middleware('desk:operator')->name('mobile.desk.lock');
     });

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Enums\OperatorRole;
+use App\Models\MobileDevice;
 use App\Models\Operator;
 use App\Models\Property;
 use App\Models\Tenant;
@@ -25,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
  *    back to the first accessible property). An `X-Keverna-Property`
  *    header overrides it for this request only, when the operator can
  *    access that branch (403 `property_not_accessible` otherwise).
+ *    Keverna Desk operator tokens are pinned to the desk's branch.
  *    The result is bound onto the request so every dashboard service
  *    that calls PropertyContext::current() with no arguments scopes to
  *    it, exactly like the web sidebar switcher does for the session.
@@ -63,7 +65,26 @@ class EnsureHostAppOperator
         }
 
         $header = trim((string) $request->header(self::PROPERTY_HEADER, ''));
-        if ($header !== '') {
+        if (EnsureMobileDeviceActive::isDeskOperatorRequest($request)) {
+            // Keverna Desk operator tokens are pinned to the desk's branch:
+            // no switching, and the header may only name that branch.
+            $device = $request->attributes->get('mobile_device');
+            $property = $device instanceof MobileDevice && $device->property_id !== null
+                ? Property::query()
+                    ->where('id', $device->property_id)
+                    ->where('tenant_id', $tenant->getKey())
+                    ->first()
+                : null;
+
+            if ($property === null
+                || ($header !== '' && $header !== (string) $property->id)
+                || ! $operator->hasAccessToBranch($property)) {
+                return response()->json([
+                    'error' => 'property_not_accessible',
+                    'detail' => 'You do not have access to this desk\'s branch.',
+                ], 403);
+            }
+        } elseif ($header !== '') {
             $property = ctype_digit($header)
                 ? Property::query()
                     ->where('id', (int) $header)

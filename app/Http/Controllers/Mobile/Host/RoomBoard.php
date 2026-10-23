@@ -31,6 +31,10 @@ use Illuminate\Support\Collection;
  *                arriving      a booking checks in today (not yet in)
  *                free
  *  tile_state    out_of_order > occupied > dirty > arriving > ready
+ *  guest         the checked-in occupant: checkout, overdue (past
+ *                checkout, still in), departing_today (checkout today)
+ *  next_arrival  next waiting booking: name, time_label, date, today
+ *  floor         the room's floor ("1", "Ground", "Annex") or null; floor_label "1st floor"
  */
 class RoomBoard
 {
@@ -131,7 +135,8 @@ class RoomBoard
                 'id' => (int) $room->id,
                 'number' => (string) $room->room_number,
                 'category' => $room->category?->name,
-                'floor' => null,
+                'floor' => $room->floor,
+                'floor_label' => Room::floorLabel($room->floor),
                 'housekeeping' => $housekeeping,
                 'occupancy' => $occupancy,
                 'tile_state' => $tile,
@@ -140,11 +145,14 @@ class RoomBoard
                     'name' => (string) $occupant->guest_name,
                     'checkout' => $occupant->checkout_date?->toDateString(),
                     'overdue' => $occupant->checkout_date !== null && $occupant->checkout_date->toDateString() < $todayIso,
+                    'departing_today' => $occupant->checkout_date?->toDateString() === $todayIso,
                 ] : null,
                 'next_arrival' => $next !== null ? [
                     'ref' => (string) $next->booking_ref,
                     'name' => (string) $next->guest_name,
                     'time_label' => self::dayLabel($next->checkin_date, $today),
+                    'date' => $next->checkin_date->toDateString(),
+                    'today' => $arrivingToday,
                 ] : null,
                 'dirty_since' => $housekeeping === 'dirty'
                     ? (($open ? $ins->created_at : null) ?? $room->updated_at)?->toIso8601String()
@@ -162,13 +170,19 @@ class RoomBoard
 
     /**
      * @param  list<array<string, mixed>>  $tiles
-     * @return array{ready: int, dirty: int, occupied: int, arriving: int, out_of_order: int, total: int}
+     *                                             departing_today / overdue count occupied rooms whose guest leaves
+     *                                             today / should have left already (they overlap no tile state).
+     * @return array{ready: int, dirty: int, occupied: int, arriving: int, out_of_order: int, total: int, departing_today: int, overdue: int}
      */
     public static function counts(array $tiles): array
     {
         $counts = array_fill_keys(self::TILE_STATES, 0);
+        $departing = 0;
+        $overdue = 0;
         foreach ($tiles as $t) {
             $counts[$t['tile_state']]++;
+            $departing += ($t['guest']['departing_today'] ?? false) ? 1 : 0;
+            $overdue += ($t['guest']['overdue'] ?? false) ? 1 : 0;
         }
 
         return [
@@ -178,6 +192,8 @@ class RoomBoard
             'arriving' => $counts['arriving'],
             'out_of_order' => $counts['out_of_order'],
             'total' => count($tiles),
+            'departing_today' => $departing,
+            'overdue' => $overdue,
         ];
     }
 

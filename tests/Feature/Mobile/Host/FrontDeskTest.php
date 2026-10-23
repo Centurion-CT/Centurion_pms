@@ -10,6 +10,7 @@ use App\Enums\OperatorRole;
 use App\Enums\PaymentStatus;
 use App\Enums\PaymentType;
 use App\Enums\RoomInspectionStatus;
+use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\BookingCharge;
 use App\Models\Customer;
@@ -177,6 +178,8 @@ it('returns the booking detail with folio, can flags and payment options', funct
         ->assertJsonPath('data.can', [
             'check_in' => true, 'check_out' => false, 'take_payment' => true, 'add_charge' => true,
             'extend' => true, 'no_show' => true, 'cancel' => true,
+            // Keverna Desk phase 2 (additive).
+            'move_room' => true, 'change_dates' => true, 'discount' => false, 'free_upgrade' => false,
         ])
         ->assertJsonPath('data.payment_options.wallet_available', 15_000);
     expect(collect($res->json('data.payment_options.methods'))->pluck('value')->all())
@@ -378,7 +381,7 @@ it('marks a no-show and cancels a future booking', function (): void {
 
 it('lists free rooms of the branch only, with walk-in pricing', function (): void {
     ($this->book)($this->rooms[0], ['checkin_date' => Carbon::today(), 'checkout_date' => Carbon::today()->addDays(2)]);
-    \App\Models\AvailabilityBlock::factory()->for($this->tenant)->create([
+    AvailabilityBlock::factory()->for($this->tenant)->create([
         'room_id' => $this->rooms[0]->id, 'date' => Carbon::today()->toDateString(), 'type' => 'booked',
     ]);
 
@@ -519,4 +522,3 @@ it('expires the handoff code after 60 seconds and rejects non-dashboard targets'
     $this->get($url)->assertRedirect(route('tenant.login'));
     $this->assertGuest('web');
 });
-

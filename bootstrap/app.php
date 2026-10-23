@@ -158,6 +158,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'mobile.idempotency' => \App\Http\Middleware\MobileIdempotency::class,
             'staff.app' => \App\Http\Middleware\EnsureStaffAppRole::class,
             'host.role' => \App\Http\Middleware\EnsureHostAppOperator::class,
+            'desk' => \App\Http\Middleware\EnsureDeskToken::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

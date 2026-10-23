@@ -150,6 +150,20 @@
                 </div>
             @endif
 
+            {{-- Floor --}}
+            <div>
+                <label for="room-floor" class="lp-form-label">
+                    Floor <span class="font-normal text-ink-mute">(optional)</span>
+                </label>
+                <input id="room-floor" type="text" wire:model="floor" maxlength="30"
+                       data-testid="room-floor" class="lp-input" placeholder="1, Ground or Annex">
+                <p class="lp-form-help">
+                    Leave empty and we use the room number: 101 is the 1st floor, 012 is the ground floor.
+                    The desk app groups rooms by floor.
+                </p>
+                @error('floor') <p class="lp-form-error">{{ $message }}</p> @enderror
+            </div>
+
             {{-- Status --}}
             <fieldset class="lp-fieldset">
                 <legend>Visibility</legend>

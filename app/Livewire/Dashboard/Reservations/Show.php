@@ -1435,7 +1435,15 @@ class Show extends Component
                 ->orderBy('name')->get();
         }
 
+        // Guest ID seen at check-in (Keverna Desk). Personal data: host
+        // roles only, number masked on the page.
+        $idDocument = $operator instanceof Operator
+            && in_array($operator->role, \App\Http\Middleware\EnsureHostAppOperator::ALLOWED_ROLES, true)
+            ? app(\App\Services\Guests\GuestIdDocuments::class)->forBooking($booking)
+            : null;
+
         return view('livewire.dashboard.reservations.show', [
+            'idDocument' => $idDocument,
             'assignableRooms' => $assignableRooms,
             'switchableCategories' => $switchableCategories,
             'timeline' => $timeline,

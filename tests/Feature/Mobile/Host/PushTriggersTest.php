@@ -229,7 +229,6 @@ it('pushes held money when a paid stay is cancelled', function (): void {
     expect($this->push->tokens('approvals'))->toBe([]);
 });
 
-
 // ── guest requests ───────────────────────────────────────────────
 
 it('pushes a guest request to the branch with the request target', function (): void {

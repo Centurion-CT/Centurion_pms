@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\EnsureHostAppOperator;
 use App\Models\Operator;
 use App\Models\Property;
+use App\Services\Dashboard\OccupancyCalculator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -64,6 +65,20 @@ abstract class HostController extends Controller
         ];
     }
 
+    /**
+     * May give money away on a booking without a manager: discounts from
+     * the folio and free room upgrades (Keverna Desk phase 2). Managers,
+     * plus anyone with the web's Discounts module (reservation officers,
+     * or a `discounts.manage` grant). Front desk officers get 403
+     * needs_manager. The web has no approval queue for discounts, so
+     * there is nothing to "request": a manager applies it.
+     */
+    public static function canApproveDiscount(Operator $operator): bool
+    {
+        return $operator->role === OperatorRole::Manager
+            || $operator->canAccessModule('discounts');
+    }
+
     public static function initials(string $name): string
     {
         $parts = preg_split('/\s+/', trim($name)) ?: [];
@@ -89,7 +104,7 @@ abstract class HostController extends Controller
 
     /**
      * Rooms + rooms sold tonight per branch, on the shared "occupied
-     * tonight" rule ({@see \App\Services\Dashboard\OccupancyCalculator::nightly()}):
+     * tonight" rule ({@see OccupancyCalculator::nightly()}):
      * rooms booked for tonight plus rooms whose guest is still checked
      * in past checkout; guests due out today are not counted.
      *
@@ -103,7 +118,7 @@ abstract class HostController extends Controller
             return ['rooms' => [], 'occupied' => []];
         }
 
-        $tonight = app(\App\Services\Dashboard\OccupancyCalculator::class)->tonight($ids);
+        $tonight = app(OccupancyCalculator::class)->tonight($ids);
 
         return [
             'rooms' => array_map(fn (array $r) => $r['total'], $tonight['by_property']),

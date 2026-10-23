@@ -188,7 +188,7 @@ it('lists room tiles with counts and filters by state', function (): void {
     $res = $this->getJson(hostUrl($this->tenant, 'rooms'), hostHeaders($this->frontdesk))->assertOk();
     $tiles = collect($res->json('data'))->keyBy('number');
 
-    expect($res->json('counts'))->toBe(['ready' => 1, 'dirty' => 1, 'occupied' => 1, 'arriving' => 1, 'out_of_order' => 1, 'total' => 5])
+    expect($res->json('counts'))->toBe(['ready' => 1, 'dirty' => 1, 'occupied' => 1, 'arriving' => 1, 'out_of_order' => 1, 'total' => 5, 'departing_today' => 0, 'overdue' => 1])
         ->and($tiles->pluck('tile_state', 'number')->all())->toBe([
             '101' => 'occupied', '102' => 'dirty', '103' => 'arriving', '104' => 'out_of_order', '105' => 'ready',
         ])
