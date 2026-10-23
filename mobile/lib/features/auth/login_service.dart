@@ -1,19 +1,5 @@
-// Email + password sign-in. Hits the central-domain endpoint
-// (POST https://keverna.com/api/mobile/v1/login), which returns
-// either:
-//   - {token, operator, tenant, device}       → sign-in complete
-//   - {status: "pick_tenant", tenants: [...]} → operator belongs to
-//                                                more than one tenant;
-//                                                UI shows a picker,
-//                                                second call carries
-//                                                tenant_id to complete.
-//
-// The central domain is compiled in via --dart-define so QA can
-// point staging builds at a staging environment without a rebuild:
-//   flutter run --dart-define=KEVERNA_CENTRAL=keverna.test
-// Defaults to keverna.com for release builds.
-
-import 'dart:convert';
+// POST {host}/api/mobile/v1/staff/login with phone + PIN.
+// 200 signs in, 300 asks which hotel, 401/403/429 come back as failures.
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
@@ -21,195 +7,174 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../core/auth/session_store.dart';
+import '../../core/auth/session.dart';
+import '../../core/config.dart';
+import '../../core/json.dart';
+import '../../core/strings.dart';
+import '../../demo/demo_backend.dart';
 
-/// The central domain the app hits for /login. Compile-time constant
-/// so QA can point a staging build at a staging env without a code
-/// change: `--dart-define=KEVERNA_CENTRAL=staging.keverna.test`.
-const String _centralDomain =
-    String.fromEnvironment('KEVERNA_CENTRAL', defaultValue: 'keverna.com');
-
-class LoginTenantOption {
-  const LoginTenantOption({
-    required this.id,
-    required this.slug,
-    required this.name,
-    this.role,
-    this.lastLoginAt,
-  });
+@immutable
+class Tenant {
+  const Tenant({required this.id, required this.name});
 
   final int id;
-  final String slug;
   final String name;
-  final String? role;
-  final DateTime? lastLoginAt;
-
-  factory LoginTenantOption.fromJson(Map<String, dynamic> j) {
-    return LoginTenantOption(
-      id: j['id'] as int,
-      slug: (j['slug'] as String?) ?? '',
-      name: (j['name'] as String?) ?? '',
-      role: j['role'] as String?,
-      lastLoginAt:
-          j['last_login_at'] != null ? DateTime.tryParse(j['last_login_at'] as String) : null,
-    );
-  }
 }
 
-/// Either sign-in completed (session stored) or the operator needs
-/// to pick which tenant they meant. Sealed so the UI can pattern-
-/// match without an "unknown" branch.
-sealed class LoginOutcome {}
+@immutable
+class LoginRequest {
+  const LoginRequest({required this.host, required this.phone, required this.pin, this.tenantId});
 
-class LoginCompleted extends LoginOutcome {
-  LoginCompleted(this.session);
+  final String host;
+  final String phone;
+  final String pin;
+  final int? tenantId;
+}
+
+sealed class LoginResult {
+  const LoginResult();
+}
+
+class LoginSuccess extends LoginResult {
+  const LoginSuccess(this.session);
   final Session session;
 }
 
-class LoginNeedsTenantPick extends LoginOutcome {
-  LoginNeedsTenantPick({required this.tenants, required this.email, required this.password});
-  final List<LoginTenantOption> tenants;
-  final String email;
-  final String password;
+class LoginPickTenant extends LoginResult {
+  const LoginPickTenant(this.tenants);
+  final List<Tenant> tenants;
 }
 
-class LoginService {
-  LoginService(this._sessionNotifier);
+class LoginFailure extends LoginResult {
+  const LoginFailure({required this.code, this.status, this.detail});
 
-  final SessionNotifier _sessionNotifier;
+  final String code;
+  final int? status;
+  final String? detail;
 
-  Future<LoginOutcome> signIn({
-    required String email,
-    required String password,
-    int? tenantId,
-  }) async {
-    final fingerprint = await _deviceFingerprint();
-    final dio = Dio(BaseOptions(
-      // Trailing slash matters — without it Dio concatenates the
-      // sub-path directly (baseUrl+'login' → '.../v1login'), which
-      // 404s server-side. Same fix in api_client.dart.
-      baseUrl: 'https://$_centralDomain/api/mobile/v1/',
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-      // 300 Multiple Choices is a legitimate response for us — don't
-      // let Dio throw on it.
-      validateStatus: (status) => status != null && status < 500,
-    ));
+  bool get isStaffOnly => code == 'staff_only';
 
-    Response<dynamic> resp;
-    try {
-      resp = await dio.post<dynamic>('login', data: {
-        'email': email,
-        'password': password,
-        if (tenantId != null) 'tenant_id': tenantId,
-        ...fingerprint,
-      });
-    } on DioException catch (e) {
-      throw LoginFailure._fromResponse(e.response);
+  String get message {
+    switch (code) {
+      case 'invalid_credentials':
+        return S.wrongPin;
+      case 'too_many_attempts':
+        return (detail?.isNotEmpty ?? false) ? detail! : S.tooManyAttempts;
+      case 'suspended':
+        return (detail?.isNotEmpty ?? false) ? detail! : S.suspended;
+      case 'network':
+        return S.cantReach;
+      default:
+        if (status == 401) return S.wrongPin;
+        return (detail?.isNotEmpty ?? false) ? detail! : S.somethingWrong;
     }
-
-    if (resp.statusCode == 300) {
-      final body = resp.data as Map<String, dynamic>;
-      final tenants = (body['tenants'] as List)
-          .map((e) => LoginTenantOption.fromJson((e as Map).cast<String, dynamic>()))
-          .toList();
-      return LoginNeedsTenantPick(
-        tenants: tenants,
-        email: email,
-        password: password,
-      );
-    }
-
-    if (resp.statusCode == 200) {
-      final body = resp.data as Map<String, dynamic>;
-      // Session store expects the tenant subdomain to build subsequent
-      // request base URLs. Reconstruct it from the returned tenant
-      // slug + the central domain we called.
-      final tenantSlug = ((body['tenant'] as Map)['slug'] as String);
-      final session = Session(
-        baseUrl: 'https://$tenantSlug.$_centralDomain',
-        token: body['token'] as String,
-        operator: (body['operator'] as Map).cast<String, dynamic>(),
-        tenant: (body['tenant'] as Map).cast<String, dynamic>(),
-      );
-      await _sessionNotifier.setSession(session);
-      return LoginCompleted(session);
-    }
-
-    // Anything else — surface as a failure with the server's error code.
-    throw LoginFailure._fromResponse(resp);
   }
+}
 
-  Future<Map<String, dynamic>> _deviceFingerprint() async {
-    final plugin = DeviceInfoPlugin();
-    final pkg = await PackageInfo.fromPlatform();
+abstract class LoginService {
+  Future<LoginResult> login(LoginRequest req);
+}
+
+@immutable
+class DeviceMeta {
+  const DeviceMeta({required this.platform, required this.deviceName, required this.appVersion});
+
+  final String platform;
+  final String deviceName;
+  final String appVersion;
+}
+
+Future<DeviceMeta> readDeviceMeta() async {
+  var platform = 'android';
+  var name = 'Phone';
+  var version = '';
+  try {
+    final info = DeviceInfoPlugin();
     if (kIsWeb) {
-      final web = await plugin.webBrowserInfo;
-      return {
-        'platform': 'web',
-        'device_name': '${web.browserName.name} on ${web.platform ?? 'web'}',
-        'app_version': '${pkg.version}+${pkg.buildNumber}',
-      };
+      platform = 'web';
+      name = (await info.webBrowserInfo).browserName.name;
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      platform = 'ios';
+      name = (await info.iosInfo).name;
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      final a = await info.androidInfo;
+      name = '${a.manufacturer} ${a.model}'.trim();
     }
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      final ios = await plugin.iosInfo;
-      return {
-        'platform': 'ios',
-        'device_name': '${ios.name} · ${ios.model}',
-        'app_version': '${pkg.version}+${pkg.buildNumber}',
-      };
-    }
-    final android = await plugin.androidInfo;
-    return {
-      'platform': 'android',
-      'device_name': '${android.brand} ${android.model}',
-      'app_version': '${pkg.version}+${pkg.buildNumber}',
-    };
-  }
+  } catch (_) {}
+  try {
+    final p = await PackageInfo.fromPlatform();
+    version = '${p.version}+${p.buildNumber}';
+  } catch (_) {}
+  return DeviceMeta(platform: platform, deviceName: name, appVersion: version);
 }
 
-class LoginFailure implements Exception {
-  const LoginFailure(this.reason, this.message);
+class DioLoginService implements LoginService {
+  DioLoginService({Dio? dio, Future<DeviceMeta> Function()? meta})
+      : _dio = dio ?? Dio(),
+        _meta = meta ?? readDeviceMeta;
 
-  final String reason;
-  final String message;
-
-  factory LoginFailure._fromResponse(Response<dynamic>? r) {
-    if (r == null) {
-      return const LoginFailure('network', 'Network error — check your connection and try again.');
-    }
-    final body = r.data;
-    if (body is Map && body['error'] is String) {
-      return LoginFailure(body['error'] as String, _humanize(body['error'] as String));
-    }
-    // Attempt to parse if the body is a raw string (rare).
-    if (body is String) {
-      try {
-        final parsed = jsonDecode(body);
-        if (parsed is Map && parsed['error'] is String) {
-          return LoginFailure(parsed['error'] as String, _humanize(parsed['error'] as String));
-        }
-      } catch (_) {}
-    }
-    return LoginFailure('unknown', 'Sign-in failed (${r.statusCode}).');
-  }
-
-  static String _humanize(String code) {
-    return switch (code) {
-      'invalid_credentials' => 'Wrong email or password.',
-      'no_tenants' => 'This account has no property access. Ask a manager to invite you.',
-      'tenant_not_accessible' => "That property isn't on your account.",
-      'link_broken' => 'Account link is broken. Ask a manager to re-invite you.',
-      'too_many_attempts' => 'Too many attempts. Wait a moment and try again.',
-      _ => 'Sign-in failed. Try again.',
-    };
-  }
+  final Dio _dio;
+  final Future<DeviceMeta> Function() _meta;
 
   @override
-  String toString() => message;
+  Future<LoginResult> login(LoginRequest req) async {
+    final meta = await _meta();
+    final host = normalizeHost(req.host);
+    Response<dynamic> resp;
+    try {
+      resp = await _dio.post<dynamic>(
+        '$host/api/mobile/v1/staff/login',
+        data: {
+          'phone': req.phone,
+          'pin': req.pin,
+          if (req.tenantId != null) 'tenant_id': req.tenantId,
+          'platform': meta.platform,
+          'device_name': meta.deviceName,
+          'app_version': meta.appVersion,
+        },
+        options: Options(
+          headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+          validateStatus: (_) => true,
+          followRedirects: false,
+          sendTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 20),
+        ),
+      );
+    } on DioException {
+      return const LoginFailure(code: 'network');
+    }
+    return parseLoginResponse(resp.statusCode ?? 0, resp.data, fallbackBaseUrl: host);
+  }
+}
+
+LoginResult parseLoginResponse(int status, Object? data, {required String fallbackBaseUrl}) {
+  final body = jMap(data);
+  if (status == 200 || status == 201) {
+    final tenant = jMap(body['tenant']);
+    final base = normalizeHost(jStr(body['base_url'], fallbackBaseUrl));
+    return LoginSuccess(
+      Session(
+        baseUrl: base.isEmpty ? fallbackBaseUrl : base,
+        token: jStr(body['token']),
+        operator: Operator.fromJson(body['operator']),
+        tenantId: jInt(tenant['id']),
+        tenantName: jStr(tenant['name']),
+      ),
+    );
+  }
+  if (status == 300 || body['status'] == 'pick_tenant') {
+    return LoginPickTenant(
+      jList(body['tenants']).map((t) => Tenant(id: jInt(t['id']), name: jStr(t['name']))).toList(),
+    );
+  }
+  return LoginFailure(
+    code: jStr(body['error'], status == 401 ? 'invalid_credentials' : 'http_$status'),
+    status: status,
+    detail: jStrOrNull(body['detail']),
+  );
 }
 
 final loginServiceProvider = Provider<LoginService>((ref) {
-  return LoginService(ref.watch(sessionProvider.notifier));
+  if (kDemo) return const DemoLoginService();
+  return DioLoginService();
 });

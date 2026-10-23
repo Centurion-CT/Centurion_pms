@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.keverna.keverna"
+    namespace = "com.centurionapartments.staff"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.keverna.keverna"
+        applicationId = "com.centurionapartments.staff"
         // Android 5.0 (API 21) — Flutter's floor. Covers ~99% of active
         // devices; going lower is not supported by the Flutter engine.
         minSdk = flutter.minSdkVersion

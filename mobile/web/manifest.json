@@ -1,11 +1,11 @@
 {
-    "name": "Keverna",
-    "short_name": "Keverna",
+    "name": "Centurion Staff",
+    "short_name": "Centurion Staff",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#F5F1E8",
-    "theme_color": "#BEE44E",
-    "description": "Run your entire property from one platform — front desk, housekeeping, and POS in one app.",
+    "background_color": "#EEF3F7",
+    "theme_color": "#336799",
+    "description": "Rooms, checks and supplies for Centurion Apartments housekeepers and porters.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
