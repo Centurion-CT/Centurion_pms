@@ -8,12 +8,12 @@ use App\Actions\Bookings\CancelBooking;
 use App\Actions\Bookings\MarkCheckedIn;
 use App\Actions\Bookings\MarkCheckedOut;
 use App\Actions\Bookings\MarkNoShow;
-use App\Actions\Bookings\RecordManualPayment;
 use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Mobile\ReservationResource;
 use App\Models\Booking;
 use App\Models\Operator;
+use App\Services\Payments\BookingPayments;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -128,29 +128,34 @@ class ReservationsController extends Controller
     }
 
     /**
-     * Record a manual cash / transfer / card / POS / other payment.
-     * Uses RecordManualPayment which itself is idempotent (skips if
-     * booking is already fully covered by Succeeded payments).
+     * Record a cash / transfer / card / POS / other payment of `amount`
+     * handed over NOW. Goes through the shared payment layer
+     * ({@see BookingPayments::take()}): below the outstanding it is a
+     * part payment, at or above it settles everything (wallet first).
+     * A Pending booking is confirmed by the payment
+     * ({@see BookingPayments::confirmAndPay()}).
+     *
+     * Before this used RecordManualPayment, whose amount is a running
+     * total, so a second payment smaller than what was already paid
+     * was silently dropped.
      */
-    public function recordPayment(Request $request, string $ref, RecordManualPayment $action): JsonResponse
+    public function recordPayment(Request $request, string $ref, BookingPayments $payments): JsonResponse
     {
         $data = $request->validate([
             'amount' => ['required', 'integer', 'min:1'],
             'method' => ['required', Rule::in(['cash', 'transfer', 'card', 'pos', 'other'])],
-            'reference_note' => ['nullable', 'string', 'max:200'],
+            'reference_note' => ['nullable', 'string', 'max:500'],
         ]);
 
         $booking = $this->findByRef($ref);
         $operator = $this->operator($request);
 
         try {
-            $action->handle(
-                booking: $booking,
-                operator: $operator,
-                amount: $data['amount'],
-                method: $data['method'],
-                referenceNote: $data['reference_note'] ?? null,
-            );
+            if ($booking->booking_status === BookingStatus::Pending) {
+                $payments->confirmAndPay($booking, $operator, (int) $data['amount'], $data['method'], $data['reference_note'] ?? null);
+            } else {
+                $payments->take($booking, $operator, (int) $data['amount'], $data['method'], $data['reference_note'] ?? null);
+            }
         } catch (\Throwable $e) {
             return response()->json(['error' => 'payment_failed', 'detail' => $e->getMessage()], 422);
         }

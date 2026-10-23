@@ -137,6 +137,10 @@
                                             No app PIN yet
                                         @endif
                                     </span>
+                                @elseif (in_array($opRole, \App\Http\Middleware\EnsureHostAppOperator::ALLOWED_ROLES, true))
+                                    <span style="display: block; font-size: 12px; color: var(--color-ink-mute);" data-testid="staff-desk-signin-{{ $op->id }}">
+                                        {{ $op->hasStaffPin() ? 'Desk PIN set' : 'No desk PIN yet' }}
+                                    </span>
                                 @endif
                             </td>
                             <td>
@@ -172,6 +176,9 @@
                             </td>
                             <td style="text-align: right;">
                                 @if ($isSelf)
+                                    @if ($opRole === \App\Enums\OperatorRole::Manager)
+                                        <span style="margin-right: 10px;">@include('livewire.dashboard.staff._desk-pin', ['op' => $op])</span>
+                                    @endif
                                     <a href="{{ route('tenant.staff.permissions', $op->id) }}" wire:navigate
                                        data-testid="staff-manage-permissions-{{ $op->id }}"
                                        style="font-family: inherit; font-size: 12.5px; color: var(--color-accent-deep); text-decoration: underline;">
@@ -206,6 +213,9 @@
                                                     <button type="submit" class="lp-pill" style="justify-self: start;" data-testid="staff-app-pin-save-{{ $op->id }}">Save</button>
                                                 </form>
                                             </span>
+                                        @endif
+                                        @if (in_array($opRole, \App\Http\Middleware\EnsureHostAppOperator::ALLOWED_ROLES, true) && ! $op->isRevoked())
+                                            @include('livewire.dashboard.staff._desk-pin', ['op' => $op])
                                         @endif
                                         <a href="{{ route('tenant.staff.permissions', $op->id) }}" wire:navigate
                                            data-testid="staff-manage-permissions-{{ $op->id }}"

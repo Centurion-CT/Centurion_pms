@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Consumes a MobilePairingCode: turns the one-shot code into a
@@ -73,6 +74,7 @@ class PairController extends Controller
                     'platform' => $data['platform'],
                     'device_name' => $data['device_name'],
                     'app_version' => $data['app_version'],
+                    'app' => LoginController::appFromRequest($request),
                     'push_token' => $data['push_token'] ?? null,
                     'paired_ip' => $request->ip(),
                     'paired_at' => $now,
@@ -94,7 +96,7 @@ class PairController extends Controller
 
                 return [$device, $token];
             });
-        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+        } catch (HttpException $e) {
             // Re-throw abort() responses so the JSON error surfaces
             // instead of a generic 500.
             throw $e;

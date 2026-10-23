@@ -286,6 +286,59 @@ class PaystackClient
         ];
     }
 
+    /**
+     * Settlements (payouts to the bank) for this key's account, or for
+     * one subaccount when `$subaccount` is given (Paystack accepts the
+     * subaccount id). GET /settlement. Amounts come back in kobo; the
+     * rows are returned raw (`data`) for the caller to map.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function listSettlements(?string $subaccount = null, ?string $from = null, ?string $to = null, int $perPage = 50): array
+    {
+        $query = array_filter([
+            'subaccount' => $subaccount,
+            'from' => $from,
+            'to' => $to,
+            'perPage' => $perPage,
+        ], fn ($v) => $v !== null && $v !== '');
+
+        $response = $this->http()->get('/settlement', $query)->throw();
+        $body = $response->json();
+
+        if (! is_array($body) || ($body['status'] ?? false) !== true) {
+            throw new RuntimeException('Paystack /settlement returned status=false');
+        }
+
+        return array_values(array_filter((array) ($body['data'] ?? []), 'is_array'));
+    }
+
+    /**
+     * One subaccount's payout details. GET /subaccount/:id_or_code.
+     * Only the last 4 digits of the account number ever leave here.
+     *
+     * @return array{id: ?string, subaccount_code: string, bank_name: string, account_last4: string, account_name: string}
+     */
+    public function fetchSubaccount(string $idOrCode): array
+    {
+        $response = $this->http()->get('/subaccount/'.rawurlencode($idOrCode))->throw();
+        $body = $response->json();
+
+        if (! is_array($body) || ($body['status'] ?? false) !== true || ! is_array($body['data'] ?? null)) {
+            throw new RuntimeException('Paystack /subaccount GET returned status=false');
+        }
+        $data = $body['data'];
+        $digits = preg_replace('/\D/', '', (string) ($data['account_number'] ?? '')) ?? '';
+
+        return [
+            'id' => isset($data['id']) ? (string) $data['id'] : null,
+            'subaccount_code' => (string) ($data['subaccount_code'] ?? $idOrCode),
+            'bank_name' => (string) ($data['settlement_bank'] ?? ''),
+            'account_last4' => substr($digits, -4),
+            'account_name' => (string) ($data['account_name'] ?? $data['business_name'] ?? ''),
+        ];
+    }
+
     private function http(): PendingRequest
     {
         return Http::baseUrl($this->baseUrl)

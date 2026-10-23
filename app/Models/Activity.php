@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Http\Middleware\EnsureMobileDeviceActive;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Models\Activity as BaseActivity;
 
@@ -40,6 +41,22 @@ class Activity extends BaseActivity
             if ($tenant instanceof Tenant) {
                 $activity->setAttribute('tenant_id', $tenant->getKey());
             }
+        });
+
+        // Keverna Desk: actions taken on a shared reception PC carry
+        // via=desk so the log can say "at the desk".
+        self::creating(function (self $activity): void {
+            if (! app()->bound('request')) {
+                return;
+            }
+            $request = request();
+            if (! EnsureMobileDeviceActive::isDeskOperatorRequest($request)) {
+                return;
+            }
+            $device = $request->attributes->get('mobile_device');
+            $activity->properties = collect($activity->properties ?? [])
+                ->put('via', 'desk')
+                ->put('desk_device_id', $device instanceof MobileDevice ? (int) $device->id : null);
         });
 
         self::addGlobalScope('tenant', function (Builder $query): void {

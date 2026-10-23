@@ -9,6 +9,7 @@ use App\Console\Commands\Bookings\SendBalanceReminders;
 use App\Console\Commands\Bookings\SendCheckInReminders;
 use App\Console\Commands\Bookings\SendExtendPrompts;
 use App\Console\Commands\Bookings\SendReviewPrompts;
+use App\Console\Commands\Guests\PurgeGuestIdDocuments;
 use App\Console\Commands\Inventory\SendLowStockDigest;
 use App\Console\Commands\RenewCorporateMembershipsCommand;
 use App\Console\Commands\Reports\SendSummaryReports;
@@ -155,3 +156,16 @@ Schedule::command(SendSummaryReports::class, ['monthly'])
     ->withoutOverlapping()
     ->onOneServer();
 
+/*
+|--------------------------------------------------------------------------
+| Guest ID retention (NDPA, Centurion Desk check-in)
+|--------------------------------------------------------------------------
+| Wipes ID numbers, dates of birth and scans once check-out +
+| keverna.guest_id_retention_months has passed. Quiet hour, Lagos time.
+*/
+
+Schedule::command(PurgeGuestIdDocuments::class)
+    ->dailyAt('03:30')
+    ->timezone('Africa/Lagos')
+    ->withoutOverlapping()
+    ->onOneServer();

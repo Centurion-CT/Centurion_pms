@@ -7,6 +7,7 @@ namespace App\Services\Properties;
 use App\Models\Operator;
 use App\Models\Property;
 use App\Models\Tenant;
+use Illuminate\Http\Request;
 
 /**
  * Resolves + persists the operator's "currently working in" branch.
@@ -29,13 +30,42 @@ use App\Models\Tenant;
  */
 class PropertyContext
 {
+    /**
+     * Request attribute holding a per-request {operator, property}
+     * binding. Set by bearer-token surfaces (the host app's
+     * `host.role` middleware) where there is no `web` session user,
+     * so the dashboard services that call `current()` with no
+     * arguments (DashboardSnapshot, FinanceSnapshot, ReportSnapshot)
+     * resolve the token operator's branch. The web dashboard never
+     * sets it, so web resolution is unchanged.
+     */
+    public const REQUEST_BINDING = 'keverna.property_context';
+
+    public static function bindForRequest(Request $request, Operator $operator, Property $property): void
+    {
+        $request->attributes->set(self::REQUEST_BINDING, [
+            'operator' => $operator,
+            'property' => $property,
+        ]);
+    }
+
     public function current(?Operator $operator = null, ?Tenant $tenant = null): ?Property
     {
-        $operator ??= auth('web')->user();
         $tenant ??= Tenant::current();
         if ($tenant === null) {
             return null;
         }
+
+        // Request-bound branch wins when the caller didn't name an
+        // operator: the binding middleware already verified access.
+        if ($operator === null) {
+            $binding = $this->requestBinding();
+            if ($binding !== null && (int) $binding['property']->tenant_id === (int) $tenant->getKey()) {
+                return $binding['property'];
+            }
+        }
+
+        $operator ??= $this->defaultOperator();
 
         if ($operator instanceof Operator && $operator->current_property_id !== null) {
             $picked = Property::query()
@@ -60,7 +90,7 @@ class PropertyContext
      */
     public function switchTo(Property $property, ?Operator $operator = null): bool
     {
-        $operator ??= auth('web')->user();
+        $operator ??= $this->defaultOperator();
         if (! $operator instanceof Operator) {
             return false;
         }
@@ -86,7 +116,7 @@ class PropertyContext
             return collect();
         }
 
-        $operator ??= auth('web')->user();
+        $operator ??= $this->defaultOperator();
         $query = Property::query()
             ->where('tenant_id', $tenant->getKey())
             ->orderBy('id');
@@ -120,6 +150,38 @@ class PropertyContext
             ->where('tenant_id', $tenant->getKey())
             ->orderBy('id')
             ->get();
+    }
+
+    /**
+     * The operator to resolve for when the caller passed none: the
+     * request-bound (bearer) operator if a binding exists, otherwise
+     * the web session operator (the original behaviour).
+     */
+    private function defaultOperator(): mixed
+    {
+        $binding = $this->requestBinding();
+        if ($binding !== null) {
+            return $binding['operator'];
+        }
+
+        return auth('web')->user();
+    }
+
+    /**
+     * @return array{operator: Operator, property: Property}|null
+     */
+    private function requestBinding(): ?array
+    {
+        if (! app()->bound('request')) {
+            return null;
+        }
+        $binding = app('request')->attributes->get(self::REQUEST_BINDING);
+
+        return is_array($binding)
+            && ($binding['operator'] ?? null) instanceof Operator
+            && ($binding['property'] ?? null) instanceof Property
+            ? $binding
+            : null;
     }
 
     private function operatorCanAccess(Operator $operator, Property $property): bool

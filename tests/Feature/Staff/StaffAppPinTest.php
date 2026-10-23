@@ -125,3 +125,36 @@ it('does not give app PINs to other roles', function (): void {
 
     expect($fd->refresh()->hasStaffPin())->toBeFalse();
 });
+
+it('sets a desk PIN for front desk and a manager\'s own, but not for housekeepers', function (): void {
+    $desk = Operator::factory()->for($this->tenant)->create(['role' => OperatorRole::Frontdesk, 'activated_at' => now()]);
+    $cleaner = Operator::factory()->for($this->tenant)->create(['role' => OperatorRole::HouseCleaner, 'activated_at' => now()]);
+
+    Livewire::actingAs($this->manager, 'web')
+        ->test(Index::class)
+        ->assertSee('No desk PIN yet')
+        ->call('setDeskPin', $desk->id, '4821')
+        ->assertDispatched('notify', kind: 'ok')
+        ->call('setDeskPin', $this->manager->id, '1357')
+        ->assertDispatched('notify', kind: 'ok')
+        ->call('setDeskPin', $desk->id, '12')
+        ->assertDispatched('notify', kind: 'err')
+        ->call('setDeskPin', $cleaner->id, '2468')
+        ->assertDispatched('notify', kind: 'err');
+
+    expect($desk->fresh()->checkStaffPin('4821'))->toBeTrue()
+        ->and($this->manager->fresh()->checkStaffPin('1357'))->toBeTrue()
+        ->and($cleaner->fresh()->hasStaffPin())->toBeFalse();
+});
+
+it('only lets a manager set desk PINs', function (): void {
+    $desk = Operator::factory()->for($this->tenant)->create(['role' => OperatorRole::Frontdesk, 'activated_at' => now()]);
+    $other = Operator::factory()->for($this->tenant)->create(['role' => OperatorRole::Frontdesk, 'activated_at' => now()]);
+
+    Livewire::actingAs($desk, 'web')
+        ->test(Index::class)
+        ->call('setDeskPin', $other->id, '4821')
+        ->assertDispatched('notify', kind: 'err');
+
+    expect($other->fresh()->hasStaffPin())->toBeFalse();
+});

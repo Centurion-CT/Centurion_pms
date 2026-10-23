@@ -61,7 +61,10 @@ class RecordBookingRefund
                 'amount' => $amount,
                 'type' => PaymentType::Balance,
                 'method' => $method,
-                'reference_note' => $referenceNote,
+                // payments.reference_note is varchar(120).
+                'reference_note' => $referenceNote !== null && $referenceNote !== ''
+                    ? \Illuminate\Support\Str::limit($referenceNote, 117)
+                    : null,
                 'status' => PaymentStatus::Refunded,
                 'paid_at' => $paidAt,
             ]);

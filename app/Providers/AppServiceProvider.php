@@ -5,11 +5,23 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Mail\Transport\SendpipeTransport;
+use App\Models\Booking;
+use App\Models\GuestActionApproval;
+use App\Models\GuestRequest;
+use App\Models\Payment;
+use App\Models\Property;
 use App\Models\Tenant;
+use App\Observers\BookingCustomerAggregateObserver;
+use App\Observers\BookingSearchCacheObserver;
+use App\Observers\HostPushObserver;
+use App\Observers\PaymentPulseObserver;
+use App\Observers\PropertyObserver;
 use App\Services\Dns\DnsResolver;
 use App\Services\Dns\SystemDnsResolver;
 use App\Services\Identity\GuestClaimTokenSigner;
 use App\Services\Identity\TenantSsoTokenSigner;
+use App\Services\Push\HostPush;
+use App\Services\Push\PushDriver;
 use App\Services\Sendpipe\SendpipeClient;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Filesystem\FilesystemAdapter;
@@ -41,6 +53,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(GuestClaimTokenSigner::class, function ($app): GuestClaimTokenSigner {
             return new GuestClaimTokenSigner(self::resolveAppKeyBytes());
         });
+
+        // Host app push transport (docs/host-app/PHASE-5.md). Tests bind
+        // a fake driver; unconfigured FCM falls back to the null driver.
+        $this->app->singleton(PushDriver::class, fn (): PushDriver => HostPush::makeDriver());
+        // Scoped: the after-commit buffers reset per request / queued job.
+        $this->app->scoped(HostPush::class);
     }
 
     /**
@@ -86,13 +104,13 @@ class AppServiceProvider extends ServiceProvider
         // first/last_booking_at) truthful against booking rows on
         // EVERY save + delete — no code path can leave the aggregate
         // stale. See the observer for scope + reasoning.
-        \App\Models\Booking::observe(\App\Observers\BookingCustomerAggregateObserver::class);
+        Booking::observe(BookingCustomerAggregateObserver::class);
 
         // Push signal for the dashboard search cache. On every
         // booking mutation, broadcast an upsert / delete on the
         // tenant's private channel so operator IDB stores update
         // without waiting for the 5-minute heartbeat pull.
-        \App\Models\Booking::observe(\App\Observers\BookingSearchCacheObserver::class);
+        Booking::observe(BookingSearchCacheObserver::class);
 
         // Broadcast a cross-tenant PlatformPaymentPulse whenever a
         // successful Payment lands, powering the marketing kobo counter
@@ -100,12 +118,24 @@ class AppServiceProvider extends ServiceProvider
         // filters refunds, failed rows, corporate-AR mirrors, and
         // micro-txns below the ₦5k floor so the public surface only
         // reflects real inflows.
-        \App\Models\Payment::observe(\App\Observers\PaymentPulseObserver::class);
+        Payment::observe(PaymentPulseObserver::class);
 
         // Auto-provision a hidden category + room when a single_unit
         // property is created / flipped, so the availability + pricing
         // engine has a backing chain without operator busywork.
-        \App\Models\Property::observe(\App\Observers\PropertyObserver::class);
+        Property::observe(PropertyObserver::class);
+
+        // Host app push triggers (docs/host-app/PHASE-5.md): new bookings,
+        // guest payments, inbox approvals and guest requests. Sends run
+        // after commit on the queue; see App\Services\Push\HostPush.
+        foreach ([
+            Booking::class,
+            Payment::class,
+            GuestActionApproval::class,
+            GuestRequest::class,
+        ] as $model) {
+            $model::observe(HostPushObserver::class);
+        }
 
         // Register the Bunny Storage driver so `Storage::disk('bunny')`
         // and any media-library collection with `disk_name => 'bunny'`

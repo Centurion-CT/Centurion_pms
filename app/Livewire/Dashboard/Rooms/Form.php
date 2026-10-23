@@ -56,6 +56,9 @@ class Form extends Component
 
     public string $internal_notes = '';
 
+    /** Floor, free text ("1", "Ground", "Annex"). Empty: guessed from the number. */
+    public string $floor = '';
+
     public function mount(?Room $room = null): void
     {
         // Edit mode: the route resolves Room via tenant-scoped query,
@@ -66,6 +69,7 @@ class Form extends Component
             $this->room_number = (string) ($room->getAttributes()['room_number'] ?? '');
             $this->status = $room->status->value;
             $this->internal_notes = (string) ($room->getAttributes()['internal_notes'] ?? '');
+            $this->floor = (string) ($room->getAttributes()['floor'] ?? '');
         }
     }
 
@@ -131,6 +135,7 @@ class Form extends Component
                 ],
                 'status' => ['required', Rule::in(array_map(fn ($c) => $c->value, RoomStatus::cases()))],
                 'internal_notes' => ['nullable', 'string', 'max:5000'],
+                'floor' => ['nullable', 'string', 'max:30'],
             ];
         }
 
@@ -143,6 +148,7 @@ class Form extends Component
             ],
             'status' => ['required', Rule::in(array_map(fn ($c) => $c->value, RoomStatus::cases()))],
             'internal_notes' => ['nullable', 'string', 'max:5000'],
+            'floor' => ['nullable', 'string', 'max:30'],
         ];
     }
 
@@ -194,6 +200,7 @@ class Form extends Component
                 $room->forceFill([
                     'room_category_id' => $category->id,
                     'room_number' => $number,
+                    'floor' => self::floorFor($data['floor'] ?? '', $number),
                     'internal_notes' => $notes,
                     'status' => RoomStatus::from($data['status']),
                 ]);
@@ -210,6 +217,7 @@ class Form extends Component
             $room->forceFill([
                 'room_category_id' => $category->id,
                 'room_number' => $data['room_number'],
+                'floor' => self::floorFor($data['floor'] ?? '', $data['room_number']),
                 'internal_notes' => $data['internal_notes'] !== '' ? $data['internal_notes'] : null,
                 'status' => RoomStatus::from($data['status']),
             ]);
@@ -233,5 +241,13 @@ class Form extends Component
             'categories' => $categories,
             'statuses' => RoomStatus::cases(),
         ]);
+    }
+
+    /** The typed floor, or the one implied by the room number. */
+    private static function floorFor(?string $typed, string $number): ?string
+    {
+        $typed = trim((string) $typed);
+
+        return $typed !== '' ? $typed : Room::guessFloor($number);
     }
 }

@@ -7,6 +7,7 @@ namespace App\Actions\Bookings;
 use App\Enums\PaymentStatus;
 use App\Enums\PaymentType;
 use App\Models\Booking;
+use App\Models\BookingCharge;
 use App\Models\Customer;
 use App\Models\Operator;
 use App\Models\Payment;
@@ -93,6 +94,15 @@ class PayBookingFromWallet
                 causer: $operator ?? $customer,
             );
 
+            // Apply the spend to what is owed so the outstanding drops
+            // by exactly the amount taken: balance_due first, then
+            // unsettled charges oldest-first (same order as
+            // RecordPartPayment / SettleChargesWalletFirst). Before this,
+            // a PARTIAL wallet payment wrote the Payment row + debited
+            // the wallet but left balance_due untouched, so the guest
+            // still "owed" the full amount (docs/host-app/PHASE-2.md).
+            $this->applyToOwed($booking, $toSpend, $operator);
+
             // If we fully cleared the outstanding, flip payment_status
             // + drop balance_due so downstream reports see it settled.
             if ($toSpend >= $outstanding) {
@@ -132,5 +142,72 @@ class PayBookingFromWallet
 
             return $payment->refresh();
         });
+    }
+    /**
+     * Reduce balance_due, then settle unsettled charges oldest-first
+     * (settled_method = wallet). A charge the remaining amount only
+     * partly covers is split: the row shrinks to the covered part and
+     * is settled, a sibling row carries the remainder unsettled, so a
+     * charge row only ever carries one payment method (same convention
+     * as {@see SettleChargesWalletFirst}).
+     */
+    private function applyToOwed(Booking $booking, int $amount, ?Operator $operator): void
+    {
+        $booking->refresh();
+        $remaining = $amount;
+
+        $balance = (int) $booking->balance_due;
+        $toBalance = min($remaining, $balance);
+        if ($toBalance > 0) {
+            $booking->forceFill(['balance_due' => $balance - $toBalance])->save();
+            $remaining -= $toBalance;
+        }
+        if ($remaining <= 0) {
+            return;
+        }
+
+        $now = Carbon::now();
+        $charges = BookingCharge::query()
+            ->where('booking_id', $booking->id)
+            ->where('settled', false)
+            ->orderBy('id')
+            ->get();
+
+        foreach ($charges as $charge) {
+            if ($remaining <= 0) {
+                break;
+            }
+            $chargeAmount = (int) $charge->amount;
+            if ($chargeAmount <= 0) {
+                continue;
+            }
+            if ($remaining >= $chargeAmount) {
+                $charge->forceFill([
+                    'settled' => true,
+                    'settled_at' => $now,
+                    'settled_method' => 'wallet',
+                ])->save();
+                $remaining -= $chargeAmount;
+
+                continue;
+            }
+
+            BookingCharge::query()->create([
+                'tenant_id' => $charge->tenant_id,
+                'booking_id' => $charge->booking_id,
+                'created_by_operator_id' => $operator?->getKey() ?? $charge->created_by_operator_id,
+                'type' => $charge->type,
+                'description' => $charge->description,
+                'amount' => $chargeAmount - $remaining,
+                'settled' => false,
+            ]);
+            $charge->forceFill([
+                'amount' => $remaining,
+                'settled' => true,
+                'settled_at' => $now,
+                'settled_method' => 'wallet',
+            ])->save();
+            $remaining = 0;
+        }
     }
 }

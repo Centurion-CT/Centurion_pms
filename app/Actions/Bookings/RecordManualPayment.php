@@ -102,7 +102,10 @@ class RecordManualPayment
                     'type' => $alreadyPaid > 0 ? PaymentType::Balance : PaymentType::Full,
                     'method' => $method,
                     'collected_by_operator_id' => $operator?->getKey(),
-                    'reference_note' => $referenceNote,
+                    // payments.reference_note is varchar(120).
+                    'reference_note' => $referenceNote !== null && $referenceNote !== ''
+                        ? Str::limit($referenceNote, 117)
+                        : null,
                     'status' => PaymentStatus::Succeeded,
                     'paid_at' => $paidAt,
                 ]);

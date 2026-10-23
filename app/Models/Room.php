@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\DepositType;
+use App\Enums\HousekeepingStatus;
 use App\Enums\RoomBookingType;
 use App\Enums\RoomStatus;
 use App\Multitenancy\BelongsToTenant;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -99,7 +101,7 @@ class Room extends Model implements HasMedia
         // accessors. Status stays — it's per-unit visibility.
         return [
             'status' => RoomStatus::class,
-            'housekeeping_status' => \App\Enums\HousekeepingStatus::class,
+            'housekeeping_status' => HousekeepingStatus::class,
             'housekeeping_updated_at' => 'datetime',
         ];
     }
@@ -115,12 +117,51 @@ class Room extends Model implements HasMedia
      * is used ONLY on the guest-portal URL — it's unguessable so
      * it can serve as one of three factors (slug + phone + PIN).
      */
+    /**
+     * The floor implied by a hotel-style room number: all digits, at least
+     * three, everything but the last two digits ("101" -> "1", "1204" ->
+     * "12", "012" -> "Ground"). Anything else ("Garden Cottage", "A12")
+     * returns null so nobody gets a wrong guess.
+     */
+    public static function guessFloor(string $number): ?string
+    {
+        $n = trim($number);
+        if (preg_match('/^\d{3,6}$/', $n) !== 1) {
+            return null;
+        }
+        $floor = (int) substr($n, 0, -2);
+
+        return $floor === 0 ? 'Ground' : (string) $floor;
+    }
+
+    /**
+     * "1st floor", "Ground floor", or the hotel's own words ("Annex").
+     */
+    public static function floorLabel(?string $floor): ?string
+    {
+        $f = trim((string) $floor);
+        if ($f === '') {
+            return null;
+        }
+        if (strcasecmp($f, 'Ground') === 0) {
+            return 'Ground floor';
+        }
+        if (ctype_digit($f)) {
+            $n = (int) $f;
+            $suffix = in_array($n % 100, [11, 12, 13], true) ? 'th' : (['th', 'st', 'nd', 'rd'][$n % 10] ?? 'th');
+
+            return $n.$suffix.' floor';
+        }
+
+        return $f;
+    }
+
     protected static function booted(): void
     {
         static::creating(function (Room $room): void {
             if (empty($room->qr_slug)) {
                 do {
-                    $candidate = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(24));
+                    $candidate = Str::lower(Str::random(24));
                 } while (static::query()->where('qr_slug', $candidate)->exists());
                 $room->qr_slug = $candidate;
             }
@@ -236,7 +277,7 @@ class Room extends Model implements HasMedia
         return (int) ($this->category?->monthly_discount_percent ?? 0);
     }
 
-    public function getDepositTypeAttribute(): ?\App\Enums\DepositType
+    public function getDepositTypeAttribute(): ?DepositType
     {
         return $this->category?->deposit_type;
     }
@@ -246,7 +287,7 @@ class Room extends Model implements HasMedia
         return (int) ($this->category?->deposit_value ?? 0);
     }
 
-    public function getBookingTypeAttribute(): ?\App\Enums\RoomBookingType
+    public function getBookingTypeAttribute(): ?RoomBookingType
     {
         return $this->category?->booking_type;
     }

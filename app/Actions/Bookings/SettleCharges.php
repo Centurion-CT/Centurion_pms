@@ -50,9 +50,11 @@ class SettleCharges
      * Return value is the number of ledger movements — balance-due
      * clear counts as 1 if it fired, plus one per settled charge.
      */
-    public function settleAll(Booking $booking, Operator $operator, string $method): int
+    public function settleAll(Booking $booking, Operator $operator, string $method, ?string $referenceNote = null): int
     {
-        return DB::transaction(function () use ($booking, $operator, $method): int {
+        $referenceNote = $referenceNote !== null && trim($referenceNote) !== '' ? trim($referenceNote) : null;
+
+        return DB::transaction(function () use ($booking, $operator, $method, $referenceNote): int {
             $booking = $booking->fresh() ?? $booking;
             $now = Carbon::now();
             $cleared = 0;
@@ -70,7 +72,7 @@ class SettleCharges
                     'type'                     => PaymentType::Balance,
                     'method'                   => $method,
                     'collected_by_operator_id' => $operator->getKey(),
-                    'reference_note'           => Str::limit('Balance settled on '.$booking->booking_ref, 117),
+                    'reference_note'           => Str::limit($referenceNote ?? 'Balance settled on '.$booking->booking_ref, 117),
                     'status'                   => PaymentStatus::Succeeded,
                     'paid_at'                  => $now,
                 ]);
@@ -91,7 +93,7 @@ class SettleCharges
                     'settled_at'     => $now,
                     'settled_method' => $method,
                 ])->save();
-                $this->recordPayment($charge, $booking, $operator, $method, $now);
+                $this->recordPayment($charge, $booking, $operator, $method, $now, $referenceNote);
             }
             $cleared += $charges->count();
 
@@ -171,6 +173,7 @@ class SettleCharges
         Operator $operator,
         string $method,
         Carbon $paidAt,
+        ?string $referenceNote = null,
     ): void {
         if ((int) $charge->amount <= 0) {
             return;
@@ -191,7 +194,7 @@ class SettleCharges
             // can grow long (extension + overstay credit + discount
             // trail all end up on one line), which was tripping the
             // "value too long for type character varying(120)" error.
-            'reference_note'          => \Illuminate\Support\Str::limit('Settled: '.$charge->description, 117),
+            'reference_note'          => \Illuminate\Support\Str::limit($referenceNote ?? 'Settled: '.$charge->description, 117),
             'status'                  => PaymentStatus::Succeeded,
             'paid_at'                 => $paidAt,
         ]);

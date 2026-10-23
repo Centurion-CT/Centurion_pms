@@ -1791,6 +1791,16 @@
                     @if (! $booking->guest_email && ! $booking->guest_phone)
                         <p class="lp-guest-contact-none">No contact details on file.</p>
                     @endif
+                    @if ($idDocument)
+                        <p class="lp-guest-contact-none" data-testid="guest-modal-id">
+                            ID:
+                            @if ($idDocument->isPurged())
+                                {{ $idDocument->typeLabel() }} seen, details deleted
+                            @else
+                                {{ $idDocument->typeLabel() }} {{ $idDocument->maskedNumber() }}@if ($idDocument->nationality), {{ $idDocument->nationality }}@endif
+                            @endif
+                        </p>
+                    @endif
                 </div>
 
                 {{-- CRM strip — badge + total stays + lifetime spend. --}}
