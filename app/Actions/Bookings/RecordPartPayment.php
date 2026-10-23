@@ -47,6 +47,7 @@ class RecordPartPayment
         Operator $operator,
         int $amount,
         string $method,
+        ?string $referenceNote = null,
     ): void {
         $outstanding = $booking->outstandingTotal();
         if ($outstanding <= 0) {
@@ -66,7 +67,11 @@ class RecordPartPayment
             throw new RuntimeException('Pick a payment method.');
         }
 
-        DB::transaction(function () use ($booking, $operator, $amount, $method): void {
+        $referenceNote = $referenceNote !== null && trim($referenceNote) !== ''
+            ? trim($referenceNote)
+            : 'Part payment on '.$booking->booking_ref;
+
+        DB::transaction(function () use ($booking, $operator, $amount, $method, $referenceNote): void {
             Payment::query()->create([
                 'tenant_id'                => $booking->tenant_id,
                 'booking_id'               => $booking->id,
@@ -76,7 +81,7 @@ class RecordPartPayment
                 'type'                     => PaymentType::Extra,
                 'method'                   => $method,
                 'collected_by_operator_id' => $operator->getKey(),
-                'reference_note'           => Str::limit('Part payment on '.$booking->booking_ref, 117),
+                'reference_note'           => Str::limit($referenceNote, 117),
                 'status'                   => PaymentStatus::Succeeded,
                 'paid_at'                  => Carbon::now(),
             ]);

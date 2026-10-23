@@ -38,9 +38,9 @@ class SettleChargesWalletFirst
     /**
      * @return array{wallet:int, wallet_cleared:int, fallback_cleared:int}
      */
-    public function handle(Booking $booking, Operator $operator, string $fallbackMethod): array
+    public function handle(Booking $booking, Operator $operator, string $fallbackMethod, ?string $referenceNote = null): array
     {
-        return DB::transaction(function () use ($booking, $operator, $fallbackMethod): array {
+        return DB::transaction(function () use ($booking, $operator, $fallbackMethod, $referenceNote): array {
             $walletUsed = 0;
             $walletCleared = 0;
 
@@ -177,7 +177,7 @@ class SettleChargesWalletFirst
                 }
             }
 
-            $fallbackCleared = $this->fallback->settleAll($booking, $operator, $fallbackMethod);
+            $fallbackCleared = $this->fallback->settleAll($booking, $operator, $fallbackMethod, $referenceNote);
 
             if ($walletCleared > 0) {
                 activity('booking')

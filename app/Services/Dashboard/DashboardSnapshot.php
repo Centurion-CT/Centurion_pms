@@ -54,6 +54,9 @@ class DashboardSnapshot
      */
     private ?int $propertyId = null;
 
+    /** Set by kpis(): number of stays behind the outstanding total. */
+    private int $outstandingStays = 0;
+
     public function __construct(private readonly OccupancyCalculator $occupancy) {}
 
     /**
@@ -145,6 +148,69 @@ class DashboardSnapshot
         return $pid === null
             ? $q
             : $q->where('property_id', $pid);
+    }
+
+    /**
+     * Outstanding ₦ for the Today "owed" tile (and the host app's
+     * owed figures): every open stay's {@see Booking::outstandingTotal()}
+     * plus checked-out corporate stays not yet covered by an invoice,
+     * and how many stays owe. Public + branch-set aware so the host
+     * app's "All branches" owner scope sums exactly what each
+     * branch's Today shows.
+     *
+     * @param  list<int>|null  $propertyIds  null = whole tenant
+     * @return array{total: int, stays: int}
+     */
+    public static function owed(?array $propertyIds = null): array
+    {
+        $scope = fn (\Illuminate\Database\Eloquent\Builder $q): \Illuminate\Database\Eloquent\Builder => $propertyIds === null
+            ? $q
+            : $q->whereHas('room', fn ($r) => $r->whereIn('property_id', $propertyIds));
+
+        $openStatuses = [
+            BookingStatus::Confirmed->value,
+            BookingStatus::OnHold->value,
+            BookingStatus::CheckedIn->value,
+        ];
+        $openOwed = $scope(Booking::query())
+            ->with('charges')
+            ->whereIn('booking_status', $openStatuses)
+            ->get()
+            ->map(fn (Booking $b) => $b->outstandingTotal());
+        $outstandingNow = (int) $openOwed->sum();
+
+        // CheckedOut corporate-guaranteed bookings still owe money —
+        // the corp bills by invoice after the fact. Their balance
+        // was excluded from the pulse until the invoice landed, which
+        // meant the outstanding tile went to ₦0 the moment a corp
+        // guest walked out even though the corp hadn't paid yet.
+        // Include them until an Issued/Paid invoice covers the row.
+        $corpOwed = $scope(Booking::query())
+            ->with('charges')
+            ->where('booking_status', BookingStatus::CheckedOut->value)
+            ->whereNotNull('corporate_id')
+            ->whereDoesntHave('invoices', function ($q): void {
+                $q->whereIn('status', ['issued', 'partial', 'paid']);
+            })
+            ->whereNotExists(function ($sub): void {
+                $sub->from('invoice_lines')
+                    ->join('invoices', 'invoices.id', '=', 'invoice_lines.invoice_id')
+                    ->whereColumn('invoice_lines.source_id', 'bookings.id')
+                    ->where('invoice_lines.source_type', Booking::class)
+                    ->whereIn('invoices.status', ['issued', 'partial', 'paid']);
+            })
+            ->get()
+            ->map(fn (Booking $b) => $b->outstandingTotal());
+        $outstandingNow += (int) $corpOwed->sum();
+
+        // How many stays make up that total (rows owing > 0). Read by
+        // the host app's "owed across N stays" line; same rows, same
+        // per-booking helper, so it can never disagree with the sum.
+        $stays = $openOwed->filter(fn (int $v) => $v > 0)->count()
+            + $corpOwed->filter(fn (int $v) => $v > 0)->count();
+
+
+        return ['total' => $outstandingNow, 'stays' => $stays];
     }
 
     private function compute(): array
@@ -463,6 +529,7 @@ class DashboardSnapshot
                 'arriving'    => $arrivals->count() + $unassignedArrivals->count(),
                 'departing'   => $departures->count(),
                 'outstanding' => (int) ($kpis['outstanding']['value'] ?? 0),
+                'outstanding_stays' => $this->outstandingStays,
                 'unassigned'  => $unassignedTotal,
                 'unassigned_today' => $unassignedArrivals->count(),
             ],
@@ -572,39 +639,9 @@ class DashboardSnapshot
         //    canonical per-booking helper drops that N+1 concern for
         //    typical fleet sizes (~50 open bookings max) and keeps
         //    the two surfaces in lockstep.
-        $openStatuses = [
-            BookingStatus::Confirmed->value,
-            BookingStatus::OnHold->value,
-            BookingStatus::CheckedIn->value,
-        ];
-        $outstandingNow = (int) $this->scopeBookings(Booking::query())
-            ->with('charges')
-            ->whereIn('booking_status', $openStatuses)
-            ->get()
-            ->sum(fn (Booking $b) => $b->outstandingTotal());
-
-        // CheckedOut corporate-guaranteed bookings still owe money —
-        // the corp bills by invoice after the fact. Their balance
-        // was excluded from the pulse until the invoice landed, which
-        // meant the outstanding tile went to ₦0 the moment a corp
-        // guest walked out even though the corp hadn't paid yet.
-        // Include them until an Issued/Paid invoice covers the row.
-        $outstandingNow += (int) $this->scopeBookings(Booking::query())
-            ->with('charges')
-            ->where('booking_status', BookingStatus::CheckedOut->value)
-            ->whereNotNull('corporate_id')
-            ->whereDoesntHave('invoices', function ($q): void {
-                $q->whereIn('status', ['issued', 'partial', 'paid']);
-            })
-            ->whereNotExists(function ($sub): void {
-                $sub->from('invoice_lines')
-                    ->join('invoices', 'invoices.id', '=', 'invoice_lines.invoice_id')
-                    ->whereColumn('invoice_lines.source_id', 'bookings.id')
-                    ->where('invoice_lines.source_type', Booking::class)
-                    ->whereIn('invoices.status', ['issued', 'partial', 'paid']);
-            })
-            ->get()
-            ->sum(fn (Booking $b) => $b->outstandingTotal());
+        $owed = self::owed($this->propertyId === null ? null : [(int) $this->propertyId]);
+        $outstandingNow = $owed['total'];
+        $this->outstandingStays = $owed['stays'];
 
         return [
             'occupancy' => $this->trend($occNow, $occPrev, '30-day occupancy'),

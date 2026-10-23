@@ -52,21 +52,44 @@ use Illuminate\Support\Carbon;
 class FinanceSnapshot
 {
     /**
-     * Lazily-cached current branch id per request cycle. Read via
-     * currentPropertyId() from every scope helper below so multi-
-     * property tenants meaningfully filter every finance surface by
-     * the sidebar's picked branch.
+     * Lazily-cached current branch id(s) per request cycle. Read via
+     * propertyIds() from every scope helper below so multi-property
+     * tenants meaningfully filter every finance surface by the
+     * sidebar's picked branch. {@see forProperties()} pins an explicit
+     * set instead (the host app's "All branches" owner scope), so one
+     * instance aggregates several branches without double counting.
+     *
+     * @var list<int>|null
      */
-    private ?int $cachedPropertyId = null;
+    private ?array $cachedPropertyIds = null;
     private bool $cachedPropertyIdResolved = false;
 
-    private function currentPropertyId(): ?int
+    /**
+     * A copy of this snapshot scoped to an explicit set of branches
+     * (ids of the current tenant) instead of the resolved current one.
+     *
+     * @param  list<int>  $propertyIds
+     */
+    public function forProperties(array $propertyIds): static
+    {
+        $clone = clone $this;
+        $clone->cachedPropertyIds = array_values(array_map('intval', $propertyIds));
+        $clone->cachedPropertyIdResolved = true;
+
+        return $clone;
+    }
+
+    /**
+     * @return list<int>|null null = no branch filter (whole tenant)
+     */
+    private function propertyIds(): ?array
     {
         if (! $this->cachedPropertyIdResolved) {
-            $this->cachedPropertyId = app(\App\Services\Properties\PropertyContext::class)->current()?->getKey();
+            $id = app(\App\Services\Properties\PropertyContext::class)->current()?->getKey();
+            $this->cachedPropertyIds = $id === null ? null : [(int) $id];
             $this->cachedPropertyIdResolved = true;
         }
-        return $this->cachedPropertyId;
+        return $this->cachedPropertyIds;
     }
 
     /**
@@ -75,8 +98,8 @@ class FinanceSnapshot
      */
     private function scopeBookings(\Illuminate\Database\Eloquent\Builder $q): \Illuminate\Database\Eloquent\Builder
     {
-        $pid = $this->currentPropertyId();
-        return $pid === null ? $q : $q->whereHas('room', fn ($r) => $r->where('property_id', $pid));
+        $pids = $this->propertyIds();
+        return $pids === null ? $q : $q->whereHas('room', fn ($r) => $r->whereIn('property_id', $pids));
     }
 
     /**
@@ -91,17 +114,17 @@ class FinanceSnapshot
      */
     private function scopeByBooking(\Illuminate\Database\Eloquent\Builder $q): \Illuminate\Database\Eloquent\Builder
     {
-        $pid = $this->currentPropertyId();
-        if ($pid === null) return $q;
+        $pids = $this->propertyIds();
+        if ($pids === null) return $q;
 
         $model = $q->getModel();
         if ($model instanceof \App\Models\Payment) {
-            return $q->where(function ($outer) use ($pid): void {
-                $outer->whereHas('booking.room', fn ($r) => $r->where('property_id', $pid))
-                    ->orWhereHas('posSale.outlet', fn ($o) => $o->where('property_id', $pid));
+            return $q->where(function ($outer) use ($pids): void {
+                $outer->whereHas('booking.room', fn ($r) => $r->whereIn('property_id', $pids))
+                    ->orWhereHas('posSale.outlet', fn ($o) => $o->whereIn('property_id', $pids));
             });
         }
-        return $q->whereHas('booking.room', fn ($r) => $r->where('property_id', $pid));
+        return $q->whereHas('booking.room', fn ($r) => $r->whereIn('property_id', $pids));
     }
 
     /**
@@ -114,14 +137,14 @@ class FinanceSnapshot
      */
     private function scopeByOutlet(\Illuminate\Database\Eloquent\Builder $q): \Illuminate\Database\Eloquent\Builder
     {
-        $pid = $this->currentPropertyId();
-        if ($pid === null) return $q;
+        $pids = $this->propertyIds();
+        if ($pids === null) return $q;
 
         $model = $q->getModel();
         if ($model instanceof \App\Models\PosSaleLine) {
-            return $q->whereHas('sale.outlet', fn ($o) => $o->where('property_id', $pid));
+            return $q->whereHas('sale.outlet', fn ($o) => $o->whereIn('property_id', $pids));
         }
-        return $q->whereHas('outlet', fn ($o) => $o->where('property_id', $pid));
+        return $q->whereHas('outlet', fn ($o) => $o->whereIn('property_id', $pids));
     }
 
     /**
@@ -150,6 +173,10 @@ class FinanceSnapshot
             ->where('status', PaymentStatus::Refunded->value)
             ->whereBetween('paid_at', [$from->copy()->startOfDay(), $to->copy()->endOfDay()])
             ->sum('amount');
+        $refundsCount = (int) $this->scopeByBooking(Payment::query())
+            ->where('status', PaymentStatus::Refunded->value)
+            ->whereBetween('paid_at', [$from->copy()->startOfDay(), $to->copy()->endOfDay()])
+            ->count();
 
         // Outstanding = balance_due on open bookings + every unsettled
         // BookingCharge on those bookings + projected overstay for
@@ -178,11 +205,10 @@ class FinanceSnapshot
             ->with('room')
             ->where('booking_status', BookingStatus::CheckedIn->value)
             ->whereDate('checkout_date', '<', $today->toDateString())
-            ->whereNotExists(function ($sub): void {
-                $sub->from('booking_charges')
-                    ->whereColumn('booking_charges.booking_id', 'bookings.id')
-                    ->where('type', BookingChargeType::Overstay->value);
-            })
+            // No "already has an overstay charge" filter: projectedOverstayAmount()
+            // only counts nights NOT yet billed, so a guest billed for 17 nights
+            // and still overstaying keeps accruing (it used to drop to ₦0 here
+            // while the reservation page and Today showed the debt).
             ->get();
         $projectedOverstay = (int) $overstayers->sum(fn (Booking $b) => $b->projectedOverstayAmount($today));
 
@@ -245,19 +271,11 @@ class FinanceSnapshot
             ->whereIn('booking_status', [BookingStatus::Cancelled->value, BookingStatus::NoShow->value])
             ->pluck('id');
         if ($unresolvedIds->isNotEmpty()) {
-            $ledger = $this->scopeByBooking(Payment::query())
-                ->whereIn('booking_id', $unresolvedIds)
-                ->whereIn('status', [PaymentStatus::Succeeded->value, PaymentStatus::Refunded->value])
-                ->toBase()
-                ->selectRaw("booking_id,
-                    SUM(CASE WHEN status = 'succeeded' THEN amount ELSE 0 END) as paid,
-                    SUM(CASE WHEN status = 'refunded' THEN amount ELSE 0 END) as refunded")
-                ->groupBy('booking_id')
-                ->get();
-            foreach ($ledger as $r) {
-                $held = max(0, (int) $r->paid - (int) $r->refunded);
-                if ($held > 0) {
-                    $pendingRefunds += $held;
+            // Same held figure as the Refunds page: paid − refunded −
+            // kept-as-forfeit. Booking ids are already branch-scoped.
+            foreach (app(\App\Services\Bookings\HeldMoney::class)->byBooking($unresolvedIds) as $row) {
+                if ($row['held'] > 0) {
+                    $pendingRefunds += $row['held'];
                     $pendingRefundsCount++;
                 }
             }
@@ -267,6 +285,7 @@ class FinanceSnapshot
             'billed' => $billed,
             'collected' => $collected,
             'refunded' => $refunded,
+            'refundsCount' => $refundsCount,
             'outstanding' => $outstanding,
             'net' => $net,
             'bookings' => $bookings,
@@ -698,6 +717,175 @@ class FinanceSnapshot
     }
 
     /**
+     * Where the window's revenue came from (accrual, the same building
+     * blocks the Finance page shows, without double counting):
+     *
+     *  - rooms:     billed stays (bookings.total_amount by checkin_date,
+     *               revenue statuses) = kpis()['billed']
+     *  - pos:       completed POS sales by sold_at = posSummary()['total']
+     *               (charge-to-room sales included here once; their
+     *               "POS · ..." folio charges are skipped below)
+     *  - extension: Extension charges added in the window
+     *  - overstay:  Overstay + Late check-out charges added in the window
+     *  - extras:    every other folio charge added in the window
+     *               (laundry, transport, damage, packages, forfeits...)
+     *
+     * Every key is always present (amount 0 when nothing) so charts
+     * keep a stable legend; pct is the share of the sum, 1dp.
+     *
+     * @return list<array{key: string, label: string, amount: int, pct: float}>
+     */
+    public function revenueSources(Carbon $from, Carbon $to): array
+    {
+        $rooms = (int) $this->scopeBookings(Booking::query())
+            ->whereIn('booking_status', $this->revenueStatuses())
+            ->whereBetween('checkin_date', [$from->toDateString(), $to->toDateString()])
+            ->sum('total_amount');
+        $pos = (int) $this->scopeByOutlet(PosSale::query())
+            ->completed()
+            ->whereBetween('sold_at', [$from->copy()->startOfDay(), $to->copy()->endOfDay()])
+            ->sum('total');
+
+        $charges = $this->scopeByBooking(BookingCharge::query())
+            ->whereBetween('booking_charges.created_at', [$from->copy()->startOfDay(), $to->copy()->endOfDay()])
+            ->where(fn ($q) => $q->whereNull('booking_charges.description')
+                ->orWhere('booking_charges.description', 'not like', 'POS · %'))
+            ->toBase()
+            ->selectRaw('booking_charges.type as type, SUM(booking_charges.amount) as total')
+            ->groupBy('booking_charges.type')
+            ->pluck('total', 'type')
+            ->map(fn ($v) => (int) $v)
+            ->all();
+
+        $extension = (int) ($charges[BookingChargeType::Extension->value] ?? 0);
+        $overstay = (int) ($charges[BookingChargeType::Overstay->value] ?? 0)
+            + (int) ($charges[BookingChargeType::LateCheckout->value] ?? 0);
+        $extras = (int) array_sum($charges) - $extension - $overstay;
+
+        $rows = [
+            ['key' => 'rooms', 'label' => 'Rooms', 'amount' => $rooms],
+            ['key' => 'pos', 'label' => 'Restaurant and bar', 'amount' => $pos],
+            ['key' => 'extension', 'label' => 'Stay extensions', 'amount' => $extension],
+            ['key' => 'overstay', 'label' => 'Overstay and late check-out', 'amount' => $overstay],
+            ['key' => 'extras', 'label' => 'Other extras', 'amount' => $extras],
+        ];
+        $total = array_sum(array_column($rows, 'amount'));
+
+        return array_map(fn (array $r): array => $r + [
+            'pct' => $total > 0 ? round($r['amount'] / $total * 100, 1) : 0.0,
+        ], $rows);
+    }
+
+    /**
+     * Money collected in the window by payment method (succeeded
+     * payments by paid_at, same rows as kpis()['collected']). A null
+     * method is an online Paystack payment (as the Finance KPI panel
+     * shows it). Largest first.
+     *
+     * @return list<array{value: string, label: string, amount: int}>
+     */
+    public function collectedByMethod(Carbon $from, Carbon $to): array
+    {
+        $rows = $this->scopeByBooking(Payment::query())
+            ->where('status', PaymentStatus::Succeeded->value)
+            ->whereBetween('paid_at', [$from->copy()->startOfDay(), $to->copy()->endOfDay()])
+            ->toBase()
+            ->selectRaw("COALESCE(method, 'paystack') as m, SUM(amount) as total")
+            ->groupBy('m')
+            ->pluck('total', 'm')
+            ->all();
+
+        $out = [];
+        foreach ($rows as $method => $total) {
+            $method = (string) $method;
+            $out[] = [
+                'value' => $method,
+                'label' => \App\Enums\PaymentMethod::tryFrom($method)?->label() ?? ucfirst($method),
+                'amount' => (int) $total,
+            ];
+        }
+        usort($out, fn (array $a, array $b) => [$b['amount'], $a['value']] <=> [$a['amount'], $b['value']]);
+
+        return $out;
+    }
+
+    /**
+     * Who owes the money behind the Outstanding tile, using the same
+     * booking set the Finance "Outstanding" KPI panel lists (open
+     * Confirmed / OnHold / CheckedIn stays owing via
+     * {@see Booking::outstandingTotal()}):
+     *
+     *  - company rows: stays billed to a corporate, one row per company
+     *  - guest rows: every other stay, one row per booking
+     *
+     * `stays` counts guest stays owing, `companies` the companies
+     * owing, `rows` the largest $limit debts.
+     *
+     * @return array{total: int, stays: int, companies: int, rows: list<array{kind: string, name: string, subtitle: string, amount: int, booking_ref: ?string, corporate_id: ?int}>}
+     */
+    public function owedBreakdown(int $limit = 5): array
+    {
+        $bookings = $this->scopeBookings(Booking::query())
+            // Full room: outstandingTotal()'s overstay rate reads the
+            // room's category, so a trimmed select would price it at 0.
+            ->with(['room', 'corporate:id,name'])
+            ->whereIn('booking_status', [
+                BookingStatus::Confirmed->value,
+                BookingStatus::OnHold->value,
+                BookingStatus::CheckedIn->value,
+            ])
+            ->get()
+            ->map(fn (Booking $b) => ['booking' => $b, 'owed' => (int) $b->outstandingTotal()])
+            ->filter(fn (array $r) => $r['owed'] > 0);
+
+        [$corporate, $guests] = $bookings->partition(fn (array $r) => $r['booking']->corporate_id !== null);
+
+        $rows = $corporate->groupBy(fn (array $r) => (int) $r['booking']->corporate_id)
+            ->map(function ($group, int $corporateId): array {
+                $count = $group->count();
+
+                return [
+                    'kind' => 'company',
+                    'name' => (string) ($group->first()['booking']->corporate?->name ?? 'Company'),
+                    'subtitle' => $count.' '.($count === 1 ? 'stay' : 'stays'),
+                    'amount' => (int) $group->sum('owed'),
+                    'booking_ref' => null,
+                    'corporate_id' => $corporateId,
+                ];
+            })
+            ->values()
+            ->concat($guests->map(function (array $r): array {
+                /** @var Booking $b */
+                $b = $r['booking'];
+                $room = $b->room?->room_number !== null ? 'Room '.$b->room->room_number : 'No room yet';
+                $when = $b->booking_status === BookingStatus::CheckedIn
+                    ? 'out '.$b->checkout_date->format('j M')
+                    : 'arrives '.$b->checkin_date->format('j M');
+
+                return [
+                    'kind' => 'guest',
+                    'name' => (string) $b->guest_name,
+                    'subtitle' => $room.', '.$when,
+                    'amount' => $r['owed'],
+                    'booking_ref' => (string) $b->booking_ref,
+                    'corporate_id' => null,
+                ];
+            })->values())
+            ->sortBy([
+                fn (array $a, array $b) => $b['amount'] <=> $a['amount'],
+                fn (array $a, array $b) => strcmp($a['name'], $b['name']),
+            ])
+            ->values();
+
+        return [
+            'total' => (int) $bookings->sum('owed'),
+            'stays' => $guests->count(),
+            'companies' => $corporate->pluck('booking.corporate_id')->unique()->count(),
+            'rows' => $rows->take($limit)->values()->all(),
+        ];
+    }
+
+    /**
      * @return list<string>
      */
     private function revenueStatuses(): array
@@ -768,9 +956,9 @@ class FinanceSnapshot
      */
     private function scopeExpenses(\Illuminate\Database\Eloquent\Builder $q): \Illuminate\Database\Eloquent\Builder
     {
-        $pid = $this->currentPropertyId();
-        if ($pid === null) return $q;
+        $pids = $this->propertyIds();
+        if ($pids === null) return $q;
 
-        return $q->where(fn ($qq) => $qq->where('property_id', $pid)->orWhereNull('property_id'));
+        return $q->where(fn ($qq) => $qq->whereIn('property_id', $pids)->orWhereNull('property_id'));
     }
 }

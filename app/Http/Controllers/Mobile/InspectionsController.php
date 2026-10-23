@@ -201,14 +201,23 @@ class InspectionsController extends Controller
         // response clean when a phone hits a stale/wrong ID).
         Room::query()->findOrFail($room);
 
-        $inspections = RoomInspection::query()
-            ->where('room_id', $room)
+        return InspectionResource::collection(self::roomHistoryInspections($room));
+    }
+
+    /**
+     * Last 20 inspections of a room, newest first. Shared with the host
+     * app (GET host/rooms/{id}/history) so both apps show the same list.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, RoomInspection>
+     */
+    public static function roomHistoryInspections(int $roomId): \Illuminate\Database\Eloquent\Collection
+    {
+        return RoomInspection::query()
+            ->where('room_id', $roomId)
             ->with(['items', 'triggeredByBooking:id,booking_ref,guest_name', 'room.category'])
             ->orderByDesc('id')
             ->limit(20)
             ->get();
-
-        return InspectionResource::collection($inspections);
     }
 
     /**

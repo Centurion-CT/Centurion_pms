@@ -274,6 +274,12 @@ Route::view('/pos/device-disconnected', 'errors.pos-device-disconnected')
 // the linked Operator into the `web` guard.
 Route::get('/sso/consume', SsoConsumeController::class)->name('tenant.sso.consume');
 
+// Centurion Desk "open on the web dashboard": consumes the one-time code
+// minted by POST /api/mobile/v1/host/web-handoff (60s, single use) and
+// signs the operator into the normal dashboard.
+Route::get('/auth/app-handoff', [\App\Http\Controllers\Mobile\Host\WebHandoffController::class, 'consume'])
+    ->name('tenant.mobile.app-handoff');
+
 // Operator invite magic-link consumer. Not gated by guest/auth
 // middleware - a signed URL is its own auth. Verifies the HMAC
 // signature (Laravel `signed` middleware), then the controller

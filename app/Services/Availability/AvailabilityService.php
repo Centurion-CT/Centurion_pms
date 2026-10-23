@@ -33,16 +33,44 @@ class AvailabilityService
     /**
      * Is the room free for the entire half-open range [checkin, checkout)?
      */
-    public function isAvailable(Room $room, Carbon $checkin, Carbon $checkout): bool
+    public function isAvailable(Room $room, Carbon $checkin, Carbon $checkout, ?int $ignoreBookingId = null): bool
     {
         if ($checkout->lessThanOrEqualTo($checkin)) {
             return false;
         }
 
-        return ! AvailabilityBlock::query()
+        $blocked = AvailabilityBlock::query()
             ->where('room_id', $room->id)
             ->whereDate('date', '>=', $checkin->toDateString())
             ->whereDate('date', '<', $checkout->toDateString())
+            ->when($ignoreBookingId !== null, fn ($q) => $q->where(fn ($w) => $w->whereNull('booking_id')->orWhere('booking_id', '!=', $ignoreBookingId)))
+            ->exists();
+        if ($blocked) {
+            return false;
+        }
+
+        return ! $this->heldByOverdueGuest($room, $checkin, $checkout, $ignoreBookingId);
+    }
+
+    /**
+     * An overdue guest (checked in, booked checkout already passed) has
+     * no availability blocks left but is still in the room. Treat the
+     * room as taken tonight so nobody (front desk or an online guest)
+     * books it from today. `$ignoreBookingId` lets that same booking
+     * extend into its own room.
+     */
+    public function heldByOverdueGuest(Room $room, Carbon $checkin, Carbon $checkout, ?int $ignoreBookingId = null): bool
+    {
+        $today = Carbon::today();
+        if ($checkin->greaterThan($today) || $checkout->lessThanOrEqualTo($today)) {
+            return false;
+        }
+
+        return \App\Models\Booking::query()
+            ->where('room_id', $room->id)
+            ->where('booking_status', \App\Enums\BookingStatus::CheckedIn->value)
+            ->whereDate('checkout_date', '<=', $today->toDateString())
+            ->when($ignoreBookingId !== null, fn ($q) => $q->whereKeyNot($ignoreBookingId))
             ->exists();
     }
 

@@ -4,6 +4,17 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Mobile\AuthController;
 use App\Http\Controllers\Mobile\BookingsController;
+use App\Http\Controllers\Mobile\Host\BookingsController as HostBookingsController;
+use App\Http\Controllers\Mobile\Host\CalendarController as HostCalendarController;
+use App\Http\Controllers\Mobile\Host\GuestRequestsController as HostGuestRequestsController;
+use App\Http\Controllers\Mobile\Host\InboxController as HostInboxController;
+use App\Http\Controllers\Mobile\Host\LookupController as HostLookupController;
+use App\Http\Controllers\Mobile\Host\NotificationsController as HostNotificationsController;
+use App\Http\Controllers\Mobile\Host\RoomsController as HostRoomsController;
+use App\Http\Controllers\Mobile\Host\SearchController as HostSearchController;
+use App\Http\Controllers\Mobile\Host\SessionController as HostSessionController;
+use App\Http\Controllers\Mobile\Host\TodayController as HostTodayController;
+use App\Http\Controllers\Mobile\Host\WebHandoffController as HostWebHandoffController;
 use App\Http\Controllers\Mobile\InspectionsController;
 use App\Http\Controllers\Mobile\InventoryController;
 use App\Http\Controllers\Mobile\ManagerController;
@@ -105,4 +116,64 @@ Route::middleware(['auth:sanctum', 'mobile.device', 'mobile.idempotency', 'staff
 
         Route::get('supplies', [StaffSuppliesController::class, 'index'])->name('supplies.index');
         Route::post('supplies', [StaffSuppliesController::class, 'store'])->name('supplies.store');
+    });
+
+// ── Host app (Keverna for Hosts) ────────────────────────────────
+// Owners, managers, front desk, reservation officers. `host.role`
+// rejects other roles (403 role_not_supported) and binds the branch
+// (operators.current_property_id, or X-Keverna-Property for one
+// request) so every host endpoint is scoped to it. See
+// docs/host-app/PHASE-1.md. Centurion Desk
+// (docs/desk-app/PLAN.md) uses the same endpoints.
+Route::middleware(['auth:sanctum', 'mobile.device', 'mobile.idempotency', 'host.role'])
+    ->prefix('host')
+    ->group(function () {
+        Route::get('session', [HostSessionController::class, 'session'])->name('mobile.host.session');
+        Route::get('properties', [HostSessionController::class, 'properties'])->name('mobile.host.properties');
+        Route::post('properties/{id}/switch', [HostSessionController::class, 'switch'])->name('mobile.host.properties.switch');
+        Route::get('today', HostTodayController::class)->name('mobile.host.today');
+
+        // ── Phase 2: front desk (docs/host-app/PHASE-2.md) ──────
+        Route::get('meta', [HostLookupController::class, 'meta'])->name('mobile.host.meta');
+        Route::get('rooms/available', [HostLookupController::class, 'availableRooms'])->name('mobile.host.rooms.available');
+        Route::get('customers/lookup', [HostLookupController::class, 'customerLookup'])->name('mobile.host.customers.lookup');
+
+        Route::get('bookings', [HostBookingsController::class, 'index'])->name('mobile.host.bookings.index');
+        Route::post('bookings', [HostBookingsController::class, 'store'])->name('mobile.host.bookings.store');
+        Route::get('bookings/{ref}', [HostBookingsController::class, 'show'])->name('mobile.host.bookings.show');
+        Route::get('bookings/{ref}/extend-quote', [HostBookingsController::class, 'extendQuote'])->name('mobile.host.bookings.extend-quote');
+        Route::post('bookings/{ref}/payments', [HostBookingsController::class, 'takePayment'])->name('mobile.host.bookings.payments');
+        Route::post('bookings/{ref}/check-in', [HostBookingsController::class, 'checkIn'])->name('mobile.host.bookings.check-in');
+        Route::post('bookings/{ref}/check-out', [HostBookingsController::class, 'checkOut'])->name('mobile.host.bookings.check-out');
+        Route::post('bookings/{ref}/charges', [HostBookingsController::class, 'addCharge'])->name('mobile.host.bookings.charges');
+        Route::post('bookings/{ref}/extend', [HostBookingsController::class, 'extend'])->name('mobile.host.bookings.extend');
+        Route::post('bookings/{ref}/no-show', [HostBookingsController::class, 'noShow'])->name('mobile.host.bookings.no-show');
+        Route::post('bookings/{ref}/cancel', [HostBookingsController::class, 'cancel'])->name('mobile.host.bookings.cancel');
+
+        Route::post('web-handoff', [HostWebHandoffController::class, 'issue'])->name('mobile.host.web-handoff');
+
+        // ── Phase 3: calendar, rooms, inbox, alerts, search (docs/host-app/PHASE-3.md) ──
+        Route::get('calendar', HostCalendarController::class)->name('mobile.host.calendar');
+
+        Route::get('rooms', [HostRoomsController::class, 'index'])->name('mobile.host.rooms.index');
+        Route::post('rooms/{id}/status', [HostRoomsController::class, 'status'])->whereNumber('id')->name('mobile.host.rooms.status');
+        Route::post('rooms/{id}/assign-cleaner', [HostRoomsController::class, 'assignCleaner'])->whereNumber('id')->name('mobile.host.rooms.assign-cleaner');
+        Route::get('rooms/{id}/history', [HostRoomsController::class, 'history'])->whereNumber('id')->name('mobile.host.rooms.history');
+        Route::get('housekeepers', [HostRoomsController::class, 'housekeepers'])->name('mobile.host.housekeepers');
+
+        Route::get('inbox/counts', [HostInboxController::class, 'counts'])->name('mobile.host.inbox.counts');
+        Route::get('inbox/approvals', [HostInboxController::class, 'approvals'])->name('mobile.host.inbox.approvals');
+        Route::post('inbox/approvals/{id}/decide', [HostInboxController::class, 'decide'])->name('mobile.host.inbox.decide');
+
+        Route::get('guest-requests', [HostGuestRequestsController::class, 'index'])->name('mobile.host.guest-requests.index');
+        Route::get('guest-requests/{id}', [HostGuestRequestsController::class, 'show'])->whereNumber('id')->name('mobile.host.guest-requests.show');
+        Route::post('guest-requests/{id}/reply', [HostGuestRequestsController::class, 'reply'])->whereNumber('id')->name('mobile.host.guest-requests.reply');
+        Route::post('guest-requests/{id}/resolve', [HostGuestRequestsController::class, 'resolve'])->whereNumber('id')->name('mobile.host.guest-requests.resolve');
+        Route::post('guest-requests/{id}/reopen', [HostGuestRequestsController::class, 'reopen'])->whereNumber('id')->name('mobile.host.guest-requests.reopen');
+
+        Route::get('notifications', [HostNotificationsController::class, 'index'])->name('mobile.host.notifications.index');
+        Route::post('notifications/read', [HostNotificationsController::class, 'read'])->name('mobile.host.notifications.read');
+        Route::post('notifications/read-all', [HostNotificationsController::class, 'readAll'])->name('mobile.host.notifications.read-all');
+
+        Route::get('search', HostSearchController::class)->name('mobile.host.search');
     });

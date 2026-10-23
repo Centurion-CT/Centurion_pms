@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Mobile\OperatorResource;
 use App\Http\Resources\Mobile\TenantResource;
 use App\Models\IdentityAccount;
+use App\Models\IdentityOperatorLink;
 use App\Models\MobileDevice;
 use App\Models\Operator;
 use App\Models\Tenant;
@@ -16,7 +17,6 @@ use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 /**
@@ -103,23 +103,21 @@ class LoginController extends Controller
             ], 403);
         }
 
+        // Suspended, revoked or not-yet-activated seats can't sign in on
+        // the web, so they can't mint a mobile token either.
+        $links = $links->filter(fn ($link) => $link->operator?->canSignIn() === true)->values();
+        if ($links->isEmpty()) {
+            return response()->json([
+                'error' => 'access_suspended',
+                'detail' => 'Your access is suspended or not activated yet. Ask your manager.',
+            ], 403);
+        }
+
         // Multi-tenant path: if no tenant_id was passed, hand back
         // the picker payload. 300 Multiple Choices is the RFC-correct
         // status for "the request is ambiguous — pick one of these".
         if ($links->count() > 1 && empty($data['tenant_id'])) {
-            return response()->json([
-                'status' => 'pick_tenant',
-                'tenants' => $links
-                    ->sortByDesc(fn ($l) => $l->last_login_at?->timestamp ?? 0)
-                    ->map(fn ($l) => [
-                        'id' => $l->tenant_id,
-                        'slug' => $l->tenant?->slug,
-                        'name' => $l->tenant?->name,
-                        'role' => $l->operator?->role?->value,
-                        'last_login_at' => $l->last_login_at?->toIso8601String(),
-                    ])
-                    ->values(),
-            ], 300);
+            return $this->pickTenantResponse($links);
         }
 
         // Single-tenant path or client is completing a pick.
@@ -134,6 +132,40 @@ class LoginController extends Controller
             ], 403);
         }
 
+        return $this->completeSignIn($request, $link, $data);
+    }
+
+    /**
+     * 300 Multiple Choices picker payload.
+     *
+     * @param  \Illuminate\Support\Collection<int, IdentityOperatorLink>  $links
+     */
+    private function pickTenantResponse(\Illuminate\Support\Collection $links): JsonResponse
+    {
+        return response()->json([
+            'status' => 'pick_tenant',
+            'tenants' => $links
+                ->sortByDesc(fn ($l) => $l->last_login_at?->timestamp ?? 0)
+                ->map(fn ($l) => [
+                    'id' => $l->tenant_id,
+                    'slug' => $l->tenant?->slug,
+                    'name' => $l->tenant?->name,
+                    'role' => $l->operator?->role?->value,
+                    'last_login_at' => $l->last_login_at?->toIso8601String(),
+                ])
+                ->values(),
+        ], 300);
+    }
+
+    /**
+     * Shared tail of the mobile sign-in: mint the MobileDevice row + `mobile-device-{id}`
+     * Sanctum token on the chosen tenant and return the standard
+     * {token, operator, tenant, device} payload.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function completeSignIn(Request $request, IdentityOperatorLink $link, array $data): JsonResponse
+    {
         $operator = $link->operator;
         $tenant = $link->tenant;
         if ($operator === null || $tenant === null) {

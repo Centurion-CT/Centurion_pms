@@ -157,3 +157,19 @@ it('emitted token successfully authenticates against a tenant-scoped endpoint', 
     $meResponse->assertOk();
     expect($meResponse->json('tenant.slug'))->toBe('chidi-hotel');
 });
+
+it('refuses suspended seats and leaves only active ones in the picker', function (): void {
+    \App\Models\Operator::withoutGlobalScopes()->whereKey($this->opB->id)->update(['suspended_at' => now()]);
+
+    // One active seat left: signs straight in to it.
+    $this->postJson(centralLoginUrl(), baseBody())
+        ->assertOk()
+        ->assertJsonPath('tenant.id', $this->tenantA->id);
+
+    \App\Models\Operator::withoutGlobalScopes()->whereKey($this->opA->id)->update(['suspended_at' => now()]);
+
+    $this->postJson(centralLoginUrl(), baseBody())
+        ->assertStatus(403)
+        ->assertJsonPath('error', 'access_suspended');
+});
+

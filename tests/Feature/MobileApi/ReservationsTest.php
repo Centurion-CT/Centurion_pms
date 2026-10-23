@@ -241,3 +241,62 @@ it('cancel flips the booking to Cancelled', function (): void {
     $response->assertOk();
     expect($booking->fresh()->booking_status)->toBe(BookingStatus::Cancelled);
 });
+
+// ── Shared payment layer regressions (docs/host-app/PHASE-2.md) ──
+
+it('record-payment records a second, smaller payment in full (amount is taken now, not a running total)', function (): void {
+    $booking = Booking::factory()->for($this->tenant)->for($this->room)->create([
+        'booking_status' => BookingStatus::OnHold->value,
+        'checkin_date' => Carbon::today(),
+        'checkout_date' => Carbon::today()->addDay(),
+        'total_amount' => 50_000,
+        'balance_due' => 50_000,
+    ]);
+    $url = rsvUrl($this->tenant, '/api/mobile/v1/reservations/'.$booking->booking_ref.'/payment');
+
+    $this->postJson($url, ['amount' => 20_000, 'method' => 'cash'], array_merge(bearerForOp($this->frontdesk), ['Idempotency-Key' => 'pay-two-1']))
+        ->assertOk();
+    $second = $this->postJson($url, ['amount' => 10_000, 'method' => 'transfer'], array_merge(bearerForOp($this->frontdesk), ['Idempotency-Key' => 'pay-two-2']));
+
+    // Same response shape as before.
+    $second->assertOk()->assertJson(['status' => 'ok'])->assertJsonStructure(['status', 'reservation' => ['id', 'booking_ref']]);
+    expect($booking->fresh()->payments()->pluck('amount')->map(fn ($a) => (int) $a)->all())->toBe([20_000, 10_000]);
+    expect($booking->fresh()->outstandingTotal())->toBe(20_000);
+});
+
+it('record-payment trims a long reference note to the column size', function (): void {
+    $booking = Booking::factory()->for($this->tenant)->for($this->room)->create([
+        'booking_status' => BookingStatus::OnHold->value,
+        'checkin_date' => Carbon::today(),
+        'checkout_date' => Carbon::today()->addDay(),
+        'total_amount' => 50_000,
+        'balance_due' => 50_000,
+    ]);
+
+    $this->postJson(
+        rsvUrl($this->tenant, '/api/mobile/v1/reservations/'.$booking->booking_ref.'/payment'),
+        ['amount' => 5_000, 'method' => 'cash', 'reference_note' => str_repeat('Bank txn 99887766 ', 15)],
+        array_merge(bearerForOp($this->frontdesk), ['Idempotency-Key' => 'pay-long-1']),
+    )->assertOk();
+
+    expect(mb_strlen((string) $booking->fresh()->payments()->value('reference_note')))->toBeLessThanOrEqual(120);
+});
+
+it('record-payment confirms a pending booking', function (): void {
+    $booking = Booking::factory()->for($this->tenant)->for($this->room)->create([
+        'booking_status' => BookingStatus::Pending->value,
+        'checkin_date' => Carbon::today(),
+        'checkout_date' => Carbon::today()->addDay(),
+        'total_amount' => 50_000,
+        'balance_due' => 0,
+    ]);
+
+    $this->postJson(
+        rsvUrl($this->tenant, '/api/mobile/v1/reservations/'.$booking->booking_ref.'/payment'),
+        ['amount' => 50_000, 'method' => 'card'],
+        array_merge(bearerForOp($this->frontdesk), ['Idempotency-Key' => 'pay-pending-1']),
+    )->assertOk();
+
+    expect($booking->fresh()->booking_status)->toBe(BookingStatus::Confirmed);
+    expect((int) $booking->fresh()->payments()->sum('amount'))->toBe(50_000);
+});
