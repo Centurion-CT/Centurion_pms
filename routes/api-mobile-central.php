@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Mobile\LoginController;
+use App\Http\Controllers\Mobile\Staff\LoginController as StaffLoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('login', [LoginController::class, 'login'])->name('mobile.login');
+
+// Staff app (housekeepers and porters): phone number + staff PIN.
+Route::post('staff/login', [StaffLoginController::class, 'login'])->name('mobile.staff.login');

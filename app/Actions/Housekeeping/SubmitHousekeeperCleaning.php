@@ -45,7 +45,10 @@ class SubmitHousekeeperCleaning
             throw new RuntimeException('Inspection is closed — open a fresh one.');
         }
 
-        $wasAlreadyCleaningDone = $inspection->status === RoomInspectionStatus::CleaningDone;
+        // A room the porter sent back was already deducted on its first
+        // submission, so its re-submission (Pending again) mustn't repeat it.
+        $wasAlreadyCleaningDone = $inspection->status === RoomInspectionStatus::CleaningDone
+            || (int) $inspection->send_back_count > 0;
 
         $items = $inspection->items()->get();
         $total = $items->count();
@@ -119,10 +122,10 @@ class SubmitHousekeeperCleaning
 
             $roomLabel = $room?->name ?? "Room #{$inspection->room_id}";
             $summary = $this->applyTurnover->handle(
-                outlet:       $outlet,
+                outlet: $outlet,
                 roomsCleaned: 1,
-                noteRef:      "Inspection #{$inspection->id} · {$roomLabel}",
-                operator:     $operator,
+                noteRef: "Inspection #{$inspection->id} · {$roomLabel}",
+                operator: $operator,
             );
 
             activity('housekeeping')
@@ -130,7 +133,7 @@ class SubmitHousekeeperCleaning
                 ->performedOn($inspection)
                 ->event('amenities_deducted')
                 ->withProperties([
-                    'outlet_id'   => $outlet->id,
+                    'outlet_id' => $outlet->id,
                     'lines_moved' => $summary['lines_moved'],
                     'total_units' => $summary['total_units'],
                 ])

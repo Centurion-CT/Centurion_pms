@@ -156,6 +156,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'central-store' => \App\Http\Middleware\EnsureCentralStoreMode::class,
             'mobile.device' => \App\Http\Middleware\EnsureMobileDeviceActive::class,
             'mobile.idempotency' => \App\Http\Middleware\MobileIdempotency::class,
+            'staff.app' => \App\Http\Middleware\EnsureStaffAppRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

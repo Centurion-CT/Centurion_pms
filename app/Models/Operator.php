@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\OperatorRole;
+use App\Enums\Permission;
 use App\Multitenancy\BelongsToTenant;
+use App\Services\Properties\PropertyContext;
 use Database\Factories\OperatorFactory;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -25,15 +31,12 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $phone_verification_skipped_at
  * @property string $password
  * @property Carbon|null $last_login_at
- * @property \App\Enums\OperatorRole|null $role
+ * @property OperatorRole|null $role
  * @property-read Tenant $tenant
  */
 class Operator extends Authenticatable implements CanResetPasswordContract, MustVerifyEmailContract
 {
     use BelongsToTenant;
-
-    /** @use HasFactory<OperatorFactory> */
-    use HasFactory;
 
     // Sanctum-issued personal access tokens power the Flutter mobile
     // app. Web still uses session auth via the `web` guard; the token
@@ -41,6 +44,8 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
     // phone is a one-row soft-delete without touching web sessions.
     use HasApiTokens;
 
+    /** @use HasFactory<OperatorFactory> */
+    use HasFactory;
     use Notifiable;
 
     /** @var list<string> */
@@ -49,6 +54,7 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
     /** @var list<string> */
     protected $hidden = [
         'password',
+        'staff_pin_hash',
         'remember_token',
         'invite_token_hash',
     ];
@@ -71,9 +77,78 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
             'preferences' => 'array',
             'force_password_change' => 'boolean',
             'password' => 'hashed',
-            'role' => \App\Enums\OperatorRole::class,
+            'role' => OperatorRole::class,
             'last_notifications_seen_at' => 'datetime',
+            'staff_pin_set_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Staff app sign-in PIN (4 to 6 digits), stored hashed. Set by a
+     * manager on the Staff page; the phone number is the username.
+     */
+    public function setStaffPin(?string $pin): void
+    {
+        $this->forceFill([
+            'staff_pin_hash' => $pin === null ? null : Hash::make($pin),
+            'staff_pin_set_at' => $pin === null ? null : now(),
+        ])->save();
+    }
+
+    /**
+     * Housekeepers / porters added with phone + PIN only. Their email is
+     * a placeholder on the reserved .invalid domain that is never mailed
+     * or shown.
+     */
+    public function isAppOnly(): bool
+    {
+        return str_ends_with((string) $this->email, '@staff.invalid');
+    }
+
+    public static function appOnlyEmail(): string
+    {
+        return 'app-'.strtolower((string) Str::ulid()).'@staff.invalid';
+    }
+
+    public function hasStaffPin(): bool
+    {
+        return $this->staff_pin_hash !== null;
+    }
+
+    public function checkStaffPin(string $pin): bool
+    {
+        return $this->staff_pin_hash !== null && Hash::check($pin, $this->staff_pin_hash);
+    }
+
+    /**
+     * Comparable form of a Nigerian phone number: digits only, with
+     * +234 / 234 folded to a leading 0, so "+234 803 123 4567",
+     * "2348031234567" and "0803-123-4567" all match. Null when empty.
+     */
+    public static function phoneKey(?string $phone): ?string
+    {
+        $digits = preg_replace('/\D/', '', (string) $phone) ?? '';
+        if (str_starts_with($digits, '234') && strlen($digits) === 13) {
+            $digits = '0'.substr($digits, 3);
+        } elseif (strlen($digits) === 10 && ! str_starts_with($digits, '0')) {
+            $digits = '0'.$digits;
+        }
+
+        return $digits === '' ? null : $digits;
+    }
+
+    public function firstName(): string
+    {
+        return (string) strtok(trim((string) $this->name), ' ');
+    }
+
+    public function initials(): string
+    {
+        $parts = preg_split('/\s+/', trim((string) $this->name)) ?: [];
+        $first = mb_substr($parts[0] ?? '', 0, 1);
+        $last = count($parts) > 1 ? mb_substr((string) end($parts), 0, 1) : '';
+
+        return mb_strtoupper($first.$last);
     }
 
     /**
@@ -91,6 +166,7 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
             ? config('brand.sidebar_default')
             : 'tiles';
         $v = $this->preferences['sidebar_variant'] ?? $default;
+
         return in_array($v, ['tiles', 'list'], true) ? $v : $default;
     }
 
@@ -120,9 +196,9 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
      * that want the combined check should use canManagePrices() /
      * canAccessModule() which union both.
      */
-    public function hasPermission(\App\Enums\Permission|string $permission): bool
+    public function hasPermission(Permission|string $permission): bool
     {
-        $key = $permission instanceof \App\Enums\Permission ? $permission->value : $permission;
+        $key = $permission instanceof Permission ? $permission->value : $permission;
         $granted = (array) ($this->permissions ?? []);
 
         return in_array($key, $granted, true);
@@ -139,7 +215,7 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
     {
         $modules = [];
         foreach ((array) ($this->permissions ?? []) as $key) {
-            $perm = \App\Enums\Permission::tryFrom((string) $key);
+            $perm = Permission::tryFrom((string) $key);
             $module = $perm?->module();
             if ($module !== null) {
                 $modules[] = $module;
@@ -156,7 +232,7 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
      */
     public function canAccessModule(string $module): bool
     {
-        $role = $this->role ?? \App\Enums\OperatorRole::Manager;
+        $role = $this->role ?? OperatorRole::Manager;
         if ($role->canAccessModule($module)) {
             return true;
         }
@@ -171,9 +247,9 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
      */
     public function canManagePrices(): bool
     {
-        $role = $this->role ?? \App\Enums\OperatorRole::Manager;
+        $role = $this->role ?? OperatorRole::Manager;
 
-        return $role->canManagePrices() || $this->hasPermission(\App\Enums\Permission::PricesManage);
+        return $role->canManagePrices() || $this->hasPermission(Permission::PricesManage);
     }
 
     protected static function newFactory(): OperatorFactory
@@ -186,9 +262,9 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
      * bypasses this list — they see every outlet. PosStaff must have
      * an entry here to see anything at all.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Outlet, $this>
+     * @return BelongsToMany<Outlet, $this>
      */
-    public function outlets(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function outlets(): BelongsToMany
     {
         return $this->belongsToMany(Outlet::class, 'outlet_operators')
             ->withTimestamps();
@@ -203,11 +279,11 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
      * {@see hasAccessToBranch()} — a manager can always see every
      * branch regardless of pivot rows.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Property, $this>
+     * @return BelongsToMany<Property, $this>
      */
-    public function branches(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function branches(): BelongsToMany
     {
-        return $this->belongsToMany(\App\Models\Property::class, 'operator_properties', 'operator_id', 'property_id')
+        return $this->belongsToMany(Property::class, 'operator_properties', 'operator_id', 'property_id')
             ->withTimestamps();
     }
 
@@ -216,15 +292,16 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
      * always can. Non-managers pass when they have no pivot rows (the
      * "all-access" default) OR when the branch is in their pivot set.
      */
-    public function hasAccessToBranch(\App\Models\Property $property): bool
+    public function hasAccessToBranch(Property $property): bool
     {
-        if ($this->role === \App\Enums\OperatorRole::Manager) {
+        if ($this->role === OperatorRole::Manager) {
             return true;
         }
         $count = $this->branches()->count();
         if ($count === 0) {
             return true;
         }
+
         return $this->branches()->where('properties.id', $property->getKey())->exists();
     }
 
@@ -232,16 +309,17 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
      * Returns the property ids the operator can work in. Empty array
      * carries a special meaning — "no restriction, sees everything the
      * tenant owns" — so call sites must distinguish [] from a set of
-     * specific ids. See {@see \App\Services\Properties\PropertyContext::all()}
+     * specific ids. See {@see PropertyContext::all()}
      * for the canonical consumer.
      *
      * @return array<int, int>
      */
     public function accessibleBranchIds(): array
     {
-        if ($this->role === \App\Enums\OperatorRole::Manager) {
+        if ($this->role === OperatorRole::Manager) {
             return [];
         }
+
         return $this->branches()->pluck('properties.id')->all();
     }
 

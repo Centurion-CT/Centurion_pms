@@ -48,19 +48,47 @@ use Livewire\Component;
 class Index extends Component
 {
     public string $inviteName = '';
+
     public string $inviteEmail = '';
+
     public string $inviteRole = 'frontdesk';
+
+    // Housekeepers and porters sign in to the staff app with phone + PIN;
+    // for them email is optional (docs/staff-app/PLAN.md).
+    public string $invitePhone = '';
+
+    public string $invitePin = '';
 
     public function invite(): void
     {
+        $appRole = in_array($this->inviteRole, self::APP_ROLES, true);
         $data = $this->validate([
             'inviteName' => ['required', 'string', 'max:120'],
             'inviteEmail' => [
-                'required', 'email', 'max:180',
+                $appRole ? 'nullable' : 'required', 'email', 'max:180',
                 Rule::unique('operators', 'email'),
             ],
             'inviteRole' => ['required', Rule::in(array_map(fn ($r) => $r->value, OperatorRole::cases()))],
+            'invitePhone' => [$appRole && trim($this->inviteEmail) === '' ? 'required' : 'nullable', 'string', 'max:32', 'regex:/^[0-9+()\s-]{7,}$/'],
+            'invitePin' => [$appRole && trim($this->invitePhone) !== '' ? 'required' : 'nullable', 'regex:/^\d{4,6}$/'],
+        ], [
+            'invitePhone.required' => 'Add a phone number, or an email address.',
+            'invitePhone.regex' => 'Enter a phone number like 0803 123 4567.',
+            'invitePin.required' => 'Pick a 4 to 6 digit PIN for the staff app.',
+            'invitePin.regex' => 'The PIN must be 4 to 6 digits.',
         ]);
+
+        if ($appRole && trim((string) ($data['invitePhone'] ?? '')) !== '' && ($clash = $this->phoneClash((string) $data['invitePhone'])) !== null) {
+            $this->addError('invitePhone', $clash);
+
+            return;
+        }
+
+        if ($appRole && trim((string) ($data['inviteEmail'] ?? '')) === '') {
+            $this->addAppOnlyStaff($data);
+
+            return;
+        }
 
         $tenant = Tenant::current();
         if ($tenant === null) {
@@ -136,14 +164,124 @@ class Index extends Component
             magicLink: $magicLink,
         ));
 
+        if ($appRole && trim((string) ($data['invitePhone'] ?? '')) !== '') {
+            $operator->forceFill(['phone' => trim((string) $data['invitePhone'])])->save();
+            $operator->setStaffPin((string) $data['invitePin']);
+        }
+
         $this->dispatch('notify', title: 'Done', message: sprintf(
             'Invite email sent to %s. Their account activates the moment they click the link and pick a password, the link is good for 24 hours.',
             $email,
         ), kind: 'ok');
 
+        $this->resetInviteForm();
+    }
+
+    /** Roles that use the staff app (phone + PIN). */
+    private const APP_ROLES = ['house_cleaner', 'porter'];
+
+    /**
+     * Housekeeper or porter with no email: they only use the staff app,
+     * so there is no invite to click. The PIN the manager picks is their
+     * way in, and the account is active straight away. operators.email
+     * is unique and required, so it holds a never-mailed placeholder on
+     * the reserved .invalid domain (see Operator::isAppOnly()).
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function addAppOnlyStaff(array $data): void
+    {
+        $tenant = Tenant::current();
+        if ($tenant === null) {
+            $this->dispatch('notify', title: 'Couldn\'t complete', message: 'Tenant context unavailable.', kind: 'err');
+
+            return;
+        }
+
+        $operator = Operator::query()->create([
+            'tenant_id' => $tenant->id,
+            'name' => $data['inviteName'],
+            'email' => Operator::appOnlyEmail(),
+            'phone' => trim((string) $data['invitePhone']),
+            'password' => Hash::make(Str::random(48)),
+            'role' => $data['inviteRole'],
+            'activated_at' => now(),
+        ]);
+        $operator->setStaffPin((string) $data['invitePin']);
+
+        $this->dispatch('notify', title: 'Done', message: sprintf(
+            '%s can sign in to the %s Staff app with %s and the PIN you picked.',
+            $operator->name,
+            config('brand.name'),
+            $operator->phone,
+        ), kind: 'ok');
+
+        $this->resetInviteForm();
+    }
+
+    /**
+     * Set (or change) a housekeeper's or porter's staff app phone + PIN.
+     */
+    public function setAppPin(int $operatorId, string $phone, string $pin): void
+    {
+        if (($op = $this->guardActionable($operatorId)) === null) {
+            return;
+        }
+        if (! in_array($op->role?->value, self::APP_ROLES, true)) {
+            $this->dispatch('notify', title: 'Couldn\'t complete', message: 'Only housekeepers and porters use the staff app.', kind: 'err');
+
+            return;
+        }
+
+        $phone = trim($phone);
+        $pin = trim($pin);
+        $error = match (true) {
+            preg_match('/^[0-9+()\s-]{7,32}$/', $phone) !== 1 => 'Enter a phone number like 0803 123 4567.',
+            preg_match('/^\d{4,6}$/', $pin) !== 1 => 'The PIN must be 4 to 6 digits.',
+            default => $this->phoneClash($phone, $op->id),
+        };
+        if ($error !== null) {
+            $this->dispatch('notify', title: 'Couldn\'t complete', message: $error, kind: 'err');
+
+            return;
+        }
+
+        $op->forceFill(['phone' => $phone])->save();
+        $op->setStaffPin($pin);
+
+        $this->dispatch('notify', title: 'Done', message: sprintf(
+            '%s can sign in to the staff app with %s and the new PIN.',
+            $op->name,
+            $phone,
+        ), kind: 'ok');
+    }
+
+    /**
+     * Two staff-app users on one hotel can't share a phone number, or
+     * sign-in couldn't tell them apart.
+     */
+    private function phoneClash(string $phone, ?int $exceptId = null): ?string
+    {
+        $key = Operator::phoneKey($phone);
+        $other = Operator::query()
+            ->withoutGlobalScope(TenantScope::class)
+            ->where('tenant_id', Tenant::current()?->id)
+            ->whereNotNull('phone')
+            ->whereNotNull('staff_pin_hash')
+            ->when($exceptId !== null, fn ($q) => $q->where('id', '!=', $exceptId))
+            ->get(['id', 'name', 'phone'])
+            ->first(fn (Operator $o) => Operator::phoneKey($o->phone) === $key);
+
+        return $other === null ? null : sprintf('%s already signs in to the staff app with that number.', $other->name);
+    }
+
+    private function resetInviteForm(): void
+    {
         $this->inviteName = '';
         $this->inviteEmail = '';
         $this->inviteRole = 'frontdesk';
+        $this->invitePhone = '';
+        $this->invitePin = '';
     }
 
     public function updateRole(int $operatorId, string $role): void
@@ -414,6 +552,7 @@ class Index extends Component
             'operators' => $operators,
             'currentOperatorId' => auth('web')->id(),
             'roles' => OperatorRole::cases(),
+            'appRole' => in_array($this->inviteRole, self::APP_ROLES, true),
         ]);
     }
 }

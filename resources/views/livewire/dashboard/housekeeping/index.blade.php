@@ -237,6 +237,14 @@
                                                         : 'background: #FEF3C7; color: #92400E;') }}">
                                         {{ $ins->status->label() }}
                                     </span>
+                                    @if ($ins->status->value === 'pending' && $ins->sent_back_at !== null)
+                                        {{-- Porter sent it back from the staff app. --}}
+                                        <div class="lp-mono text-[10.5px]" style="color: #B85C42; margin-top: 2px;"
+                                             data-testid="hk-sent-back-{{ $room->id }}"
+                                             title="{{ $ins->sent_back_note }}">
+                                            sent back: {{ \App\Support\Housekeeping\ChecklistPictures::reasonsLabel((array) $ins->sent_back_reasons) ?: 'see note' }}
+                                        </div>
+                                    @endif
                                     @if ($ins->readiness_score > 0)
                                         <div class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); margin-top: 2px;">
                                             score {{ $ins->readiness_score }}/100

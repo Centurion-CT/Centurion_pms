@@ -11,7 +11,8 @@
         </h1>
         <p class="mt-2 text-[14.5px]" style="color: var(--color-ink-soft);">
             Everyone with access to this dashboard. Invite a front-desk staffer, manager, or POS
-            cashier to use the portal.
+            cashier to use the portal. Housekeepers and porters can use the {{ config('brand.name') }} Staff app
+            with a phone number and PIN.
         </p>
     </div>
 
@@ -28,12 +29,32 @@
                 @error('inviteName') <p class="lp-form-error">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label for="invite-email" class="lp-form-label">Email</label>
-                <input id="invite-email" type="email" wire:model="inviteEmail" required maxlength="180"
+                <label for="invite-email" class="lp-form-label">Email @if ($appRole)<span style="color: var(--color-ink-mute); font-weight: 400;">(optional)</span>@endif</label>
+                <input id="invite-email" type="email" wire:model="inviteEmail" @if (! $appRole) required @endif maxlength="180"
                        data-testid="invite-email" class="lp-input" placeholder="chika@property.com">
                 @error('inviteEmail') <p class="lp-form-error">{{ $message }}</p> @enderror
             </div>
         </div>
+        @if ($appRole)
+            <div class="grid gap-5 sm:grid-cols-2" data-testid="invite-app-fields">
+                <div>
+                    <label for="invite-phone" class="lp-form-label">Phone number</label>
+                    <input id="invite-phone" type="tel" wire:model="invitePhone" maxlength="32" autocomplete="off"
+                           data-testid="invite-phone" class="lp-input" placeholder="0803 123 4567">
+                    @error('invitePhone') <p class="lp-form-error">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="invite-pin" class="lp-form-label">Staff app PIN</label>
+                    <input id="invite-pin" type="text" inputmode="numeric" pattern="[0-9]*" wire:model="invitePin" maxlength="6" autocomplete="off"
+                           data-testid="invite-pin" class="lp-input" placeholder="4 to 6 digits">
+                    @error('invitePin') <p class="lp-form-error">{{ $message }}</p> @enderror
+                </div>
+                <p class="lp-form-help sm:col-span-2" style="margin: 0;">
+                    Housekeepers and porters sign in to the {{ config('brand.name') }} Staff app with this phone number and PIN.
+                    Leave email empty if they only use the app; tell them the PIN in person.
+                </p>
+            </div>
+        @endif
         <fieldset class="lp-fieldset">
             <legend>Role</legend>
             <p class="lp-form-help" style="margin: 0 0 8px;">
@@ -42,7 +63,7 @@
             <div class="grid gap-1 mt-2" data-testid="invite-role-group">
                 @foreach ($roles as $r)
                     <label class="lp-radio-row">
-                        <input type="radio" wire:model="inviteRole" value="{{ $r->value }}"
+                        <input type="radio" wire:model.live="inviteRole" value="{{ $r->value }}"
                                data-testid="invite-role-{{ $r->value }}">
                         <span>
                             <strong>{{ $r->label() }}</strong>
@@ -58,7 +79,7 @@
 
         <div class="flex justify-end">
             <button type="submit" data-testid="invite-submit" class="lp-pill">
-                <span wire:loading.remove wire:target="invite">Send invite</span>
+                <span wire:loading.remove wire:target="invite">{{ $appRole && trim($inviteEmail) === '' ? 'Add staffer' : 'Send invite' }}</span>
                 <span wire:loading wire:target="invite">Inviting&hellip;</span>
                 <span class="lp-pill-dot">{!! $pillArrow !!}</span>
             </button>
@@ -106,7 +127,18 @@
                                     <span class="lp-tag lp-tag--confirmed" style="margin-left: 6px; font-size: 10px;">You</span>
                                 @endif
                             </td>
-                            <td style="color: var(--color-ink-soft);">{{ $op->email }}</td>
+                            <td style="color: var(--color-ink-soft);">
+                                {{ $op->isAppOnly() ? 'Staff app only' : $op->email }}
+                                @if (in_array($opRole->value, ['house_cleaner', 'porter'], true))
+                                    <span style="display: block; font-size: 12px; color: var(--color-ink-mute);" data-testid="staff-app-signin-{{ $op->id }}">
+                                        @if ($op->hasStaffPin())
+                                            App: {{ $op->phone }}, PIN set
+                                        @else
+                                            No app PIN yet
+                                        @endif
+                                    </span>
+                                @endif
+                            </td>
                             <td>
                                 <div class="inline-flex items-center gap-2">
                                     <span class="lp-tag {{ $roleTagClass }}">{{ $opRole->label() }}</span>
@@ -153,6 +185,27 @@
                                                     style="background: transparent; border: 0; cursor: pointer; font-family: inherit; color: var(--color-accent-deep); text-decoration: underline;">
                                                 Resend invite
                                             </button>
+                                        @endif
+                                        @if (in_array($opRole->value, ['house_cleaner', 'porter'], true) && ! $op->isRevoked())
+                                            <span x-data="{ open: false, phone: @js((string) $op->phone), pin: '' }" style="position: relative;">
+                                                <button type="button" @click="open = ! open"
+                                                        data-testid="staff-app-pin-{{ $op->id }}"
+                                                        style="background: transparent; border: 0; cursor: pointer; font-family: inherit; color: var(--color-accent-deep); text-decoration: underline;">
+                                                    {{ $op->hasStaffPin() ? 'Change PIN' : 'Set app PIN' }}
+                                                </button>
+                                                <form x-show="open" x-cloak @click.outside="open = false"
+                                                      @submit.prevent="$wire.setAppPin({{ $op->id }}, phone, pin).then(() => { open = false; pin = '' })"
+                                                      class="lp-dash-card"
+                                                      style="position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: 260px; display: grid; gap: 10px; text-align: left; box-shadow: 0 12px 32px rgba(26,36,48,.14);">
+                                                    <label class="lp-form-label" for="app-phone-{{ $op->id }}">Phone number</label>
+                                                    <input id="app-phone-{{ $op->id }}" type="tel" x-model="phone" class="lp-input" placeholder="0803 123 4567" required
+                                                           data-testid="staff-app-phone-input-{{ $op->id }}">
+                                                    <label class="lp-form-label" for="app-pin-{{ $op->id }}">New PIN</label>
+                                                    <input id="app-pin-{{ $op->id }}" type="text" inputmode="numeric" pattern="[0-9]{4,6}" maxlength="6" x-model="pin" class="lp-input" placeholder="4 to 6 digits" required autocomplete="off"
+                                                           data-testid="staff-app-pin-input-{{ $op->id }}">
+                                                    <button type="submit" class="lp-pill" style="justify-self: start;" data-testid="staff-app-pin-save-{{ $op->id }}">Save</button>
+                                                </form>
+                                            </span>
                                         @endif
                                         <a href="{{ route('tenant.staff.permissions', $op->id) }}" wire:navigate
                                            data-testid="staff-manage-permissions-{{ $op->id }}"

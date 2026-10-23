@@ -10,6 +10,10 @@ use App\Http\Controllers\Mobile\ManagerController;
 use App\Http\Controllers\Mobile\PairController;
 use App\Http\Controllers\Mobile\PosController;
 use App\Http\Controllers\Mobile\ReservationsController;
+use App\Http\Controllers\Mobile\Staff\ChecksController as StaffChecksController;
+use App\Http\Controllers\Mobile\Staff\RoomsController as StaffRoomsController;
+use App\Http\Controllers\Mobile\Staff\SessionController as StaffSessionController;
+use App\Http\Controllers\Mobile\Staff\SuppliesController as StaffSuppliesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -74,4 +78,31 @@ Route::middleware(['auth:sanctum', 'mobile.device', 'mobile.idempotency'])
 
         // ── Manager glance ──────────────────────────────────────
         Route::get('manager/glance', [ManagerController::class, 'glance'])->name('mobile.manager.glance');
+    });
+
+/*
+| Staff app (housekeepers and porters) — docs/staff-app/PLAN.md.
+| Same bearer token + device + idempotency guards, plus staff.app
+| (house_cleaner / porter only).
+*/
+Route::middleware(['auth:sanctum', 'mobile.device', 'mobile.idempotency', 'staff.app'])
+    ->prefix('staff')
+    ->name('mobile.staff.')
+    ->group(function () {
+        Route::get('session', [StaffSessionController::class, 'session'])->name('session');
+        Route::get('me', [StaffSessionController::class, 'me'])->name('me');
+
+        Route::get('rooms', [StaffRoomsController::class, 'index'])->name('rooms.index');
+        Route::get('rooms/{inspection}', [StaffRoomsController::class, 'show'])->whereNumber('inspection')->name('rooms.show');
+        Route::post('rooms/{inspection}/start', [StaffRoomsController::class, 'start'])->whereNumber('inspection')->name('rooms.start');
+        Route::post('rooms/{inspection}/items/{item}', [StaffRoomsController::class, 'tick'])->whereNumber(['inspection', 'item'])->name('rooms.tick');
+        Route::post('rooms/{inspection}/finish', [StaffRoomsController::class, 'finish'])->whereNumber('inspection')->name('rooms.finish');
+
+        Route::get('checks', [StaffChecksController::class, 'index'])->name('checks.index');
+        Route::get('checks/{inspection}', [StaffChecksController::class, 'show'])->whereNumber('inspection')->name('checks.show');
+        Route::post('checks/{inspection}/ready', [StaffChecksController::class, 'ready'])->whereNumber('inspection')->name('checks.ready');
+        Route::post('checks/{inspection}/send-back', [StaffChecksController::class, 'sendBack'])->whereNumber('inspection')->name('checks.send-back');
+
+        Route::get('supplies', [StaffSuppliesController::class, 'index'])->name('supplies.index');
+        Route::post('supplies', [StaffSuppliesController::class, 'store'])->name('supplies.store');
     });
