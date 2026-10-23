@@ -16,6 +16,20 @@ return [
     |
     */
 
+    // Host app push notifications (docs/host-app/PHASE-5.md). FCM HTTP v1
+    // for Android and iOS (APNs through FCM). FCM_CREDENTIALS is the
+    // service-account JSON itself or a path to it (absolute, or relative
+    // to the project root). PUSH_DRIVER: fcm | log | null; unset picks
+    // fcm when both FCM values are present, else null (push off).
+    'fcm' => [
+        'project_id' => env('FCM_PROJECT_ID'),
+        'credentials' => env('FCM_CREDENTIALS'),
+    ],
+
+    'push' => [
+        'driver' => env('PUSH_DRIVER'),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
@@ -77,7 +91,7 @@ return [
         // Claude Sonnet 4.6 for HTML → structured JSON extraction.
         'anthropic' => [
             'api_key' => env('ANTHROPIC_API_KEY'),
-            'model'   => env('ANTHROPIC_MODEL', 'claude-sonnet-4-6'),
+            'model' => env('ANTHROPIC_MODEL', 'claude-sonnet-4-6'),
             'base_url' => env('ANTHROPIC_BASE_URL', 'https://api.anthropic.com'),
         ],
         // Google Places API v1 for structured business data.

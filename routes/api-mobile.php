@@ -6,6 +6,7 @@ use App\Http\Controllers\Mobile\AuthController;
 use App\Http\Controllers\Mobile\BookingsController;
 use App\Http\Controllers\Mobile\Host\BookingsController as HostBookingsController;
 use App\Http\Controllers\Mobile\Host\CalendarController as HostCalendarController;
+use App\Http\Controllers\Mobile\Host\DeviceController;
 use App\Http\Controllers\Mobile\Host\GuestRequestsController as HostGuestRequestsController;
 use App\Http\Controllers\Mobile\Host\InboxController as HostInboxController;
 use App\Http\Controllers\Mobile\Host\LookupController as HostLookupController;
@@ -176,4 +177,9 @@ Route::middleware(['auth:sanctum', 'mobile.device', 'mobile.idempotency', 'host.
         Route::post('notifications/read-all', [HostNotificationsController::class, 'readAll'])->name('mobile.host.notifications.read-all');
 
         Route::get('search', HostSearchController::class)->name('mobile.host.search');
+
+        // ── Phase 5: push + notification settings (docs/host-app/PHASE-5.md) ──
+        Route::put('device/push', [DeviceController::class, 'push'])->name('mobile.host.device.push');
+        Route::get('device/notifications', [DeviceController::class, 'notifications'])->name('mobile.host.device.notifications');
+        Route::put('device/notifications', [DeviceController::class, 'updateNotifications'])->name('mobile.host.device.notifications.update');
     });

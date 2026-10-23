@@ -10,6 +10,7 @@ use App\Models\Operator;
 use App\Models\Product;
 use App\Models\Tenant;
 use App\Multitenancy\TenantScope;
+use App\Services\Push\HostPush;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -34,10 +35,16 @@ class SendLowStockDigest extends Command
     {
         $tenants = 0;
         $emailed = 0;
+        $pushed = 0;
 
         $rows = Product::query()
             ->withoutGlobalScope(TenantScope::class)
-            ->with('outlet:id,name')
+            // No tenant is current here, so the fail-closed TenantScope
+            // must be lifted on the relations too (it used to blank them).
+            ->with([
+                'outlet' => fn ($q) => $q->withoutGlobalScope(TenantScope::class)->select(['id', 'name', 'property_id']),
+                'store' => fn ($q) => $q->withoutGlobalScope(TenantScope::class)->select(['id', 'name', 'property_id']),
+            ])
             ->where('active', true)
             ->where('track_stock', true)
             ->where('low_stock_threshold', '>', 0)
@@ -55,13 +62,16 @@ class SendLowStockDigest extends Command
                 ->sortBy(fn (Product $p) => [$p->outlet?->name ?? '', $p->name])
                 ->values()
                 ->map(fn (Product $p) => [
-                    'outlet'    => $p->outlet?->name ?? '—',
-                    'name'      => $p->name,
-                    'sku'       => $p->sku,
-                    'on_hand'   => $p->quantity_on_hand,
+                    'outlet' => $p->outlet?->name ?? '—',
+                    'name' => $p->name,
+                    'sku' => $p->sku,
+                    'on_hand' => $p->quantity_on_hand,
                     'threshold' => $p->low_stock_threshold,
                 ])
                 ->all();
+
+            // Host app: one low-stock push per branch (docs/host-app/PHASE-5.md).
+            $pushed += app(HostPush::class)->lowStock($tenant, $products);
 
             $managers = Operator::query()
                 ->withoutGlobalScope(TenantScope::class)
@@ -80,7 +90,7 @@ class SendLowStockDigest extends Command
             $emailed += count($managers);
         }
 
-        $this->components->info("Low-stock digest sent — tenants={$tenants} recipients={$emailed}");
+        $this->components->info("Low-stock digest sent — tenants={$tenants} recipients={$emailed} pushes={$pushed}");
 
         return self::SUCCESS;
     }

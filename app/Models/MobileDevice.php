@@ -19,10 +19,14 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $tenant_id
  * @property int $operator_id
- * @property string $platform            'ios' | 'android'
- * @property string $device_name         'Chidi's iPhone 15'
- * @property string $app_version         '1.0.0+42'
+ * @property string $platform 'ios' | 'android'
+ * @property string $device_name 'Chidi's iPhone 15'
+ * @property string $app_version '1.0.0+42'
  * @property string|null $push_token
+ * @property string|null $app 'host' | 'staff' | null (legacy)
+ * @property string|null $push_platform 'ios' | 'android'
+ * @property array<string, bool>|null $push_prefs
+ * @property Carbon|null $push_token_updated_at
  * @property string|null $paired_ip
  * @property Carbon $paired_at
  * @property Carbon|null $last_seen_at
@@ -36,6 +40,10 @@ class MobileDevice extends Model
 {
     use BelongsToTenant;
 
+    public const APP_HOST = 'host';
+
+    public const APP_STAFF = 'staff';
+
     /** @var list<string> */
     protected $guarded = ['id'];
 
@@ -48,6 +56,8 @@ class MobileDevice extends Model
             'paired_at' => 'datetime',
             'last_seen_at' => 'datetime',
             'revoked_at' => 'datetime',
+            'push_prefs' => 'array',
+            'push_token_updated_at' => 'datetime',
         ];
     }
 

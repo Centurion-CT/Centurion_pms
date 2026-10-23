@@ -16,6 +16,7 @@ use App\Multitenancy\TenantScope;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -47,6 +48,7 @@ use Illuminate\Validation\Rule;
 class LoginController extends Controller
 {
     private const MAX_ATTEMPTS = 6;
+
     private const DECAY_SECONDS = 60;
 
     public function login(Request $request, RateLimiter $limiter): JsonResponse
@@ -136,11 +138,22 @@ class LoginController extends Controller
     }
 
     /**
+     * Which mobile app is signing in, from the `X-Keverna-App` header
+     * (host | staff). Anything else (or no header) stays null.
+     */
+    public static function appFromRequest(Request $request): ?string
+    {
+        $app = strtolower(trim((string) $request->header('X-Keverna-App', '')));
+
+        return in_array($app, [MobileDevice::APP_HOST, MobileDevice::APP_STAFF], true) ? $app : null;
+    }
+
+    /**
      * 300 Multiple Choices picker payload.
      *
-     * @param  \Illuminate\Support\Collection<int, IdentityOperatorLink>  $links
+     * @param  Collection<int, IdentityOperatorLink>  $links
      */
-    private function pickTenantResponse(\Illuminate\Support\Collection $links): JsonResponse
+    private function pickTenantResponse(Collection $links): JsonResponse
     {
         return response()->json([
             'status' => 'pick_tenant',
@@ -187,7 +200,12 @@ class LoginController extends Controller
                 'platform' => $data['platform'],
                 'device_name' => $data['device_name'],
                 'app_version' => $data['app_version'],
+                // `X-Keverna-App: host` marks a Keverna for Hosts install;
+                // only those rows receive host push notifications.
+                'app' => self::appFromRequest($request),
                 'push_token' => $data['push_token'] ?? null,
+                'push_platform' => ! empty($data['push_token']) && in_array($data['platform'], ['ios', 'android'], true) ? $data['platform'] : null,
+                'push_token_updated_at' => ! empty($data['push_token']) ? now() : null,
                 'paired_ip' => $request->ip(),
                 'paired_at' => now(),
                 'last_seen_at' => now(),
