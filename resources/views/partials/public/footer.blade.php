@@ -8,7 +8,7 @@
 @endphp
 <footer class="cx-foot" data-testid="footer">
     <div class="cx-wrap cx-foot-top">
-        <a href="{{ route('tenant.landing') }}" class="cx-brand">
+        <a href="{{ $cxProperty ? route('tenant.branch.show', $cxProperty) : route('tenant.rooms.browse') }}" class="cx-brand">
             <span class="cx-brand-mark"><img src="{{ $cxLogo ?: asset(config('brand.logo')) }}" alt=""></span>
             <span class="cx-brand-name">{{ $cxHotel }}</span>
         </a>

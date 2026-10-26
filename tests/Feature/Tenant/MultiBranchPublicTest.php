@@ -17,35 +17,12 @@ beforeEach(function (): void {
     $this->tenant = Tenant::factory()->create(['slug' => 'multi-branch', 'name' => 'Citistay']);
 });
 
-it('shows the branches chooser at the root when the tenant has multiple properties', function (): void {
-    Property::factory()->live()->for($this->tenant)->create([
-        'name' => 'Citistay Abuja',
-        'city' => 'Abuja',
-    ]);
-    Property::factory()->live()->for($this->tenant)->create([
-        'name' => 'Citistay Lagos',
-        'city' => 'Lagos',
-    ]);
+it('sends the root to the staff sign-in, even with several branches', function (): void {
+    Property::factory()->live()->for($this->tenant)->create(['name' => 'Citistay Abuja']);
+    Property::factory()->live()->for($this->tenant)->create(['name' => 'Citistay Lagos']);
 
-    $response = $this->get('http://multi-branch.keverna.test/');
-
-    $response->assertOk();
-    $response->assertSeeHtml('data-testid="branches-chooser"');
-    $response->assertSee('Citistay Abuja');
-    $response->assertSee('Citistay Lagos');
-    $response->assertSeeHtml('href="'.route('tenant.branch.show', ['property' => Property::first()->slug]).'"');
-});
-
-it('still shows the single-branch landing at root for pre-multi-property tenants', function (): void {
-    Property::factory()->live()->for($this->tenant)->create([
-        'name' => 'Citistay Main',
-    ]);
-
-    $response = $this->get('http://multi-branch.keverna.test/');
-
-    $response->assertOk();
-    $response->assertDontSeeHtml('data-testid="branches-chooser"');
-    $response->assertSeeHtml('data-testid="hero"');
+    $this->get('http://multi-branch.keverna.test/')
+        ->assertRedirect(route('tenant.login'));
 });
 
 it('renders a specific branch at /branches/{slug}', function (): void {
@@ -71,9 +48,9 @@ it('renders the guest branch switcher on a branch landing when multiple exist', 
 });
 
 it('omits the switcher entirely for single-branch tenants', function (): void {
-    Property::factory()->live()->for($this->tenant)->create(['name' => 'Only Branch']);
+    $only = Property::factory()->live()->for($this->tenant)->create(['name' => 'Only Branch']);
 
-    $response = $this->get('http://multi-branch.keverna.test/');
+    $response = $this->get('http://multi-branch.keverna.test/branches/'.$only->slug);
 
     $response->assertOk();
     $response->assertDontSeeHtml('data-testid="branch-switcher"');

@@ -845,7 +845,8 @@
                     {{-- "View live page" opens the public landing page on
                          a new tab so the operator can sanity-check their
                          changes without losing their dashboard place. --}}
-                    <a href="{{ route('tenant.landing') }}" target="_blank" rel="noopener"
+                    @php $liveProperty = \App\Models\Tenant::current()?->property; @endphp
+                    <a href="{{ $liveProperty ? route('tenant.branch.show', $liveProperty) : route('tenant.rooms.browse') }}" target="_blank" rel="noopener"
                        class="lp-sidebar-link" data-testid="view-live">
                         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M11 4h5v5M8 12l8-8M15 11v5H4V5h5"/>

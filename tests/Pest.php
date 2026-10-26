@@ -46,3 +46,21 @@ function issuedLicenseCode(array $overrides = []): string
         'status' => 'unused',
     ], $overrides))->code;
 }
+
+/**
+ * Public landing URL for a tenant's first property. The root URL now
+ * redirects to the staff sign-in, so landing tests use the branch page
+ * (same controller). Falls back to the root when there is no property.
+ */
+function landingUrl(string $host, string $path = ''): string
+{
+    $slug = explode('.', $host)[0];
+    $tenant = \App\Models\Tenant::query()->where('slug', $slug)->first();
+    $property = $tenant === null ? null : \App\Models\Property::query()
+        ->withoutGlobalScopes()
+        ->where('tenant_id', $tenant->id)
+        ->orderBy('id')
+        ->first();
+
+    return 'http://'.$host.($property === null ? '' : '/branches/'.$property->slug).'/'.$path;
+}

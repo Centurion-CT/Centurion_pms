@@ -12,12 +12,14 @@
         'residential' => ['tenant.units.browse',      'Browse homes', 'Homes'],
         default       => ['tenant.rooms.browse',      'Book a stay',  'Rooms'],
     };
-    $cxHome = $cxOnLanding ? '' : route('tenant.landing');
+    // The root is the staff sign-in, so "home" for guests is the branch page.
+    $cxHomeUrl = $cxProperty ? route('tenant.branch.show', $cxProperty) : route($cxBrowseRoute);
+    $cxHome = $cxOnLanding ? '' : $cxHomeUrl;
     $cxHasAmenities = is_array($cxProperty?->amenities) && array_filter($cxProperty->amenities) !== [];
 @endphp
 <nav class="cx-top" data-testid="{{ $cxOnLanding ? 'topbar' : 'site-nav' }}">
     <div class="cx-wrap cx-top-inner">
-        <a href="{{ $cxOnLanding ? '#top' : route('tenant.landing') }}" class="cx-brand" aria-label="{{ $cxHotel }}">
+        <a href="{{ $cxOnLanding ? '#top' : $cxHomeUrl }}" class="cx-brand" aria-label="{{ $cxHotel }}">
             <span class="cx-brand-mark"><img src="{{ $cxLogo ?: asset(config('brand.logo')) }}" alt="{{ $cxHotel }}" @if ($cxLogo) data-testid="logo" @endif></span>
             <span class="cx-brand-name">{{ $cxHotel }}</span>
         </a>

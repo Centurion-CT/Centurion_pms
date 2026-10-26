@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-it('boots the application and serves the root route', function (): void {
-    $response = $this->get('/');
-
-    $response->assertStatus(200);
+it('boots the application and sends the root to the staff sign-in', function (): void {
+    $this->get('/')->assertRedirect();
 });

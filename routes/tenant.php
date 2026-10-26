@@ -167,12 +167,10 @@ Route::get('/__tenant-ping', function () {
     ]);
 })->name('tenant.ping');
 
-// Public landing page (PRD §6.4) + sitemap. Root serves either
-//   - the branch chooser (multi-property tenants), or
-//   - the single branch's landing (pre-multi tenants + single-branch orgs).
-// Controller branches on tenant status (full landing / coming-soon /
-// temporarily unavailable per PRD §4.2) and property count.
-Route::get('/', [PublicLandingController::class, 'show'])->name('tenant.landing');
+// Root goes straight to the staff sign-in: Centurion has no public
+// landing page. The login page sends signed-in staff on to the
+// dashboard. Branch pages below still serve the public booking flow.
+Route::get('/', fn () => redirect()->route('tenant.login'))->name('tenant.landing');
 Route::get('/sitemap.xml', [PublicLandingController::class, 'sitemap'])->name('tenant.sitemap');
 Route::get('/robots.txt', [PublicLandingController::class, 'robots'])->name('tenant.robots');
 

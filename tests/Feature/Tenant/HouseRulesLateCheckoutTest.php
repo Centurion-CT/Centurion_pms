@@ -27,7 +27,7 @@ it('shows the late-checkout fee tile when the policy has an hourly rate', functi
         ],
     ]);
 
-    $response = $this->get('http://late-fee-landing.keverna.test/');
+    $response = $this->get(landingUrl('late-fee-landing.keverna.test'));
 
     $response->assertOk();
     $response->assertSeeHtml('data-testid="good-to-know"');
@@ -49,7 +49,7 @@ it('hides the fee tile when the policy is disabled but still shows times', funct
         ],
     ]);
 
-    $response = $this->get('http://late-fee-landing.keverna.test/');
+    $response = $this->get(landingUrl('late-fee-landing.keverna.test'));
 
     $response->assertOk();
     $response->assertSeeHtml('data-testid="good-to-know"');
@@ -65,7 +65,7 @@ it('hides the entire band when neither times nor a fee are set', function (): vo
         'checkout_policy' => null,
     ]);
 
-    $response = $this->get('http://late-fee-landing.keverna.test/');
+    $response = $this->get(landingUrl('late-fee-landing.keverna.test'));
 
     $response->assertOk();
     $response->assertDontSeeHtml('data-testid="good-to-know"');
@@ -83,7 +83,7 @@ it('renders the band with just the fee tile when only the policy is set (no time
         ],
     ]);
 
-    $response = $this->get('http://late-fee-landing.keverna.test/');
+    $response = $this->get(landingUrl('late-fee-landing.keverna.test'));
 
     $response->assertOk();
     $response->assertSeeHtml('data-testid="good-to-know"');
