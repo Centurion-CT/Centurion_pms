@@ -216,9 +216,8 @@
                     // Branches - list / manage properties under this org.
                     // Always visible under 'settings' module so a
                     // single-branch org has a discoverable path to add
-                    // their second location (the sidebar switcher below
-                    // only renders when count > 1, otherwise there's
-                    // no way in).
+                    // their second location (the branch picker's "Add a
+                    // branch" link also lands here).
                     ['label' => 'Branches', 'module' => 'settings', 'route' => 'tenant.branches.index', 'prefix' => 'tenant.branches.', 'color' => 'emerald',
                      'icon'  => 'M10 17s-6-5-6-10a6 6 0 1 1 12 0c0 5-6 10-6 10zM10 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4z'],
                     // Settings → Profile is universally available; Property is manager-only.
@@ -280,6 +279,10 @@
             // so single-branch orgs see identical behavior).
             $currentProperty = app(\App\Services\Properties\PropertyContext::class)->current();
             $allBranches = app(\App\Services\Properties\PropertyContext::class)->all();
+            // Branches page is under the settings module (see the nav item).
+            $canManageBranches = $currentOperator !== null
+                ? $currentOperator->canAccessModule('settings')
+                : $currentRole->canAccessModule('settings');
             $propertyType = $currentProperty?->type ?? \App\Enums\PropertyType::Hotel;
             // Stock-model setting: 'per_department' rooms don't have a
             // central store, so the Store nav (and its badge below)
@@ -598,61 +601,9 @@
                     </span>
                 </div>
 
-                {{-- Branch switcher - hides itself if the tenant has one
-                     property (pre-multi orgs see nothing new). Selecting
-                     a branch POSTs to /dashboard/branches/switch and
-                     lands the operator back on the current page. --}}
-                @if ($allBranches->count() > 1)
-                    <div class="lp-sidebar-branches"
-                         x-data="{ open: false }"
-                         x-on:click.outside="open = false"
-                         x-on:keydown.escape.window="open = false"
-                         data-testid="dash-branch-switcher">
-                        <button type="button"
-                                class="lp-sidebar-branches-trigger"
-                                x-on:click="open = !open"
-                                x-bind:aria-expanded="open ? 'true' : 'false'"
-                                aria-haspopup="listbox"
-                                data-testid="dash-branch-switcher-trigger">
-                            <span class="label">
-                                <span class="eyebrow">Working in</span>
-                                <span class="name">{{ $currentProperty?->name ?? 'Pick a branch' }}</span>
-                            </span>
-                            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M3 4.5L6 8l3-3.5"/>
-                            </svg>
-                        </button>
-                        <div x-show="open"
-                             x-transition.opacity.duration.120ms
-                             x-cloak
-                             class="lp-sidebar-branches-menu"
-                             role="listbox"
-                             data-testid="dash-branch-switcher-menu">
-                            @foreach ($allBranches as $branch)
-                                <form method="POST" action="{{ route('tenant.branches.switch') }}" style="margin:0;">
-                                    @csrf
-                                    <input type="hidden" name="property_id" value="{{ $branch->getKey() }}">
-                                    <input type="hidden" name="return_to" value="{{ request()->fullUrl() }}">
-                                    <button type="submit"
-                                            class="lp-sidebar-branches-item @if ($currentProperty && $currentProperty->getKey() === $branch->getKey()) is-current @endif"
-                                            role="option"
-                                            aria-selected="{{ $currentProperty && $currentProperty->getKey() === $branch->getKey() ? 'true' : 'false' }}"
-                                            data-testid="dash-branch-switcher-item-{{ $branch->slug }}">
-                                        <span class="name">{{ $branch->name }}</span>
-                                        @if ($branch->city || $branch->state)
-                                            <span class="sub">{{ trim(collect([$branch->city, $branch->state])->filter()->implode(', ')) }}</span>
-                                        @endif
-                                    </button>
-                                </form>
-                            @endforeach
-                            <a href="{{ route('tenant.branches.index') }}"
-                               class="lp-sidebar-branches-manage"
-                               data-testid="dash-branch-switcher-manage">
-                                + Manage branches
-                            </a>
-                        </div>
-                    </div>
-                @endif
+                {{-- Branch picker: the current branch, and a way to switch or
+                     add one. Same partial sits in the topbar. --}}
+                @include('partials.branch-picker', ['variant' => 'sidebar'])
 
                 {{-- Search, filters the nav in place. When active it
                      expands every section so matches surface without
@@ -930,6 +881,12 @@
                               style="color: var(--color-ink); max-width: 360px;">
                             {{ \App\Models\Tenant::current()?->name }}
                         </span>
+
+                        {{-- Branch picker, desktop only: phones reach it
+                             through the sidebar drawer. --}}
+                        <div class="lp-topbar-branch-wrap">
+                            @include('partials.branch-picker', ['variant' => 'topbar'])
+                        </div>
                     </div>
                     {{-- Global topbar search, sits between the property
                          name and the notification / operator group.

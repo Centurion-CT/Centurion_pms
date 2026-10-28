@@ -1,6 +1,6 @@
 {{-- Dashboard home (approved mockup 3A, "Daylight"). Scoped to .cx-home. --}}
 <style>
-    .lp-page .lp-dash.cx-home { padding: 24px 32px 56px; gap: 24px; max-width: 1280px; }
+    .lp-page .lp-dash.cx-home { padding: 24px 32px 56px; gap: 24px; }
     @media (max-width: 768px) { .lp-page .lp-dash.cx-home { padding: 16px 16px 40px; gap: 16px; } }
 
     .cx-home .cx-card { background: var(--color-card); border: 1px solid var(--color-line); border-radius: 12px; }

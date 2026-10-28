@@ -7699,6 +7699,20 @@ html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge--urg
 .lp-page.lp-shell-dash .lp-topbar-reserve:focus-visible { outline: 3px solid var(--color-accent-soft); outline-offset: 2px; }
 @media (max-width: 640px) { .lp-page.lp-shell-dash .lp-topbar-reserve span { display: none; } .lp-page.lp-shell-dash .lp-topbar-reserve { padding: 0 12px; } }
 
+/* Topbar branch picker: a compact chip beside the search. Reuses the
+   sidebar picker's menu; phones use the one in the sidebar drawer. */
+.lp-page.lp-shell-dash .lp-topbar-branch-wrap { display: none; }
+@media (min-width: 901px) { .lp-page.lp-shell-dash .lp-topbar-branch-wrap { display: block; } }
+.lp-page.lp-shell-dash .lp-topbar-branch { margin: 0; }
+.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-trigger {
+    width: auto; max-width: 260px; height: 44px; gap: 8px; padding: 0 12px 0 14px;
+    background: var(--color-card); border-color: var(--color-line); border-radius: 999px;
+}
+.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-trigger:hover { background: #E3EAF1; }
+.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-trigger:focus-visible { outline: 3px solid var(--color-accent-soft); outline-offset: 2px; }
+.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-trigger .name { margin-top: 0; font-size: 14px; }
+.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-menu { right: auto; min-width: 260px; }
+
 /* Cards across every staff page: 12px radius, white, display titles. */
 .lp-page .lp-dash-card { border-radius: 12px; border-color: var(--color-line); }
 .lp-page .lp-dash-card-title { font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: -0.005em; }
