@@ -60,6 +60,7 @@ FROM php:8.4-fpm-alpine AS runtime
 RUN apk add --no-cache \
         nginx \
         tini \
+        su-exec \
         bash \
         ca-certificates \
         tzdata \

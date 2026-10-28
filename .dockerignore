@@ -51,3 +51,8 @@ docs
 # OS noise
 .DS_Store
 Thumbs.db
+
+# Apps and design files: built separately, not served by Laravel
+mobile
+desktop
+design

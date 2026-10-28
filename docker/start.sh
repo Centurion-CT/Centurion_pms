@@ -11,6 +11,12 @@
 # inline before nginx starts — convenient for single-container setups but
 # you'll usually prefer a dedicated `migrate` one-shot in CI/CD instead.
 #
+# The web role also runs a queue worker and the scheduler beside nginx
+# (RUN_WORKERS_IN_WEB, default true), because a single-container deploy
+# never starts the horizon/scheduler roles and queued mail would sit in
+# the jobs table forever. Set RUN_WORKERS_IN_WEB=false when separate
+# horizon and scheduler containers run, or reminders would go out twice.
+#
 # Defaults to "web" if unset so a misconfigured deploy still serves traffic.
 
 set -eu
@@ -138,6 +144,21 @@ case "$ROLE" in
         # at the cost of slowing every cold start by ~1-2s.
         if [ "${RUN_MIGRATIONS_ON_BOOT:-false}" = "true" ]; then
             run_migrations
+        fi
+        if [ "${RUN_WORKERS_IN_WEB:-true}" = "true" ]; then
+            # Run as www-data so files the worker writes (media, cache)
+            # stay writable by php-fpm. queue:work exits after --max-time
+            # to shed memory; the loop starts a fresh one.
+            echo "[start] role=web — also running the queue worker + scheduler"
+            ( while true; do
+                su-exec www-data php artisan queue:work --queue=default,tenants,slow \
+                    --sleep=3 --tries=3 --max-time=3600 || true
+                sleep 2
+            done ) &
+            ( while true; do
+                su-exec www-data php artisan schedule:run --no-interaction >> /dev/stdout 2>&1 || true
+                sleep 60
+            done ) &
         fi
         echo "[start] role=web — launching php-fpm + nginx"
         # Run FPM in the background; exec nginx so it inherits PID 1 and
