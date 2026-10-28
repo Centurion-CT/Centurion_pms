@@ -98,7 +98,7 @@ it('Branches Index create() adds a new property and switches into it', function 
         ->set('newType', 'hotel')
         ->call('create')
         ->assertHasNoErrors()
-        ->assertDispatched('notify');
+        ->assertRedirect(route('tenant.branches.index'));
 
     $branch = Property::query()->where('name', 'Abuja Central')->first();
     expect($branch)->not->toBeNull();

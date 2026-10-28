@@ -69,12 +69,11 @@ class Index extends Component
         // branch they just created without an extra click.
         $context->switchTo($branch);
 
-        $this->reset(['newName', 'newAddress', 'newCity', 'newState']);
-        $this->dispatch('notify',
-            title: 'Branch created',
-            message: "You're now working in {$branch->name}. Head to Settings to add photos, house rules, and payouts.",
-            kind: 'ok',
-        );
+        // Full page load, not a Livewire update: the sidebar is
+        // @persist'ed across wire:navigate, so only a reload redraws its
+        // branch picker with the new branch in it.
+        session()->flash('success', "Branch created. You're now working in {$branch->name}. Head to Settings to add photos, house rules, and payouts.");
+        $this->redirectRoute('tenant.branches.index');
     }
 
     public function render(PropertyContext $context): View
