@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Overview permission</title>
+<link href="https://fonts.bunny.net/css?family=bricolage-grotesque:500,600,700|hanken-grotesk:400,500,600,700&display=swap" rel="stylesheet">
+<style>
+:root { --paper:#EEF3F7; --card:#fff; --card-deep:#F4F7FA; --ink:#1A2430; --ink-soft:#4A5563; --ink-mute:#6B7785; --navy:#16324B; --blue:#336799; --blue-soft:rgba(51,103,153,.12); --line:rgba(26,36,48,.10); --line-soft:rgba(26,36,48,.06); --display:'Bricolage Grotesque',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { width:900px; padding:32px; font:14px/1.45 var(--body); color:var(--ink); background:var(--paper); -webkit-font-smoothing:antialiased; }
+.eyebrow { color:var(--ink-soft); }
+h1 { font-family:var(--display); font-size:30px; font-weight:600; margin-top:2px; }
+.card { margin-top:20px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; }
+h2 { font-family:var(--display); font-size:18px; font-weight:600; }
+.help { color:var(--ink-soft); margin-top:4px; max-width:640px; }
+.row { display:flex; justify-content:space-between; align-items:center; gap:24px; padding:16px 0; border-top:1px solid var(--line-soft); }
+.row:first-of-type { margin-top:12px; }
+.row b { font-weight:600; }
+.row p { font-size:13.5px; color:var(--ink-soft); margin-top:2px; max-width:560px; }
+.sw { width:44px; height:26px; border-radius:999px; background:#C9D3DD; position:relative; flex:none; }
+.sw::after { content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.2); }
+.sw.on { background:var(--navy); }
+.sw.on::after { left:21px; }
+.note { margin-top:14px; padding:12px 14px; background:var(--card-deep); border-radius:8px; color:var(--ink-soft); font-size:13.5px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Staff · Chiamaka Obi · Reservation officer</div>
+  <h1>Permissions</h1>
+  <section class="card">
+    <h2>Extra access</h2>
+    <p class="help">On top of what a reservation officer can do already.</p>
+    <div class="row">
+      <div><b>All branches overview</b><p>See money, occupancy and live activity for every branch on one page, including amounts collected, owed and spent. Use it for an accountant or an area manager.</p></div>
+      <span class="sw on" role="switch" aria-checked="true"></span>
+    </div>
+    <div class="note">Managers always see the All branches page. Branch access below still limits which branches this person can work in; the overview shows every branch either way.</div>
+  </section>
+</body>
+</html>

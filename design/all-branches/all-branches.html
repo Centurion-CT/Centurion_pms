@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>All branches</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=bricolage-grotesque:500,600,700|hanken-grotesk:400,500,600,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #EEF3F7; --card: #FFFFFF; --card-deep: #F4F7FA;
+  --ink: #1A2430; --ink-soft: #4A5563; --ink-mute: #6B7785;
+  --navy: #16324B; --navy-2: #0F2438; --navy-3: #1E3F5C;
+  --blue: #336799; --blue-deep: #285480; --blue-soft: rgba(51,103,153,.12); --blue-light: #6E9FCB; --blue-on-dark: #8DB6DE;
+  --gold: #E3A83A; --gold-soft: #FBF1DE; --gold-ink: #8A5A0B;
+  --green: #0F8A5F; --green-soft: #E3F4EC; --rose: #C42652; --rose-soft: #FCE8EE; --amber: #B86A05; --amber-soft: #FDF0DC;
+  --free: #DCE5EE; --line: rgba(26,36,48,.10); --line-soft: rgba(26,36,48,.06); --line-dark: rgba(255,255,255,.12);
+  --display: 'Bricolage Grotesque', system-ui, sans-serif; --body: 'Hanken Grotesk', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 1440px; font: 14px/1.45 var(--body); color: var(--ink); background: var(--paper); font-feature-settings: 'tnum' 1; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -.01em; color: var(--ink); }
+a { color: inherit; text-decoration: none; }
+svg { flex: none; }
+.shell { display: grid; grid-template-columns: 300px 1fr; min-height: 100vh; }
+
+/* Sidebar, as on the live dashboard */
+.side { background: var(--card); border-right: 1px solid var(--line); padding: 0 14px 24px; }
+.brand { display: flex; gap: 12px; align-items: center; height: 82px; margin: 0 -14px; padding: 0 22px; border-bottom: 1px solid var(--line); }
+.brand .mark { width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 10px; display: grid; place-items: center; }
+.brand .mark img { width: 20px; }
+.brand .name { font-family: var(--display); font-weight: 600; font-size: 17px; }
+.brand .sub { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-mute); }
+.brand .sub i { width: 6px; height: 6px; border-radius: 50%; background: #1F7A50; }
+.picker { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.picker small { display: block; font-size: 12px; color: var(--ink-mute); }
+.picker b { font-size: 14px; font-weight: 600; }
+.sec { margin: 22px 9px 8px; font-size: 13px; color: var(--ink-mute); }
+.nav { display: flex; align-items: center; gap: 12px; height: 42px; padding: 0 9px; border-radius: 8px; font-size: 15px; font-weight: 500; }
+.nav .ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; }
+.nav.on { background: #E3EAF1; font-weight: 600; }
+.nav.on .ic { background: var(--navy); color: #fff; }
+
+/* Topbar */
+.top { height: 82px; display: flex; align-items: center; gap: 16px; padding: 0 32px; border-bottom: 1px solid var(--line); }
+.chip { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); font-weight: 600; }
+.search { flex: 1; max-width: 640px; height: 44px; margin: 0 auto; display: flex; align-items: center; gap: 10px; padding: 0 16px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; color: var(--ink-mute); }
+.bell { width: 40px; height: 40px; display: grid; place-items: center; }
+.reserve { height: 46px; display: inline-flex; align-items: center; gap: 8px; padding: 0 18px; background: var(--navy); color: #fff; border-radius: 8px; font-weight: 600; }
+
+/* Page */
+.page { padding: 28px 32px 56px; display: grid; gap: 22px; }
+.head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.head .eyebrow { font-size: 14px; color: var(--ink-soft); }
+.head h1 { font-size: 34px; font-weight: 600; margin-top: 2px; }
+.head p { margin-top: 4px; color: var(--ink-soft); }
+.seg { display: inline-flex; padding: 4px; gap: 2px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); }
+.seg span { padding: 8px 14px; border-radius: 7px; font-weight: 500; color: var(--ink-soft); }
+.seg span.on { background: var(--navy); color: #fff; font-weight: 600; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.h2 { font-family: var(--display); font-size: 19px; font-weight: 600; }
+.mute { color: var(--ink-mute); }
+.soft { color: var(--ink-soft); }
+.tag { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 999px; font-size: 12.5px; font-weight: 600; background: var(--card-deep); border: 1px solid var(--line-soft); color: var(--ink-soft); white-space: nowrap; }
+.tag i { width: 7px; height: 7px; border-radius: 2px; }
+
+/* Money band */
+.money { background: var(--navy); border-radius: 12px; color: #fff; padding: 24px 28px; display: grid; grid-template-columns: 1.25fr repeat(5, 1fr); gap: 0; }
+.money .cell { padding: 0 22px; border-left: 1px solid var(--line-dark); }
+.money .cell:first-child { padding-left: 0; border-left: 0; }
+.money .lbl { font-size: 13.5px; color: rgba(255,255,255,.72); }
+.money .big { font-family: var(--display); font-size: 44px; font-weight: 600; line-height: 1.05; margin-top: 6px; color: #fff; }
+.money .big em { font-style: normal; color: var(--gold); }
+.money .val { font-family: var(--display); font-size: 24px; font-weight: 600; margin-top: 8px; }
+.money .note { font-size: 13px; color: rgba(255,255,255,.66); margin-top: 6px; }
+.up { color: #7FD8B0; font-weight: 600; }
+.money .net .val { color: var(--gold); }
+
+/* Tonight across the group: the signature */
+.tonight { padding: 24px 28px 22px; }
+.tonight .row1 { display: flex; justify-content: space-between; align-items: flex-start; }
+.tonight .pct { font-family: var(--display); font-size: 40px; font-weight: 600; line-height: 1; }
+.groups { display: grid; grid-template-columns: 24fr 28fr 20fr 24fr; gap: 28px; margin-top: 22px; align-items: end; }
+.grp .bars { display: flex; align-items: flex-end; gap: 3px; height: 74px; }
+.grp .bars b { flex: 1; border-radius: 3px 3px 1px 1px; background: var(--free); }
+.grp .bars b.in { background: var(--navy); }
+.grp .bars b.ar { background: var(--blue-light); }
+.grp .meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+.grp .meta b { font-weight: 600; }
+.legend { display: flex; gap: 18px; font-size: 13px; color: var(--ink-soft); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; }
+
+/* Branch table */
+table { width: 100%; border-collapse: collapse; }
+th { text-align: right; font-weight: 500; font-size: 13px; color: var(--ink-mute); padding: 0 18px 10px; }
+th:first-child, td:first-child { text-align: left; }
+td { text-align: right; padding: 14px 18px; border-top: 1px solid var(--line-soft); font-variant-numeric: tabular-nums; }
+td .bn { font-weight: 600; font-size: 15px; }
+td .bs { font-size: 12.5px; color: var(--ink-mute); }
+tr.total td { font-weight: 700; background: var(--card-deep); border-top: 1px solid var(--line); }
+tr.total td:first-child { border-radius: 0 0 0 12px; }
+tr.total td:last-child { border-radius: 0 0 12px 0; }
+.occ { display: inline-flex; align-items: center; gap: 10px; }
+.occ .track { width: 84px; height: 6px; border-radius: 3px; background: var(--free); overflow: hidden; }
+.occ .track i { display: block; height: 100%; background: var(--navy); }
+.owe { color: var(--rose); font-weight: 600; }
+.flag { display: inline-flex; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 999px; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 700; background: var(--rose-soft); color: var(--rose); }
+.flag.zero { background: var(--card-deep); color: var(--ink-mute); font-weight: 500; }
+.open { color: var(--blue-deep); font-weight: 600; white-space: nowrap; }
+
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+.list { padding: 22px 24px 10px; }
+.item { display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: start; padding: 14px 0; border-top: 1px solid var(--line-soft); }
+.item:first-of-type { border-top: 0; }
+.dot { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; }
+.item .t { font-weight: 600; }
+.item .s { font-size: 13.5px; color: var(--ink-soft); margin-top: 2px; }
+.item .r { text-align: right; font-size: 13px; color: var(--ink-mute); }
+.item .r .tag { margin-bottom: 6px; }
+.live { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-soft); }
+.live i { width: 8px; height: 8px; border-radius: 50%; background: #1F7A50; box-shadow: 0 0 0 4px rgba(31,122,80,.16); }
+.feed .item { grid-template-columns: 58px 1fr auto; }
+.feed .time { font-size: 13px; color: var(--ink-mute); padding-top: 1px; }
+.amt { font-weight: 700; }
+.amt.in { color: var(--green); }
+
+.three { display: grid; grid-template-columns: 1fr 1fr 1.15fr; gap: 22px; align-items: start; }
+.pad { padding: 22px 24px; }
+.hbar { margin-top: 16px; }
+.hbar .l { display: flex; justify-content: space-between; font-size: 14px; }
+.hbar .l b { font-weight: 600; }
+.hbar .tr { height: 8px; border-radius: 4px; background: var(--card-deep); margin-top: 7px; overflow: hidden; }
+.hbar .tr i { display: block; height: 100%; border-radius: 4px; background: var(--blue); }
+.owes .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line-soft); }
+.owes .row:first-of-type { border-top: 0; }
+.owes .n { font-weight: 600; }
+.owes .d { font-size: 13px; color: var(--ink-mute); margin-top: 2px; display: flex; gap: 8px; align-items: center; }
+.link { color: var(--blue-deep); font-weight: 600; }
+
+.chart { padding: 22px 24px 18px; }
+.cols { display: flex; align-items: flex-end; gap: 6px; height: 150px; margin-top: 18px; border-bottom: 1px solid var(--line); }
+.cols i { flex: 1; background: var(--blue-light); border-radius: 3px 3px 0 0; }
+.cols i.today { background: var(--navy); }
+.cols i.future { background: var(--free); height: 3px !important; }
+.axis { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--ink-mute); margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="side">
+    <div class="brand">
+      <span class="mark"><img src="assets/logo.png" alt=""></span>
+      <span><span class="name">Centurion Apartments</span><span class="sub"><i></i>Live · your property</span></span>
+    </div>
+    <div class="picker">
+      <span><small>Branch</small><b>Lekki</b></span>
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 4.5L6 8l3-3.5"/></svg>
+    </div>
+
+    <div class="sec">Overview</div>
+    <a class="nav on"><span class="ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 13V8M6.5 13V5M10 13V7M13.5 13V3"/></svg></span>All branches</a>
+
+    <div class="sec">Front desk</div>
+    <a class="nav"><span class="ic" style="background:#EDF2F7;color:#16324B"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 7.5 8 3l5.5 4.5V13h-11Z"/></svg></span>Dashboard</a>
+    <a class="nav"><span class="ic" style="background:#E6EEFB;color:#2F5FD0"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2.5h8v11l-4-3-4 3Z"/></svg></span>Reservations</a>
+    <a class="nav"><span class="ic" style="background:#E2F5F7;color:#0E7C86"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 7.5 8 3l5.5 4.5V13h-11Z"/></svg></span>In-house</a>
+    <a class="nav"><span class="ic" style="background:#FDF0DC;color:#B86A05"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3h10v7H7l-4 3Z"/></svg></span>Guest requests</a>
+    <a class="nav"><span class="ic" style="background:#FCE8EE;color:#C42652"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="10" height="8" rx="1.5"/><path d="M5.5 8h5"/></svg></span>Approvals</a>
+    <a class="nav"><span class="ic" style="background:#ECEBFB;color:#4B44C9"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3.5" width="10" height="9.5" rx="1.5"/><path d="M3 7h10M6 2v3M10 2v3"/></svg></span>Bookings</a>
+    <a class="nav"><span class="ic" style="background:#FCE8EE;color:#C42652"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3.5" width="10" height="9.5" rx="1.5"/><path d="M3 7h10"/></svg></span>Calendar</a>
+
+    <div class="sec">Money</div>
+    <a class="nav"><span class="ic" style="background:#FDF0DC;color:#B86A05"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2.5h8v11H4zM6 6h4M6 9h4"/></svg></span>Invoices</a>
+    <a class="nav"><span class="ic" style="background:#E3F4EC;color:#0F8A5F"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4" width="11" height="8" rx="1.5"/><path d="M2.5 7h11"/></svg></span>Payments</a>
+    <a class="nav"><span class="ic" style="background:#E2F5F7;color:#0E7C86"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 13V8M7 13V4M11 13V9"/></svg></span>Finance</a>
+  </aside>
+
+  <div>
+    <header class="top">
+      <span class="chip">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14.5s4.5-4.2 4.5-7.8a4.5 4.5 0 1 0-9 0c0 3.6 4.5 7.8 4.5 7.8Z"/><circle cx="8" cy="6.6" r="1.6"/></svg>
+        Lekki
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 4.5L6 8l3-3.5"/></svg>
+      </span>
+      <div class="search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>Find a booking, ref, guest name, email, phone</div>
+      <span class="bell"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 14V9a5 5 0 0 1 10 0v5l1.5 1.5h-13Z M8.5 17.5h3"/></svg></span>
+      <a class="reserve"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>Reserve a room</a>
+    </header>
+
+    <main class="page">
+      <div class="head">
+        <div>
+          <div class="eyebrow">Wednesday, 28 October · updated 1:52 pm</div>
+          <h1>All branches</h1>
+          <p>Money and activity across Lekki, Ikoyi, Victoria Island and Wuse II.</p>
+        </div>
+        <div class="seg"><span>Today</span><span>This week</span><span class="on">This month</span><span>Last month</span><span>Pick dates</span></div>
+      </div>
+
+      <!-- Money, for the chosen period -->
+      <section class="money">
+        <div class="cell">
+          <div class="lbl">Collected this month</div>
+          <div class="big">₦181.2m</div>
+          <div class="note"><span class="up">↑ 12%</span> on 1–28 September</div>
+        </div>
+        <div class="cell"><div class="lbl">Earned</div><div class="val">₦196.4m</div><div class="note">Stays and charges this month</div></div>
+        <div class="cell"><div class="lbl">Still to collect</div><div class="val">₦6.85m</div><div class="note">14 stays, 1 company</div></div>
+        <div class="cell"><div class="lbl">Refunded</div><div class="val">₦1.12m</div><div class="note">5 refunds</div></div>
+        <div class="cell"><div class="lbl">Expenses</div><div class="val">₦38.7m</div><div class="note">Purchases and bills</div></div>
+        <div class="cell net"><div class="lbl">Net</div><div class="val">₦141.4m</div><div class="note">Collected − refunds − expenses</div></div>
+      </section>
+
+      <!-- Tonight across the group: one bar per room, per branch -->
+      <section class="card tonight">
+        <div class="row1">
+          <div>
+            <h2 class="h2">Tonight across the group</h2>
+            <p class="soft" style="margin-top:4px">Each bar is a room. 66 of 96 rooms are taken tonight.</p>
+          </div>
+          <div style="text-align:right">
+            <div class="pct">69%</div>
+            <div class="legend" style="margin-top:10px"><span><i style="background:var(--navy)"></i>In-house 54</span><span><i style="background:var(--blue-light)"></i>Arriving 12</span><span><i style="background:var(--free)"></i>Free 30</span></div>
+          </div>
+        </div>
+        <div class="groups">
+          <div class="grp"><div class="bars" data-in="17" data-ar="3" data-n="24"></div><div class="meta"><b>Lekki</b><span class="soft">83% · 20 of 24</span></div></div>
+          <div class="grp"><div class="bars" data-in="18" data-ar="4" data-n="28"></div><div class="meta"><b>Ikoyi</b><span class="soft">79% · 22 of 28</span></div></div>
+          <div class="grp"><div class="bars" data-in="9" data-ar="2" data-n="20"></div><div class="meta"><b>Victoria Island</b><span class="soft">55% · 11 of 20</span></div></div>
+          <div class="grp"><div class="bars" data-in="10" data-ar="3" data-n="24"></div><div class="meta"><b>Wuse II</b><span class="soft">54% · 13 of 24</span></div></div>
+        </div>
+      </section>
+
+      <!-- Branch by branch -->
+      <section class="card" style="padding:22px 0 0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 24px 16px">
+          <h2 class="h2">Branch by branch</h2>
+          <span class="mute">Money columns are for this month. Open a branch to work in it.</span>
+        </div>
+        <table>
+          <thead><tr><th style="padding-left:24px">Branch</th><th>Tonight</th><th>Arriving</th><th>Leaving</th><th>In-house</th><th>Collected</th><th>Still to collect</th><th>Needs attention</th><th style="padding-right:24px"></th></tr></thead>
+          <tbody>
+            <tr><td style="padding-left:24px"><div class="bn">Lekki</div><div class="bs">Main branch · 24 rooms</div></td><td><span class="occ"><span class="track"><i style="width:83%"></i></span>83%</span></td><td>3</td><td>4</td><td>17</td><td>₦52.4m</td><td class="owe">₦1.95m</td><td><span class="flag">3</span></td><td style="padding-right:24px"><a class="open">Open →</a></td></tr>
+            <tr><td style="padding-left:24px"><div class="bn">Ikoyi</div><div class="bs">28 rooms</div></td><td><span class="occ"><span class="track"><i style="width:79%"></i></span>79%</span></td><td>4</td><td>5</td><td>18</td><td>₦63.9m</td><td class="owe">₦2.40m</td><td><span class="flag">2</span></td><td style="padding-right:24px"><a class="open">Open →</a></td></tr>
+            <tr><td style="padding-left:24px"><div class="bn">Victoria Island</div><div class="bs">20 rooms</div></td><td><span class="occ"><span class="track"><i style="width:55%"></i></span>55%</span></td><td>2</td><td>3</td><td>9</td><td>₦31.6m</td><td class="owe">₦0.85m</td><td><span class="flag">3</span></td><td style="padding-right:24px"><a class="open">Open →</a></td></tr>
+            <tr><td style="padding-left:24px"><div class="bn">Wuse II</div><div class="bs">Abuja · 24 rooms</div></td><td><span class="occ"><span class="track"><i style="width:54%"></i></span>54%</span></td><td>3</td><td>2</td><td>10</td><td>₦33.3m</td><td class="owe">₦1.65m</td><td><span class="flag">5</span></td><td style="padding-right:24px"><a class="open">Open →</a></td></tr>
+            <tr class="total"><td style="padding-left:24px">All branches</td><td>69%</td><td>12</td><td>14</td><td>54</td><td>₦181.2m</td><td class="owe">₦6.85m</td><td>13</td><td style="padding-right:24px"></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="two">
+        <!-- Needs attention -->
+        <section class="card list">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+            <h2 class="h2">Needs attention</h2><span class="mute">13 items</span>
+          </div>
+          <div class="item">
+            <span class="dot" style="background:var(--rose-soft);color:var(--rose)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3.2l2 1.3"/></svg></span>
+            <div><div class="t">2 guests past check-out</div><div class="s">Chidi Okeke, Room 305, was due out at 12:00</div></div>
+            <div class="r"><span class="tag">Ikoyi</span></div>
+          </div>
+          <div class="item">
+            <span class="dot" style="background:var(--rose-soft);color:var(--rose)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="10" height="8" rx="1.5"/><path d="M5.5 8h5"/></svg></span>
+            <div><div class="t">3 approvals waiting</div><div class="s">2 discounts, 1 refund of ₦85,000</div></div>
+            <div class="r"><span class="tag">Lekki 2</span> <span class="tag">Victoria Island 1</span></div>
+          </div>
+          <div class="item">
+            <span class="dot" style="background:var(--rose-soft);color:var(--rose)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 2.5v11M5 5.5c0-1.2 1.3-2 3-2s3 .8 3 2-1.3 1.8-3 2.3-3 1.1-3 2.4 1.3 2.1 3 2.1 3-.9 3-2.1"/></svg></span>
+            <div><div class="t">Owed for more than 7 days</div><div class="s">Adaeze Nwosu, ₦640,000, checked out 9 days ago</div></div>
+            <div class="r"><span class="tag">Lekki</span></div>
+          </div>
+          <div class="item">
+            <span class="dot" style="background:var(--amber-soft);color:var(--amber)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 3h10v7H7l-4 3Z"/></svg></span>
+            <div><div class="t">4 open guest requests</div><div class="s">Oldest: extra towels, Room 214, waiting 40 min</div></div>
+            <div class="r"><span class="tag">Wuse II</span></div>
+          </div>
+          <div class="item">
+            <span class="dot" style="background:var(--blue-soft);color:var(--blue-deep)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2.5 7.5 8 3l5.5 4.5V13h-11Z"/></svg></span>
+            <div><div class="t">11 rooms unsold tonight</div><div class="s">54% full. A same-day deal could fill them.</div></div>
+            <div class="r"><span class="tag">Wuse II</span></div>
+          </div>
+          <div class="item">
+            <span class="dot" style="background:var(--gold-soft);color:var(--gold-ink)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="m8 2.5 1.7 3.5 3.8.5-2.8 2.6.7 3.8L8 11l-3.4 1.9.7-3.8-2.8-2.6 3.8-.5Z"/></svg></span>
+            <div><div class="t">2 new reviews to answer</div><div class="s">From the last 7 days, one rated 3 stars</div></div>
+            <div class="r"><span class="tag">Victoria Island</span></div>
+          </div>
+        </section>
+
+        <!-- Live activity -->
+        <section class="card list feed">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+            <h2 class="h2">Live activity</h2><span class="live"><i></i>Updates every 30 seconds</span>
+          </div>
+          <div class="item"><span class="time">1:48 pm</span><div><div class="t">Payment by transfer</div><div class="s">Amaka Eze · Room 302 · taken by Tobi</div></div><div class="r"><span class="tag">Ikoyi</span><div class="amt in">+₦240,000</div></div></div>
+          <div class="item"><span class="time">1:41 pm</span><div><div class="t">Checked in</div><div class="s">Tunde Bakare · Room 112 · 3 nights</div></div><div class="r"><span class="tag">Lekki</span></div></div>
+          <div class="item"><span class="time">1:36 pm</span><div><div class="t">New website booking</div><div class="s">Ngozi Uche · 2 Nov, 3 nights · paid online</div></div><div class="r"><span class="tag">Victoria Island</span><div class="amt in">+₦360,000</div></div></div>
+          <div class="item"><span class="time">1:22 pm</span><div><div class="t">Checked out</div><div class="s">Fatima Bello · Room 208 · bill settled</div></div><div class="r"><span class="tag">Wuse II</span></div></div>
+          <div class="item"><span class="time">1:15 pm</span><div><div class="t">Refund approved</div><div class="s">Segun Ade · approved by Bola Adamu</div></div><div class="r"><span class="tag">Lekki</span><div class="amt">−₦85,000</div></div></div>
+          <div class="item"><span class="time">1:09 pm</span><div><div class="t">Guest request</div><div class="s">Room 214 needs extra towels</div></div><div class="r"><span class="tag">Wuse II</span></div></div>
+        </section>
+      </div>
+
+      <!-- Money detail -->
+      <section class="card chart">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <h2 class="h2">Collected each day <span class="mute" style="font-family:var(--body);font-size:14px;font-weight:500;margin-left:8px">All branches, October</span></h2>
+          <span class="mute">Best day: Sat 24 Oct, ₦9.8m</span>
+        </div>
+        <div class="cols" id="cols"></div>
+        <div class="axis"><span>1 Oct</span><span>15 Oct</span><span style="color:var(--navy);font-weight:600">Today</span><span>31 Oct</span></div>
+      </section>
+
+      <div class="three">
+        <section class="card pad">
+          <h2 class="h2">How guests paid</h2>
+          <p class="mute" style="margin-top:2px">₦181.2m collected this month</p>
+          <div class="hbar"><div class="l"><span>Bank transfer</span><b>₦83.4m <span class="mute" style="font-weight:500">46%</span></b></div><div class="tr"><i style="width:46%"></i></div></div>
+          <div class="hbar"><div class="l"><span>Card at the desk</span><b>₦48.9m <span class="mute" style="font-weight:500">27%</span></b></div><div class="tr"><i style="width:27%"></i></div></div>
+          <div class="hbar"><div class="l"><span>Paid online</span><b>₦30.8m <span class="mute" style="font-weight:500">17%</span></b></div><div class="tr"><i style="width:17%"></i></div></div>
+          <div class="hbar"><div class="l"><span>Cash</span><b>₦18.1m <span class="mute" style="font-weight:500">10%</span></b></div><div class="tr"><i style="width:10%"></i></div></div>
+        </section>
+        <section class="card pad">
+          <h2 class="h2">Where bookings came from</h2>
+          <p class="mute" style="margin-top:2px">₦196.4m earned this month</p>
+          <div class="hbar"><div class="l"><span>Walk-in</span><b>₦60.9m <span class="mute" style="font-weight:500">31%</span></b></div><div class="tr"><i style="width:31%"></i></div></div>
+          <div class="hbar"><div class="l"><span>Phone and WhatsApp</span><b>₦47.1m <span class="mute" style="font-weight:500">24%</span></b></div><div class="tr"><i style="width:24%"></i></div></div>
+          <div class="hbar"><div class="l"><span>Website</span><b>₦41.2m <span class="mute" style="font-weight:500">21%</span></b></div><div class="tr"><i style="width:21%"></i></div></div>
+          <div class="hbar"><div class="l"><span>Companies</span><b>₦27.5m <span class="mute" style="font-weight:500">14%</span></b></div><div class="tr"><i style="width:14%"></i></div></div>
+          <div class="hbar"><div class="l"><span>Other</span><b>₦19.7m <span class="mute" style="font-weight:500">10%</span></b></div><div class="tr"><i style="width:10%"></i></div></div>
+        </section>
+        <section class="card pad owes">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+            <h2 class="h2">Who owes</h2><span class="owe">₦6.85m</span>
+          </div>
+          <div class="row"><div><div class="n">Zenith Energy Ltd</div><div class="d"><span class="tag">Ikoyi</span>Company · 3 stays</div></div><b>₦1,150,000</b></div>
+          <div class="row"><div><div class="n">Adaeze Nwosu</div><div class="d"><span class="tag">Lekki</span>Room 204 · left 9 days ago</div></div><b>₦640,000</b></div>
+          <div class="row"><div><div class="n">Emeka Obi</div><div class="d"><span class="tag">Ikoyi</span>Room 310 · in-house</div></div><b>₦480,000</b></div>
+          <div class="row"><div><div class="n">Halima Musa</div><div class="d"><span class="tag">Wuse II</span>Room 221 · in-house</div></div><b>₦360,000</b></div>
+          <div class="row"><div><div class="n">Kunle Adeyemi</div><div class="d"><span class="tag">Victoria Island</span>Room 104 · leaves today</div></div><b>₦255,000</b></div>
+          <div class="row" style="padding-bottom:0"><a class="link">9 more stays, ₦3.97m</a><span></span></div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+// Room bars: in-house first, then arriving, then free. Heights vary like the
+// dashboard's "Tonight's house" (taller = booked for more of the next 7 nights).
+document.querySelectorAll('.bars').forEach((el, g) => {
+  const inn = +el.dataset.in, ar = +el.dataset.ar, n = +el.dataset.n;
+  for (let i = 0; i < n; i++) {
+    const b = document.createElement('b');
+    const kind = i < inn ? 'in' : i < inn + ar ? 'ar' : '';
+    if (kind) b.className = kind;
+    const h = kind ? 42 + ((i * 37 + g * 11) % 58) : 18 + ((i * 13 + g * 7) % 14);
+    b.style.height = h + '%';
+    el.appendChild(b);
+  }
+});
+// Collected each day, 1-31 Oct, ₦m; today is the 28th.
+const days = [5.1,6.3,7.4,8.2,5.6,5.9,6.0,6.4,7.1,7.7,7.9,5.2,5.0,5.8,6.1,6.6,8.4,8.1,5.3,5.5,6.2,5.9,7.0,9.8,7.4,5.4,5.7,4.2];
+const cols = document.getElementById('cols');
+for (let d = 1; d <= 31; d++) {
+  const i = document.createElement('i');
+  if (d <= 28) { i.style.height = (days[d - 1] / 9.8 * 100) + '%'; if (d === 28) i.className = 'today'; }
+  else i.className = 'future';
+  cols.appendChild(i);
+}
+</script>
+</body>
+</html>
