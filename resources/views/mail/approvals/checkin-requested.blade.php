@@ -14,5 +14,5 @@ Approving triggers the check-in automatically. Rejecting leaves the reservation 
 Review in Approvals
 </x-mail::button>
 
-Thanks,<br>Keverna
+Thanks,<br>{{ config('app.name') }}
 </x-mail::message>

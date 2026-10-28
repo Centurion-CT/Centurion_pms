@@ -43,7 +43,7 @@ class OperatorInviteMail extends Mailable implements NotTenantAware, ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->inviterName.' invited you to '.$this->tenant->name.' on Keverna',
+            subject: $this->inviterName.' invited you to '.$this->tenant->name,
         );
     }
 

@@ -1,5 +1,5 @@
 <x-mail::message>
-# Welcome to Keverna, {{ $operator->name }}!
+# Welcome to {{ config('app.name') }}, {{ $operator->name }}!
 
 Your booking engine for **{{ $tenant->name }}** is ready to be set up. Here's
 what to do next:

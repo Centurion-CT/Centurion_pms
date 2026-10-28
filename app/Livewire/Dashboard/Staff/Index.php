@@ -155,7 +155,7 @@ class Index extends Component
             ['operator' => $operator->id, 'token' => $magicToken],
         );
 
-        $inviterName = auth('web')->user()?->name ?? 'A Keverna manager';
+        $inviterName = auth('web')->user()?->name ?? 'A manager';
 
         Mail::to($operator->email)->queue(new OperatorInviteMail(
             operator: $operator,
@@ -488,7 +488,7 @@ class Index extends Component
             ['operator' => $op->id, 'token' => $magicToken],
         );
 
-        $inviterName = auth('web')->user()?->name ?? 'A Keverna manager';
+        $inviterName = auth('web')->user()?->name ?? 'A manager';
         Mail::to($op->email)->queue(new OperatorInviteMail(
             operator: $op,
             tenant: $tenant,

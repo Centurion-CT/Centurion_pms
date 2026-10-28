@@ -1,5 +1,5 @@
 <x-mail::message>
-# You're invited to {{ $tenant->name }} on Keverna.
+# You're invited to {{ $tenant->name }}
 
 Hi {{ $operator->name }},
 

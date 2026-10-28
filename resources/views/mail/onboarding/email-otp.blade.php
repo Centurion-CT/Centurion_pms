@@ -9,7 +9,7 @@ Use the code below to confirm your email address. It expires in 10 minutes.
 # {{ $code }}
 </x-mail::panel>
 
-If you didn't sign up for Keverna, please ignore this email.
+If you didn't sign up for {{ config('app.name') }}, please ignore this email.
 
 Thanks,
 The {{ config('app.name') }} team

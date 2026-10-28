@@ -31,7 +31,7 @@ class OperatorWelcomeMail extends Mailable implements NotTenantAware, ShouldQueu
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Welcome to Keverna: let\'s get your booking engine live');
+        return new Envelope(subject: 'Welcome to '.config('app.name').': let\'s get your booking engine live');
     }
 
     public function content(): Content
