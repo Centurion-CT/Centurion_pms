@@ -1,6 +1,6 @@
 // Build-time configuration.
 //
-//   flutter run --dart-define=CENTURION_HOST=staff.centurionapartments.com
+//   flutter run --dart-define=CENTURION_HOST=centurionpms.com
 //   flutter run --dart-define=CENTURION_HOST=http://127.0.0.1:8765   (local)
 //   flutter build web --dart-define=STAFF_DEMO=true                  (demo data)
 //

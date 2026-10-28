@@ -11,7 +11,7 @@ flutter pub get
 dart run build_runner build --delete-conflicting-outputs   # Drift
 
 # Real hotel (https is added when no scheme is given)
-flutter run --dart-define=CENTURION_HOST=staff.centurionapartments.com
+flutter run --dart-define=CENTURION_HOST=centurionpms.com
 # Local server (debug Android builds allow plain http; emulator host is 10.0.2.2)
 flutter run --dart-define=CENTURION_HOST=http://127.0.0.1:8765
 

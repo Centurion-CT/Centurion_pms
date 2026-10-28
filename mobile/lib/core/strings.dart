@@ -14,7 +14,7 @@ class S {
   static const phoneTooShort = 'Enter your full phone number.';
   static const next = 'Next';
   static const hotelAddress = 'Hotel address';
-  static const hotelAddressHint = 'staff.centurionapartments.com';
+  static const hotelAddressHint = 'centurionpms.com';
   static const hotelAddressMissing = 'Enter the hotel address first.';
   static const pinTitle = 'Enter your PIN';
   static String pinFor(String phone) => 'For $phone';
