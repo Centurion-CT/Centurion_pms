@@ -29,6 +29,7 @@ enum Permission: string
     case DiscountsManage   = 'discounts.manage';
     case ReportsAccess     = 'reports.access';
     case PricesManage      = 'prices.manage';
+    case AllBranchesOverview = 'overview.all_branches';
 
     public function label(): string
     {
@@ -39,6 +40,7 @@ enum Permission: string
             self::DiscountsManage => 'Manage discounts',
             self::ReportsAccess   => 'Access reports',
             self::PricesManage    => 'Manage prices',
+            self::AllBranchesOverview => 'All branches overview',
         };
     }
 
@@ -51,6 +53,7 @@ enum Permission: string
             self::DiscountsManage => 'Create and edit discount codes + auto-apply rules.',
             self::ReportsAccess   => 'See reports across the tenant.',
             self::PricesManage    => 'Edit room rates, product prices, and outlet tax rates.',
+            self::AllBranchesOverview => 'See money, occupancy and live activity for every branch on one page, including amounts collected, owed and spent. For an accountant or an area manager.',
         };
     }
 
@@ -67,6 +70,7 @@ enum Permission: string
             self::DiscountsManage => 'discounts',
             self::ReportsAccess   => 'reports',
             self::PricesManage    => null,
+            self::AllBranchesOverview => 'overview',
         };
     }
 

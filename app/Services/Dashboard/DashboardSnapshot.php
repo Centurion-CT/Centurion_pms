@@ -70,13 +70,24 @@ class DashboardSnapshot
      */
     public function build(bool $bypass = false): array
     {
+        return $this->buildFor(app(\App\Services\Properties\PropertyContext::class)->current()?->getKey(), $bypass);
+    }
+
+    /**
+     * The same snapshot for a named branch (null = whole tenant), used
+     * by the All branches page to read each branch exactly as that
+     * branch's own dashboard does. Shares build()'s cache entry.
+     *
+     * @return array<string, mixed>
+     */
+    public function buildFor(?int $propertyId, bool $bypass = false): array
+    {
         $tenant = Tenant::current();
         $tenantId = $tenant instanceof Tenant ? $tenant->getKey() : 0;
-        // Resolve + stash the operator's picked branch so every private
-        // compute() helper filters by it. Cache key includes the id so
-        // two operators looking at different branches don't step on
-        // each other's snapshot.
-        $this->propertyId = app(\App\Services\Properties\PropertyContext::class)->current()?->getKey();
+        // Stash the branch so every private compute() helper filters by
+        // it. Cache key includes the id so two operators looking at
+        // different branches don't step on each other's snapshot.
+        $this->propertyId = $propertyId;
         $propertyKey = $this->propertyId ?? 'all';
         $cacheKey = "dashboard:snapshot:t{$tenantId}:p{$propertyKey}";
 

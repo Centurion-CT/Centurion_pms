@@ -83,6 +83,7 @@ enum PropertyType: string
             'finance', 'payments', 'refunds', 'integrations', 'inventory', 'pos', 'subscription', 'domain',
             'staff', 'settings', 'settings_profile', 'notifications',
             'accounting',
+            'overview',
         ];
 
         $kind = match ($this->kind()) {

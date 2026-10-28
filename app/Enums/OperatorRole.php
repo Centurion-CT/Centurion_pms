@@ -102,6 +102,8 @@ enum OperatorRole: string
                 'notifications',
                 // Accounting module (expenses, future revenue/P&L).
                 'accounting',
+                // All branches page: money + activity across every branch.
+                'overview',
             ],
             self::ReservationOfficer => [
                 'dashboard', 'reservations', 'in_house', 'bookings', 'calendar', 'reports',

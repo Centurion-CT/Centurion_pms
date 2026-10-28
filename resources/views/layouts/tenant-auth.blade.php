@@ -97,8 +97,8 @@
                 'Operate' => [
                     ['label' => 'Dashboard', 'module' => 'dashboard', 'route' => 'tenant.dashboard',     'prefix' => 'tenant.dashboard',    'color' => 'slate',
                      'icon'  => 'M3 11.5L10 5l7 6.5M5 10v8h10v-8'],
-                    ['label' => 'Portfolio', 'module' => 'dashboard', 'route' => 'tenant.portfolio.index', 'prefix' => 'tenant.portfolio.', 'color' => 'olive',
-                     'icon'  => 'M3 6h14v10H3zM3 6l2-2h4l2 2M7 10h6M7 13h4'],
+                    ['label' => 'All branches', 'module' => 'overview', 'route' => 'tenant.all-branches', 'prefix' => 'tenant.all-branches', 'color' => 'slate',
+                     'icon'  => 'M4 16v-5M8 16V7M12 16v-4M16 16V4'],
                     ['label' => 'Reservations', 'module' => 'reservations', 'route' => 'tenant.reservations.index', 'prefix' => 'tenant.reservations.', 'color' => 'blue',
                      'icon'  => 'M4 6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9a1 1 0 0 1-1.6.8L10 13l-4.4 2.8A1 1 0 0 1 4 15z'],
                     ['label' => 'Guest requests', 'module' => 'reservations', 'badge_module' => 'guest_requests', 'route' => 'tenant.guest-requests.index', 'prefix' => 'tenant.guest-requests.', 'color' => 'amber',
@@ -234,7 +234,8 @@
             // colour, icon) are untouched; only their section changes.
             // Anything not named here stays in its original section.
             $navGroupOrder = [
-                'Front desk' => ['Dashboard', 'Portfolio', 'Reservations', 'In-house', 'Guest requests', 'Approvals', 'Bookings', 'Calendar'],
+                'Overview'   => ['All branches'],
+                'Front desk' => ['Dashboard', 'Reservations', 'In-house', 'Guest requests', 'Approvals', 'Bookings', 'Calendar'],
                 'Rooms'      => ['Rooms', 'Categories', 'Rates', 'Housekeeping', 'Inspections', 'Supplies'],
                 'Workspace'  => [],
                 'Residential' => [],
@@ -318,9 +319,8 @@
                 'categories', 'rooms', 'housekeeping', 'inspections', 'supplies',
                 'store', 'inventory', 'pos', 'complimentary',
             ];
-            // "Portfolio" is only a meaningful landing when the tenant
-            // owns more than one Property — otherwise it's a rehash of
-            // Dashboard. Single-branch operators see Dashboard alone.
+            // "All branches" only means something once the hotel has a
+            // second branch; until then it would repeat the Dashboard.
             $portfolioShown = (\App\Models\Tenant::current()?->properties()->count() ?? 0) > 1;
             $nav = collect($nav)
                 ->map(fn (array $items) => array_values(array_filter(
@@ -331,7 +331,7 @@
                     ))
                     && ! ($storeSuppressed && ($item['module'] ?? '') === 'store')
                     && ! ($isSingleUnit && in_array($item['module'] ?? '', $singleUnitHidden, true))
-                    && ! (! $portfolioShown && ($item['route'] ?? '') === 'tenant.portfolio.index')
+                    && ! (! $portfolioShown && ($item['route'] ?? '') === 'tenant.all-branches')
                     // Domain management is opt-in; its route isn't registered when off.
                     && ! (! config('keverna.domain_management.enabled') && ($item['module'] ?? '') === 'domain'),
                 )))

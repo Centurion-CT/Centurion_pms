@@ -503,15 +503,6 @@ Route::middleware('auth:web')->group(function (): void {
             Route::get('/dashboard/branches', BranchesIndex::class)
                 ->name('tenant.branches.index');
 
-            // Cross-property Portfolio dashboard — org-wide rollups +
-            // one card per property. Meaningful even for a single-
-            // branch operator since it shows the marketplace link +
-            // month-to-date rev, but the biggest win is for owners
-            // running N standalone apartments as N single_unit
-            // Properties (see Property.unit_mode).
-            Route::get('/dashboard/portfolio', \App\Livewire\Dashboard\Portfolio\Index::class)
-                ->name('tenant.portfolio.index');
-
             // Printable per-property portal QR - encodes the
             // /portal/{qr_slug} URL guests scan from the lobby.
             // Bind by id since operator-facing routes take numeric
@@ -527,6 +518,15 @@ Route::middleware('auth:web')->group(function (): void {
                 \App\Http\Controllers\Tenant\PropertyQrCodeController::class)
                 ->name('tenant.branches.qr');
         });
+
+        // All branches: money, tonight's rooms and live activity for
+        // every branch. Managers, plus anyone granted the
+        // overview.all_branches permission (role:overview).
+        Route::get('/dashboard/all-branches', \App\Livewire\Dashboard\AllBranches\Index::class)
+            ->middleware('role:overview')
+            ->name('tenant.all-branches');
+        // Old Portfolio address, from bookmarks.
+        Route::redirect('/dashboard/portfolio', '/dashboard/all-branches');
 
         // Branch switcher - every authenticated operator can flip
         // context between branches they have access to. Auth middleware
