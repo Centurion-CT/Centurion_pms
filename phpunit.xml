@@ -57,6 +57,7 @@
         <env name="CENTRAL_DOMAIN" value="keverna.test"/>
         <env name="ADMIN_DOMAIN" value="admin.keverna.test"/>
         <env name="TENANT_DOMAIN_SUFFIX" value=".keverna.test"/>
+        <env name="TENANCY_MODE" value="domains"/>
         <env name="DOMAIN_MANAGEMENT_ENABLED" value="true"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>

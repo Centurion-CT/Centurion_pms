@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Paystack\CorporateWalletTopupWebhookController;
 use App\Http\Controllers\Portal\CorporateLogoutController;
 use App\Http\Controllers\Portal\CorporateWalletCallbackController;
@@ -28,8 +27,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// PRD §19: cheap subsystem ping for load balancer + uptime monitor.
-Route::get('/health', HealthController::class)->name('health');
+// /health is registered in bootstrap/app.php, outside the business-only
+// groups, so uptime checks work on any host.
 
 // Legal - linked from every marketing surface footer + the cookie-consent banner.
 Route::view('/cookies', 'legal.cookies')->name('legal.cookies');

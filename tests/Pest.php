@@ -64,3 +64,13 @@ function landingUrl(string $host, string $path = ''): string
 
     return 'http://'.$host.($property === null ? '' : '/branches/'.$property->slug).'/'.$path;
 }
+
+/**
+ * Point route() at a business's own address. Tests run TENANCY_MODE=domains,
+ * where the host decides the business, and route() outside a request would
+ * otherwise build http://localhost URLs that belong to no business.
+ */
+function onBusinessHost(string $slug): void
+{
+    \Illuminate\Support\Facades\URL::forceRootUrl('http://'.$slug.config('keverna.tenant_domain_suffix'));
+}

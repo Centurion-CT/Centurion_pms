@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Multitenancy\SoloTenantFinder;
+use App\Multitenancy\HostTenantFinder;
 use Closure;
 use Illuminate\Http\Request;
 use Spatie\Multitenancy\Contracts\IsTenant;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ResolveTenantFromRequest
 {
-    public function __construct(private SoloTenantFinder $finder) {}
+    public function __construct(private HostTenantFinder $finder) {}
 
     public function handle(Request $request, Closure $next): Response
     {

@@ -24,6 +24,7 @@ beforeEach(function (): void {
     Mail::fake();
 
     $this->tenant = Tenant::factory()->create(['slug' => 'actions-test']);
+    onBusinessHost('actions-test');
     $this->tenant->makeCurrent();
     $this->property = Property::factory()->for($this->tenant)->create([
         'is_listed_publicly' => true,

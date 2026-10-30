@@ -18,6 +18,27 @@ return [
     'tenant_domain_suffix' => env('TENANT_DOMAIN_SUFFIX', '.keverna.test'),
 
     /*
+    | How a request finds its business (docs/MULTITENANCY.md):
+    |  - 'single'  — every request binds the first business, whatever the
+    |                host. What production runs until the wildcard DNS for
+    |                the tenant suffix is live.
+    |  - 'domains' — the host decides: a verified own domain, else
+    |                `{slug}<tenant_domain_suffix>`. The central domain and
+    |                reserved subdomains bind no business.
+    */
+    'tenancy_mode' => env('TENANCY_MODE', 'single'),
+
+    /*
+    | Subdomains of the tenant suffix that never belong to a business, and
+    | that sign-up must refuse as a slug.
+    */
+    'reserved_slugs' => [
+        'www', 'app', 'admin', 'api', 'mail', 'email', 'login', 'signup', 'register',
+        'help', 'support', 'status', 'console', 'billing', 'docs', 'blog', 'cdn',
+        'static', 'assets', 'media', 'dashboard', 'cname', 'ns1', 'ns2', 'smtp',
+    ],
+
+    /*
     | The well-known CNAME target operators point their custom domain at.
     | This hostname resolves to Dokwe's ingress; the choice of DNS
     | provider (Namecheap today) doesn't matter here. Used by:

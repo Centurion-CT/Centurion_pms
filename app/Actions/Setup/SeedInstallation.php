@@ -11,7 +11,7 @@ use App\Enums\TenantStatus;
 use App\Models\Operator;
 use App\Models\Property;
 use App\Models\Tenant;
-use App\Multitenancy\SoloTenantFinder;
+use App\Multitenancy\HostTenantFinder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -113,9 +113,9 @@ class SeedInstallation
             $operator->forceFill(['activated_at' => now()]);
             $operator->save();
 
-            // Invalidate SoloTenantFinder's memoised null so the next
+            // Clear the business HostTenantFinder cached on this request so the next
             // request in this response cycle picks up the fresh Tenant.
-            SoloTenantFinder::forget();
+            HostTenantFinder::forget();
 
             return $operator;
         });
@@ -132,6 +132,7 @@ class SeedInstallation
         if ($slug === '') {
             $slug = 'property-'.Str::random(6);
         }
+
         return $slug;
     }
 }
