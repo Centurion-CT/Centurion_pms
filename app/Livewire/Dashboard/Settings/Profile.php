@@ -49,7 +49,7 @@ class Profile extends Component
             'name' => ['required', 'string', 'max:120'],
             'email' => [
                 'required', 'email', 'max:180',
-                Rule::unique('operators', 'email')->ignore($op->id),
+                Rule::unique('operators', 'email')->where('tenant_id', $op->tenant_id)->ignore($op->id),
             ],
         ]);
 

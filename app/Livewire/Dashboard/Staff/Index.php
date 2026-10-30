@@ -67,7 +67,7 @@ class Index extends Component
             'inviteName' => ['required', 'string', 'max:120'],
             'inviteEmail' => [
                 $appRole ? 'nullable' : 'required', 'email', 'max:180',
-                Rule::unique('operators', 'email'),
+                Rule::unique('operators', 'email')->where('tenant_id', Tenant::current()?->id),
             ],
             'inviteRole' => ['required', Rule::in(array_map(fn ($r) => $r->value, OperatorRole::cases()))],
             'invitePhone' => [$appRole && trim($this->inviteEmail) === '' ? 'required' : 'nullable', 'string', 'max:32', 'regex:/^[0-9+()\s-]{7,}$/'],

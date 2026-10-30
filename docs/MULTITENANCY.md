@@ -61,7 +61,7 @@ row has its slug and own domain set. See [subdomain-dns.md](subdomain-dns.md).
 | --- | --- | --- |
 | 1 | Find the business from the host (`HostTenantFinder`), `TENANCY_MODE` switch, unknown/paused/platform-host handling | Done (placeholder platform home) |
 | 2 | Isolation tests: two businesses side by side across pages, staff login, mobile API, webhooks, uploads, queued jobs, cache | Started: pages, staff accounts, mobile tokens, paused, unknown address. To do: uploads, queued jobs, cache, URLs built outside a request |
-| 3 | Platform pages on `centurionpms.com`: home, sign-up (reuses `SeedInstallation`), find-my-business login with emailed links | To do |
+| 3 | Platform pages on `centurionpms.com`: home, sign-up, find-my-business login with emailed links | Done |
 | 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | To do |
 | 5 | Booking site from design Option C v2 as each business's `/` | To do |
 | 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | To do |
@@ -86,6 +86,25 @@ Designs: `design/platform/` (local mockups) and `design/platform/superdesign/`
 - Tests now run with `TENANCY_MODE=domains`, matching where production is
   going. `onBusinessHost('slug')` in `tests/Pest.php` points `route()` at a
   business's address.
+
+## Step 3 notes
+
+- Sign-up: `/signup` (`App\Livewire\Platform\SignUp`): business, then
+  account, then a 6-digit email code (`App\Platform\SignUpCode`, in the
+  cache), then `CreateBusiness`. Nothing is created before the code is
+  right. The password is hashed into the session at step 2 and never sent
+  back to the browser.
+- "Open my dashboard" (`/signup/open`) hands the manager to their own
+  address with the one-time `PostRegistrationLoginLink`. They land on the
+  existing onboarding, which asks them to verify their phone (skippable).
+- `/login` on the platform finds a business by address, or emails a link to
+  each business's staff login. It never says whether an email exists.
+- Staff emails are now unique per business (`operators.tenant_id, email`),
+  so one person can work at several businesses. Sign-up also links the
+  manager to a login identity so the mobile apps can sign them in.
+- Not built: "used on this device" on the platform login (sessions don't
+  cross addresses, so it needs its own cookie), and a "What does it cost?"
+  answer, left out until pricing is decided.
 
 ## Not mirrored to keverna-solo
 
