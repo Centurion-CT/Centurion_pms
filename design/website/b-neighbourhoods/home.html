@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Apartments · Option B · Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --stone: #E8ECE8;
+    --paper: #F6F7F5;
+    --forest: #173A30;
+    --forest-2: #24503F;
+    --ink: #17201C;
+    --ink-2: #4C5A53;
+    --line: #CDD5D0;
+    --brass: #B07F27;
+    --blue: #336799;
+    --display: 'Bodoni Moda', Georgia, serif;
+    --body: 'Manrope', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.6 var(--body); }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 3px solid var(--brass); outline-offset: 3px; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 48px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: 50px; padding: 0 26px; border: 0; border-radius: 2px; background: var(--forest); color: #fff; font: 600 15px var(--body); text-decoration: none; cursor: pointer; }
+  .btn:hover { background: var(--forest-2); }
+  .btn.light { background: #fff; color: var(--forest); }
+
+  /* Hero: full-bleed photo, the five names are the headline */
+  .hero { position: relative; min-height: 860px; color: #fff; display: flex; flex-direction: column; overflow: hidden; background: var(--forest); }
+  .hero-bg { position: absolute; inset: 0; }
+  .hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .7s ease; }
+  .hero-bg img.on { opacity: 1; }
+  .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,28,22,.86) 0%, rgba(10,28,22,.62) 50%, rgba(10,28,22,.58) 100%); }
+  .hero > .wrap { position: relative; z-index: 1; width: 100%; }
+  .top { display: flex; align-items: center; justify-content: space-between; height: 88px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font: 600 18px var(--body); }
+  .brand img { width: 30px; filter: brightness(0) invert(1); }
+  .nav { display: flex; gap: 34px; font-size: 15px; }
+  .nav a { text-decoration: none; opacity: .85; }
+  .nav a:hover { opacity: 1; }
+  .hero-main { flex: 1; display: grid; grid-template-columns: 1fr 360px; align-items: center; gap: 48px; }
+  .names { list-style: none; margin: 0; padding: 0; }
+  .names li { font: 400 104px/0.98 var(--display); letter-spacing: -0.02em; }
+  .names a { text-decoration: none; color: rgba(255,255,255,.38); transition: color .3s; display: inline-flex; align-items: baseline; gap: 22px; }
+  .names a small { font: 500 15px var(--body); letter-spacing: 0; opacity: 0; transition: opacity .3s; color: #fff; }
+  .names a.on, .names a:hover, .names a:focus-visible { color: #fff; }
+  .names a.on small { opacity: .9; }
+  .hero-side p { font-size: 19px; line-height: 1.55; margin: 0 0 18px; }
+  .hero-side .muted { font-size: 15px; opacity: .75; }
+
+  /* Booking bar docked to the hero */
+  .book { background: #fff; color: var(--ink); display: grid; grid-template-columns: 1.4fr 1fr 1fr .8fr auto; margin-bottom: 48px; box-shadow: 0 30px 60px rgba(0,0,0,.25); }
+  .book label { display: block; padding: 16px 22px; border-right: 1px solid var(--line); cursor: pointer; }
+  .book label span { display: block; font-size: 13px; color: var(--ink-2); margin-bottom: 2px; }
+  .book select, .book input { border: 0; padding: 0; font: 600 17px var(--body); color: var(--ink); background: transparent; width: 100%; appearance: none; }
+  .book .btn { height: auto; border-radius: 0; padding: 0 34px; font-size: 16px; }
+
+  section { padding: 128px 0 0; }
+  .h2 { font: 400 60px/1.05 var(--display); letter-spacing: -0.02em; margin: 0; }
+  .intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 56px; }
+  .intro p { margin: 0; color: var(--ink-2); font-size: 18px; max-width: 48ch; }
+
+  /* Neighbourhood cards */
+  .hoods { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .hood { text-decoration: none; display: flex; flex-direction: column; }
+  .hood figure { margin: 0 0 18px; aspect-ratio: 3 / 4; overflow: hidden; background: var(--stone); }
+  .hood img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+  .hood:hover img { transform: scale(1.04); }
+  .hood h3 { font: 400 32px/1.1 var(--display); margin: 0 0 8px; }
+  .hood p { margin: 0 0 12px; font-size: 15px; color: var(--ink-2); line-height: 1.5; }
+  .hood .from { margin-top: auto; font-size: 15px; padding-top: 12px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; }
+  .hood .from b { font-weight: 700; }
+
+  /* Feature spread */
+  .spread { display: grid; grid-template-columns: 1.2fr 1fr; background: var(--forest); color: #fff; }
+  .spread img { width: 100%; height: 100%; object-fit: cover; min-height: 640px; }
+  .spread-body { padding: 72px 64px; display: flex; flex-direction: column; }
+  .spread-body .h2 { color: #fff; margin-bottom: 22px; }
+  .spread-body p { color: #C4D3CB; max-width: 44ch; margin: 0 0 32px; }
+  .spread ul { list-style: none; margin: 0 0 40px; padding: 0; border-top: 1px solid rgba(255,255,255,.18); }
+  .spread li { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.18); font-size: 16px; }
+  .spread li span { color: #C4D3CB; }
+  .spread .btn { align-self: start; margin-top: auto; }
+
+  /* Promise row */
+  .promise { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+  .promise div { padding: 32px 28px 0 0; }
+  .promise h3 { font: 400 26px var(--display); margin: 0 0 8px; }
+  .promise p { margin: 0; color: var(--ink-2); font-size: 15px; max-width: 30ch; }
+
+  .quote { text-align: center; padding: 140px 0 0; }
+  .quote blockquote { font: italic 400 64px/1.1 var(--display); margin: 0 auto 26px; max-width: 18ch; letter-spacing: -0.01em; }
+  .quote cite { font-style: normal; color: var(--ink-2); }
+
+  footer { margin-top: 140px; background: var(--forest); color: #C4D3CB; padding: 72px 0 40px; font-size: 15px; }
+  footer .cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+  footer .big { font: 400 44px/1.1 var(--display); color: #fff; margin: 0 0 24px; max-width: 14ch; }
+  footer h4 { color: #fff; margin: 0 0 14px; font-size: 15px; font-weight: 600; }
+  footer a { display: block; text-decoration: none; margin-bottom: 8px; }
+  footer .legal { margin-top: 56px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.16); font-size: 13px; display: flex; justify-content: space-between; }
+
+  @media (prefers-reduced-motion: reduce) { .hero-bg img, .hood img { transition: none; } }
+  @media (max-width: 1100px) {
+    .names li { font-size: 76px; }
+    .hero-main { grid-template-columns: 1fr; }
+    .hoods { grid-template-columns: repeat(3, 1fr); }
+    .spread { grid-template-columns: 1fr; }
+    .spread img { min-height: 360px; }
+  }
+  @media (max-width: 720px) {
+    .wrap { padding: 0 16px; }
+    .nav { display: none; }
+    .hero { min-height: 0; }
+    .hero-main { padding-top: 40px; padding-bottom: 32px; gap: 24px; }
+    .names li { font-size: 50px; line-height: 1.04; }
+    .names a small { display: none; }
+    .book { grid-template-columns: 1fr 1fr; margin-bottom: 16px; }
+    .book label:first-child { grid-column: 1 / -1; border-bottom: 1px solid var(--line); }
+    .book label { border-bottom: 1px solid var(--line); }
+    .book label:nth-child(4) { grid-column: 1 / -1; }
+    .book .btn { grid-column: 1 / -1; height: 54px; }
+    .hood .from span:first-child { display: none; }
+    section { padding-top: 80px; }
+    .h2 { font-size: 40px; }
+    .intro { grid-template-columns: 1fr; gap: 16px; }
+    .hoods { grid-template-columns: 1fr 1fr; }
+    .hood h3 { font-size: 24px; }
+    .spread-body { padding: 40px 20px; }
+    .promise { grid-template-columns: 1fr 1fr; }
+    .quote blockquote { font-size: 38px; }
+    footer .cols { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="wrap top">
+    <a class="brand" href="#"><img src="../assets/logo.png" alt="">Centurion Apartments</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#neighbourhoods">Neighbourhoods</a>
+      <a href="#">Apartments</a>
+      <a href="#">Long stays</a>
+      <a href="#">Contact</a>
+      <a href="tel:+2348162417819">0816 241 7819</a>
+    </nav>
+  </div>
+  <div class="wrap hero-main">
+    <h1 style="margin:0"><span class="sr-only" style="position:absolute;left:-9999px">Centurion Apartments in Abuja:</span>
+      <ul class="names" id="names"></ul>
+    </h1>
+    <div class="hero-side">
+      <p>Five apartment buildings in Abuja, one front desk that never closes. Choose a neighbourhood and we'll keep the lights, the water and the Wi‑Fi on.</p>
+      <p class="muted">Every apartment has a kitchen, 24-hour power and security.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <form class="book" action="results.html" role="search">
+      <label><span>Where</span><select id="where"><option>Any neighbourhood</option></select></label>
+      <label><span>Check in</span><input value="Fri 6 Nov" readonly></label>
+      <label><span>Check out</span><input value="Mon 9 Nov" readonly></label>
+      <label><span>Guests</span><select><option>2 guests</option><option>1 guest</option><option>3 guests</option><option>4 guests</option></select></label>
+      <button class="btn">Check availability</button>
+    </form>
+  </div>
+</header>
+
+<main>
+  <section id="neighbourhoods">
+    <div class="wrap">
+      <div class="intro">
+        <h2 class="h2">Choose the part of Abuja you want to wake up in</h2>
+        <p>Wuse for restaurants and nights out, Zone 4 for business on foot, Jabi and the annex for the lake, Lifecamp for space and a pool.</p>
+      </div>
+      <div class="hoods" id="hoods"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="spread">
+      <img src="../assets/living-cream.jpg" alt="Living room in a Zone 4 apartment">
+      <div class="spread-body">
+        <h2 class="h2">Zone 4, a short walk from everything</h2>
+        <p>Berger, Wuse Market and the banks on Herbert Macaulay Way are on foot. Come back to a full apartment with a kitchen, a proper sofa and a bed made every morning.</p>
+        <ul id="z4"></ul>
+        <a class="btn light" href="results.html#zone-4">See Zone 4 apartments</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap promise">
+      <div><h3>Power all night</h3><p>Grid, inverter and generator, so the AC never stops at 2am.</p></div>
+      <div><h3>One front desk</h3><p>Call one number and reach every building, any time.</p></div>
+      <div><h3>Kitchens, not minibars</h3><p>Cook, store groceries, and stay as long as the job takes.</p></div>
+      <div><h3>Pay how you like</h3><p>Card or transfer online, with a receipt for your company.</p></div>
+    </div>
+  </section>
+
+  <div class="wrap quote">
+    <blockquote id="quote"></blockquote>
+    <cite id="by"></cite>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><p class="big">Book directly for the best rate</p><a class="btn light" href="results.html" style="display:inline-flex">Check availability</a></div>
+      <div><h4>Neighbourhoods</h4><div id="foot-locs"></div></div>
+      <div><h4>Stay</h4><a href="#">Apartments</a><a href="#">Long stays</a><a href="#">Corporate</a><a href="#">Manage a booking</a></div>
+      <div><h4>Front desk</h4><a href="tel:+2348162417819">0816 241 7819</a><a href="tel:+2349088358213">0908 835 8213</a><a href="#">WhatsApp</a></div>
+    </div>
+    <div class="legal"><span>© 2026 Centurion Apartments, Abuja</span><span>Privacy · Terms</span></div>
+  </div>
+</footer>
+
+<script src="../assets/data.js"></script>
+<script>
+  const C = CENTURION, L = C.locations;
+  const bg = document.getElementById('hero-bg'), names = document.getElementById('names');
+  bg.innerHTML = L.map((l, i) => `<img src="../assets/${l.photo}" alt="" data-slug="${l.slug}" class="${i === 0 ? 'on' : ''}">`).join('');
+  names.innerHTML = L.map((l, i) => `<li><a href="results.html#${l.slug}" data-slug="${l.slug}" class="${i === 0 ? 'on' : ''}">${l.name}<small>from ${naira(l.from)} · ${l.free} free tonight</small></a></li>`).join('');
+  let auto = 0, timer;
+  const show = slug => {
+    bg.querySelectorAll('img').forEach(i => i.classList.toggle('on', i.dataset.slug === slug));
+    names.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.slug === slug));
+  };
+  names.querySelectorAll('a').forEach(a => {
+    a.addEventListener('mouseenter', () => { clearInterval(timer); show(a.dataset.slug); });
+    a.addEventListener('focus', () => { clearInterval(timer); show(a.dataset.slug); });
+  });
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    timer = setInterval(() => { auto = (auto + 1) % L.length; show(L[auto].slug); }, 4200);
+  }
+
+  document.getElementById('where').innerHTML += L.map(l => `<option>${l.name}</option>`).join('');
+  document.getElementById('hoods').innerHTML = L.map(l => `
+    <a class="hood" href="results.html#${l.slug}">
+      <figure><img src="../assets/${l.photo}" alt="${l.name} apartment"></figure>
+      <h3>${l.name}</h3>
+      <p>${l.note}</p>
+      <div class="from"><span>${l.types.length} apartment type${l.types.length > 1 ? 's' : ''}</span><span>from <b>${naira(l.from)}</b></span></div>
+    </a>`).join('');
+  document.getElementById('z4').innerHTML = L[1].types.map(t => `<li>${t.name}<span>${naira(t.rate)} a night</span></li>`).join('');
+  document.getElementById('quote').textContent = '“' + C.review.quote + '”';
+  document.getElementById('by').textContent = `${C.review.by}, ${C.review.score}/10 for Wuse 2`;
+  document.getElementById('foot-locs').innerHTML = L.map(l => `<a href="#">${l.name}</a>`).join('');
+</script>
+</body>
+</html>

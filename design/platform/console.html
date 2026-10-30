@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Businesses · Centurion console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="platform.css">
+<style>
+  /* Layout only */
+  body { background: var(--paper); }
+  .shell { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
+  .nav { background: var(--navy-800); padding: var(--s-5) var(--s-3); display: flex; flex-direction: column; gap: var(--s-1); position: sticky; top: 0; height: 100vh; }
+  .nav .logo { justify-content: flex-start; height: auto; padding: 0 var(--s-2) var(--s-6); font-size: var(--t-md); color: var(--white); }
+  .nav .logo:hover { background: none; }
+  .nav .logo small { display: block; font: 500 var(--t-xs)/1.2 var(--body); color: var(--navy-300); margin-top: 2px; }
+  .nav h2 { font: 600 var(--t-xs)/1 var(--body); color: var(--navy-300); margin: var(--s-4) var(--s-2) var(--s-2); }
+  .nav a { display: flex; align-items: center; justify-content: space-between; height: 38px; padding: 0 var(--s-3); border-radius: var(--r-md); color: var(--navy-200); text-decoration: none; font-size: var(--t-sm); font-weight: 600; }
+  .nav a:hover { background: rgba(255, 255, 255, .06); color: var(--white); }
+  .nav a[aria-current] { background: var(--navy-700); color: var(--white); }
+  .nav .n { min-width: 20px; height: 20px; border-radius: 10px; background: var(--warn); color: var(--navy-950); font-size: 12px; display: grid; place-items: center; padding: 0 6px; }
+  .nav .me { margin-top: auto; padding: var(--s-3); border-radius: var(--r-md); background: var(--navy-900); font-size: var(--t-sm); color: var(--white); }
+  .nav .me small { display: block; color: var(--navy-300); font-size: var(--t-xs); }
+
+  .main { padding: var(--s-8) var(--s-8) var(--s-16); display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: var(--s-6); align-items: start; }
+  .main > .wide { grid-column: 1 / -1; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--s-4); flex-wrap: wrap; }
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--navy-900); border-radius: var(--r-lg); color: var(--white); }
+  .stats div { padding: var(--s-5) var(--s-6); }
+  .stats div + div { border-left: 1px solid var(--navy-700); }
+  .stats b { display: block; font: 600 var(--t-2xl)/1.1 var(--display); margin: var(--s-1) 0; }
+  .stats span, .stats small { font-size: var(--t-xs); color: var(--navy-200); }
+  .look { display: grid; gap: 0; }
+  .look-head { display: flex; justify-content: space-between; align-items: center; padding: var(--s-4) var(--s-6); border-bottom: 1px solid var(--line); }
+  .look-item { display: flex; align-items: center; gap: var(--s-4); padding: var(--s-4) var(--s-6); }
+  .look-item + .look-item { border-top: 1px solid var(--line); }
+  .look-item .why { flex: 1; min-width: 0; }
+  .look-item b { color: var(--ink-900); }
+  .look-item .btns { display: flex; gap: var(--s-2); flex: none; }
+  .list-head { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); padding: var(--s-4) var(--s-4) var(--s-3); flex-wrap: wrap; }
+  .search-in { height: 36px; width: 240px; }
+  .table-wrap { overflow-x: auto; }
+
+  .panel { position: sticky; top: var(--s-8); }
+  .panel-top { padding: var(--s-6); border-bottom: 1px solid var(--line); display: grid; gap: var(--s-3); }
+  .panel-top .biz-mark { width: 44px; height: 44px; font-size: 18px; border-radius: var(--r-lg); }
+  .panel-sec { padding: var(--s-5) var(--s-6); border-bottom: 1px solid var(--line); }
+  .panel-sec:last-child { border-bottom: 0; }
+  .panel-sec h3 { font: 600 var(--t-xs)/1 var(--body); color: var(--ink-500); margin: 0 0 var(--s-3); }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: var(--s-2) var(--s-4); margin: 0; font-size: var(--t-sm); }
+  .kv dt { color: var(--ink-500); }
+  .kv dd { margin: 0; text-align: right; color: var(--ink-900); font-weight: 600; overflow-wrap: anywhere; }
+  .domain { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); font-size: var(--t-sm); color: var(--ink-900); font-weight: 600; overflow-wrap: anywhere; }
+  .domain + .domain { margin-top: var(--s-2); }
+  .acts { display: grid; gap: var(--s-2); }
+  .confirm { margin-top: var(--s-3); padding: var(--s-4); border-radius: var(--r-md); background: var(--bad-50); font-size: var(--t-sm); color: var(--bad-700); }
+  .confirm p { margin: 0 0 var(--s-3); }
+  .is-hidden { display: none !important; }
+
+  @media (max-width: 1240px) { .main { grid-template-columns: minmax(0, 1fr); } .panel { position: static; } }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; padding: var(--s-3) var(--gutter); }
+    .nav .logo { padding: 0; margin-right: auto; }
+    .nav h2, .nav .me, .nav a:not([aria-current]) { display: none; }
+    .main { padding: var(--s-6) var(--gutter) var(--s-12); }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stats div:nth-child(3) { border-left: 0; }
+    .stats div:nth-child(n+3) { border-top: 1px solid var(--navy-700); }
+    .look-item { flex-direction: column; align-items: stretch; }
+    .search-in { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="nav on-navy" aria-label="Console">
+    <a class="logo" href="#" style="height:auto;padding-bottom:var(--s-6)"><span class="logo-mark"><img src="assets/logo.png" alt=""></span><span>Centurion<small>Console</small></span></a>
+    <a href="#" aria-current="page">Businesses <span style="color:var(--navy-300)">9</span></a>
+    <a href="#look">Needs a look <span class="n">2</span></a>
+    <a href="#">Domains</a>
+    <h2>Platform</h2>
+    <a href="#">Emails to businesses</a>
+    <a href="#">Console team</a>
+    <div class="me">Ifeanyi Amadi<small>Platform owner</small></div>
+  </nav>
+
+  <main class="main">
+    <div class="head wide">
+      <div><p class="meta">Friday 30 October</p><h1 class="h1">Businesses</h1></div>
+      <a class="btn btn-secondary" href="home.html">Open centurionpms.com</a>
+    </div>
+
+    <section class="stats wide" aria-label="Summary">
+      <div><span>Businesses</span><b>9</b><small>6 active, 2 new, 1 paused</small></div>
+      <div><span>Signed up in October</span><b>4</b><small>3 have added rooms</small></div>
+      <div><span>Bookings, last 30 days</span><b>1,284</b><small>Across every business</small></div>
+      <div><span>Own domains</span><b>2</b><small>1 not set up yet</small></div>
+    </section>
+
+    <section class="card look wide" id="look">
+      <div class="look-head"><h2 class="h3">Needs a look</h2><span class="meta">Checked every morning</span></div>
+      <div class="look-item">
+        <span class="pill warn">Inactive</span>
+        <div class="why"><b>Test Hotel 123</b> signed up 9 days ago and hasn't added a room. The email is from a throwaway email service.</div>
+        <div class="btns"><button class="btn btn-secondary btn-sm" data-pick="testhotel">View</button><button class="btn btn-danger btn-sm" data-pick="testhotel" data-pause>Pause</button></div>
+      </div>
+      <div class="look-item">
+        <span class="pill bad">Domain</span>
+        <div class="why"><b>Lekki Pearl Apartments</b> added <b>book.lekkipearl.com</b> 3 days ago, but it doesn't point to Centurion yet. Guests still use lekkipearl.centurionpms.com.</div>
+        <div class="btns"><button class="btn btn-secondary btn-sm" data-pick="lekkipearl">View</button><button class="btn btn-secondary btn-sm">Email the owner</button></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="list-head">
+        <div class="tabs" role="tablist" id="tabs"></div>
+        <input class="input search-in" type="search" placeholder="Name, address or owner email" aria-label="Search businesses" id="q">
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Business</th><th>Owner</th><th>Status</th><th class="num">Rooms</th><th class="num">Bookings, 30d</th><th>Last active</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="card panel" id="panel" aria-live="polite"></aside>
+  </main>
+</div>
+
+<script>
+  const B = [
+    { id: 'centurion', name: 'Centurion Apartments', addr: 'centurion.centurionpms.com', domain: 'centurionapartments.ng', domainOk: true, city: 'Abuja', kind: 'Serviced apartments', owner: 'Ifeanyi Amadi', email: 'owner@centurionapartments.ng', phone: '0816 241 7819', status: 'Active', since: '1 Mar 2026', branches: 5, rooms: 48, staff: 23, bookings: 612, last: 'Now', colour: '#16324B' },
+    { id: 'grandpalace', name: 'Grand Palace Suites', addr: 'grandpalace.centurionpms.com', city: 'Abuja', kind: 'Hotel', owner: 'Adaeze Okafor', email: 'adaeze@grandpalace.ng', phone: '0803 112 4410', status: 'Active', since: '14 Aug 2026', branches: 1, rooms: 32, staff: 11, bookings: 241, last: '4 minutes ago', colour: '#2E7D6B' },
+    { id: 'lekkipearl', name: 'Lekki Pearl Apartments', addr: 'lekkipearl.centurionpms.com', domain: 'book.lekkipearl.com', domainOk: false, city: 'Lagos', kind: 'Serviced apartments', owner: 'Tunde Bakare', email: 'tunde@lekkipearl.com', phone: '0809 554 2031', status: 'Active', since: '2 Sep 2026', branches: 2, rooms: 26, staff: 9, bookings: 188, last: '12 minutes ago', colour: '#8A5A2B' },
+    { id: 'cedarplace', name: 'Cedar Place Ikoyi', addr: 'cedarplace.centurionpms.com', city: 'Lagos', kind: 'Short-let', owner: 'Halima Musa', email: 'halima@cedarplace.ng', phone: '0812 778 0091', status: 'Active', since: '20 Sep 2026', branches: 1, rooms: 14, staff: 5, bookings: 97, last: '1 hour ago', colour: '#5B4B8A' },
+    { id: 'mabushicourt', name: 'Mabushi Court', addr: 'mabushicourt.centurionpms.com', city: 'Abuja', kind: 'Serviced apartments', owner: 'Emeka Obi', email: 'emeka@mabushicourt.com', phone: '0805 300 1188', status: 'Active', since: '1 Oct 2026', branches: 1, rooms: 18, staff: 6, bookings: 84, last: 'Yesterday', colour: '#336799' },
+    { id: 'bodijahomes', name: 'Bodija Homes', addr: 'bodijahomes.centurionpms.com', city: 'Ibadan', kind: 'Guest house', owner: 'Bisi Lawal', email: 'bisi@bodijahomes.ng', phone: '0706 221 9087', status: 'Active', since: '18 Oct 2026', branches: 1, rooms: 9, staff: 3, bookings: 41, last: '2 days ago', colour: '#B0452C' },
+    { id: 'gra-suites', name: 'GRA Suites', addr: 'gra-suites.centurionpms.com', city: 'Port Harcourt', kind: 'Hotel', owner: 'Ngozi Eke', email: 'ngozi@grasuites.com', phone: '0803 667 4520', status: 'New', since: 'Tue 27 Oct', branches: 1, rooms: 21, staff: 2, bookings: 21, last: '3 hours ago', colour: '#2A6F97' },
+    { id: 'harmony', name: 'Harmony Shortlets', addr: 'harmony.centurionpms.com', city: 'Lagos', kind: 'Short-let', owner: 'Segun Alabi', email: 'segun@harmonyshortlets.ng', phone: '0803 000 0000', status: 'Paused', since: '5 Sep 2026', branches: 1, rooms: 6, staff: 2, bookings: 0, last: '24 days ago', colour: '#6B7785', note: 'Paused 22 Oct by Ifeanyi Amadi: owner asked to stop while they renovate.' },
+    { id: 'testhotel', name: 'Test Hotel 123', addr: 'testhotel123.centurionpms.com', city: 'Lagos', kind: 'Hotel', owner: 'test test', email: 'qwerty@mailinator.com', phone: '0800 000 0000', status: 'New', since: 'Wed 21 Oct', branches: 1, rooms: 0, staff: 1, bookings: 0, last: '9 days ago', colour: '#A3B1BE', flag: true },
+  ];
+  const TABS = [['all', 'All'], ['Active', 'Active'], ['New', 'New'], ['Paused', 'Paused']];
+  let tab = 'all', picked = new URLSearchParams(location.search).get('pick') || 'grandpalace', confirming = new URLSearchParams(location.search).has('pause');
+  const pill = s => `<span class="pill ${s === 'Active' ? 'ok' : s === 'New' ? 'new' : 'bad'}">${s}</span>`;
+  const mark = b => `<span class="biz-mark" style="background:${b.colour}">${b.name.charAt(0)}</span>`;
+
+  function list() {
+    const q = document.getElementById('q').value.toLowerCase();
+    document.getElementById('tabs').innerHTML = TABS.map(([k, n]) => `<button class="tab" role="tab" aria-selected="${tab === k}" data-tab="${k}">${n} <span class="n">${k === 'all' ? B.length : B.filter(b => b.status === k).length}</span></button>`).join('');
+    document.getElementById('rows').innerHTML = B.filter(b => (tab === 'all' || b.status === tab) && (!q || [b.name, b.addr, b.email, b.domain || ''].join(' ').toLowerCase().includes(q))).map(b => `
+      <tr data-id="${b.id}" class="${b.id === picked ? 'is-active' : ''}" tabindex="0">
+        <td><div class="biz">${mark(b)}<div><b>${b.name}</b><span>${b.domain && b.domainOk ? b.domain : b.addr}</span></div></div></td>
+        <td>${b.owner}</td>
+        <td>${pill(b.status)}</td>
+        <td class="num">${b.rooms}</td><td class="num">${b.bookings.toLocaleString()}</td>
+        <td>${b.last}</td>
+      </tr>`).join('');
+  }
+
+  function panel() {
+    const b = B.find(x => x.id === picked);
+    const paused = b.status === 'Paused';
+    document.getElementById('panel').innerHTML = `
+      <div class="panel-top">
+        ${mark(b)}
+        <div><h2 class="h2">${b.name}</h2><p class="meta">${b.kind} in ${b.city}</p></div>
+        <div>${pill(b.status)} ${b.flag ? '<span class="pill warn">Needs a look</span>' : ''}</div>
+        ${b.note ? `<p class="meta">${b.note}</p>` : ''}
+      </div>
+      <div class="panel-sec"><h3>Owner</h3><dl class="kv"><dt>Name</dt><dd>${b.owner}</dd><dt>Email</dt><dd>${b.email}</dd><dt>Phone</dt><dd>${b.phone}</dd><dt>Signed up</dt><dd>${b.since}</dd></dl></div>
+      <div class="panel-sec"><h3>Addresses</h3>
+        <div class="domain"><span>${b.addr}</span><span class="pill ok">Working</span></div>
+        ${b.domain ? `<div class="domain"><span>${b.domain}</span>${b.domainOk ? '<span class="pill ok">Working</span>' : '<span class="pill warn">Not pointed yet</span>'}</div>` : ''}
+      </div>
+      <div class="panel-sec"><h3>Use</h3><dl class="kv"><dt>Branches</dt><dd>${b.branches}</dd><dt>Rooms</dt><dd>${b.rooms}</dd><dt>Staff accounts</dt><dd>${b.staff}</dd><dt>Bookings, last 30 days</dt><dd>${b.bookings}</dd><dt>Last staff activity</dt><dd>${b.last}</dd></dl></div>
+      <div class="panel-sec acts">
+        <a class="btn btn-secondary" href="mailto:${b.email}">Email ${b.owner.split(' ')[0]}</a>
+        <a class="btn btn-secondary" href="${paused ? 'unavailable.html?state=paused' : '#'}">Open their booking site</a>
+        ${paused ? '<button class="btn btn-primary">Turn the business back on</button>' : `<button class="btn btn-danger" data-pause>Pause this business</button>`}
+        ${confirming && !paused ? `<div class="confirm" role="alert"><p><b>Pause ${b.name}?</b> Their booking site will show a "not taking online bookings" page and their staff won't be able to log in. Nothing is deleted, and you can turn it back on at any time.</p><div class="field" style="margin-bottom:var(--s-3)"><label for="why" style="color:var(--bad-700)">Reason (the owner gets this by email)</label><input class="input" id="why" placeholder="e.g. Looks like a test account"></div><div style="display:flex;gap:var(--s-2)"><button class="btn btn-danger btn-sm" style="background:var(--bad);color:var(--white);box-shadow:none">Pause business</button><button class="btn btn-ghost btn-sm" data-cancel>Cancel</button></div></div>` : ''}
+      </div>`;
+  }
+
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-tab]'), r = e.target.closest('tr[data-id]'), p = e.target.closest('[data-pick]');
+    if (t) { tab = t.dataset.tab; list(); }
+    if (r) { picked = r.dataset.id; confirming = false; list(); panel(); if (innerWidth < 1240) document.getElementById('panel').scrollIntoView({ behavior: 'smooth' }); }
+    if (p) { picked = p.dataset.pick; confirming = p.hasAttribute('data-pause'); list(); panel(); document.getElementById('panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    if (e.target.closest('#panel [data-pause]')) { confirming = true; panel(); }
+    if (e.target.closest('[data-cancel]')) { confirming = false; panel(); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('tr[data-id]')) e.target.click(); });
+  document.getElementById('q').addEventListener('input', list);
+  list(); panel();
+</script>
+</body>
+</html>

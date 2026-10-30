@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Apartments · Option C · Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="system.css">
+<style>
+  /* Layout only: every colour, size and radius comes from system.css */
+  .hero { padding-block: var(--s-12) var(--s-6); display: grid; grid-template-columns: 1fr auto; gap: var(--s-10); align-items: end; }
+  .hero .display { max-width: 15ch; }
+  .hero .lead { max-width: 36ch; margin-bottom: 6px; }
+  .search-row { position: relative; z-index: 20; margin-bottom: calc(var(--s-10) * -1); padding-inline: var(--s-6); }
+  .search .seg { flex: 1; }
+  .search .seg.where { flex: 1.4; }
+
+  .stage { position: relative; height: 640px; }
+  .stage .map { position: absolute; inset: 0; }
+  .rail { position: absolute; z-index: 10; top: var(--s-16); left: var(--s-6); bottom: var(--s-6); width: 360px; background: var(--white); border-radius: var(--r-lg); box-shadow: var(--e-float); display: flex; flex-direction: column; overflow: hidden; }
+  .rail-head { padding: var(--s-4) var(--s-5) var(--s-3); border-bottom: 1px solid var(--ink-200); display: flex; justify-content: space-between; align-items: baseline; }
+  .rail-list { overflow: auto; flex: 1; }
+  .loc { display: block; width: 100%; padding: var(--s-4) var(--s-5); border: 0; border-bottom: 1px solid var(--ink-200); background: var(--white); text-align: left; cursor: pointer; }
+  .loc:hover { background: var(--ink-50); }
+  .loc-top { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); }
+  .loc-top + .loc-top { margin-top: 2px; }
+  .loc-more { display: none; margin-top: var(--s-3); }
+  .loc.is-active { background: var(--brand-50); }
+  .loc.is-active .loc-more { display: block; }
+  .loc-more img { width: 100%; height: 132px; object-fit: cover; border-radius: var(--r-md); margin-bottom: var(--s-3); }
+  .loc-more ul { list-style: none; margin: 0 0 var(--s-3); padding: 0; }
+  .loc-more li { font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-700); padding-left: var(--s-4); position: relative; }
+  .loc-more li::before { content: ''; position: absolute; left: 2px; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--ink-300); }
+
+  section.block { padding-top: var(--s-24); }
+  .block-head { display: flex; justify-content: space-between; align-items: end; gap: var(--s-8); margin-bottom: var(--s-6); }
+  .block-head .lead { margin-top: var(--s-2); max-width: 52ch; }
+  .listings { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-8) var(--s-6); margin-top: var(--s-8); }
+
+  .basics { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink-200); }
+  .basics div { padding: var(--s-6) var(--s-6) 0 0; }
+  .basics svg { width: 24px; height: 24px; color: var(--brand-600); margin-bottom: var(--s-3); }
+  .basics .meta { margin-top: var(--s-1); max-width: 28ch; }
+
+  .long { background: var(--ink-900); border-radius: var(--r-xl); padding: var(--s-12); display: grid; grid-template-columns: 1fr 1.1fr; gap: var(--s-12); color: var(--ink-300); }
+  .long .h1 { color: var(--white); margin-bottom: var(--s-3); }
+  .long p { margin: 0 0 var(--s-6); max-width: 40ch; }
+  .rates { width: 100%; border-collapse: collapse; font-size: var(--t-md); }
+  .rates th { text-align: left; font-size: var(--t-xs); font-weight: 600; color: var(--ink-300); padding: 0 0 var(--s-2); }
+  .rates td { padding: var(--s-3) 0; border-top: 1px solid rgba(255,255,255,.12); color: var(--white); vertical-align: top; }
+  .rates td.r, .rates th.r { text-align: right; }
+  .rates .m { font-weight: 600; }
+  .rates .note { display: block; font-size: var(--t-xs); color: var(--ink-300); font-weight: 400; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-6); counter-reset: step; }
+  .step { padding-top: var(--s-5); border-top: 2px solid var(--ink-900); }
+  .step::before { counter-increment: step; content: 'Step ' counter(step); display: block; font-size: var(--t-sm); font-weight: 600; color: var(--brand-600); margin-bottom: var(--s-2); }
+  .step .meta { margin-top: var(--s-2); max-width: 34ch; }
+  main { padding-bottom: var(--s-24); }
+
+  @media (max-width: 1100px) {
+    .listings { grid-template-columns: repeat(2, 1fr); }
+    .long { grid-template-columns: 1fr; }
+    .hero { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .site-header .end .btn-ghost { display: none; }
+    .hero { padding-block: var(--s-6) var(--s-4); gap: var(--s-3); }
+    .search-row { margin-bottom: var(--s-4); padding-inline: 0; }
+    .search { flex-wrap: wrap; }
+    .search .seg.where { flex-basis: 100%; }
+    .search .seg.where + .seg::before { display: none; }
+    .search .btn { width: 100%; margin-top: var(--s-1); }
+    .stage { height: auto; }
+    .stage .map { position: relative; height: 380px; }
+    .rail { position: static; width: auto; margin-top: var(--s-3); box-shadow: inset 0 0 0 1px var(--ink-200); }
+    .block-head { flex-direction: column; align-items: start; }
+    .listings { grid-template-columns: 1fr; }
+    .basics { grid-template-columns: 1fr 1fr; }
+    .long { padding: var(--s-6); }
+    .steps { grid-template-columns: 1fr; }
+    .tabs { overflow-x: auto; }
+    section.block { padding-top: var(--s-16); }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="home.html"><img src="../assets/logo.png" alt="">Centurion Apartments</a>
+    <nav class="site-nav" aria-label="Main"><a href="#explore">Locations</a><a href="#stays">Apartments</a><a href="#long">Long stays</a><a href="#">Corporate</a></nav>
+    <div class="end">
+      <a class="btn btn-ghost btn-sm" href="tel:+2348162417819">0816 241 7819</a>
+      <a class="btn btn-secondary btn-sm" href="#">Manage booking</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="hero">
+      <h1 class="display">Find a free apartment anywhere in Abuja</h1>
+      <p class="lead">Five Centurion buildings, live from our front desk. Pick a spot on the map and book in two minutes.</p>
+    </div>
+    <div class="search-row">
+      <form class="search" role="search" action="results.html">
+        <button type="button" class="seg where" id="where" aria-haspopup="listbox" aria-expanded="false"><span class="seg-label">Where</span><span class="seg-value">All 5 locations</span></button>
+        <button type="button" class="seg"><span class="seg-label">Check in</span><span class="seg-value">Fri 6 Nov</span></button>
+        <button type="button" class="seg"><span class="seg-label">Check out</span><span class="seg-value">Mon 9 Nov</span></button>
+        <button type="button" class="seg"><span class="seg-label">Guests</span><span class="seg-value">2 adults</span></button>
+        <button class="btn btn-primary btn-lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search</button>
+      </form>
+    </div>
+
+    <div class="stage" id="explore">
+      <div class="map" id="map"></div>
+      <aside class="rail" aria-label="Locations">
+        <div class="rail-head"><span class="h3">5 locations</span><span class="meta" id="rail-count"></span></div>
+        <div class="rail-list" id="rail"></div>
+      </aside>
+    </div>
+  </div>
+
+  <section class="block" id="stays">
+    <div class="container">
+      <div class="block-head">
+        <div><h2 class="h1">Free for Fri 6 – Mon 9 Nov</h2><p class="lead">Each bar is a night. Green is free, amber is the last one, grey is taken.</p></div>
+        <a class="btn btn-secondary" href="results.html">See all 13 apartments</a>
+      </div>
+      <div class="tabs" role="tablist" id="tabs">
+        <button class="tab" role="tab" aria-selected="true" data-k="short">A few nights</button>
+        <button class="tab" role="tab" aria-selected="false" data-k="family">Family, 4 guests</button>
+        <button class="tab" role="tab" aria-selected="false" data-k="budget">Under ₦65,000</button>
+      </div>
+      <div class="listings" id="listings"></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="basics">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><h3 class="h3">Power all night</h3><p class="meta">Grid, inverter and generator, so the AC never stops at 2am.</p></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M8 6h.01M8 13v4"/></svg><h3 class="h3">A real kitchen</h3><p class="meta">Fridge, cooker and utensils in every apartment.</p></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg><h3 class="h3">Guarded and gated</h3><p class="meta">Security at the gate and parking inside, all day.</p></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><h3 class="h3">One front desk</h3><p class="meta">One number reaches every building, day or night.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="long">
+    <div class="container">
+      <div class="long">
+        <div>
+          <h2 class="h1">Staying a month or more?</h2>
+          <p>Monthly rates on every apartment, one invoice for your company, and housekeeping when it suits you.</p>
+          <a class="btn btn-inverse btn-lg" href="#">Get a long-stay quote</a>
+        </div>
+        <table class="rates" id="rates"></table>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="block-head"><h2 class="h1">How booking works</h2></div>
+      <div class="steps">
+        <div class="step"><h3 class="h3">Choose dates and an apartment</h3><p class="meta">Only apartments free for every night of your stay can be booked.</p></div>
+        <div class="step"><h3 class="h3">Pay by card or transfer</h3><p class="meta">Paystack handles the payment. Your receipt comes by email and WhatsApp.</p></div>
+        <div class="step"><h3 class="h3">Arrive and collect your key</h3><p class="meta">Check in from 1pm. The front desk already has your name and ID details.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="cols">
+      <div><a class="logo" href="#"><img src="../assets/logo.png" alt="">Centurion Apartments</a><p style="margin:0;max-width:32ch">Serviced apartments in five Abuja neighbourhoods, run by one front desk.</p></div>
+      <div><h4>Locations</h4><div id="foot-locs"></div></div>
+      <div><h4>Stay</h4><a href="#">Apartments</a><a href="#">Long stays</a><a href="#">Corporate</a><a href="#">Manage a booking</a></div>
+      <div><h4>Front desk</h4><a href="tel:+2348162417819">0816 241 7819</a><a href="tel:+2349088358213">0908 835 8213</a><a href="#">WhatsApp</a></div>
+    </div>
+    <div class="base"><span>© 2026 Centurion Apartments, Abuja</span><span>Privacy · Terms</span></div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../assets/data.js"></script>
+<script src="app.js"></script>
+<script>
+  const C = CENTURION, Ls = C.locations;
+  const selected = new Set(Ls.map(l => l.slug));
+  const total = () => Ls.filter(l => selected.has(l.slug)).reduce((n, l) => n + l.free, 0);
+
+  // Explorer: rail + map share one active location
+  const rail = document.getElementById('rail');
+  rail.innerHTML = Ls.map(l => `
+    <button class="loc" data-slug="${l.slug}" aria-expanded="false">
+      <div class="loc-top"><span class="h3">${l.name}</span><span class="tag ${l.free <= 2 ? 'tag-last' : 'tag-free'}">${l.free} free tonight</span></div>
+      <div class="loc-top"><span class="meta">${l.area} · ${l.types.length} apartment type${l.types.length > 1 ? 's' : ''}</span><span class="meta">from <span class="price">${naira(l.from)}</span></span></div>
+      <div class="loc-more">
+        <img src="../assets/${l.photo}" alt="">
+        <ul>${l.near.map(n => `<li>${n}</li>`).join('')}</ul>
+        <a class="btn btn-primary btn-sm btn-block" href="results.html#${l.slug}">See ${l.name} apartments</a>
+      </div>
+    </button>`).join('');
+  const updateCount = () => document.getElementById('rail-count').textContent = `${total()} free tonight`;
+  updateCount();
+
+  const wide = innerWidth > 720;
+  const m = C.map(document.getElementById('map'), { padTL: wide ? [440, 120] : [40, 40], padBR: wide ? [80, 60] : [40, 40], label: l => wide ? `${l.name} · ${C.short(l.from)}` : C.short(l.from) });
+  function activate(slug, fly) {
+    rail.querySelectorAll('.loc').forEach(b => { const on = b.dataset.slug === slug; b.classList.toggle('is-active', on); b.setAttribute('aria-expanded', on); });
+    m.activate(slug);
+    if (fly) { const l = Ls.find(x => x.slug === slug); m.map.flyTo(innerWidth > 720 ? [l.pos[0], l.pos[1] - 0.012] : l.pos, 14, { duration: .6 }); }
+  }
+  rail.addEventListener('click', e => { const b = e.target.closest('.loc'); if (b && !e.target.closest('a')) activate(b.dataset.slug, true); });
+  m.on(slug => { activate(slug, false); rail.querySelector(`[data-slug="${slug}"]`).scrollIntoView({ block: 'nearest', behavior: 'smooth' }); });
+  activate('wuse-2', false);
+
+  C.wherePicker(document.getElementById('where'), selected, () => { m.dim([...selected]); updateCount(); });
+
+  // Listings with availability strips
+  const sets = {
+    short: C.all().filter(x => x.t.left > 0 && x.t.sleeps <= 2).slice(0, 4),
+    family: C.all().filter(x => x.t.left > 0 && x.t.sleeps >= 4).slice(0, 4),
+    budget: C.all().filter(x => x.t.left > 0 && x.t.rate < 65000).slice(0, 4),
+  };
+  const listing = ({ l, t }) => `
+    <a class="listing" href="results.html?pick=${t.id}">
+      <div class="listing-photo"><img src="../assets/${t.photo}" alt="">${C.tagHTML(t).replace('class="tag', 'class="tag tag-onphoto')}</div>
+      <div>
+        <div class="listing-head"><h3 class="h3">${t.name}</h3>${l.rating ? `<span class="listing-score">${l.rating}/10</span>` : ''}</div>
+        <p class="meta">Centurion ${l.name} · sleeps ${t.sleeps}</p>
+      </div>
+      <div>${C.stripHTML(t)}</div>
+      <div class="listing-foot"><span class="price">${t.was ? `<s>${naira(t.was)}</s>` : ''}${naira(t.rate)} <span class="unit">a night</span></span><span class="meta">${naira(t.rate * C.NIGHTS)} for ${C.NIGHTS} nights</span></div>
+    </a>`;
+  const tabs = document.getElementById('tabs');
+  const drawListings = k => {
+    tabs.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.k === k));
+    document.getElementById('listings').innerHTML = sets[k].map(listing).join('');
+  };
+  tabs.addEventListener('click', e => { const t = e.target.closest('.tab'); if (t) drawListings(t.dataset.k); });
+  drawListings('short');
+
+  // Long-stay table: monthly = 30 nights less 30%
+  const picks = [['jabi-annex', 0], ['zone-4', 2], ['jabi-annex', 2], ['lifecamp', 0]];
+  document.getElementById('rates').innerHTML = `<thead><tr><th>Apartment</th><th class="r">Per night</th><th class="r">Per month</th></tr></thead><tbody>` +
+    picks.map(([s, i]) => { const l = Ls.find(x => x.slug === s), t = l.types[i];
+      return `<tr><td>${t.name}<span class="note">${l.name}</span></td><td class="r">${naira(t.rate)}</td><td class="r m">${naira(t.rate * 30 * 0.7)}<span class="note">saves 30%</span></td></tr>`; }).join('') + '</tbody>';
+
+  document.getElementById('foot-locs').innerHTML = Ls.map(l => `<a href="results.html#${l.slug}">${l.name}</a>`).join('');
+</script>
+</body>
+</html>

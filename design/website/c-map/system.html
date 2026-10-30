@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map Desk design system</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="system.css">
+<style>
+  /* Specimen layout only */
+  main { padding-block: var(--s-12) var(--s-24); }
+  .intro { max-width: 64ch; margin-bottom: var(--s-12); }
+  .intro .lead { margin-top: var(--s-3); }
+  .sec { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--s-10); padding-block: var(--s-10); border-top: 1px solid var(--ink-200); }
+  .sec > div:first-child .meta { margin-top: var(--s-2); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+  .stack { display: grid; gap: var(--s-5); }
+  .swatches { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--s-4); }
+  .sw i { display: block; height: 64px; border-radius: var(--r-md); box-shadow: inset 0 0 0 1px rgba(14,34,56,.08); margin-bottom: var(--s-2); }
+  .sw b { display: block; font-size: var(--t-sm); color: var(--ink-900); }
+  .sw span { font-size: var(--t-xs); color: var(--ink-500); }
+  .type-row { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-4); align-items: baseline; padding-block: var(--s-2); border-bottom: 1px dashed var(--ink-200); }
+  .type-row .meta { font-size: var(--t-xs); }
+  .space { display: flex; align-items: end; gap: var(--s-4); flex-wrap: wrap; }
+  .space div { background: var(--brand-100); }
+  .space span { display: block; font-size: var(--t-xs); color: var(--ink-500); margin-top: var(--s-1); }
+  .radii { display: flex; gap: var(--s-6); flex-wrap: wrap; }
+  .radii div { width: 96px; height: 72px; background: var(--ink-100); display: grid; place-items: center; font-size: var(--t-xs); color: var(--ink-700); }
+  .elev { display: flex; gap: var(--s-6); flex-wrap: wrap; }
+  .elev div { width: 200px; height: 96px; border-radius: var(--r-lg); background: var(--white); display: grid; place-items: center; font-size: var(--t-sm); }
+  .map-demo { position: relative; height: 120px; background: var(--ink-100); border-radius: var(--r-lg); }
+  .map-demo .marker { position: absolute; top: 50%; }
+  .demo-card { max-width: 320px; }
+  @media (max-width: 800px) { .swatches { grid-template-columns: repeat(3, 1fr); } .sec { grid-template-columns: 1fr; gap: var(--s-5); } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="home.html"><img src="../assets/logo.png" alt="">Centurion Apartments</a>
+    <nav class="site-nav"><a href="home.html">Home</a><a href="results.html">Search</a><a href="checkout.html">Checkout</a></nav>
+  </div>
+</header>
+<main class="container">
+  <div class="intro">
+    <h1 class="display">Map Desk design system</h1>
+    <p class="lead">One cool ink scale, the logo blue for actions, and two availability colours. Everything on the site is built from what's on this page.</p>
+  </div>
+
+  <section class="sec">
+    <div><h2 class="h3">Colour</h2><p class="meta">Blue means "you can act". Green and amber only ever mean availability, so a glance tells you what's free.</p></div>
+    <div class="stack">
+      <div class="swatches">
+        <div class="sw"><i style="background:var(--ink-900)"></i><b>ink-900</b><span>#0E2238 · headings</span></div>
+        <div class="sw"><i style="background:var(--ink-700)"></i><b>ink-700</b><span>#33475C · body</span></div>
+        <div class="sw"><i style="background:var(--ink-500)"></i><b>ink-500</b><span>#5F7387 · secondary</span></div>
+        <div class="sw"><i style="background:var(--ink-300)"></i><b>ink-300</b><span>#A7B5C2 · disabled</span></div>
+        <div class="sw"><i style="background:var(--ink-200)"></i><b>ink-200</b><span>#D6DFE7 · borders</span></div>
+        <div class="sw"><i style="background:var(--ink-100)"></i><b>ink-100</b><span>#EAF0F5 · fills</span></div>
+      </div>
+      <div class="swatches">
+        <div class="sw"><i style="background:var(--brand-600)"></i><b>brand-600</b><span>#336799 · actions</span></div>
+        <div class="sw"><i style="background:var(--brand-700)"></i><b>brand-700</b><span>#24507C · hover</span></div>
+        <div class="sw"><i style="background:var(--brand-50)"></i><b>brand-50</b><span>#EEF4FA · selected</span></div>
+        <div class="sw"><i style="background:var(--free-500)"></i><b>free-500</b><span>#1F9A72 · free</span></div>
+        <div class="sw"><i style="background:var(--last-500)"></i><b>last-500</b><span>#E09B2D · last one</span></div>
+        <div class="sw"><i style="background:var(--gone)"></i><b>gone</b><span>#D6DFE7 · taken</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><h2 class="h3">Type</h2><p class="meta">Instrument Sans, a 1.2 ratio from 16px. Tighter tracking as sizes grow, 600 weight for anything you read first.</p></div>
+    <div>
+      <div class="type-row"><span class="meta">4xl · 56/58</span><span class="display">Find a free apartment</span></div>
+      <div class="type-row"><span class="meta">3xl · 40/44</span><span class="h1">Staying a month or more?</span></div>
+      <div class="type-row"><span class="meta">2xl · 28/34</span><span class="h2">13 apartments free</span></div>
+      <div class="type-row"><span class="meta">lg · 19/28</span><span class="h3">Deluxe apartment, Zone 4</span></div>
+      <div class="type-row"><span class="meta">md · 16/24</span><span>Full kitchen, air conditioning and 24-hour power in every apartment.</span></div>
+      <div class="type-row"><span class="meta">sm · 14/20</span><span class="meta">Centurion Wuse 2 · sleeps 2</span></div>
+      <div class="type-row"><span class="meta">xs · 12/16</span><span class="seg-label">Check in</span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><h2 class="h3">Space, radius, elevation</h2><p class="meta">A 4px grid. Radius grows with the size of the object. Only floating things (search, popovers, map markers) cast a shadow; everything else uses a hairline.</p></div>
+    <div class="stack">
+      <div class="space">
+        <div><div style="width:4px;height:4px"></div><span>4</span></div><div><div style="width:8px;height:8px"></div><span>8</span></div><div><div style="width:12px;height:12px"></div><span>12</span></div><div><div style="width:16px;height:16px"></div><span>16</span></div><div><div style="width:24px;height:24px"></div><span>24</span></div><div><div style="width:32px;height:32px"></div><span>32</span></div><div><div style="width:48px;height:48px"></div><span>48</span></div><div><div style="width:64px;height:64px"></div><span>64</span></div><div><div style="width:96px;height:96px"></div><span>96</span></div>
+      </div>
+      <div class="radii"><div style="border-radius:var(--r-sm)">sm 6 · tags</div><div style="border-radius:var(--r-md)">md 10 · controls</div><div style="border-radius:var(--r-lg)">lg 16 · cards</div><div style="border-radius:var(--r-xl)">xl 24 · map</div></div>
+      <div class="elev"><div class="card">Hairline · cards</div><div style="box-shadow:var(--e-float)">Float · search, popovers</div></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><h2 class="h3">Buttons</h2><p class="meta">One primary per view. Labels say what happens: "Search", "Continue", "Pay ₦213,300".</p></div>
+    <div class="stack">
+      <div class="row"><button class="btn btn-primary btn-lg">Search</button><button class="btn btn-primary">Continue</button><button class="btn btn-primary btn-sm">See apartments</button></div>
+      <div class="row"><button class="btn btn-secondary">Manage booking</button><button class="btn btn-ghost">0816 241 7819</button><button class="btn btn-primary" disabled>Taken</button><span style="background:var(--ink-900);padding:8px;border-radius:var(--r-md)"><button class="btn btn-inverse">Get a quote</button></span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><h2 class="h3">Search</h2><p class="meta">Each segment opens its own picker. The full bar sits on the home page; the compact one sits in the header of inner pages.</p></div>
+    <div class="stack">
+      <div class="search"><button class="seg" style="flex:1.4"><span class="seg-label">Where</span><span class="seg-value">All 5 locations</span></button><button class="seg" style="flex:1"><span class="seg-label">Check in</span><span class="seg-value">Fri 6 Nov</span></button><button class="seg" style="flex:1"><span class="seg-label">Check out</span><span class="seg-value">Mon 9 Nov</span></button><button class="btn btn-primary btn-lg">Search</button></div>
+      <div class="search search-compact" style="max-width:520px"><button class="seg" style="flex:1"><span class="seg-label">Where</span><span class="seg-value">Zone 4</span></button><button class="seg" style="flex:1"><span class="seg-label">Dates</span><span class="seg-value">Fri 6 – Mon 9 Nov</span></button><button class="btn btn-primary">Search</button></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><h2 class="h3">Filters, tabs, tags</h2><p class="meta">Chips filter results. Tabs switch views within a section. Tags show availability and nothing else.</p></div>
+    <div class="stack">
+      <div class="chips"><button class="chip" aria-pressed="true">All locations</button><button class="chip">Wuse 2 <span class="count">3</span></button><button class="chip">Zone 4 <span class="count">4</span></button><button class="chip">1 bedroom</button></div>
+      <div class="tabs"><button class="tab" aria-selected="true">A few nights</button><button class="tab">Family, 4 guests</button><button class="tab">Under ₦65,000</button></div>
+      <div class="row"><span class="tag tag-free">3 free</span><span class="tag tag-last">Last one</span><span class="tag">Taken for your dates</span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><h2 class="h3">Availability strip</h2><p class="meta">The signature, taken from the logo's bars. One bar per night for the next 14 nights: tall and green is free, mid amber is the last one, short grey is taken. Your nights are underlined.</p></div>
+    <div style="max-width:360px" id="strip"></div>
+  </section>
+
+  <section class="sec">
+    <div><h2 class="h3">Listing and map marker</h2><p class="meta">The card puts the photo, availability and the total for your stay in one place. Map markers show the lowest price; the dot is the availability colour.</p></div>
+    <div class="row" style="align-items:start;gap:var(--s-10)">
+      <div class="demo-card" id="card"></div>
+      <div class="stack" style="flex:1;min-width:260px">
+        <div class="map-demo"><span class="marker" style="left:20%">₦59k</span><span class="marker is-last" style="left:50%">₦71k</span><span class="marker is-active" style="left:80%">₦60k</span></div>
+        <p class="meta">Default · last-one · selected</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><h2 class="h3">Booking parts</h2><p class="meta">The calendar, price lines, fields and stepper used in the detail panel and checkout.</p></div>
+    <div class="row" style="align-items:start;gap:var(--s-10)">
+      <div class="card card-pad" style="width:320px"><div class="cal" id="cal"></div><hr class="divider"><dl class="lines"><dt>₦71,100 × 3 nights</dt><dd>₦213,300</dd><dt>Direct booking saving</dt><dd class="save">−₦56,700</dd><dt class="total">Total</dt><dd class="total">₦213,300</dd></dl></div>
+      <div class="stack" style="flex:1;min-width:280px">
+        <ol class="stepper"><li class="done">Apartment</li><li class="now">Your details</li><li>Payment</li></ol>
+        <div class="field"><label for="d1">Phone</label><input class="input" id="d1" placeholder="0803 000 0000"><span class="hint">We'll send your receipt by WhatsApp.</span></div>
+        <label class="radio-card"><input type="radio" name="d" checked><span><span class="h3" style="font-size:var(--t-md)">Pay now by card or transfer</span><p class="meta">Secured by Paystack.</p></span></label>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="../assets/data.js"></script>
+<script src="app.js"></script>
+<script>
+  const C = CENTURION, t = C.locations[1].types[0], l = C.locations[1];
+  document.getElementById('strip').innerHTML = C.stripHTML(t);
+  document.getElementById('card').innerHTML = `<div class="listing">
+    <div class="listing-photo"><img src="../assets/${t.photo}" alt=""><span class="tag tag-onphoto">2 free</span></div>
+    <div><div class="listing-head"><h3 class="h3">${t.name}</h3><span class="listing-score">8.3/10</span></div><p class="meta">Centurion ${l.name} · sleeps 2</p></div>
+    <div>${C.stripHTML(t)}</div>
+    <div class="listing-foot"><span class="price"><s>${naira(t.was)}</s>${naira(t.rate)} <span class="unit">a night</span></span><span class="meta">${naira(t.rate * 3)} for 3 nights</span></div></div>`;
+  document.getElementById('cal').innerHTML = ['M','T','W','T','F','S','S'].map(d => `<span class="dow">${d}</span>`).join('') +
+    Array.from({ length: 14 }, (_, i) => i + 2).map(d => `<span class="day ${d === 6 ? 'start' : d === 9 ? 'end' : d > 6 && d < 9 ? 'range' : d === 12 ? 'gone' : ''}">${d}</span>`).join('');
+</script>
+</body>
+</html>

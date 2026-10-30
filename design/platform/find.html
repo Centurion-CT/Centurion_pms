@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log in · Centurion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="platform.css">
+<style>
+  /* Layout only */
+  .page { display: grid; grid-template-columns: 560px minmax(0, 1fr); min-height: 100vh; }
+  .slab { background: var(--navy-800); display: flex; flex-direction: column; padding: var(--s-10) var(--s-12); }
+  .slab-body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-block: var(--s-10); max-width: 440px; }
+  .slab .h1 { margin-bottom: var(--s-3); }
+  .slab form { display: grid; gap: var(--s-3); margin-top: var(--s-8); }
+  .slab .label, .slab .field > label { color: var(--white); }
+  .slab .input, .slab .address { box-shadow: none; }
+  .slab .address input { text-align: left; }
+  .slab .address .suffix { font-size: var(--t-md); }
+  .slab .address:focus-within, .slab .input:focus { box-shadow: inset 0 0 0 2px var(--navy-300), 0 0 0 3px rgba(141, 182, 222, .3); }
+  .slab .btn-primary { background: var(--white); color: var(--navy-800); }
+  .slab .btn-primary:hover { background: var(--blue-50); }
+  .or { display: flex; align-items: center; gap: var(--s-3); margin: var(--s-8) 0 0; font-size: var(--t-sm); color: var(--navy-300); }
+  .or::before, .or::after { content: ''; flex: 1; border-top: 1px solid var(--navy-700); }
+  .recent { margin-top: var(--s-8); display: grid; gap: var(--s-2); }
+  .recent a { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3); border-radius: var(--r-md); background: var(--navy-900); text-decoration: none; color: var(--white); box-shadow: inset 0 0 0 1px var(--navy-700); }
+  .recent a:hover { box-shadow: inset 0 0 0 1px var(--navy-300); }
+  .recent .biz-mark { background: var(--blue); }
+  .recent small { display: block; color: var(--navy-300); font-size: var(--t-xs); }
+  .recent .go { margin-left: auto; color: var(--navy-300); font-size: var(--t-sm); }
+  .linkish { color: var(--white); font: inherit; font-weight: 600; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--navy-300); }
+  .slab-foot { display: flex; justify-content: space-between; gap: var(--s-4); font-size: var(--t-xs); color: var(--navy-300); }
+  .slab-foot a { color: inherit; text-decoration: none; }
+  .slab .meta a { color: var(--white); font-weight: 600; }
+
+  .side { background: var(--navy-900) url('assets/login-default.jpg') center / cover; position: relative; }
+  .side.is-mail { background: var(--paper); display: flex; align-items: center; justify-content: center; padding: var(--s-12); }
+  .mail { width: 100%; max-width: 560px; }
+  .mail-head { padding: var(--s-5) var(--s-6); border-bottom: 1px solid var(--line); display: grid; gap: 2px; font-size: var(--t-sm); }
+  .mail-head b { color: var(--ink-900); font-size: var(--t-md); }
+  .mail-body { padding: var(--s-6); display: grid; gap: var(--s-4); }
+  .mail-body p { margin: 0; color: var(--ink-700); }
+  .mail-row { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--line); }
+  .mail-row .btn { margin-left: auto; }
+  .mail-row small { display: block; color: var(--ink-500); font-size: var(--t-xs); }
+  .mail-row b { color: var(--ink-900); }
+  .is-hidden { display: none !important; }
+
+  @media (max-width: 1100px) { .page { grid-template-columns: minmax(0, 1fr); } .side:not(.is-mail) { display: none; } .side.is-mail { padding: var(--s-10) var(--gutter); } }
+  @media (max-width: 760px) { .slab { padding: var(--s-6) var(--gutter); } .mail-row { flex-wrap: wrap; } .mail-row .btn { margin-left: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="slab on-navy">
+    <a class="logo" href="home.html"><span class="logo-mark"><img src="assets/logo.png" alt=""></span>Centurion</a>
+
+    <div class="slab-body">
+      <!-- Find by address -->
+      <div id="ask">
+        <h1 class="h1">Log in to your business</h1>
+        <p class="lead">Each business on Centurion has its own address. Enter yours to go to its login.</p>
+
+        <div class="recent" id="recent">
+          <p class="meta">Used on this device</p>
+          <a href="#"><span class="biz-mark">G</span><span><b>Grand Palace Suites</b><small>grandpalace.centurionpms.com</small></span><span class="go">Log in</span></a>
+        </div>
+
+        <form id="by-address">
+          <label class="label" for="slug">Your business address</label>
+          <div class="address"><input id="slug" placeholder="your-business" autocomplete="off" spellcheck="false" aria-describedby="slug-note"><span class="suffix">.centurionpms.com</span><button class="btn btn-primary" type="submit">Go</button></div>
+          <p class="meta small" id="slug-note">If your business uses its own domain, like centurionapartments.ng, you can log in there too.</p>
+        </form>
+
+        <p class="or">Don't know your address?</p>
+        <form id="by-email">
+          <label class="label" for="email">Your work email</label>
+          <input class="input" id="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required>
+          <button class="btn btn-secondary btn-lg btn-block" type="submit" style="background:transparent;color:var(--white);box-shadow:inset 0 0 0 1px var(--navy-300)">Email me my login links</button>
+        </form>
+        <p class="meta" style="margin-top:var(--s-8)">New to Centurion? <a href="signup.html">Create an account</a></p>
+      </div>
+
+      <!-- Sent -->
+      <div id="sent" class="is-hidden">
+        <h1 class="h1">Check your email</h1>
+        <p class="lead">If <b class="on-navy" data-email>you@yourbusiness.com</b> belongs to anyone on Centurion, we've sent a login link for each business they work at.</p>
+        <p class="meta" style="margin-top:var(--s-6)">The links work for 30 minutes. Nothing arrived? Check spam, or ask your manager for your business address.</p>
+        <p class="meta" style="margin-top:var(--s-6)"><button class="linkish" type="button" id="again">Try another email</button></p>
+      </div>
+    </div>
+
+    <footer class="slab-foot"><span>© 2026 Centurion</span><span><a href="#">Privacy</a> · <a href="#">Terms</a></span></footer>
+  </section>
+
+  <aside class="side" id="side" aria-label="Example email">
+    <div class="card mail is-hidden" id="mail">
+      <div class="mail-head"><span class="meta">From Centurion &lt;hello@centurionpms.com&gt;</span><b>Your Centurion login links</b></div>
+      <div class="mail-body">
+        <p>Hi Tobi, you work at 2 businesses on Centurion. Pick one to log in:</p>
+        <div class="mail-row"><span class="biz-mark" style="background:var(--navy-800)">C</span><span><b>Centurion Apartments</b><small>centurionapartments.ng · Front desk</small></span><span class="btn btn-primary btn-sm">Log in</span></div>
+        <div class="mail-row"><span class="biz-mark" style="background:#2E7D6B">G</span><span><b>Grand Palace Suites</b><small>grandpalace.centurionpms.com · Manager</small></span><span class="btn btn-primary btn-sm">Log in</span></div>
+        <p class="meta">Didn't ask for this? You can ignore it. Nobody can log in without your password.</p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="platform.js"></script>
+<script>
+  const $ = s => document.querySelector(s);
+  const slug = $('#slug');
+  slug.addEventListener('input', () => slug.value = slug.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+  // Mockup routing: a known address would open https://{slug}.centurionpms.com/login
+  // (the existing staff sign-in); "harmony" is the sample paused business;
+  // anything else shows the "not in use" page.
+  $('#by-address').addEventListener('submit', e => {
+    e.preventDefault();
+    const s = slug.value;
+    if (!s) return slug.focus();
+    if (s === 'harmony') location.href = 'unavailable.html?state=paused';
+    else if (CX.check(s).state === 'is-taken') $('#slug-note').textContent = `In the build this opens https://${s}.centurionpms.com/login, the existing staff sign-in.`;
+    else location.href = `unavailable.html?slug=${encodeURIComponent(s)}`;
+  });
+  function sent(on) {
+    $('#ask').classList.toggle('is-hidden', on); $('#sent').classList.toggle('is-hidden', !on);
+    $('#side').classList.toggle('is-mail', on); $('#mail').classList.toggle('is-hidden', !on);
+    document.querySelectorAll('[data-email]').forEach(e => e.textContent = $('#email').value || 'tobi@centurionapartments.ng');
+  }
+  $('#by-email').addEventListener('submit', e => { e.preventDefault(); sent(true); });
+  $('#again').addEventListener('click', () => sent(false));
+  if (new URLSearchParams(location.search).has('sent')) sent(true);
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion platform mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=Hanken+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="platform.css">
+<style>
+  body { background: var(--paper); }
+  main { padding-block: var(--s-12) var(--s-24); }
+  .intro { max-width: 70ch; margin: var(--s-3) 0 var(--s-10); }
+  .screens { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); }
+  .screen { display: grid; gap: var(--s-3); text-decoration: none; color: inherit; }
+  .screen .img { height: 240px; overflow: hidden; border-radius: var(--r-lg); box-shadow: inset 0 0 0 1px var(--line); background: var(--white); }
+  .screen img { width: 100%; }
+  .screen:hover .img { box-shadow: inset 0 0 0 2px var(--blue); }
+  .screen p { margin: 0; font-size: var(--t-sm); color: var(--ink-500); }
+  .screen b { color: var(--ink-900); }
+  .notes { margin-top: var(--s-16); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-6); }
+  .notes ul { margin: var(--s-3) 0 0; padding-left: var(--s-5); font-size: var(--t-sm); }
+  .notes li + li { margin-top: var(--s-2); }
+  @media (max-width: 1000px) { .screens, .notes { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  @media (max-width: 640px) { .screens, .notes { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<main class="container">
+  <h1 class="h1">Centurion platform: sign-up and console</h1>
+  <p class="lead intro">The pages that turn Centurion into software other apartment and hotel businesses can sign up for. They use the same fonts, navy and blue as the staff sign-in and desk app, so going from sign-up to the dashboard feels like one product. The thread through all of them is the business's own web address.</p>
+
+  <div class="screens">
+    <a class="screen" href="home.html"><div class="img"><img src="home.png" alt=""></div><p><b>centurionpms.com</b><br>Home page. Typing an address checks if it's free and starts sign-up.</p></a>
+    <a class="screen" href="signup.html"><div class="img"><img src="signup-1.png" alt=""></div><p><b>Sign-up, step 1</b><br>Business name, address, type, city. The preview on the right updates as you type.</p></a>
+    <a class="screen" href="signup.html?step=2"><div class="img"><img src="signup-2.png" alt=""></div><p><b>Sign-up, step 2</b><br>The manager's account.</p></a>
+    <a class="screen" href="signup.html?step=3"><div class="img"><img src="signup-3.png" alt=""></div><p><b>Sign-up, step 3</b><br>6-digit email code. Paste fills all boxes.</p></a>
+    <a class="screen" href="signup.html?step=4"><div class="img"><img src="signup-4.png" alt=""></div><p><b>Setting up, then done</b><br>Shows the new address and opens the dashboard.</p></a>
+    <a class="screen" href="find.html"><div class="img"><img src="find.png" alt=""></div><p><b>Log in from centurionpms.com</b><br>Go by address, recent businesses on this device, or get links by email.</p></a>
+    <a class="screen" href="find.html?sent"><div class="img"><img src="find-sent.png" alt=""></div><p><b>Login links sent</b><br>Never says whether the email exists. The email lists each business.</p></a>
+    <a class="screen" href="unavailable.html?slug=sunrise"><div class="img"><img src="unavailable.png" alt=""></div><p><b>Address not in use</b><br>Offers to find your business, or claim the address.</p></a>
+    <a class="screen" href="unavailable.html?state=paused"><div class="img"><img src="paused.png" alt=""></div><p><b>Paused business</b><br>What guests see. Shows the business's phone and email.</p></a>
+    <a class="screen" href="console.html"><div class="img"><img src="console.png" alt=""></div><p><b>Console: businesses</b><br>Every business, what needs a look, and details for the selected one.</p></a>
+    <a class="screen" href="console.html?pick=testhotel&amp;pause"><div class="img"><img src="console-pause.png" alt=""></div><p><b>Console: pause a business</b><br>Says exactly what happens. A reason is emailed to the owner.</p></a>
+  </div>
+
+  <div class="notes">
+    <div class="card card-pad">
+      <h2 class="h3">Decisions these pages assume</h2>
+      <ul>
+        <li>The platform address is <b>centurionpms.com</b>. Businesses get <b>name.centurionpms.com</b>, and Centurion Apartments keeps <b>centurionapartments.ng</b>.</li>
+        <li>Short names like www, app, admin, console and login are reserved.</li>
+        <li>Sign-up creates the business, its first branch and the manager in one go (the existing <code>/setup</code> logic).</li>
+        <li>The console lives at <b>console.centurionpms.com</b> and is for you and anyone you add. It has no "log in as this business" button. That can be added later with an audit log if you need it.</li>
+        <li>Pausing blocks staff logins and online bookings but deletes nothing.</li>
+      </ul>
+    </div>
+    <div class="card card-pad">
+      <h2 class="h3">Copy to confirm before launch</h2>
+      <ul>
+        <li><b>Pricing</b> is marked "to be decided" on the home page. The suggested wording promises free early access and 60 days' notice.</li>
+        <li>"We'll load your bookings from a spreadsheet" promises hands-on help.</li>
+        <li>"Transfers are matched to the right booking" and "Export your bookings and guests whenever you want": check these work as described today.</li>
+        <li>The Centurion Apartments quote is written for them. They need to approve it.</li>
+        <li>Console businesses, numbers and owners are sample data. The desk screenshots are the approved desk-app mockups.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+</body>
+</html>

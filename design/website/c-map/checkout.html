@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Apartments · Option C · Your details</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="system.css">
+<style>
+  /* Layout only */
+  .top { display: flex; justify-content: space-between; align-items: center; gap: var(--s-6); padding-block: var(--s-8) var(--s-10); flex-wrap: wrap; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: var(--s-12); align-items: start; padding-bottom: var(--s-24); }
+  .form { display: grid; gap: var(--s-10); }
+  .group { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); }
+  .group > .h2, .group > .full { grid-column: 1 / -1; }
+  .group > .h2 { margin-bottom: calc(var(--s-1) * -1); }
+  .pay { display: grid; gap: var(--s-3); }
+  .pay .meta { margin-top: 2px; }
+  .summary { position: sticky; top: 96px; overflow: hidden; }
+  .summary img { width: 100%; height: 180px; object-fit: cover; }
+  .summary .card-pad { display: grid; gap: var(--s-4); }
+  .when { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .when > div { padding: var(--s-3); border-radius: var(--r-md); background: var(--ink-50); }
+  .submit { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; }
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } .summary { position: static; order: -1; } }
+  @media (max-width: 720px) { .group { grid-template-columns: 1fr; } .stepper li + li { padding-left: var(--s-3); } .stepper { gap: var(--s-3); } .stepper li { font-size: var(--t-xs); } .submit .btn { width: 100%; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="home.html"><img src="../assets/logo.png" alt="">Centurion Apartments</a>
+    <div class="end"><a class="btn btn-ghost btn-sm" href="tel:+2348162417819"><span class="hide-sm">Need help?</span> 0816 241 7819</a></div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="top">
+    <a class="btn btn-ghost btn-sm" href="results.html" id="back">← Back to apartments</a>
+    <ol class="stepper" aria-label="Booking steps"><li class="done">Apartment</li><li class="now" aria-current="step">Your details</li><li>Payment</li></ol>
+  </div>
+
+  <div class="layout">
+    <form class="form" onsubmit="return false">
+      <div class="group">
+        <h1 class="h2">Who's staying?</h1>
+        <div class="field"><label for="first">First name</label><input class="input" id="first" autocomplete="given-name"></div>
+        <div class="field"><label for="last">Last name</label><input class="input" id="last" autocomplete="family-name"></div>
+        <div class="field"><label for="phone">Phone</label><input class="input" id="phone" autocomplete="tel" placeholder="0803 000 0000"><span class="hint">We'll send your receipt and directions by WhatsApp.</span></div>
+        <div class="field"><label for="email">Email</label><input class="input" id="email" autocomplete="email" placeholder="you@company.com"></div>
+        <div class="field"><label for="arrive">Arriving around</label><select class="input" id="arrive"><option>1pm – 3pm</option><option>3pm – 6pm</option><option>6pm – 10pm</option><option>After 10pm</option></select></div>
+        <div class="field"><label for="company">Company <span class="meta" style="display:inline">(optional)</span></label><input class="input" id="company" placeholder="For the invoice"></div>
+        <div class="field full"><label for="note">Anything we should know? <span class="meta" style="display:inline">(optional)</span></label><textarea class="input" id="note" placeholder="Early check-in, airport pickup, an extra bed…"></textarea></div>
+      </div>
+
+      <div class="group">
+        <h2 class="h2">How would you like to pay?</h2>
+        <div class="pay full">
+          <label class="radio-card"><input type="radio" name="pay" checked><span><span class="h3" style="font-size:var(--t-md)">Pay now by card or bank transfer</span><p class="meta">Secured by Paystack. Your apartment is confirmed straight away.</p></span></label>
+          <label class="radio-card"><input type="radio" name="pay"><span><span class="h3" style="font-size:var(--t-md)">Pay half now, the rest at check-in</span><p class="meta" id="half"></p></span></label>
+        </div>
+      </div>
+
+      <div class="submit">
+        <button class="btn btn-primary btn-lg" id="pay-btn" type="submit"></button>
+        <p class="meta">By paying you agree to the house rules and cancellation policy.</p>
+      </div>
+    </form>
+
+    <aside class="card summary" id="summary"></aside>
+  </div>
+</main>
+
+<script src="../assets/data.js"></script>
+<script src="app.js"></script>
+<script>
+  const C = CENTURION, N = C.NIGHTS;
+  const id = new URLSearchParams(location.search).get('pick') || 'zone-4:0';
+  const { l, t } = C.all().find(x => x.t.id === id);
+  const total = t.rate * N;
+  document.getElementById('back').href = `results.html?pick=${id}`;
+  document.getElementById('pay-btn').textContent = `Pay ${naira(total)}`;
+  document.getElementById('half').textContent = `${naira(total / 2)} now, ${naira(total / 2)} when you arrive.`;
+  document.getElementById('summary').innerHTML = `
+    <img src="../assets/${t.photo}" alt="">
+    <div class="card-pad">
+      <div><h2 class="h3">${t.name}</h2><p class="meta">Centurion ${l.name} · ${l.address}</p></div>
+      <div class="when"><div><span class="seg-label">Check in</span><div class="seg-value">Fri 6 Nov</div><span class="meta">from 1pm</span></div><div><span class="seg-label">Check out</span><div class="seg-value">Mon 9 Nov</div><span class="meta">by 12 noon</span></div></div>
+      <dl class="lines">
+        <dt>${naira(t.rate)} × ${N} nights</dt><dd>${naira(total)}</dd>
+        ${t.was ? `<dt>Direct booking saving</dt><dd class="save">−${naira((t.was - t.rate) * N)}</dd>` : ''}
+        <dt>Guests</dt><dd>2 adults</dd>
+        <dt class="total">Total</dt><dd class="total">${naira(total)}</dd>
+      </dl>
+      <p class="meta">Free cancellation until Thu 5 Nov, 1pm. After that, the first night is charged.</p>
+    </div>`;
+</script>
+</body>
+</html>

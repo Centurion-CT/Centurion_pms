@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Address not in use · Centurion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="platform.css">
+<style>
+  /* Layout only */
+  body { background: var(--paper); min-height: 100vh; display: flex; flex-direction: column; }
+  main { flex: 1; display: grid; place-items: center; padding: var(--s-12) var(--gutter); }
+  .box { max-width: 520px; width: 100%; }
+  .box .browser { margin-bottom: var(--s-10); box-shadow: inset 0 0 0 1px var(--line); }
+  .box .browser-bar { border-bottom: 0; }
+  .box .h1 { margin-bottom: var(--s-3); }
+  .box .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-8); }
+  .contact { margin-top: var(--s-8); display: grid; gap: var(--s-2); }
+  .contact a { color: var(--ink-900); font-weight: 600; text-decoration: none; }
+  .foot { text-align: center; padding: var(--s-6); font-size: var(--t-xs); color: var(--ink-500); }
+  .foot a { color: inherit; }
+  .is-hidden { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <!-- Unknown address: offer it to whoever typed it -->
+  <div class="box" id="unknown">
+    <div class="browser"><div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="browser-url">https://<b data-host>sunrise.centurionpms.com</b></span></div></div>
+    <h1 class="h1">This address isn't in use</h1>
+    <p class="lead">No business on Centurion uses <b data-host style="color:var(--ink-900)">sunrise.centurionpms.com</b>. Check the spelling, or find your business by email.</p>
+    <div class="actions"><a class="btn btn-primary btn-lg" href="find.html">Find my business</a><a class="btn btn-secondary btn-lg" href="#" data-claim>Use this address for my business</a></div>
+  </div>
+
+  <!-- Paused business: guests and staff land here -->
+  <div class="box is-hidden" id="paused">
+    <div class="browser"><div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="browser-url">https://<b>harmony.centurionpms.com</b></span></div></div>
+    <h1 class="h1">Harmony Shortlets isn't taking online bookings right now</h1>
+    <p class="lead">You can still reach them directly to book or ask about your stay.</p>
+    <div class="contact card card-pad">
+      <span class="meta">Harmony Shortlets, Lekki, Lagos</span>
+      <a href="tel:+2348030000000">0803 000 0000</a>
+      <a href="mailto:bookings@harmonyshortlets.ng">bookings@harmonyshortlets.ng</a>
+    </div>
+    <p class="meta" style="margin-top:var(--s-6)">Work at Harmony Shortlets? Your manager has been emailed about what to do next.</p>
+  </div>
+</main>
+<p class="foot">Runs on <a href="home.html">Centurion</a></p>
+
+<script src="platform.js"></script>
+<script>
+  const p = new URLSearchParams(location.search);
+  if (p.get('state') === 'paused') { document.getElementById('unknown').classList.add('is-hidden'); document.getElementById('paused').classList.remove('is-hidden'); document.title = 'Harmony Shortlets'; }
+  const s = CX.slugify(p.get('slug') || 'sunrise');
+  document.querySelectorAll('[data-host]').forEach(e => e.textContent = s + CX.SUFFIX);
+  document.querySelector('[data-claim]').href = `signup.html?slug=${encodeURIComponent(s)}`;
+</script>
+</body>
+</html>

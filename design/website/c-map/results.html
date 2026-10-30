@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Apartments · Option C · Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="system.css">
+<style>
+  /* Layout only */
+  html, body { height: 100%; }
+  body { display: flex; flex-direction: column; }
+  .site-header .container { max-width: none; }
+  .site-header .search { margin-inline: auto; width: 560px; }
+  .site-header .search .seg { flex: 1; }
+  .filters { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3) var(--gutter); border-bottom: 1px solid var(--ink-200); overflow-x: auto; flex: none; }
+  .filters .sep { width: 1px; height: 24px; background: var(--ink-200); margin: 0 var(--s-2); flex: none; }
+  .filters .end { margin-left: auto; }
+  .split { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 46%; }
+  .list { overflow: auto; padding: var(--s-6) var(--gutter) var(--s-16); }
+  .list-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-4); margin-bottom: var(--s-6); }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-8) var(--s-6); }
+  .side { position: relative; padding: var(--s-4) var(--s-4) var(--s-4) 0; }
+  .side .map { position: absolute; inset: var(--s-4) var(--s-4) var(--s-4) 0; }
+  .detail { position: absolute; inset: var(--s-4) var(--s-4) var(--s-4) 0; z-index: 500; display: flex; flex-direction: column; overflow: hidden; background: var(--white); border-radius: var(--r-xl); box-shadow: inset 0 0 0 1px var(--ink-200); }
+  .detail[hidden] { display: none; }
+  .detail-photo { position: relative; height: 240px; flex: none; }
+  .detail-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .detail-photo .btn { position: absolute; top: var(--s-4); left: var(--s-4); box-shadow: var(--e-marker); }
+  .detail-body { flex: 1; overflow: auto; padding: var(--s-6); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-6) var(--s-8); align-content: start; }
+  .detail-body .full { grid-column: 1 / -1; }
+  .detail-body ul { margin: var(--s-3) 0 0; padding-left: var(--s-5); font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-700); }
+  .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s-2); }
+  .detail-foot { flex: none; display: flex; align-items: center; gap: var(--s-4); padding: var(--s-4) var(--s-6); border-top: 1px solid var(--ink-200); }
+  .detail-foot .sum { flex: 1; }
+  .detail-foot .sum .h2 { line-height: 1.1; }
+  @media (max-width: 1100px) {
+    .site-header .search { display: none; }
+    .split { grid-template-columns: 1fr; }
+    .side { display: none; }
+    .side.show { display: block; position: fixed; inset: 0; z-index: 60; padding: 0; background: var(--white); }
+    .side.show .detail { inset: 0; border-radius: 0; box-shadow: none; }
+  }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+    .detail-body { grid-template-columns: 1fr; }
+    .list-head { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="home.html"><img src="../assets/logo.png" alt="">Centurion</a>
+    <form class="search search-compact" role="search">
+      <button type="button" class="seg" id="where" aria-haspopup="listbox" aria-expanded="false"><span class="seg-label">Where</span><span class="seg-value">All 5 locations</span></button>
+      <button type="button" class="seg"><span class="seg-label">Dates</span><span class="seg-value">Fri 6 – Mon 9 Nov</span></button>
+      <button type="button" class="seg"><span class="seg-label">Guests</span><span class="seg-value">2 adults</span></button>
+      <button class="btn btn-primary" type="button">Search</button>
+    </form>
+    <div class="end" style="margin-left:0"><a class="btn btn-ghost btn-sm" href="tel:+2348162417819">0816 241 7819</a></div>
+  </div>
+</header>
+
+<div class="filters" id="filters"></div>
+
+<div class="split">
+  <div class="list">
+    <div class="list-head">
+      <div><h1 class="h2" id="count"></h1><p class="meta">Prices are for the whole apartment. The bars show the next 14 nights; your 3 are underlined.</p></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <div class="side" id="side">
+    <div class="map" id="map"></div>
+    <aside class="detail" id="detail" hidden aria-live="polite"></aside>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../assets/data.js"></script>
+<script src="app.js"></script>
+<script>
+  const C = CENTURION, Ls = C.locations, N = C.NIGHTS;
+  const where = new Set(Ls.map(l => l.slug));
+  let size = 'any', sort = 'price';
+  const sizeOf = t => /two/i.test(t.name) ? 'two' : /one/i.test(t.name) ? 'one' : 'studio';
+
+  function filters() {
+    document.getElementById('filters').innerHTML =
+      `<button class="chip" data-w="all" aria-pressed="${where.size === Ls.length}">All locations</button>` +
+      Ls.map(l => `<button class="chip" data-w="${l.slug}" aria-pressed="${where.size < Ls.length && where.has(l.slug)}">${l.name} <span class="count">${l.types.filter(t => t.left).length}</span></button>`).join('') +
+      '<span class="sep"></span>' +
+      [['any', 'Any size'], ['studio', 'Studio'], ['one', '1 bedroom'], ['two', '2 bedrooms']].map(([k, n]) => `<button class="chip" data-s="${k}" aria-pressed="${size === k}">${n}</button>`).join('') +
+      `<button class="btn btn-ghost btn-sm end" data-sort>Sort: ${sort === 'price' ? 'lowest price' : 'most free'}</button>`;
+  }
+  function results() {
+    const shown = C.all().filter(({ l, t }) => t.left > 0 && where.has(l.slug) && (size === 'any' || sizeOf(t) === size))
+      .sort((a, b) => sort === 'price' ? a.t.rate - b.t.rate : b.t.left - a.t.left);
+    document.getElementById('count').textContent = `${shown.length} apartment${shown.length === 1 ? '' : 's'} free for your dates`;
+    document.getElementById('grid').innerHTML = shown.map(({ l, t }) => `
+      <article class="listing" data-id="${t.id}" data-slug="${l.slug}" tabindex="0">
+        <div class="listing-photo"><img src="../assets/${t.photo}" alt="">${C.tagHTML(t).replace('class="tag', 'class="tag tag-onphoto')}</div>
+        <div>
+          <div class="listing-head"><h2 class="h3">${t.name}</h2>${l.rating ? `<span class="listing-score">${l.rating}/10</span>` : ''}</div>
+          <p class="meta">Centurion ${l.name} · sleeps ${t.sleeps}</p>
+        </div>
+        <div>${C.stripHTML(t)}</div>
+        <div class="listing-foot"><span class="price">${t.was ? `<s>${naira(t.was)}</s>` : ''}${naira(t.rate)} <span class="unit">a night</span></span><span class="meta">${naira(t.rate * N)} for ${N} nights</span></div>
+      </article>`).join('');
+    m.dim(where.size === Ls.length ? null : [...where]);
+    markActive();
+  }
+
+  const m = C.map(document.getElementById('map'), { zoomPosition: 'topright', padTL: [60, 60], padBR: [60, 60], label: l => `${C.short(l.from)}` });
+  let picked = new URLSearchParams(location.search).get('pick');
+  function markActive() {
+    document.querySelectorAll('.listing').forEach(c => c.classList.toggle('is-active', c.dataset.id === picked));
+  }
+  function detail() {
+    const box = document.getElementById('detail'), side = document.getElementById('side');
+    const hit = picked && C.all().find(x => x.t.id === picked);
+    if (!hit) { box.hidden = true; side.classList.remove('show'); m.activate(null); markActive(); return; }
+    const { l, t } = hit;
+    m.activate(l.slug); markActive();
+    const cells = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(d => `<span class="dow">${d}</span>`).join('') +
+      Array.from({ length: 21 }, (_, i) => i + 2).map(d => {
+        const n = t.nights[d - 6];
+        const cls = d === 6 ? 'start' : d === 9 ? 'end' : d > 6 && d < 9 ? 'range' : n === 'gone' ? 'gone' : '';
+        return `<span class="day ${cls}">${d}</span>`;
+      }).join('');
+    box.innerHTML = `
+      <div class="detail-photo"><img src="../assets/${t.photo}" alt=""><button class="btn btn-inverse btn-sm" data-close>← Back to map</button></div>
+      <div class="detail-body">
+        <div class="full">
+          <div class="listing-head"><h2 class="h1" style="font-size:var(--t-2xl);line-height:var(--lh-2xl)">${t.name}</h2>${C.tagHTML(t)}</div>
+          <p class="meta">Centurion ${l.name} · ${l.address} · sleeps ${t.sleeps}</p>
+        </div>
+        <div>
+          <h3 class="h3">The apartment</h3>
+          <ul><li>Full kitchen and dining table</li><li>Air conditioning, 24-hour power</li><li>Smart TV and fast Wi‑Fi</li><li>Bed made and cleaned daily</li></ul>
+          <h3 class="h3" style="margin-top:var(--s-5)">Around ${l.name}</h3>
+          <ul>${l.near.map(n => `<li>${n}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <div class="cal-head"><h3 class="h3">November</h3><span class="meta">3 nights</span></div>
+          <div class="cal">${cells}</div>
+          <hr class="divider">
+          <dl class="lines">
+            <dt>${naira(t.rate)} × ${N} nights</dt><dd>${naira(t.rate * N)}</dd>
+            ${t.was ? `<dt>Direct booking saving</dt><dd class="save">−${naira((t.was - t.rate) * N)}</dd>` : ''}
+            <dt>Taxes and service</dt><dd>Included</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="detail-foot">
+        <div class="sum"><div class="h2">${naira(t.rate * N)}</div><p class="meta">Free cancellation until Thu 5 Nov, 1pm</p></div>
+        <a class="btn btn-primary btn-lg" href="checkout.html?pick=${t.id}">Continue</a>
+      </div>`;
+    box.hidden = false; side.classList.add('show');
+  }
+
+  document.addEventListener('click', e => {
+    const w = e.target.closest('[data-w]'), s = e.target.closest('[data-s]'), card = e.target.closest('.listing');
+    if (w) { if (w.dataset.w === 'all') Ls.forEach(l => where.add(l.slug)); else { where.clear(); where.add(w.dataset.w); } }
+    if (s) size = s.dataset.s;
+    if (e.target.closest('[data-sort]')) sort = sort === 'price' ? 'free' : 'price';
+    if (card) picked = card.dataset.id;
+    if (e.target.closest('[data-close]')) picked = null;
+    if (w || s || e.target.closest('[data-sort]')) { filters(); results(); }
+    if (card || e.target.closest('[data-close]')) detail();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && picked) { picked = null; detail(); }
+    if (e.key === 'Enter' && e.target.classList.contains('listing')) e.target.click();
+  });
+  document.getElementById('grid').addEventListener('mouseover', e => { const c = e.target.closest('.listing'); if (c && !picked) m.activate(c.dataset.slug); });
+  m.on(slug => { where.clear(); where.add(slug); filters(); results(); });
+  C.wherePicker(document.getElementById('where'), where, () => { filters(); results(); });
+
+  filters(); results(); detail();
+</script>
+</body>
+</html>

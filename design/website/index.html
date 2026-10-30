@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion website options</title>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #F3F5F7; --ink: #13202D; --ink-2: #4A5A6A; --line: #D6DDE4; --blue: #336799; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 'Schibsted Grotesk', system-ui, sans-serif; }
+  main { max-width: 1280px; margin: 0 auto; padding: 56px 32px 96px; }
+  h1 { font-size: 40px; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .lede { color: var(--ink-2); max-width: 70ch; margin: 0 0 40px; }
+  .opt { display: grid; grid-template-columns: 1fr 1.6fr; gap: 32px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px var(--line); padding: 28px; margin-bottom: 24px; }
+  .opt h2 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .opt .tag { font-size: 14px; color: var(--ink-2); margin: 0 0 16px; }
+  .opt p { margin: 0 0 12px; }
+  .opt ul { margin: 0 0 18px; padding-left: 18px; color: var(--ink-2); }
+  .opt li { margin-bottom: 4px; }
+  .swatches { display: flex; gap: 6px; margin-bottom: 18px; }
+  .swatches i { width: 28px; height: 28px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+  .links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .links a { display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; background: var(--blue); color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; }
+  .links a.alt { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .shots a { display: block; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); height: 360px; background: var(--bg); }
+  .shots img { width: 100%; display: block; }
+  .note { background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px var(--line); padding: 28px; margin-top: 40px; }
+  .note h2 { margin: 0 0 10px; font-size: 22px; }
+  .note p { margin: 0 0 10px; color: var(--ink-2); max-width: 80ch; }
+  @media (max-width: 900px) { .opt { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { main { padding: 32px 16px 64px; } .shots { grid-template-columns: 1fr; } h1 { font-size: 30px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>centurionapartments.ng: three directions</h1>
+  <p class="lede">Each option has a home page (availability finder plus location explorer) and a results page that searches all five Abuja buildings at once and starts a booking. Click through: the location picker, map pins, filters and booking steps work. Prices and locations are real (from the current Tripmata page). Free-room counts are sample data. Photos are stand-ins until we have a proper shoot.</p>
+
+  <section class="opt">
+    <div>
+      <h2>A · Availability Index</h2>
+      <p class="tag">Data-led, built on the logo</p>
+      <div class="swatches"><i style="background:#F3F5F7"></i><i style="background:#13202D"></i><i style="background:#336799"></i><i style="background:#D9902A"></i></div>
+      <p>The search is the headline: "I need a place in [any of our 5 locations] from [date] to [date], for [2 guests]." Next to it, the logo's bars become live bars, one per building, sized by how many apartments are free tonight.</p>
+      <ul>
+        <li>The closest fit to the brand: blue, precise, a bit like a booking tool.</li>
+        <li>Map and list explorer, plus a table showing which apartment types each building has.</li>
+        <li>Results are grouped by building, with a stay summary that follows you down the page.</li>
+      </ul>
+      <div class="links"><a href="a-index/home.html">Open home</a><a class="alt" href="a-index/results.html">Open results</a></div>
+    </div>
+    <div class="shots"><a href="a-index/home.html"><img src="a-index/home.png" alt="Option A home"></a><a href="a-index/results.html"><img src="a-index/results.png" alt="Option A results"></a></div>
+  </section>
+
+  <section class="opt">
+    <div>
+      <h2>B · Neighbourhoods</h2>
+      <p class="tag">Editorial and hotel-like, closest to Diplomat Enclave's feel</p>
+      <div class="swatches"><i style="background:#F6F7F5"></i><i style="background:#173A30"></i><i style="background:#17201C"></i><i style="background:#B07F27"></i></div>
+      <p>Full-bleed photography with the five location names set large in Bodoni as the headline. Hover a name and the photo behind changes to that building. The booking bar docks under the hero, like Diplomat's, but adds a location picker.</p>
+      <ul>
+        <li>The most "premium hotel" of the three, and the most dependent on good photos.</li>
+        <li>Each neighbourhood is sold on its area: Wuse for nightlife, Zone 4 for business, Jabi for the lake.</li>
+        <li>Results read like a brochure. Booking opens in a side drawer.</li>
+      </ul>
+      <div class="links"><a href="b-neighbourhoods/home.html">Open home</a><a class="alt" href="b-neighbourhoods/results.html">Open results</a><a class="alt" href="b-neighbourhoods/results.html?open">Booking drawer</a></div>
+    </div>
+    <div class="shots"><a href="b-neighbourhoods/home.html"><img src="b-neighbourhoods/home.png" alt="Option B home"></a><a href="b-neighbourhoods/results.html"><img src="b-neighbourhoods/results.png" alt="Option B results"></a></div>
+  </section>
+
+  <section class="opt">
+    <div>
+      <h2>C · Map Desk <span style="font-size:14px;color:#1F9A72;font-weight:600">v2, rebuilt on a design system</span></h2>
+      <p class="tag">App-like: map-first search, like Sonder or Airbnb</p>
+      <div class="swatches"><i style="background:#0E2238"></i><i style="background:#5F7387"></i><i style="background:#EAF0F5"></i><i style="background:#336799"></i><i style="background:#1F9A72"></i><i style="background:#E09B2D"></i></div>
+      <p>A real map of Abuja with a price marker on each building, beside a location list that stays in step with the map. Every listing has an availability strip: 14 bars, one per night, taken from the logo. Clicking a listing opens a detail panel with a calendar, then a checkout step.</p>
+      <ul>
+        <li>One stylesheet of tokens and components, shown on its own page.</li>
+        <li>Blue only for actions; green and amber only for availability.</li>
+        <li>Three screens: home, search results with detail, and checkout.</li>
+      </ul>
+      <div class="links"><a href="c-map/home.html">Open home</a><a class="alt" href="c-map/results.html">Open results</a><a class="alt" href="c-map/checkout.html">Checkout</a><a class="alt" href="c-map/system.html">Design system</a><a class="alt" href="c-map/v1/home.html">v1</a></div>
+    </div>
+    <div class="shots"><a href="c-map/home.html"><img src="c-map/home.png" alt="Option C home"></a><a href="c-map/results.html"><img src="c-map/results-detail.png" alt="Option C results"></a></div>
+  </section>
+
+  <div class="note">
+    <h2>Mixing is fine</h2>
+    <p>The parts can be combined, for example B's hero and neighbourhood stories with A's free-tonight bars, or C's results page under either home page. The research notes and the plan for connecting to the HMS are in README.md in this folder.</p>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Apartments · Option A · Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F3F5F7;
+    --white: #FFFFFF;
+    --ink: #13202D;
+    --ink-2: #4A5A6A;
+    --ink-3: #7B8896;
+    --line: #D6DDE4;
+    --blue: #336799;
+    --blue-deep: #1F466B;
+    --blue-wash: #E3ECF5;
+    --amber: #D9902A;
+    --full: #C5CDD5;
+    --font: 'Schibsted Grotesk', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.55 var(--font); }
+
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+
+  /* Header */
+  .top { display: flex; align-items: center; justify-content: space-between; height: 76px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 700; font-size: 19px; letter-spacing: -0.01em; }
+  .brand img { width: 30px; height: auto; }
+  .nav { display: flex; gap: 30px; font-size: 15px; font-weight: 500; }
+  .nav a { text-decoration: none; color: var(--ink-2); }
+  .nav a:hover { color: var(--ink); }
+  .top-end { display: flex; align-items: center; gap: 20px; font-size: 15px; }
+  .top-end .tel { color: var(--ink-2); text-decoration: none; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 22px; border-radius: 8px; border: 0; background: var(--blue); color: #fff; font: 600 15px var(--font); text-decoration: none; cursor: pointer; }
+  .btn:hover { background: var(--blue-deep); }
+  .btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+
+  /* Hero: the search is the headline */
+  .hero { display: grid; grid-template-columns: 1.25fr 1fr; gap: 64px; padding-top: 56px; padding-bottom: 72px; align-items: end; }
+  .ask { font-size: 58px; line-height: 1.12; letter-spacing: -0.03em; font-weight: 700; margin: 0; }
+  .ask .field { display: inline-flex; align-items: center; gap: 10px; border-bottom: 3px solid var(--blue); color: var(--blue); cursor: pointer; padding: 0 2px; white-space: nowrap; position: relative; }
+  .ask .field:hover { background: var(--blue-wash); }
+  .ask .field svg { width: 22px; height: 22px; flex: none; }
+  .ask-sub { margin: 28px 0 0; display: flex; align-items: center; gap: 24px; }
+  .ask-sub p { margin: 0; color: var(--ink-2); font-size: 16px; max-width: 34ch; }
+  .ask-sub .btn { height: 56px; padding: 0 30px; font-size: 17px; }
+
+  /* Popover for the location field */
+  .pop { position: absolute; top: calc(100% + 12px); left: 0; z-index: 10; width: 340px; background: var(--white); border-radius: 12px; box-shadow: 0 1px 0 var(--line), 0 18px 50px rgba(19,32,45,.16); padding: 10px; font-size: 16px; letter-spacing: 0; color: var(--ink); font-weight: 400; display: none; white-space: normal; }
+  .field.open .pop { display: block; }
+  .pop label { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; }
+  .pop label:hover { background: var(--paper); }
+  .pop input { width: 18px; height: 18px; accent-color: var(--blue); }
+  .pop .pop-n { margin-left: auto; color: var(--ink-3); font-size: 14px; }
+
+  /* Tonight: the logo's bars, one per location */
+  .tonight { background: var(--white); border-radius: 14px; padding: 26px 26px 20px; box-shadow: 0 0 0 1px var(--line); }
+  .tonight-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
+  .tonight-head h2 { margin: 0; font-size: 17px; font-weight: 700; }
+  .tonight-head span { font-size: 14px; color: var(--ink-3); }
+  .bars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: end; height: 230px; }
+  .bar { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; text-decoration: none; }
+  .bar-track { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+  .bar-total { position: absolute; inset: auto 0 0 0; background: var(--paper); border-radius: 4px 4px 0 0; }
+  .bar-free { position: relative; background: var(--blue); border-radius: 4px 4px 0 0; transform-origin: bottom; animation: rise .9s cubic-bezier(.2,.8,.2,1) both; }
+  .bar.low .bar-free { background: var(--amber); }
+  .bar:hover .bar-free { filter: brightness(1.12); }
+  .bar-n { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-top: 10px; }
+  .bar-name { font-size: 14px; font-weight: 600; }
+  .bar-from { font-size: 13px; color: var(--ink-3); }
+  .tonight-key { display: flex; gap: 18px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-2); }
+  .tonight-key i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  @keyframes rise { from { transform: scaleY(0); } }
+  @media (prefers-reduced-motion: reduce) { .bar-free { animation: none; } }
+
+  /* Photo band */
+  .band { position: relative; height: 520px; border-radius: 16px; overflow: hidden; }
+  .band img { width: 100%; height: 100%; object-fit: cover; }
+  .band figcaption { position: absolute; left: 24px; bottom: 24px; background: var(--white); border-radius: 10px; padding: 14px 18px; font-size: 15px; max-width: 360px; }
+  .band figcaption b { display: block; font-size: 16px; }
+
+  /* Sections */
+  section.block { padding: 112px 0 0; }
+  .h2 { font-size: 42px; line-height: 1.12; letter-spacing: -0.025em; font-weight: 700; margin: 0 0 14px; }
+  .lede { font-size: 18px; color: var(--ink-2); max-width: 56ch; margin: 0; }
+  .head-row { display: flex; justify-content: space-between; align-items: end; gap: 40px; margin-bottom: 40px; }
+
+  /* Explorer */
+  .explorer { display: grid; grid-template-columns: 1.15fr 1fr; gap: 0; background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); }
+  .explorer .map { background: #E8EDF2; padding: 18px; border-right: 1px solid var(--line); }
+  .abuja-map { width: 100%; height: auto; display: block; font-family: var(--font); }
+  .map-land { fill: #E8EDF2; }
+  .map-green { fill: #DCE6DD; }
+  .map-water { fill: #C7D8E8; }
+  .map-road { fill: none; stroke: #fff; stroke-width: 4; }
+  .map-road.major { stroke-width: 8; }
+  .map-place { font-size: 12px; fill: var(--ink-3); }
+  .map-pin { cursor: pointer; }
+  .map-pin-halo { fill: var(--blue); opacity: 0; transition: opacity .2s; }
+  .map-pin-dot { fill: var(--blue); stroke: #fff; stroke-width: 3; }
+  .map-pin-label { font-size: 13px; font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: #E8EDF2; stroke-width: 4px; }
+  .map-pin.on .map-pin-halo { opacity: .18; }
+  .map-pin.on .map-pin-dot { fill: var(--ink); }
+  .loc-list { list-style: none; margin: 0; padding: 0; }
+  .loc { display: grid; grid-template-columns: 1fr auto; gap: 4px 20px; padding: 20px 26px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .loc:last-child { border-bottom: 0; }
+  .loc:hover, .loc.on { background: var(--paper); }
+  .loc h3 { margin: 0; font-size: 20px; letter-spacing: -0.01em; }
+  .loc p { margin: 0; grid-column: 1 / -1; font-size: 15px; color: var(--ink-2); max-width: 52ch; }
+  .loc .loc-price { text-align: right; font-size: 15px; color: var(--ink-2); }
+  .loc .loc-price b { color: var(--ink); font-size: 18px; }
+  .loc .loc-meta { grid-column: 1 / -1; display: flex; gap: 16px; font-size: 14px; color: var(--ink-3); margin-top: 6px; }
+  .loc .loc-meta .ok { color: var(--blue); font-weight: 600; }
+  .loc .loc-meta .low { color: var(--amber); font-weight: 600; }
+
+  /* Apartment types matrix */
+  .types { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); font-size: 16px; }
+  .types th, .types td { padding: 18px 22px; text-align: left; border-bottom: 1px solid var(--line); }
+  .types thead th { font-size: 14px; font-weight: 600; color: var(--ink-3); background: var(--paper); }
+  .types thead th.loc-col { text-align: center; }
+  .types tbody tr:last-child td { border-bottom: 0; }
+  .types td.c { text-align: center; }
+  .types .t-name { font-weight: 700; }
+  .types .t-sleeps { color: var(--ink-3); font-size: 14px; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--blue); }
+  .dot.none { background: transparent; box-shadow: inset 0 0 0 1.5px var(--full); }
+
+  /* Long stays + reviews */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .panel { background: var(--white); border-radius: 16px; padding: 40px; box-shadow: 0 0 0 1px var(--line); }
+  .panel.dark { background: var(--ink); color: #fff; box-shadow: none; }
+  .panel.dark p { color: #B8C4D0; }
+  .panel h3 { font-size: 28px; letter-spacing: -0.02em; margin: 0 0 12px; line-height: 1.2; }
+  .panel p { margin: 0 0 24px; color: var(--ink-2); max-width: 48ch; }
+  .rates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #2A3A4A; border-radius: 10px; overflow: hidden; margin-bottom: 28px; }
+  .rates div { background: var(--ink); padding: 16px; }
+  .rates b { display: block; font-size: 22px; }
+  .rates span { font-size: 13px; color: #8FA0B2; }
+  .quote { font-size: 32px; line-height: 1.25; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 22px; }
+  .score { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 10px; background: var(--blue); color: #fff; font-weight: 700; margin-right: 12px; }
+
+  footer { margin-top: 112px; background: var(--ink); color: #C9D3DD; padding: 64px 0 40px; font-size: 15px; }
+  footer .cols { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
+  footer h4 { color: #fff; margin: 0 0 14px; font-size: 15px; }
+  footer a { display: block; text-decoration: none; margin-bottom: 8px; }
+  footer a:hover { color: #fff; }
+  footer .legal { margin-top: 48px; padding-top: 22px; border-top: 1px solid #2A3A4A; font-size: 13px; color: #8FA0B2; display: flex; justify-content: space-between; }
+
+  @media (max-width: 1100px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; }
+    .ask { font-size: 44px; }
+    .explorer, .split { grid-template-columns: 1fr; }
+    .explorer .map { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+  @media (max-width: 720px) {
+    .wrap { padding: 0 16px; }
+    .nav, .top-end .tel { display: none; }
+    .brand { font-size: 16px; white-space: nowrap; }
+    .top-end .btn { white-space: nowrap; height: 40px; padding: 0 14px; }
+    .hero { padding-top: 24px; padding-bottom: 48px; }
+    .ask { font-size: 32px; line-height: 1.3; }
+    .ask .field svg { width: 16px; height: 16px; }
+    .ask-sub { flex-direction: column; align-items: stretch; }
+    .bars { height: 190px; gap: 8px; }
+    .bar-n { font-size: 22px; }
+    .bar-name { font-size: 12px; }
+    .bar-from { display: none; }
+    .band { height: 300px; }
+    section.block { padding-top: 72px; }
+    .h2 { font-size: 30px; }
+    .head-row { flex-direction: column; align-items: start; }
+    .types-wrap { overflow-x: auto; }
+    .types { min-width: 680px; }
+    .panel { padding: 26px; }
+    .quote { font-size: 24px; }
+    footer .cols { grid-template-columns: 1fr 1fr; }
+    .pop { width: 290px; }
+  }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="#"><img src="../assets/logo.png" alt="">Centurion Apartments</a>
+  <nav class="nav" aria-label="Main">
+    <a href="#locations">Locations</a>
+    <a href="#apartments">Apartments</a>
+    <a href="#long-stays">Long stays</a>
+    <a href="#">Corporate</a>
+    <a href="#">Contact</a>
+  </nav>
+  <div class="top-end">
+    <a class="tel" href="tel:+2348162417819" data-phone></a>
+    <a class="btn" href="results.html">Find a room</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1 class="ask">
+        I need a place in
+        <span class="field" id="where" tabindex="0" role="button" aria-haspopup="true">any of our 5 locations<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="pop" id="where-pop"></span>
+        </span>
+        from <span class="field" tabindex="0" role="button">Fri 6 Nov</span>
+        to <span class="field" tabindex="0" role="button">Mon 9 Nov</span>,
+        <span style="white-space:nowrap">for <span class="field" tabindex="0" role="button">2 guests</span>.</span>
+      </h1>
+      <div class="ask-sub">
+        <a class="btn" href="results.html">Show what's free</a>
+        <p>Prices and rooms come straight from our front desk, so what you see is what's free right now.</p>
+      </div>
+    </div>
+
+    <aside class="tonight" aria-labelledby="tonight-h">
+      <div class="tonight-head"><h2 id="tonight-h">Free tonight</h2><span>Updated 2 min ago</span></div>
+      <div class="bars" id="bars"></div>
+      <div class="tonight-key"><span><i style="background:var(--blue)"></i>Apartments free</span><span><i style="background:var(--amber)"></i>Last one or two</span><span><i style="background:var(--paper);box-shadow:inset 0 0 0 1px var(--line)"></i>Booked</span></div>
+    </aside>
+  </div>
+
+  <div class="wrap">
+    <figure class="band" style="margin:0">
+      <img src="../assets/living-green.jpg" alt="Living room in a Centurion one-bedroom apartment">
+      <figcaption><b>One bedroom, Wuse 2</b>Full kitchen, a living room you can work from, and staff downstairs all night.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block" id="locations">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <h2 class="h2">Five buildings across Abuja</h2>
+          <p class="lede">Pick the one closest to where your days happen. Every location has 24-hour power, security, Wi‑Fi and parking.</p>
+        </div>
+        <a class="btn ghost" href="results.html">Compare all five</a>
+      </div>
+      <div class="explorer">
+        <div class="map" id="map"></div>
+        <ul class="loc-list" id="loc-list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="apartments">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <h2 class="h2">Apartments, and where you'll find them</h2>
+          <p class="lede">From a studio for a two-night trip to a two-bedroom for the family. Rates are per night for the whole apartment.</p>
+        </div>
+      </div>
+      <div class="types-wrap"><table class="types" id="types"></table></div>
+    </div>
+  </section>
+
+  <section class="block" id="long-stays">
+    <div class="wrap split">
+      <div class="panel dark">
+        <h3>Staying a month or more?</h3>
+        <p>Weekly and monthly rates on every apartment, one invoice for your company, and housekeeping on your schedule.</p>
+        <div class="rates">
+          <div><b>7+ nights</b><span>Weekly rate</span></div>
+          <div><b>28+ nights</b><span>Monthly rate</span></div>
+          <div><b>Teams</b><span>Corporate account</span></div>
+        </div>
+        <a class="btn" href="#">Ask for a long-stay quote</a>
+      </div>
+      <div class="panel">
+        <p class="quote" id="quote"></p>
+        <div style="display:flex;align-items:center"><span class="score" id="score"></span><span id="by"></span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><a class="brand" href="#" style="color:#fff;margin-bottom:16px"><img src="../assets/logo.png" alt="">Centurion Apartments</a><p style="margin:0;max-width:30ch">Serviced apartments in five Abuja neighbourhoods, run by one front desk.</p></div>
+      <div><h4>Locations</h4><div id="foot-locs"></div></div>
+      <div><h4>Stay</h4><a href="#">Apartments</a><a href="#">Long stays</a><a href="#">Corporate</a><a href="#">Manage a booking</a></div>
+      <div><h4>Talk to us</h4><a href="tel:+2348162417819">Reservations 0816 241 7819</a><a href="tel:+2349088358213">Guest care 0908 835 8213</a><a href="#">WhatsApp</a></div>
+    </div>
+    <div class="legal"><span>© 2026 Centurion Apartments</span><span>Privacy · Terms</span></div>
+  </div>
+</footer>
+
+<script src="../assets/data.js"></script>
+<script>
+  const C = window.CENTURION, L = C.locations;
+  document.querySelectorAll('[data-phone]').forEach(a => a.textContent = C.phone);
+
+  // Bars: height = apartments in the building, fill = free tonight.
+  const max = Math.max(...L.map(l => l.rooms));
+  document.getElementById('bars').innerHTML = L.map((l, i) => `
+    <a class="bar ${l.free <= 2 ? 'low' : ''}" href="results.html#${l.slug}" title="${l.free} of ${l.rooms} apartments free tonight">
+      <div class="bar-track">
+        <div class="bar-total" style="height:${(l.rooms / max) * 100}%"></div>
+        <div class="bar-free" style="height:${(l.free / max) * 100}%;animation-delay:${i * 90}ms"></div>
+      </div>
+      <div class="bar-n">${l.free}</div>
+      <div class="bar-name">${l.name}</div>
+      <div class="bar-from">from ${naira(l.from)}</div>
+    </a>`).join('');
+
+  // Location picker in the sentence
+  document.getElementById('where-pop').innerHTML = L.map(l => `
+    <label><input type="checkbox" checked> ${l.name}<span class="pop-n">${l.free} free</span></label>`).join('');
+  const where = document.getElementById('where');
+  where.addEventListener('click', e => { if (!e.target.closest('.pop')) where.classList.toggle('open'); });
+  document.addEventListener('click', e => { if (!where.contains(e.target)) where.classList.remove('open'); });
+
+  // Explorer: map + list, hover either side to light the other
+  document.getElementById('map').innerHTML = abujaMap();
+  document.getElementById('loc-list').innerHTML = L.map(l => `
+    <li class="loc" data-slug="${l.slug}">
+      <h3>${l.name}</h3>
+      <div class="loc-price">from <b>${naira(l.from)}</b></div>
+      <p>${l.note}</p>
+      <div class="loc-meta">
+        <span class="${l.free <= 2 ? 'low' : 'ok'}">${l.free} free tonight</span>
+        <span>${l.types.length} apartment type${l.types.length > 1 ? 's' : ''}</span>
+        ${l.rating ? `<span>${l.rating}/10 from ${l.reviews} reviews</span>` : '<span>New on the site</span>'}
+      </div>
+    </li>`).join('');
+  const light = slug => document.querySelectorAll('[data-slug]').forEach(n => n.classList.toggle('on', n.dataset.slug === slug));
+  document.querySelectorAll('[data-slug]').forEach(n => n.addEventListener('mouseenter', () => light(n.dataset.slug)));
+  light('wuse-2');
+
+  // Apartment types × locations
+  const names = ['Studio', 'Standard', 'Deluxe apartment', 'Executive', 'One bedroom', 'Two bedroom'];
+  const match = (t, n) => t.name.toLowerCase().startsWith(n.toLowerCase());
+  document.getElementById('types').innerHTML = `
+    <thead><tr><th>Apartment</th><th>Sleeps</th><th>From, per night</th>${L.map(l => `<th class="loc-col">${l.name}</th>`).join('')}</tr></thead>
+    <tbody>${names.map(n => {
+      const all = L.flatMap(l => l.types.filter(t => match(t, n)));
+      return `<tr><td class="t-name">${n}</td><td class="t-sleeps">${Math.max(...all.map(t => t.sleeps))} guests</td>
+        <td><b>${naira(Math.min(...all.map(t => t.rate)))}</b></td>
+        ${L.map(l => `<td class="c"><span class="dot ${l.types.some(t => match(t, n)) ? '' : 'none'}" title="${l.name}"></span></td>`).join('')}</tr>`;
+    }).join('')}</tbody>`;
+
+  document.getElementById('quote').textContent = '“' + C.review.quote + '”';
+  document.getElementById('score').textContent = C.review.score;
+  document.getElementById('by').textContent = `${C.review.by}, stayed at ${C.review.where}`;
+  document.getElementById('foot-locs').innerHTML = L.map(l => `<a href="#">${l.name}</a>`).join('');
+</script>
+</body>
+</html>
