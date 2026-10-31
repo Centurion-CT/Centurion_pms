@@ -41,6 +41,8 @@ use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
  * @property string|null $custom_domain_verification_token
  * @property CustomDomainStatus|null $custom_domain_status
  * @property Carbon|null $domain_verified_at
+ * @property Carbon|null $custom_domain_live_at
+ * @property int $custom_domain_failed_checks
  * @property Carbon|null $subdomain_provisioned_at
  * @property Carbon|null $slug_changed_at
  * @property Carbon|null $subscription_expires_at
@@ -88,6 +90,8 @@ class Tenant extends SpatieTenant
             'dokwe_storage_connected_at' => 'datetime',
             'custom_domain_status' => CustomDomainStatus::class,
             'domain_verified_at' => 'datetime',
+            'custom_domain_live_at' => 'datetime',
+            'custom_domain_failed_checks' => 'integer',
             'subdomain_provisioned_at' => 'datetime',
             'slug_changed_at' => 'datetime',
             'subscription_expires_at' => 'datetime',
@@ -126,12 +130,24 @@ class Tenant extends SpatieTenant
     }
 
     /**
-     * The host (subdomain or verified custom domain) used by the booking engine
+     * True once the business's own domain is verified and answering for it
+     * over HTTPS (App\Actions\Domains\CheckOwnDomain). Only then do links
+     * and the booking site move to it.
+     */
+    public function ownDomainIsLive(): bool
+    {
+        return $this->custom_domain !== null
+            && $this->domain_verified_at !== null
+            && $this->custom_domain_live_at !== null;
+    }
+
+    /**
+     * The host (subdomain or live own domain) used by the booking engine
      * for canonical URL generation (PRD §10 SEO requirement).
      */
     public function primaryHost(): string
     {
-        if ($this->custom_domain !== null && $this->domain_verified_at !== null) {
+        if ($this->ownDomainIsLive()) {
             return $this->custom_domain;
         }
 

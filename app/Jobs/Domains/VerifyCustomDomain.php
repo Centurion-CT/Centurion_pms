@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Jobs\Domains;
 
+use App\Actions\Domains\AttachCustomDomain;
+use App\Actions\Domains\CheckOwnDomain;
 use App\Enums\CustomDomainStatus;
 use App\Models\Tenant;
 use App\Services\Dns\DnsResolver;
+use App\Services\Dokwe\DokweClient;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -15,13 +18,17 @@ use Illuminate\Support\Facades\Log;
 use Spatie\Multitenancy\Jobs\NotTenantAware;
 
 /**
- * Polls DNS for the operator's custom domain (PRD §6.6.2):
- *  - CNAME of {custom_domain} must point to the configured CNAME target.
- *  - TXT of {custom_domain} must contain the per-tenant verification token.
+ * Polls DNS for proof that the operator owns their custom domain
+ * (PRD §6.6.2): the TXT record on `_centurion-verify.{custom_domain}`
+ * must contain the per-tenant verification token. Pointing the domain
+ * at us (CNAME or A) is checked separately, over HTTPS, by
+ * CheckOwnDomain, which decides when guests move to it.
  *
- * On success: marks Active + stamps domain_verified_at. On miss: re-schedules
- * itself 15 minutes out, up to the 48-hour PRD deadline. After the deadline
- * the status flips to Error and the operator can re-attach to start over.
+ * On success: marks Active, stamps domain_verified_at, asks Dokwe for the
+ * certificate when the API is configured, and runs the first live check.
+ * On miss: re-schedules itself 15 minutes out, up to the 48-hour PRD
+ * deadline. After the deadline the status flips to Error and the operator
+ * can re-attach to start over.
  *
  * Idempotent: re-running on an already-Active tenant is a no-op.
  */
@@ -42,7 +49,7 @@ class VerifyCustomDomain implements NotTenantAware, ShouldBeUnique, ShouldQueue
         return (string) $this->tenantId;
     }
 
-    public function handle(DnsResolver $dns): void
+    public function handle(DnsResolver $dns, CheckOwnDomain $live): void
     {
         $tenant = Tenant::query()->find($this->tenantId);
         if ($tenant === null
@@ -56,14 +63,9 @@ class VerifyCustomDomain implements NotTenantAware, ShouldBeUnique, ShouldQueue
             return;
         }
 
-        $cname = $dns->cname($tenant->custom_domain);
-        $expectedTarget = strtolower((string) config('keverna.custom_domain_cname_target'));
-        $cnameOk = $cname !== null && strtolower(rtrim($cname, '.')) === $expectedTarget;
+        $txt = $dns->txt(AttachCustomDomain::VERIFY_LABEL.'.'.$tenant->custom_domain);
 
-        $txt = $dns->txt($tenant->custom_domain);
-        $txtOk = in_array($tenant->custom_domain_verification_token, $txt, true);
-
-        if ($cnameOk && $txtOk) {
+        if (in_array($tenant->custom_domain_verification_token, $txt, true)) {
             $tenant->forceFill([
                 'custom_domain_status' => CustomDomainStatus::Active,
                 'domain_verified_at' => Carbon::now(),
@@ -74,11 +76,14 @@ class VerifyCustomDomain implements NotTenantAware, ShouldBeUnique, ShouldQueue
                 'domain' => $tenant->custom_domain,
             ]);
 
-            // DNS confirmed correct — kick off the dokwe-side attach. Safe
-            // to do here (and not retried by us) because the dokwe job
-            // owns its own retry budget and short-circuits if the column
-            // is already populated.
-            AttachCustomDomainToDokwe::dispatch($tenant->id);
+            // Ownership confirmed — ask Dokwe for the certificate. Without
+            // the API the domain is attached in the Dokwe dashboard by hand;
+            // the live check notices either way.
+            if (DokweClient::isConfigured()) {
+                AttachCustomDomainToDokwe::dispatch($tenant->id);
+            }
+
+            $live->handle($tenant);
 
             return;
         }
@@ -94,7 +99,6 @@ class VerifyCustomDomain implements NotTenantAware, ShouldBeUnique, ShouldQueue
 
             Log::warning('Custom domain verification gave up after 48h', [
                 'tenant_id' => $tenant->id, 'domain' => $tenant->custom_domain,
-                'cname_ok' => $cnameOk, 'txt_ok' => $txtOk,
             ]);
 
             return;

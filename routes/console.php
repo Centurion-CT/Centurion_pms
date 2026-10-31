@@ -9,10 +9,12 @@ use App\Console\Commands\Bookings\SendBalanceReminders;
 use App\Console\Commands\Bookings\SendCheckInReminders;
 use App\Console\Commands\Bookings\SendExtendPrompts;
 use App\Console\Commands\Bookings\SendReviewPrompts;
+use App\Console\Commands\Domains\CheckOwnDomains;
 use App\Console\Commands\Guests\PurgeGuestIdDocuments;
 use App\Console\Commands\Inventory\SendLowStockDigest;
 use App\Console\Commands\RenewCorporateMembershipsCommand;
 use App\Console\Commands\Reports\SendSummaryReports;
+use App\Multitenancy\HostTenantFinder;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -167,5 +169,19 @@ Schedule::command(SendSummaryReports::class, ['monthly'])
 Schedule::command(PurgeGuestIdDocuments::class)
     ->dailyAt('03:30')
     ->timezone('Africa/Lagos')
+    ->withoutOverlapping()
+    ->onOneServer();
+
+/*
+|--------------------------------------------------------------------------
+| Own domains (docs/MULTITENANCY.md, step 4)
+|--------------------------------------------------------------------------
+| Each verified own domain is asked over HTTPS which business it serves.
+| Guests only move to it while it answers. Not in `single` mode.
+*/
+
+Schedule::command(CheckOwnDomains::class)
+    ->hourly()
+    ->when(fn (): bool => HostTenantFinder::isDomainMode())
     ->withoutOverlapping()
     ->onOneServer();

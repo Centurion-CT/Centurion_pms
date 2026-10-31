@@ -47,7 +47,17 @@ return [
     |  - App\Jobs\Domains\VerifyCustomDomain: the value we assert their
     |    live CNAME resolves to before we mark the domain verified.
     */
-    'custom_domain_cname_target' => env('CUSTOM_DOMAIN_CNAME_TARGET', 'cname.keverna.com'),
+    'custom_domain_cname_target' => env('CUSTOM_DOMAIN_CNAME_TARGET', 'cname.'.env('CENTRAL_DOMAIN', 'keverna.test')),
+
+    /*
+    | A bare domain (`grandpalace.ng`) can't carry a CNAME, so operators
+    | point it with A records at these addresses instead: Dokwe's ingress
+    | IPs, comma-separated. Empty hides the A-record option on /domain.
+    */
+    'custom_domain_a_records' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('CUSTOM_DOMAIN_A_RECORDS', '')),
+    ))),
 
     /*
     |--------------------------------------------------------------------------
@@ -61,7 +71,8 @@ return [
     | DOKWE_API_KEY + DOKWE_PROJECT_ID (and CLOUDFLARE_* for subdomain DNS).
     */
     'domain_management' => [
-        'enabled' => (bool) env('DOMAIN_MANAGEMENT_ENABLED', false),
+        // On by default once each business has its own address.
+        'enabled' => (bool) env('DOMAIN_MANAGEMENT_ENABLED', env('TENANCY_MODE', 'single') === 'domains'),
     ],
 
     /*

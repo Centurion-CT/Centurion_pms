@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Domains;
 
+use App\Actions\Domains\CheckOwnDomain;
 use App\Models\Tenant;
 use App\Services\Dokwe\DokweClient;
 use App\Services\Dokwe\DokweException;
@@ -101,6 +102,10 @@ class AttachCustomDomainToDokwe implements NotTenantAware, ShouldBeUnique, Shoul
                 'domain' => $domain,
                 'dokwe_id' => $dokweId,
             ]);
+
+            // Certificate is in place: see if guests can move to it now
+            // rather than waiting for the hourly check.
+            app(CheckOwnDomain::class)->handle($tenant);
 
             return;
         }

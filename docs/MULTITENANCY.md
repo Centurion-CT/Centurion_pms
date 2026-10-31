@@ -62,11 +62,11 @@ row has its slug and own domain set. See [subdomain-dns.md](subdomain-dns.md).
 | 1 | Find the business from the host (`HostTenantFinder`), `TENANCY_MODE` switch, unknown/paused/platform-host handling | Done (placeholder platform home) |
 | 2 | Isolation tests: two businesses side by side across pages, staff login, mobile API, webhooks, uploads, queued jobs, cache | Done (one money issue left for step 5, see below) |
 | 3 | Platform pages on `centurionpms.com`: home, sign-up, find-my-business login with emailed links | Done |
-| 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | To do |
+| 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | Done |
 | 5 | Booking site from design Option C v2 as each business's `/` | To do |
 | 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | To do |
 | 7 | Console on `console.centurionpms.com`: businesses, needs a look, pause | To do |
-| 8 | Production cut-over: DNS, `TENANCY_MODE=domains`, Centurion's slug + own domain | To do |
+| 8 | Production cut-over: DNS, `TENANCY_MODE=domains`, Centurion's slug + own domain (see step 4 notes) | To do |
 
 Designs: `design/platform/` (local mockups) and `design/platform/superdesign/`
 (chosen direction, "Product tour").
@@ -122,6 +122,40 @@ Checked away from page requests, with tests in
   business's bookings and top-ups.
 - Removed the guest "claim your Keverna account" email: it linked to a
   `/claim` page that doesn't exist here.
+
+## Step 4 notes
+
+- `/domain` is on by default in `domains` mode (`DOMAIN_MANAGEMENT_ENABLED`
+  still overrides). A manager changes the business's address there, or
+  adds its own domain.
+- **Address change:** same rules as sign-up, once a year. The old address
+  301s for 90 days on any path (`RedirectOldSlug`, now global middleware;
+  it was never registered before), and the manager is carried to the new
+  address signed in.
+- **Own domain, three stages:**
+  1. *Ownership:* a TXT record on `_centurion-verify.{domain}` with the
+     token (`VerifyCustomDomain`, every 15 minutes for 48 hours). It used
+     to sit on the domain itself next to a CNAME, which DNS doesn't allow.
+  2. *Pointing at us:* a CNAME to `CUSTOM_DOMAIN_CNAME_TARGET` for a
+     subdomain, or A records to `CUSTOM_DOMAIN_A_RECORDS` for a bare
+     domain like `grandpalace.ng`. With `DOKWE_API_KEY` set, the
+     certificate is requested from Dokwe automatically; without it, attach
+     the domain in the Dokwe dashboard by hand.
+  3. *Live:* `CheckOwnDomain` asks `https://{domain}/__tenant-ping` which
+     business it serves. A right answer makes it live; three misses in a
+     row (hourly, `domains:check-own`, `domains` mode only) stop it being
+     live until it answers again.
+- **While live**, the booking site's public pages on the platform address
+  301 to the own domain (`RedirectToOwnDomain`, a list of route names).
+  Staff pages, payment returns, signed links, webhooks and the API stay
+  on both addresses. Links in emails use the own domain only while live.
+- Not done: `www.` of an own domain (needs its own DNS record and
+  certificate), and removing a domain from Dokwe when it's removed here.
+- **For step 8:** create `cname.centurionpms.com` pointing at Dokwe's
+  ingress, set `CUSTOM_DOMAIN_CNAME_TARGET` and `CUSTOM_DOMAIN_A_RECORDS`,
+  and give Centurion's business row `custom_domain = centurionapartments.ng`
+  with `domain_verified_at` and `custom_domain_live_at` set. Rows already
+  verified when the step 4 migration runs are taken as live.
 
 ## Step 3 notes
 

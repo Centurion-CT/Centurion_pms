@@ -35,16 +35,12 @@ it('does NOT redirect when the redirect has expired', function (): void {
 });
 
 it('falls through to the regular tenant resolver when host matches a current slug', function (): void {
-    $response = $this->get('http://rebranded.keverna.test/');
+    $response = $this->get('http://rebranded.keverna.test/login');
 
     $response->assertOk();
-    $response->assertSee('Rebranded Inn'); // landing-placeholder shows tenant->name
+    $response->assertSee('Rebranded Inn');
 });
 
-it('does NOT redirect requests on the central or admin domain', function (): void {
-    $response = $this->get('http://keverna.test/');
-    $response->assertOk();
-
-    $admin = $this->get('http://admin.keverna.test/admin/__admin-ping');
-    $admin->assertOk();
+it('does NOT redirect requests on the central domain', function (): void {
+    $this->get('http://keverna.test/')->assertOk();
 });

@@ -41,18 +41,19 @@ same lists. Drift here is a bug.
 | `DOKWE_ACCESS_KEY`, `DOKWE_SECRET_KEY`, `DOKWE_BUCKET`, `DOKWE_ENDPOINT`, `DOKWE_PUBLIC_URL` | Media uploads | Checked only when `MEDIA_DISK` or `FILESYSTEM_DISK` is `dokwe`. |
 | `BUNNY_STORAGE_ZONE`, `BUNNY_STORAGE_API_KEY`, `BUNNY_PULL_ZONE_URL` | Media uploads | Checked only when `MEDIA_DISK` or `FILESYSTEM_DISK` is `bunny` (deprecated). |
 
-### Opt-in: in-app domain management
+### In-app domain management
 
-Off by default (`DOMAIN_MANAGEMENT_ENABLED=false`) — a solo install attaches
-its domain once in the Dokwe dashboard. Set it to `true` to re-enable the
-`/domain` page (subdomain rename + custom domain attach). The vars below are
-only checked when it's on.
+On by default with `TENANCY_MODE=domains`, off in `single` mode
+(`DOMAIN_MANAGEMENT_ENABLED` overrides either way). Turns on the `/domain`
+page, where a manager renames the business's address or adds its own
+domain (docs/MULTITENANCY.md, step 4).
 
 | Var | Feature affected if missing | Notes |
 |---|---|---|
-| `DOKWE_API_KEY` | Custom domain attach via dokwe | `dk_pak_…` personal API key issued from dokwe Settings → API Keys. Not the same as the storage `DOKWE_ACCESS_KEY`. |
-| `DOKWE_PROJECT_ID` | Custom domain attach via dokwe | UUID of this deployment's project inside dokwe. |
-| `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_ID` | Subdomain DNS provisioning | Only if subdomain DNS is managed through Cloudflare. |
+| `CUSTOM_DOMAIN_CNAME_TARGET` | DNS instructions for subdomains | Defaults to `cname.{CENTRAL_DOMAIN}`. Must resolve to Dokwe's ingress. |
+| `CUSTOM_DOMAIN_A_RECORDS` | DNS instructions for bare domains | Dokwe ingress IPs, comma-separated. Empty hides the A-record option. |
+| `DOKWE_API_KEY` | Certificate for an own domain, requested automatically | `dk_pak_…` personal API key issued from dokwe Settings → API Keys. Not the same as the storage `DOKWE_ACCESS_KEY`. Without it, attach the domain in the Dokwe dashboard by hand; the hourly check notices once it answers. |
+| `DOKWE_PROJECT_ID` | As above | UUID of this deployment's project inside dokwe. |
 
 ## Tier 3 — should be set, but defaults are sane
 

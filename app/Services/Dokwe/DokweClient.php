@@ -48,6 +48,12 @@ class DokweClient
         }
     }
 
+    /** Whether the Dokwe API credentials are set, so domains can be attached from here. */
+    public static function isConfigured(): bool
+    {
+        return (string) config('dokwe.api_key') !== '' && (string) config('dokwe.project_id') !== '';
+    }
+
     public static function default(): self
     {
         return new self(

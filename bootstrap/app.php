@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Http\Middleware\EnsureBusinessIsOpen;
 use App\Http\Middleware\ForceHttpsInProduction;
+use App\Http\Middleware\RedirectOldSlug;
+use App\Http\Middleware\RedirectToOwnDomain;
 use App\Http\Middleware\ResolveTenantFromRequest;
 use App\Models\Tenant;
 use App\Multitenancy\HostTenantFinder;
@@ -54,11 +56,13 @@ return Application::configure(basePath: dirname(__DIR__))
             // routes/web.php holds the guest-facing surface (property
             // landing, booking flow, corporate portal). routes/tenant.php
             // holds the operator dashboard. Both need a bound Tenant.
+            // RedirectToOwnDomain moves booking pages to a live own domain.
             Route::middleware([
                 'web',
                 ResolveTenantFromRequest::class,
                 NeedsTenant::class,
                 EnsureBusinessIsOpen::class,
+                RedirectToOwnDomain::class,
             ])->group(base_path('routes/web.php'));
 
             Route::middleware([
@@ -66,6 +70,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ResolveTenantFromRequest::class,
                 NeedsTenant::class,
                 EnsureBusinessIsOpen::class,
+                RedirectToOwnDomain::class,
             ])->group(base_path('routes/tenant.php'));
 
             // Mobile API — bearer-token JSON, no cookies, no CSRF.
@@ -140,6 +145,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // infinite 301 → HTTPS → 301 loop. append() runs it after the proxy
         // trust has been applied.
         $middleware->append(ForceHttpsInProduction::class);
+
+        // A renamed business's old address 301s to its new one, on any
+        // path, before routing (docs/MULTITENANCY.md, step 4).
+        $middleware->append(RedirectOldSlug::class);
 
         // Laravel's default middlewarePriority puts AuthenticatesRequests
         // (auth:sanctum) BEFORE any custom middleware — which meant
