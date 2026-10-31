@@ -123,14 +123,6 @@
             <p class="mp-stays-footer-tag">
                 Verified stays across Nigeria. Direct booking, card payment, zero commission on the operator side.
             </p>
-            <a href="{{ route('legal.ndpr') }}"
-               class="mp-stays-footer-trust"
-               data-testid="ndpr-trust-badge"
-               aria-label="NDPR compliance trustmark - view certificate">
-                <img src="https://fregatelab-file.dokwe.com/trust-badge-only.png"
-                     alt="NDPR compliance" loading="lazy">
-                <span>NDPR audited</span>
-            </a>
         </div>
 
         {{-- ── Column 2: Explore stays ── --}}
@@ -189,7 +181,6 @@
                 <li><a href="{{ route('legal.privacy') }}">Privacy</a></li>
                 <li><a href="{{ route('legal.terms') }}">Terms</a></li>
                 <li><a href="{{ route('legal.cookies') }}">Cookies</a></li>
-                <li><a href="{{ route('legal.ndpr') }}">NDPR</a></li>
             </ul>
         </div>
 

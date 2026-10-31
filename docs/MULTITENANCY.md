@@ -64,7 +64,7 @@ row has its slug and own domain set. See [subdomain-dns.md](subdomain-dns.md).
 | 3 | Platform pages on `centurionpms.com`: home, sign-up, find-my-business login with emailed links | Done |
 | 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | Done |
 | 5 | Booking site from design Option C v2 as each business's `/` | Done |
-| 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | Done (legal pages need the owner's wording, below) |
+| 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | Done |
 | 7 | Console on `console.centurionpms.com`: businesses, needs a look, pause | To do |
 | 8 | Production cut-over: DNS, `TENANCY_MODE=domains`, Centurion's slug + own domain (see step 4 notes) | To do |
 
@@ -137,10 +137,12 @@ business has its own identity.
 - **Support WhatsApp** on the staff sign-in pages pointed at Keverna's
   support numbers. It now uses `SUPPORT_WHATSAPP` and is hidden when
   that's empty.
-- **Not changed, needs the owner:** the legal pages (`/terms`,
-  `/privacy`, `/cookies`, `/ndpr`) still name Keverna and FregateLab
-  Limited as the company. Who the operator, controller and processor are
-  is a legal question, so their wording should come from the owner.
+- **Legal pages** (`/terms`, `/privacy`, `/cookies`) are written for
+  the business whose address they're on: it is the party guests book
+  with, its name and contact come from Settings → Business, and
+  Centurion is named only as the software. `/ndpr` (Keverna's NDPR
+  trustmark page) is removed. The owner should still review the
+  wording.
 - Left alone: Keverna-era code that nothing routes to any more (central
   identity pages, marketing pages, the stays index), and internal names
   (`window.Keverna*`, `X-Keverna-Property`, the `kevernaFee` field).

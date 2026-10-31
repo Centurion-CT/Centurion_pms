@@ -116,3 +116,20 @@ it('sends old /stays links to the building on the booking site', function (): vo
         ->assertRedirectContains('where%5B0%5D='.$this->branch->slug)
         ->assertRedirectContains('in=2026-12-01');
 });
+
+it("shows the business's own legal pages, with no Keverna, and no /ndpr", function (string $path): void {
+    Tenant::forgetCurrent();
+
+    $this->get("http://sunrise.keverna.test{$path}")
+        ->assertOk()
+        ->assertSee('Sunrise Court')
+        ->assertSee('desk@sunrise.ng')
+        ->assertDontSee('Keverna')
+        ->assertDontSee('FregateLab');
+})->with(['/terms', '/privacy', '/cookies']);
+
+it('no longer serves /ndpr', function (): void {
+    Tenant::forgetCurrent();
+
+    $this->get('http://sunrise.keverna.test/ndpr')->assertNotFound();
+});

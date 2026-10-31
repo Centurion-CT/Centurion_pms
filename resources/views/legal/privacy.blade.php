@@ -1,61 +1,60 @@
 @extends('layouts.legal')
 
+@php($business = \App\Models\Tenant::current())
+@php($name = $business?->name ?? config('brand.name'))
+
 @section('title', 'Privacy notice')
 @section('kicker', 'Legal')
 @section('heading', 'Privacy notice')
 
-{{-- Wording unchanged from the previous standalone page. --}}
+{{-- Served on each business's own address: the business decides how its
+     guests' information is used; Centurion runs the software for it. --}}
 @section('content')
     <p>
-        Keverna is a product of <strong>FregateLab Limited</strong>,
-        Abuja, Nigeria. This notice explains how we handle
-        personal information collected through the marketing
-        site (keverna.com) and the operator dashboard hosted
-        on per-tenant subdomains.
+        This notice explains how <strong>{{ $name }}</strong> handles
+        the personal information you give when you book or stay with
+        us through this website.
     </p>
 
     <h2>What we collect</h2>
-    <p><strong>On the marketing site:</strong> if you fill in the
-    demo form, the API waitlist, or subscribe to our newsletter,
-    we store what you gave us (name, property, email, WhatsApp
-    phone, use-case notes) plus your IP address and user-agent
-    string for spam prevention.</p>
-    <p><strong>On the operator dashboard:</strong> the operator's
-    own booking / guest / finance data lives inside their own
-    tenant. Keverna never shares one tenant's data with another
-    tenant, and the tenant remains the sole controller of the
-    guest data they collect through their booking page.</p>
+    <ul>
+        <li>Your name, phone number and email.</li>
+        <li>Your booking: dates, guests, apartment, anything you tell us in the notes, and your company if you add one.</li>
+        <li>Payment records. Card details are entered on Paystack's page; we never see or store them.</li>
+        <li>ID details the front desk records at check-in, where the law requires them.</li>
+    </ul>
 
     <h2>Why we hold it</h2>
     <ul>
-        <li>Contact you about the demo you booked.</li>
-        <li>Issue you a licence code + welcome email.</li>
-        <li>Send you the newsletter you subscribed to.</li>
-        <li>Answer support questions on WhatsApp / email.</li>
-        <li>Keep the sales pipeline organised inside our admin console.</li>
+        <li>To take and manage your booking and your stay.</li>
+        <li>To send your receipt, booking link and reminders.</li>
+        <li>To keep the records we're required to keep.</li>
     </ul>
 
     <h2>Who sees it</h2>
-    <p>Only the Keverna / FregateLab team, and any subprocessors
-    strictly needed to deliver the service (Paystack for card
-    payments, Sendpipe for WhatsApp templates, a transactional
-    mail provider for confirmations). We never sell your data.</p>
+    <p>
+        {{ $name }}'s staff, as their work needs. The booking software,
+        {{ config('brand.name') }}, stores it on our behalf and keeps it
+        apart from every other business that uses the software. We also
+        use Paystack for payments and email and WhatsApp providers to
+        send you messages. We never sell your information.
+    </p>
 
     <h2>Your rights</h2>
-    <p>Under the Nigeria Data Protection Regulation (NDPR) you
-    can ask us to show you what personal data we hold about
-    you, correct anything wrong, or delete it entirely. Email
-    <a href="mailto:hello@keverna.com">hello@keverna.com</a>
-    with the request and we'll action it within 30 days.</p>
+    <p>
+        Under Nigeria's data protection law you can ask to see the
+        personal information we hold about you, correct anything wrong,
+        or have it deleted where we don't need to keep it.
+        @if ($business?->email)Email <a href="mailto:{{ $business->email }}">{{ $business->email }}</a> with your request.@else Contact the front desk with your request.@endif
+    </p>
 
     <h2>Cookies</h2>
-    <p>See our <a href="/cookies">cookie policy</a> for the
-    specific cookies we use and how to manage them.</p>
+    <p>See the <a href="{{ route('legal.cookies') }}">cookie policy</a>.</p>
 
     <h2>Contact</h2>
     <p>
-        <strong>FregateLab Limited</strong><br>
-        Abuja, Nigeria<br>
-        <a href="mailto:hello@keverna.com">hello@keverna.com</a>
+        <strong>{{ $name }}</strong><br>
+        @if ($business?->phone){{ $business->phone }}<br>@endif
+        @if ($business?->email)<a href="mailto:{{ $business->email }}">{{ $business->email }}</a>@endif
     </p>
 @endsection

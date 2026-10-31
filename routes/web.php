@@ -34,7 +34,6 @@ use Illuminate\Support\Facades\Route;
 Route::view('/cookies', 'legal.cookies')->name('legal.cookies');
 Route::view('/privacy', 'legal.privacy')->name('legal.privacy');
 Route::view('/terms',   'legal.terms')->name('legal.terms');
-Route::view('/ndpr',    'legal.ndpr')->name('legal.ndpr');
 
 // Newsletter one-click unsubscribe.
 Route::get('/newsletter/unsubscribe/{token}', \App\Http\Controllers\Marketing\NewsletterUnsubscribeController::class)
