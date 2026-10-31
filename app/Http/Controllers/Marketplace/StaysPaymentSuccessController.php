@@ -24,13 +24,13 @@ final class StaysPaymentSuccessController
             ->withoutGlobalScope(TenantScope::class)
             ->where('booking_ref', $bookingRef)
             ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
-            ->with(['tenant', 'room.property'])
+            ->with(['tenant', 'room.property', 'room.category'])
             ->first();
         if ($booking === null) {
             throw new NotFoundHttpException();
         }
 
-        return view('marketplace.stays.pay-success', [
+        return view('site.confirmed', [
             'booking' => $booking,
         ]);
     }

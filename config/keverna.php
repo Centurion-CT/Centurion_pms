@@ -37,6 +37,17 @@ return [
     'signup_open' => (bool) env('SIGNUP_OPEN', false),
 
     /*
+    | Map tiles on the booking site (Leaflet URL template + attribution).
+    | The default is Esri's street map, as in the approved design; check
+    | its terms, or set a keyed provider (MapTiler, Stadia) for production
+    | traffic.
+    */
+    'site_map' => [
+        'tiles' => env('SITE_MAP_TILES', 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'),
+        'attribution' => env('SITE_MAP_ATTRIBUTION', 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors'),
+    ],
+
+    /*
     | Subdomains of the tenant suffix that never belong to a business, and
     | that sign-up must refuse as a slug.
     */

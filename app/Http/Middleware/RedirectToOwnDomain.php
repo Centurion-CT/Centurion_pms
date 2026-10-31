@@ -23,6 +23,9 @@ class RedirectToOwnDomain
     /** Route names of the booking site's public pages. */
     public const BOOKING_PAGES = [
         'tenant.landing',
+        'site.results',
+        'site.checkout',
+        'site.manage',
         'tenant.branch.*',
         'tenant.categories.show',
         'tenant.rooms.browse',

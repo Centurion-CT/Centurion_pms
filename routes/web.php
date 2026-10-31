@@ -70,7 +70,7 @@ Route::get('/stays/pay/success/{booking_ref}', \App\Http\Controllers\Marketplace
     ->where('booking_ref', '[A-Z0-9\-]+')
     ->name('marketplace.stays.pay.success');
 
-Route::view('/stays/pay/failed', 'marketplace.stays.pay-failed')
+Route::view('/stays/pay/failed', 'site.pay-failed')
     ->name('marketplace.stays.pay.failed');
 
 // Post-stay review flow. Guest arrives via the signed link emailed at

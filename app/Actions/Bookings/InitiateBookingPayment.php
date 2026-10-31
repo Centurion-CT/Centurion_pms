@@ -48,7 +48,14 @@ class InitiateBookingPayment
      */
     public function handle(Booking $booking, ?string $callbackUrl = null, ?string $referencePrefix = null): string
     {
-        [$client, $subaccountCode] = $this->resolvePaystackClient($booking);
+        // No usable Paystack account (e.g. no key configured) fails before
+        // a Payment row exists; release the room all the same.
+        try {
+            [$client, $subaccountCode] = $this->resolvePaystackClient($booking);
+        } catch (Throwable $e) {
+            $this->abortBooking($booking, null);
+            throw $e;
+        }
 
         // Deposit when the booking carries one, otherwise full payment.
         $isDeposit = $booking->deposit_amount > 0;
@@ -156,10 +163,10 @@ class InitiateBookingPayment
      * thrown by the caller surfaces a friendly message on the
      * booking form instead.
      */
-    private function abortBooking(Booking $booking, Payment $payment): void
+    private function abortBooking(Booking $booking, ?Payment $payment): void
     {
         DB::transaction(function () use ($booking, $payment): void {
-            $payment->forceFill(['status' => PaymentStatus::Failed])->save();
+            $payment?->forceFill(['status' => PaymentStatus::Failed])->save();
 
             AvailabilityBlock::query()
                 ->withoutGlobalScope(TenantScope::class)

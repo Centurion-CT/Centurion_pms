@@ -40,8 +40,8 @@ Rules:
   `centurionpms.com` address 301 to the own domain; `/login` and `/dashboard`
   keep working on both. If the own domain stops pointing at us, verification
   lapses and the redirect stops on its own.
-- `/` becomes the booking site when the new booking site ships (step 5). Until
-  then `/` keeps redirecting to `/login`.
+- `/` is the booking site once a business has a live building; until then it
+  redirects to `/login`.
 
 ## Rollout switch
 
@@ -63,7 +63,7 @@ row has its slug and own domain set. See [subdomain-dns.md](subdomain-dns.md).
 | 2 | Isolation tests: two businesses side by side across pages, staff login, mobile API, webhooks, uploads, queued jobs, cache | Done (one money issue left for step 5, see below) |
 | 3 | Platform pages on `centurionpms.com`: home, sign-up, find-my-business login with emailed links | Done |
 | 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | Done |
-| 5 | Booking site from design Option C v2 as each business's `/` | Started: payments done (below); booking site to do |
+| 5 | Booking site from design Option C v2 as each business's `/` | Done |
 | 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | To do |
 | 7 | Console on `console.centurionpms.com`: businesses, needs a look, pause | To do |
 | 8 | Production cut-over: DNS, `TENANCY_MODE=domains`, Centurion's slug + own domain (see step 4 notes) | To do |
@@ -111,6 +111,39 @@ Checked away from page requests, with tests in
   business's bookings and top-ups.
 - Removed the guest "claim your Keverna account" email: it linked to a
   `/claim` page that doesn't exist here.
+
+## Step 5 notes: booking site
+
+Built from design Option C v2 ("Map Desk", `design/website/c-map`), on every
+business's address:
+
+| Path | Page |
+| --- | --- |
+| `/` | Home: search, map with a marker per building, building list, apartments free for the default stay, long-stay rates, how booking works (`SiteController::home`) |
+| `/apartments` | Apartments free for a stay, filters by building and type, map; `?open={type id}` swaps the map for the detail panel (`SiteController::results`) |
+| `/book/{building}/{type}` | Checkout: who's staying, pay in full or the deposit, then Paystack (`App\Livewire\Site\Checkout`) |
+| `/stays/pay/success/{ref}` | Booked (or "waiting for your payment" while unpaid) |
+| `/stays/pay/failed` | Payment didn't go through |
+| `/manage` | Find a booking by reference + email or phone, then the existing guest booking page (`App\Livewire\Site\ManageBooking`) |
+
+- Everything comes from the business's data (`App\Site\BookingSite`): live
+  buildings, active apartment types, free counts per night (same rule as
+  `AvailabilityService::categoryFreeUnits`, read in two queries), prices
+  from `PricingCalculator` with fees, so the card, panel and checkout
+  agree. Booking goes through RoomAllocator, CreateBooking and
+  InitiateBookingPayment, as the category page does.
+- What a business needs for a good site: buildings marked live, each with
+  a latitude/longitude (for the map), photos on its apartment types, its
+  phone and email, check-in times and a cancellation policy in house
+  rules, and optionally monthly rates and nearby places.
+- Not built from the design: the "features" row (power, kitchen, security)
+  and review scores, which need per-business content; the home page's tabs.
+- Map tiles default to Esri's street map, as in the design
+  (`SITE_MAP_TILES`); CARTO's free tiles now need a key. Check the tile
+  provider's terms before heavy production traffic.
+- Fixed along the way: a payment that couldn't start because Paystack
+  isn't set up left the room held; unpaid bookings showed as paid on the
+  confirmation and guest booking pages.
 
 ## Step 5 notes: payments
 

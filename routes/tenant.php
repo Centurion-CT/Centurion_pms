@@ -9,6 +9,7 @@ use App\Http\Controllers\Paystack\BookingWebhookController;
 use App\Http\Controllers\Tenant\BookingsCsvExportController;
 use App\Http\Controllers\Tenant\FinanceCsvExportController;
 use App\Http\Controllers\Tenant\OperatorInviteClaimController;
+use App\Http\Controllers\Site\SiteController;
 use App\Http\Controllers\Tenant\PublicLandingController;
 use App\Http\Controllers\Tenant\SsoConsumeController;
 use App\Http\Middleware\RequireCompleteOnboarding;
@@ -136,6 +137,8 @@ use App\Livewire\Guest\PayBalance as GuestPayBalance;
 use App\Livewire\Guest\RequestChange as GuestRequestChange;
 use App\Livewire\Guest\Review as GuestReview;
 use App\Livewire\Guest\Show as GuestShow;
+use App\Livewire\Site\Checkout as SiteCheckout;
+use App\Livewire\Site\ManageBooking as SiteManageBooking;
 use App\Livewire\Onboarding\EmailVerification;
 use App\Livewire\Onboarding\PhoneVerification;
 use App\Livewire\Onboarding\PropertyBasics;
@@ -167,10 +170,14 @@ Route::get('/__tenant-ping', function () {
     ]);
 })->name('tenant.ping');
 
-// Root goes straight to the staff sign-in: Centurion has no public
-// landing page. The login page sends signed-in staff on to the
-// dashboard. Branch pages below still serve the public booking flow.
-Route::get('/', fn () => redirect()->route('tenant.login'))->name('tenant.landing');
+// The booking site (docs/MULTITENANCY.md, step 5; design/website/c-map):
+// home with the map, apartments free for a stay, booking and payment,
+// and finding a booking. A business with no live building yet sends `/`
+// to the staff login, as before.
+Route::get('/', [SiteController::class, 'home'])->name('tenant.landing');
+Route::get('/apartments', [SiteController::class, 'results'])->name('site.results');
+Route::get('/book/{branch}/{type}', SiteCheckout::class)->name('site.checkout');
+Route::get('/manage', SiteManageBooking::class)->middleware('throttle:30,1')->name('site.manage');
 Route::get('/sitemap.xml', [PublicLandingController::class, 'sitemap'])->name('tenant.sitemap');
 Route::get('/robots.txt', [PublicLandingController::class, 'robots'])->name('tenant.robots');
 
