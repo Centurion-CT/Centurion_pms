@@ -36,7 +36,9 @@
                     </div>
                     <button class="btn btn-outline-light btn-lg btn-block" type="submit" wire:loading.attr="disabled">Email me my login links</button>
                 </form>
-                <p class="meta" style="margin-top:32px">New to {{ config('brand.name') }}? <a href="{{ route('platform.signup') }}">Create an account</a></p>
+                @if (config('keverna.signup_open'))
+                    <p class="meta" style="margin-top:32px">New to {{ config('brand.name') }}? <a href="{{ route('platform.signup') }}">Create an account</a></p>
+                @endif
             @else
                 <h1 class="h1">Check your email</h1>
                 <p class="lead">If <b>{{ $email }}</b> belongs to anyone on {{ config('brand.name') }}, we've sent a link to each business they work at.</p>

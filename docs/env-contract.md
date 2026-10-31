@@ -29,6 +29,7 @@ same lists. Drift here is a bug.
 | `CENTRAL_DOMAIN` | The platform's own host (home, sign-up, find-my-business). With `TENANCY_MODE=domains`, `HostTenantFinder` binds no business here or on `www.`. | `centurionpms.com` |
 | `TENANT_DOMAIN_SUFFIX` | Suffix matched against the incoming host to extract a tenant slug. Must start with `.`. | `.centurionpms.com` |
 | `TENANCY_MODE` | `single` (default): every request binds the first business. `domains`: the host decides the business (docs/MULTITENANCY.md). Needs wildcard DNS + TLS for the suffix first. Keep `SESSION_DOMAIN` empty so logins stay on the address that created them. | `single` |
+| `SIGNUP_OPEN` | `true` lets new businesses sign up at `{CENTRAL_DOMAIN}/signup`. `false` (default): /signup and the platform home ask people to email `hello@{CENTRAL_DOMAIN}` instead. | `false` |
 
 ## Tier 2 — recommended (boot succeeds, feature disabled)
 

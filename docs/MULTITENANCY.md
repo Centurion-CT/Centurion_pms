@@ -123,6 +123,14 @@ Checked away from page requests, with tests in
 - Removed the guest "claim your Keverna account" email: it linked to a
   `/claim` page that doesn't exist here.
 
+## Sign-up switch
+
+`SIGNUP_OPEN` (config `keverna.signup_open`, off by default) lets the
+platform go live for existing businesses before sign-up opens. While off,
+/signup shows "Sign-up isn't open yet" with the help email, the home page
+swaps the address picker for the same, and every sign-up step refuses on
+the server. Tests run with it on.
+
 ## Step 4 notes
 
 - `/domain` is on by default in `domains` mode (`DOMAIN_MANAGEMENT_ENABLED`

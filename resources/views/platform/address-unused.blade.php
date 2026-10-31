@@ -10,7 +10,7 @@
     <p class="lead">No business on {{ config('brand.name') }} uses <b>{{ $host }}</b>. Check the spelling, or find your business by email.</p>
     <div class="actions">
         <a class="btn btn-primary" href="https://{{ $central }}/login">Find my business</a>
-        @if ($slug !== null)
+        @if ($slug !== null && config('keverna.signup_open'))
             <a class="btn btn-secondary" href="https://{{ $central }}/signup?slug={{ urlencode($slug) }}">Use this address for my business</a>
         @endif
     </div>

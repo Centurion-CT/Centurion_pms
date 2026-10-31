@@ -29,6 +29,14 @@ return [
     'tenancy_mode' => env('TENANCY_MODE', 'single'),
 
     /*
+    | Whether new businesses can sign up on the platform's /signup page
+    | (docs/MULTITENANCY.md). Off by default, so the platform can go live
+    | for existing businesses before sign-up opens. When off, /signup and
+    | the home page invite people to email instead.
+    */
+    'signup_open' => (bool) env('SIGNUP_OPEN', false),
+
+    /*
     | Subdomains of the tenant suffix that never belong to a business, and
     | that sign-up must refuse as a slug.
     */

@@ -238,3 +238,27 @@ it('prefills the staff login from a login link', function (): void {
     $this->get('http://alpha.keverna.test/login?email=tobi%40example.ng')
         ->assertOk()->assertSee('tobi@example.ng');
 });
+
+it('turns sign-up away while it is closed', function (): void {
+    config()->set('keverna.signup_open', false);
+
+    $this->get('http://keverna.test/signup?slug=sunrise')
+        ->assertOk()
+        ->assertSee("Sign-up isn't open yet", false)
+        ->assertSee('mailto:hello@keverna.test', false);
+
+    $this->get('http://keverna.test/')
+        ->assertOk()
+        ->assertSee('Sign-up opens soon')
+        ->assertDontSee('Choose your address to start')
+        ->assertDontSee('http://keverna.test/signup', false);
+});
+
+it('creates nothing from a sign-up page left open after sign-up closes', function (): void {
+    [$component, $code] = signUpToCode();
+    config()->set('keverna.signup_open', false);
+
+    $component->set('code', $code)->call('confirm')->assertSet('step', 'code');
+
+    expect(Tenant::query()->where('slug', 'sunrise-court')->exists())->toBeFalse();
+});

@@ -7,6 +7,8 @@
 
 @php($suffix = config('keverna.tenant_domain_suffix'))
 @php($helpEmail = 'hello@'.config('keverna.central_domain'))
+@php($signupOpen = config('keverna.signup_open'))
+@php($setupMail = 'mailto:'.$helpEmail.'?subject='.rawurlencode('Setting up on '.config('brand.name')))
 
 @section('content')
 <header class="header">
@@ -17,7 +19,9 @@
         </nav>
         <div class="end">
             <a class="btn btn-ghost btn-sm" href="{{ route('platform.login') }}">Log in</a>
-            <a class="btn btn-light btn-sm" href="{{ route('platform.signup') }}">Create account</a>
+            @if ($signupOpen)
+                <a class="btn btn-light btn-sm" href="{{ route('platform.signup') }}">Create account</a>
+            @endif
         </div>
     </div>
 </header>
@@ -27,16 +31,25 @@
         <h1 class="display">Run your apartments from one desk</h1>
         <p class="lead">Bookings, check-in, housekeeping, payments and your own booking website, made for serviced apartments and hotels in Nigeria.</p>
 
-        <form class="picker" action="{{ route('platform.signup') }}" method="get" data-address-form>
-            <label class="picker-label" for="addr">Choose your address to start</label>
-            <div class="address">
-                <input id="addr" name="slug" placeholder="your-business" autocomplete="off" spellcheck="false" maxlength="30" aria-describedby="addr-status" data-address-input>
-                <span class="suffix">{{ $suffix }}</span>
-                <button class="btn btn-primary" type="submit">Start</button>
+        @if ($signupOpen)
+            <form class="picker" action="{{ route('platform.signup') }}" method="get" data-address-form>
+                <label class="picker-label" for="addr">Choose your address to start</label>
+                <div class="address">
+                    <input id="addr" name="slug" placeholder="your-business" autocomplete="off" spellcheck="false" maxlength="30" aria-describedby="addr-status" data-address-input>
+                    <span class="suffix">{{ $suffix }}</span>
+                    <button class="btn btn-primary" type="submit">Start</button>
+                </div>
+                <p class="astatus" id="addr-status" aria-live="polite" data-address-status></p>
+                <p class="hero-foot">Already on {{ config('brand.name') }}? <a href="{{ route('platform.login') }}">Log in to your business</a></p>
+            </form>
+        @else
+            <div class="picker" data-signup-closed>
+                <p class="picker-label">Sign-up opens soon</p>
+                <p class="lead">We're bringing businesses on one at a time. Email us and we'll set you up.</p>
+                <p style="margin-top:24px"><a class="btn btn-primary" href="{{ $setupMail }}">Email {{ $helpEmail }}</a></p>
+                <p class="hero-foot">Already on {{ config('brand.name') }}? <a href="{{ route('platform.login') }}">Log in to your business</a></p>
             </div>
-            <p class="astatus" id="addr-status" aria-live="polite" data-address-status></p>
-            <p class="hero-foot">Already on {{ config('brand.name') }}? <a href="{{ route('platform.login') }}">Log in to your business</a></p>
-        </form>
+        @endif
 
         <div class="compo" aria-hidden="true">
             <div class="frame back"><img src="{{ asset('platform/room-calendar.jpg') }}" alt=""></div>
@@ -133,15 +146,20 @@
     <section class="closing on-navy">
         <div class="container">
             <h2 class="h1">Open your front desk today</h2>
-            <p class="lead">Set up your first branch in a few minutes. No card needed.</p>
-            <form class="picker" action="{{ route('platform.signup') }}" method="get" data-address-form>
-                <div class="address">
-                    <input name="slug" placeholder="your-business" autocomplete="off" spellcheck="false" maxlength="30" aria-label="Your address" aria-describedby="addr2-status" data-address-input>
-                    <span class="suffix">{{ $suffix }}</span>
-                    <button class="btn btn-primary" type="submit">Start</button>
-                </div>
-                <p class="astatus" id="addr2-status" aria-live="polite" data-address-status></p>
-            </form>
+            @if ($signupOpen)
+                <p class="lead">Set up your first branch in a few minutes. No card needed.</p>
+                <form class="picker" action="{{ route('platform.signup') }}" method="get" data-address-form>
+                    <div class="address">
+                        <input name="slug" placeholder="your-business" autocomplete="off" spellcheck="false" maxlength="30" aria-label="Your address" aria-describedby="addr2-status" data-address-input>
+                        <span class="suffix">{{ $suffix }}</span>
+                        <button class="btn btn-primary" type="submit">Start</button>
+                    </div>
+                    <p class="astatus" id="addr2-status" aria-live="polite" data-address-status></p>
+                </form>
+            @else
+                <p class="lead">Sign-up opens soon. Email us about your apartments or hotel and we'll set you up.</p>
+                <p style="margin-top:28px"><a class="btn btn-primary" href="{{ $setupMail }}">Email {{ $helpEmail }}</a></p>
+            @endif
         </div>
     </section>
 </main>
@@ -151,7 +169,9 @@
         <span>© {{ date('Y') }} {{ config('brand.name') }}</span>
         <nav aria-label="Footer">
             <a href="{{ route('platform.login') }}">Log in</a>
-            <a href="{{ route('platform.signup') }}">Create account</a>
+            @if ($signupOpen)
+                <a href="{{ route('platform.signup') }}">Create account</a>
+            @endif
             <a href="mailto:{{ $helpEmail }}">{{ $helpEmail }}</a>
         </nav>
     </div>

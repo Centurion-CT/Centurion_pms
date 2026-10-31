@@ -94,6 +94,10 @@ class SignUp extends Component
 
     public function submitBusiness(BusinessAddress $address): void
     {
+        if (! config('keverna.signup_open')) {
+            return;
+        }
+
         $this->validate([
             'name' => ['required', 'string', 'max:120'],
             'slug' => ['required', 'string'],
@@ -114,6 +118,10 @@ class SignUp extends Component
 
     public function submitAccount(SignUpCode $codes): void
     {
+        if (! config('keverna.signup_open')) {
+            return;
+        }
+
         $this->validate([
             'managerName' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email:rfc', 'max:190'],
@@ -131,12 +139,20 @@ class SignUp extends Component
 
     public function resend(SignUpCode $codes): void
     {
+        if (! config('keverna.signup_open')) {
+            return;
+        }
+
         $this->code = '';
         $this->sendCode($codes);
     }
 
     public function confirm(SignUpCode $codes, BusinessAddress $address, CreateBusiness $create): void
     {
+        if (! config('keverna.signup_open')) {
+            return;
+        }
+
         $this->codeError = '';
         $code = preg_replace('/\D/', '', $this->code) ?? '';
 
