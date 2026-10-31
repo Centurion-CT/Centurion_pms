@@ -43,7 +43,8 @@ class PropertyContentReadyNotification extends Notification
     public function toMail(Operator $notifiable): MailMessage
     {
         $propertyName = $this->import->property?->name ?? 'your property';
-        $settingsUrl = url('/settings/property');
+        // Sent from a queued job, where url() would give the platform host.
+        $settingsUrl = 'https://'.$notifiable->tenant->primaryHost().'/settings/property';
 
         return (new MailMessage)
             ->subject("Your Keverna stays page for {$propertyName} is ready")

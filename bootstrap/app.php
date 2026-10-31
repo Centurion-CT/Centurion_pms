@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Middleware\ConfigureTenantMediaDisk;
 use App\Http\Middleware\EnsureBusinessIsOpen;
 use App\Http\Middleware\ForceHttpsInProduction;
 use App\Http\Middleware\ResolveTenantFromRequest;
@@ -60,7 +59,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ResolveTenantFromRequest::class,
                 NeedsTenant::class,
                 EnsureBusinessIsOpen::class,
-                ConfigureTenantMediaDisk::class,
             ])->group(base_path('routes/web.php'));
 
             Route::middleware([
@@ -68,7 +66,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ResolveTenantFromRequest::class,
                 NeedsTenant::class,
                 EnsureBusinessIsOpen::class,
-                ConfigureTenantMediaDisk::class,
             ])->group(base_path('routes/tenant.php'));
 
             // Mobile API — bearer-token JSON, no cookies, no CSRF.

@@ -60,7 +60,7 @@ row has its slug and own domain set. See [subdomain-dns.md](subdomain-dns.md).
 | # | Step | Status |
 | --- | --- | --- |
 | 1 | Find the business from the host (`HostTenantFinder`), `TENANCY_MODE` switch, unknown/paused/platform-host handling | Done (placeholder platform home) |
-| 2 | Isolation tests: two businesses side by side across pages, staff login, mobile API, webhooks, uploads, queued jobs, cache | Started: pages, staff accounts, mobile tokens, paused, unknown address. To do: uploads, queued jobs, cache, URLs built outside a request |
+| 2 | Isolation tests: two businesses side by side across pages, staff login, mobile API, webhooks, uploads, queued jobs, cache | Done (one money issue left for step 5, see below) |
 | 3 | Platform pages on `centurionpms.com`: home, sign-up, find-my-business login with emailed links | Done |
 | 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | To do |
 | 5 | Booking site from design Option C v2 as each business's `/` | To do |
@@ -78,14 +78,50 @@ Designs: `design/platform/` (local mockups) and `design/platform/superdesign/`
   (`{APP_URL}/paystack/callback`), and no route exists at that path. With
   several businesses the return address must be the paying business's own
   host. Fix with the booking site (step 5).
-- **URLs built outside a request** (queued mail, scheduled commands) use
-  `APP_URL`, which becomes the platform host. Most mail already uses
-  `Tenant::primaryHost()`; the rest needs auditing in step 2.
+- **Corporate wallet top-ups go to the platform's Paystack account.**
+  `TopupService` and its webhook use `PaystackClient::forSubscriptions()`
+  with no subaccount, unlike booking payments, which use the business's
+  own key or subaccount. That is fine while Centurion is the only
+  business. Fix it with the payment work in step 5, before another
+  business's corporate clients top up.
 - **`/health`** used to sit in the business-only routes, so in `domains` mode
   an uptime check on a bare host would 404. It is now registered outside them.
 - Tests now run with `TENANCY_MODE=domains`, matching where production is
   going. `onBusinessHost('slug')` in `tests/Pest.php` points `route()` at a
   business's address.
+
+## Step 2 notes
+
+Checked away from page requests, with tests in
+`tests/Feature/Tenancy/BackgroundIsolationTest.php`:
+
+- **Corporate clients** were shared across the install (from Keverna's
+  marketplace): every business's forms listed every corporate and its
+  staff, guest lookup matched other businesses' corporate staff, and a
+  booking could be billed to another business's corporate wallet.
+  Corporates, their staff and their email domains now belong to one
+  business (`tenant_id`, migration `2026_10_31_100000`). Existing rows go
+  to the business that created them, else the one they have bookings
+  with, else the first business. The same corporate address and email
+  domain can now exist at two businesses.
+- **Corporate membership renewals** never ran: the command ran with no
+  business bound, so the scoped query found nothing. It now runs once
+  per business.
+- **Queued jobs** carry the business that queued them (Spatie's
+  tenant-aware queue); mails marked `NotTenantAware` run with none bound.
+  Corporate mails now bind the corporate's business, like booking mails,
+  and link to its own address instead of `APP_URL`.
+- **Uploads:** a business's own Dokwe Storage space is now applied by a
+  switch task (`UseTenantMediaDisk`) instead of web middleware, so queue
+  workers use it too and never reuse the previous business's disk. Lease
+  documents and corporate payment receipts are stored under the
+  business's folder, like guest IDs and review photos already were.
+- **Cache** keys are prefixed per business (`PrefixCacheTask`); the
+  dashboard and payout caches also carry the business id in the key.
+- **Webhooks** arrive on the business's own address and only find that
+  business's bookings and top-ups.
+- Removed the guest "claim your Keverna account" email: it linked to a
+  `/claim` page that doesn't exist here.
 
 ## Step 3 notes
 

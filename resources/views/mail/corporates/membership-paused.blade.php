@@ -14,7 +14,7 @@ A scheduled renewal couldn't complete because your wallet doesn't have enough av
 
 Top up the wallet, then either wait for tomorrow's renewal sweep at 02:00 WAT or hit **Mark renewed** from the membership row to resume immediately.
 
-<x-mail::button :url="config('app.url').'/corporates/wallet'">
+<x-mail::button :url="$walletUrl">
 Top up now
 </x-mail::button>
 

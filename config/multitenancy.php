@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Tenant;
 use App\Multitenancy\HostTenantFinder;
+use App\Multitenancy\Tasks\UseTenantMediaDisk;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
@@ -29,6 +30,7 @@ return [
     // databases; we prefix cache + session keys so collisions don't cross tenants.
     'switch_tenant_tasks' => [
         PrefixCacheTask::class,
+        UseTenantMediaDisk::class,
     ],
 
     'tenant_model' => Tenant::class,

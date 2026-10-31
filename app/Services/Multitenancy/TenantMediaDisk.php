@@ -12,17 +12,14 @@ use Illuminate\Support\Facades\Config;
  * Resolves the storage disk used by Spatie MediaLibrary for a given
  * tenant. When the tenant has connected their own Dokwe Storage space
  * via the Integrations page, we shadow the platform default with a
- * request-scoped `tenant_media` disk pointing at their bucket. When
+ * `tenant_media` disk pointing at their bucket. When
  * they haven't, MediaLibrary keeps using `MEDIA_DISK` and everything
  * lands in the shared platform space.
  *
- * The runtime override is safe because Laravel's FilesystemManager
- * builds fresh adapters each request cycle — nothing is memoised
- * across requests. We only mutate config; no static state escapes.
- *
- * See {@see \App\Http\Middleware\ConfigureTenantMediaDisk} for the
- * call site — it runs inside the tenant middleware group right after
- * Spatie's NeedsTenant.
+ * Applied by the {@see \App\Multitenancy\Tasks\UseTenantMediaDisk}
+ * switch task each time a business becomes current, in requests and on
+ * queue workers alike. The task resets the disk first, since Laravel
+ * keeps a built disk for the life of the process.
  */
 class TenantMediaDisk
 {

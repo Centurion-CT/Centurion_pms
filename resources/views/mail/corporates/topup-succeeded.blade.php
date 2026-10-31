@@ -15,7 +15,7 @@ Your top-up has cleared. The funds are now available for bookings, memberships, 
 @endif
 </x-mail::panel>
 
-<x-mail::button :url="config('app.url').'/corporates/wallet'">
+<x-mail::button :url="$walletUrl">
 View wallet
 </x-mail::button>
 

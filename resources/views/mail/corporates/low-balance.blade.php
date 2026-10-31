@@ -11,7 +11,7 @@ Your Keverna corporate wallet has dropped below the threshold you set. Members c
 **Threshold** &nbsp; ₦{{ number_format($wallet->low_balance_threshold_naira ?? 0) }}
 </x-mail::panel>
 
-<x-mail::button :url="config('app.url').'/corporates/wallet'">
+<x-mail::button :url="$walletUrl">
 Top up now
 </x-mail::button>
 

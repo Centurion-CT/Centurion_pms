@@ -114,9 +114,8 @@ class Tenant extends SpatieTenant
 
     /**
      * True when the tenant has connected their own Dokwe Storage space
-     * via the Integrations page — used by ConfigureTenantMediaDisk
-     * middleware to decide whether to swap MediaLibrary's disk for
-     * this request.
+     * via the Integrations page — used by the UseTenantMediaDisk switch
+     * task to decide whether to swap MediaLibrary's disk.
      */
     public function hasDokweStorage(): bool
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mail\Corporates;
 
+use App\Mail\Corporates\Concerns\BindsCorporateTenant;
 use App\Models\CorporateWalletTopup;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,6 +21,7 @@ use Spatie\Multitenancy\Jobs\NotTenantAware;
  */
 class TopupSucceededMail extends Mailable implements NotTenantAware, ShouldQueue
 {
+    use BindsCorporateTenant;
     use Queueable;
     use SerializesModels;
 
@@ -44,7 +46,13 @@ class TopupSucceededMail extends Mailable implements NotTenantAware, ShouldQueue
                 'topup'     => $this->topup,
                 'corporate' => $this->topup->corporate,
                 'wallet'    => $this->topup->corporate?->wallet,
+                'walletUrl' => $this->walletUrl(),
             ],
         );
+    }
+
+    protected function corporateIdForTenant(): ?int
+    {
+        return $this->topup->corporate_id;
     }
 }

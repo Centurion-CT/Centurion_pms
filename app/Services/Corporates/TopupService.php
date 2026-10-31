@@ -109,7 +109,10 @@ class TopupService
             ->where('reference', $reference)
             ->first();
 
-        if ($topup === null) {
+        // The corporate is scoped to the current business, so another
+        // business's top-up stops here, before anything is changed.
+        $corporate = $topup?->corporate;
+        if ($topup === null || $corporate === null) {
             return false;
         }
 
@@ -130,11 +133,6 @@ class TopupService
             // Amount tampering — fail loud rather than credit.
             $topup->update(['status' => CorporateWalletTopup::STATUS_FAILED]);
 
-            return false;
-        }
-
-        $corporate = $topup->corporate;
-        if ($corporate === null) {
             return false;
         }
 

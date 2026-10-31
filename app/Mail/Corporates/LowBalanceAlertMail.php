@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mail\Corporates;
 
+use App\Mail\Corporates\Concerns\BindsCorporateTenant;
 use App\Models\Corporate;
 use App\Models\CorporateWallet;
 use Illuminate\Bus\Queueable;
@@ -22,6 +23,7 @@ use Spatie\Multitenancy\Jobs\NotTenantAware;
  */
 class LowBalanceAlertMail extends Mailable implements NotTenantAware, ShouldQueue
 {
+    use BindsCorporateTenant;
     use Queueable;
     use SerializesModels;
 
@@ -44,7 +46,13 @@ class LowBalanceAlertMail extends Mailable implements NotTenantAware, ShouldQueu
             with: [
                 'corporate' => $this->corporate,
                 'wallet'    => $this->wallet,
+                'walletUrl' => $this->walletUrl(),
             ],
         );
+    }
+
+    protected function corporateIdForTenant(): ?int
+    {
+        return $this->corporate->id;
     }
 }
