@@ -9,7 +9,7 @@ use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\Tenant;
-use App\Services\Paystack\PaystackClient;
+use App\Services\Paystack\BusinessPaystack;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -43,16 +43,10 @@ class BookingWebhookController extends Controller
         /** @var Tenant $tenant */
         $tenant = Tenant::current();
 
-        // Subaccount mode → verify with master key. Legacy mode →
-        // verify with operator's stored key. If neither is set the
-        // tenant hasn't finished payments setup, so reject loudly.
-        if ((string) $tenant->paystack_subaccount_code !== '') {
-            $client = PaystackClient::forPlatform();
-        } elseif (($secret = (string) $tenant->paystack_secret_key) !== '') {
-            $client = PaystackClient::forTenantKey($secret);
-        } else {
-            return response()->json(['ok' => false, 'reason' => 'payments not configured for tenant'], 422);
-        }
+        // Same account the payment started on (BusinessPaystack): the
+        // platform key for a subaccount or no payout setup yet, else the
+        // business's own key.
+        $client = BusinessPaystack::client($tenant);
 
         $rawBody = $request->getContent();
         $signature = (string) $request->header('x-paystack-signature', '');

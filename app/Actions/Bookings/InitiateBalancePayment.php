@@ -65,7 +65,7 @@ class InitiateBalancePayment
                 'email' => $booking->guest_email,
                 'amount_ngn' => $booking->balance_due,
                 'reference' => $reference,
-                'callback_url' => (string) config('services.paystack.callback_url'),
+                'callback_url' => route('marketplace.stays.pay.callback'),
                 'metadata' => [
                     'booking_id' => $booking->id,
                     'tenant_id' => $booking->tenant_id,

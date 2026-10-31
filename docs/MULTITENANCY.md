@@ -63,7 +63,7 @@ row has its slug and own domain set. See [subdomain-dns.md](subdomain-dns.md).
 | 2 | Isolation tests: two businesses side by side across pages, staff login, mobile API, webhooks, uploads, queued jobs, cache | Done (one money issue left for step 5, see below) |
 | 3 | Platform pages on `centurionpms.com`: home, sign-up, find-my-business login with emailed links | Done |
 | 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | Done |
-| 5 | Booking site from design Option C v2 as each business's `/` | To do |
+| 5 | Booking site from design Option C v2 as each business's `/` | Started: payments done (below); booking site to do |
 | 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | To do |
 | 7 | Console on `console.centurionpms.com`: businesses, needs a look, pause | To do |
 | 8 | Production cut-over: DNS, `TENANCY_MODE=domains`, Centurion's slug + own domain (see step 4 notes) | To do |
@@ -73,17 +73,6 @@ Designs: `design/platform/` (local mockups) and `design/platform/superdesign/`
 
 ## Findings while building
 
-- **Payment return address.** `InitiateBookingPayment` and
-  `InitiateBalancePayment` fall back to `PAYSTACK_CALLBACK_URL`
-  (`{APP_URL}/paystack/callback`), and no route exists at that path. With
-  several businesses the return address must be the paying business's own
-  host. Fix with the booking site (step 5).
-- **Corporate wallet top-ups go to the platform's Paystack account.**
-  `TopupService` and its webhook use `PaystackClient::forSubscriptions()`
-  with no subaccount, unlike booking payments, which use the business's
-  own key or subaccount. That is fine while Centurion is the only
-  business. Fix it with the payment work in step 5, before another
-  business's corporate clients top up.
 - **`/health`** used to sit in the business-only routes, so in `domains` mode
   an uptime check on a bare host would 404. It is now registered outside them.
 - Tests now run with `TENANCY_MODE=domains`, matching where production is
@@ -122,6 +111,28 @@ Checked away from page requests, with tests in
   business's bookings and top-ups.
 - Removed the guest "claim your Keverna account" email: it linked to a
   `/claim` page that doesn't exist here.
+
+## Step 5 notes: payments
+
+- **One rule for which Paystack account a business's payments use**
+  (`App\Services\Paystack\BusinessPaystack`): its subaccount on the
+  platform account, else its own secret key, else the platform account
+  with no split (paid out by hand). Bookings, balances, the payment
+  return page, both webhooks and corporate top-ups all ask it. Top-ups
+  used to go to the platform account unsplit, whatever the business.
+- **Payment return address.** Bookings from the room and category pages
+  and balance payments returned to `PAYSTACK_CALLBACK_URL`
+  (`/paystack/callback`), which had no route. Every booking payment now
+  returns to `/stays/pay/callback` on the address the guest booked on,
+  which only looks at that business's payments. `PAYSTACK_CALLBACK_URL`
+  is gone.
+- **Platform webhook.** Payments through the platform account notify the
+  one webhook address set on that account. It is now
+  `https://{CENTRAL_DOMAIN}/paystack/webhook`
+  (`PlatformPaystackWebhookController`), which finds the business by the
+  reference and hands the event to its booking or top-up webhook. A
+  business with its own Paystack account sets
+  `https://{its address}/paystack/booking-webhook` in its own dashboard.
 
 ## Sign-up switch
 

@@ -131,6 +131,9 @@ return Application::configure(basePath: dirname(__DIR__))
             // master Paystack key. Controller verifies signature + reference
             // prefix; CSRF tokens are meaningless here.
             'paystack/corporate-wallet-topup-webhook',
+            // The platform Paystack account's webhook on the central domain;
+            // signature checked in PlatformPaystackWebhookController.
+            'paystack/webhook',
         ]);
 
         // Enforce HTTPS in production. Bypassed in local + testing.

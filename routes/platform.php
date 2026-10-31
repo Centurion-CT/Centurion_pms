@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Platform\AddressCheckController;
+use App\Http\Controllers\Paystack\PlatformPaystackWebhookController;
 use App\Http\Controllers\Platform\OpenDashboardController;
 use App\Http\Middleware\EnsureSignUpOpen;
 use App\Livewire\Platform\FindBusiness;
@@ -33,3 +34,8 @@ Route::get('/signup/open', OpenDashboardController::class)
     ->name('platform.signup.open');
 
 Route::get('/login', FindBusiness::class)->name('platform.login');
+
+// The platform Paystack account's webhook: hands each payment to the
+// business it belongs to (PlatformPaystackWebhookController).
+Route::post('/paystack/webhook', PlatformPaystackWebhookController::class)
+    ->name('platform.paystack.webhook');
