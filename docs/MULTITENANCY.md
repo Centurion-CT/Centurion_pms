@@ -65,7 +65,7 @@ row has its slug and own domain set. See [subdomain-dns.md](subdomain-dns.md).
 | 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | Done |
 | 5 | Booking site from design Option C v2 as each business's `/` | Done |
 | 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | Done |
-| 7 | Console on `console.centurionpms.com`: businesses, needs a look, pause | To do |
+| 7 | Console on `console.centurionpms.com`: businesses, needs a look, pause | Done |
 | 8 | Production cut-over: DNS, `TENANCY_MODE=domains`, Centurion's slug + own domain (see step 4 notes) | To do |
 
 Designs: `design/platform/` (local mockups) and `design/platform/superdesign/`
@@ -111,6 +111,25 @@ Checked away from page requests, with tests in
   business's bookings and top-ups.
 - Removed the guest "claim your Keverna account" email: it linked to a
   `/claim` page that doesn't exist here.
+
+## Step 7 notes: console
+
+- `console.{CENTRAL_DOMAIN}` (`routes/platform-console.php`, domains mode
+  only). Sign-in is a 6-digit code emailed to an address in
+  `CONSOLE_ADMINS` (`App\Platform\ConsoleAdmins`, `ConsoleCode`); there
+  is no admin account table. Removing an address ends that admin's
+  access on their next request. The page answers the same for any
+  email, so it doesn't reveal who the admins are.
+- **Businesses** (`App\Livewire\Console\Businesses`): every business
+  that isn't archived, with its addresses, own-domain state, contact,
+  buildings live, apartment types, staff, bookings in the last 30 days
+  and the last booking. "Needs a look" flags: no apartment types, no
+  live building, payments going to the platform's Paystack account, an
+  own domain that stopped reaching us, paused.
+- **Pause / resume** sets the business to Locked / Active (step 1's
+  paused page and staff sign-out). Each is recorded in that business's
+  activity log with the admin's email.
+- No "log in as this business", as decided.
 
 ## Step 6 notes: brand split
 

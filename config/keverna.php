@@ -43,6 +43,13 @@ return [
     'support_whatsapp' => env('SUPPORT_WHATSAPP', ''),
 
     /*
+    | Email addresses that may sign in to the console on
+    | console.{central_domain}, comma-separated (docs/MULTITENANCY.md,
+    | step 7). Empty means nobody can.
+    */
+    'console_admins' => env('CONSOLE_ADMINS', ''),
+
+    /*
     | Map tiles on the booking site (Leaflet URL template + attribution).
     | The default is Esri's street map, as in the approved design; check
     | its terms, or set a keyed provider (MapTiler, Stadia) for production

@@ -23,6 +23,9 @@ class SignUpCode
 
     public const RESEND_SECONDS = 60;
 
+    /** Cache key prefix; subclasses use their own so codes never cross. */
+    protected const PREFIX = 'signup-code:';
+
     /** Issue a fresh code for this email. Returns the plain code to send. */
     public function issue(string $email): string
     {
@@ -76,6 +79,6 @@ class SignUpCode
 
     private function key(string $email): string
     {
-        return 'signup-code:'.sha1(strtolower(trim($email)));
+        return static::PREFIX.sha1(strtolower(trim($email)));
     }
 }

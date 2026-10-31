@@ -31,6 +31,7 @@ same lists. Drift here is a bug.
 | `TENANCY_MODE` | `single` (default): every request binds the first business. `domains`: the host decides the business (docs/MULTITENANCY.md). Needs wildcard DNS + TLS for the suffix first. Keep `SESSION_DOMAIN` empty so logins stay on the address that created them. | `single` |
 | `SIGNUP_OPEN` | `true` lets new businesses sign up at `{CENTRAL_DOMAIN}/signup`. `false` (default): /signup and the platform home ask people to email `hello@{CENTRAL_DOMAIN}` instead. | `false` |
 | `SUPPORT_WHATSAPP` | The software's WhatsApp support line on staff sign-in pages, digits with country code. Empty hides the button. | empty |
+| `CONSOLE_ADMINS` | Email addresses that may sign in to `console.{CENTRAL_DOMAIN}`, comma-separated. Empty means nobody can. | empty |
 
 ## Tier 2 — recommended (boot succeeds, feature disabled)
 

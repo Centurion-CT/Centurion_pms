@@ -51,6 +51,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ))->where('path', '.*');
                 Route::middleware(['web'])->domain($central)
                     ->group(base_path('routes/platform.php'));
+                Route::middleware(['web'])->domain('console.'.$central)
+                    ->group(base_path('routes/platform-console.php'));
             }
 
             // routes/web.php holds the guest-facing surface (property
