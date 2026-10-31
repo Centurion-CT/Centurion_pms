@@ -115,11 +115,23 @@ Checked away from page requests, with tests in
 ## Step 7 notes: console
 
 - `console.{CENTRAL_DOMAIN}` (`routes/platform-console.php`, domains mode
-  only). Sign-in is a 6-digit code emailed to an address in
-  `CONSOLE_ADMINS` (`App\Platform\ConsoleAdmins`, `ConsoleCode`); there
-  is no admin account table. Removing an address ends that admin's
-  access on their next request. The page answers the same for any
-  email, so it doesn't reveal who the admins are.
+  only). Console users live in `console_users` (`App\Models\ConsoleUser`),
+  not tied to any business, as **owners** (pause / resume, manage users)
+  or **admins** (pause / resume).
+- **First owner:** `/setup` (`App\Livewire\Console\Setup`) is open only
+  while no console user exists and `CONSOLE_SETUP_KEY` is set. The owner
+  enters the key, name, email and password, then a code emailed to them.
+  The page then closes for good.
+- **Sign-in:** email and password, then a 6-digit code emailed to that
+  address (`ConsoleCode`). A wrong email and a wrong password get the
+  same answer.
+- **Users** (`App\Livewire\Console\Users`, owners): invite by email as
+  owner or admin (they choose a password from a 3-day link), change
+  role, send a password reset, remove. There is always at least one
+  owner, and nobody removes or demotes themselves.
+- **Recovery:** `php artisan console:invite {email} --owner` prints a
+  password link, creating the user if needed, for when every owner is
+  locked out.
 - **Businesses** (`App\Livewire\Console\Businesses`): every business
   that isn't archived, with its addresses, own-domain state, contact,
   buildings live, apartment types, staff, bookings in the last 30 days

@@ -28,22 +28,15 @@ return Application::configure(basePath: dirname(__DIR__))
             // first one in TENANCY_MODE=single, the one the host belongs to
             // in TENANCY_MODE=domains (docs/MULTITENANCY.md).
             //
-            // Setup wizard: mounted BEFORE the tenant-scoped groups and
-            // deliberately does NOT run NeedsTenant, because this is the
-            // page the operator lands on when there IS no tenant row yet.
-            // Its component aborts 404 on itself once the tenant exists.
             // PRD §19: cheap subsystem ping for load balancer + uptime
             // monitor. Needs no business, so it answers on any host.
             Route::get('/health', \App\Http\Controllers\HealthController::class)->name('health');
 
-            Route::middleware(['web'])->group(function (): void {
-                Route::get('/setup', \App\Livewire\Setup\Wizard::class)
-                    ->name('setup');
-            });
-
-            // Platform pages on the central domain bind no business, so
-            // they are registered first and only in TENANCY_MODE=domains
-            // (in single mode the central domain may be the business's own).
+            // Platform and console pages bind no business, so they are
+            // registered first (ahead of the install wizard's /setup, which
+            // would otherwise catch the console's /setup) and only in
+            // TENANCY_MODE=domains (in single mode the central domain may
+            // be the business's own).
             if (HostTenantFinder::isDomainMode()) {
                 $central = (string) config('keverna.central_domain');
                 Route::domain('www.'.$central)->get('/{path?}', fn (Request $request) => redirect()->away(
@@ -54,6 +47,15 @@ return Application::configure(basePath: dirname(__DIR__))
                 Route::middleware(['web'])->domain('console.'.$central)
                     ->group(base_path('routes/platform-console.php'));
             }
+
+            // Setup wizard: mounted BEFORE the tenant-scoped groups and
+            // deliberately does NOT run NeedsTenant, because this is the
+            // page the operator lands on when there IS no tenant row yet.
+            // Its component aborts 404 on itself once the tenant exists.
+            Route::middleware(['web'])->group(function (): void {
+                Route::get('/setup', \App\Livewire\Setup\Wizard::class)
+                    ->name('setup');
+            });
 
             // routes/web.php holds the guest-facing surface (property
             // landing, booking flow, corporate portal). routes/tenant.php

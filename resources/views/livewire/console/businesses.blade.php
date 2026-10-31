@@ -6,7 +6,6 @@
             <h1>Businesses</h1>
             <p class="lead">{{ $counts['all'] }} on {{ config('brand.name') }}. Pausing one closes its booking site and signs its staff out until you resume it.</p>
         </div>
-        <button class="btn btn-quiet" type="button" wire:click="signOut">Sign out {{ $admin }}</button>
     </div>
 
     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 24px 0 16px;">

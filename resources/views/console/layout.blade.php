@@ -20,7 +20,16 @@
         .brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 600; }
         .brand img { width: 26px; height: 26px; padding: 3px; border-radius: 6px; background: #fff; }
         .brand small { color: var(--ink-300); font-weight: 500; }
+        .nav { display: flex; gap: 4px; margin-left: 16px; }
+        .nav a { color: var(--ink-300); text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 14px; font-weight: 500; }
+        .nav a:hover, .nav a.on { color: #fff; background: rgba(255,255,255,.08); }
         .bar .end { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--ink-300); }
+        .bar .end form { margin: 0; }
+        .field { display: grid; gap: 6px; }
+        .invite-grid { display: grid; grid-template-columns: 1fr 1.3fr 160px auto; gap: 12px; align-items: end; }
+        @media (max-width: 760px) { .invite-grid { grid-template-columns: 1fr; } }
+        .field label { font-weight: 600; color: var(--ink-900); font-size: 14px; }
+        @media (max-width: 640px) { .bar .end span { display: none; } .nav { margin-left: 0; } }
         .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
         main { padding: 32px 0 64px; }
         h1 { font: 600 30px/1.15 'Bricolage Grotesque', system-ui, sans-serif; color: var(--ink-900); margin: 0; letter-spacing: -0.02em; }
@@ -47,9 +56,19 @@
     <header class="bar">
         <div class="wrap">
             <a class="brand" href="{{ route('console.businesses') }}"><img src="{{ asset(config('brand.logo')) }}" alt="">{{ config('brand.name') }} <small>console</small></a>
-            @isset($admin)
-                <div class="end"><span>{{ $admin }}</span></div>
-            @endisset
+            @php($consoleUser = \App\Http\Middleware\EnsureConsoleAdmin::user())
+            @if ($consoleUser)
+                <nav class="nav" aria-label="Console">
+                    <a href="{{ route('console.businesses') }}" @class(['on' => request()->routeIs('console.businesses')])>Businesses</a>
+                    @if ($consoleUser->isOwner())
+                        <a href="{{ route('console.users') }}" @class(['on' => request()->routeIs('console.users')])>Users</a>
+                    @endif
+                </nav>
+                <div class="end">
+                    <span>{{ $consoleUser->name }} · {{ $consoleUser->role->label() }}</span>
+                    <form method="POST" action="{{ route('console.logout') }}">@csrf<button class="btn btn-ghost" type="submit">Sign out</button></form>
+                </div>
+            @endif
         </div>
     </header>
     <main><div class="wrap">{{ $slot }}</div></main>

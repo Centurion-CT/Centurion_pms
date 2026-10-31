@@ -2,17 +2,23 @@
 
 declare(strict_types=1);
 
-use App\Enums\OperatorRole;
+use App\Enums\ConsoleRole;
 use App\Enums\TenantStatus;
 use App\Http\Middleware\EnsureConsoleAdmin;
+use App\Livewire\Console\AcceptInvite;
 use App\Livewire\Console\Businesses;
 use App\Livewire\Console\Login;
+use App\Livewire\Console\Setup;
+use App\Livewire\Console\Users;
 use App\Mail\Platform\ConsoleCodeMail;
+use App\Mail\Platform\ConsoleInviteMail;
 use App\Models\Activity;
-use App\Models\Operator;
+use App\Models\ConsoleUser;
 use App\Models\Property;
 use App\Models\RoomCategory;
 use App\Models\Tenant;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
 
@@ -23,7 +29,7 @@ use Livewire\Livewire;
 
 beforeEach(function (): void {
     Mail::fake();
-    config()->set('keverna.console_admins', 'owner@centurion.test, Second@Centurion.test');
+    config()->set('keverna.console_setup_key', 'setup-key-123');
 
     $this->ready = Tenant::factory()->create(['slug' => 'alpha', 'name' => 'Alpha Suites', 'paystack_subaccount_code' => 'ACCT_a']);
     $this->ready->makeCurrent();
@@ -36,53 +42,100 @@ beforeEach(function (): void {
 
 afterEach(fn () => Tenant::forgetCurrent());
 
-it('emails a sign-in code only to console admins, and says the same to anyone', function (): void {
-    Livewire::test(Login::class)->set('email', 'stranger@example.ng')->call('send')->assertSet('sent', true);
-    Mail::assertNothingSent();
+function consoleUser(ConsoleRole $role = ConsoleRole::Owner, string $email = 'owner@centurion.test'): ConsoleUser
+{
+    return ConsoleUser::query()->create(['name' => ucfirst(strstr($email, '@', true)), 'email' => $email, 'password' => 'a-long-password-1', 'role' => $role]);
+}
 
-    Livewire::test(Login::class)->set('email', 'second@centurion.test')->call('send')->assertSet('sent', true);
-    Mail::assertSent(ConsoleCodeMail::class, fn (ConsoleCodeMail $m) => $m->hasTo('second@centurion.test'));
-});
+function signedIn(ConsoleUser $user): void
+{
+    session([EnsureConsoleAdmin::SESSION_KEY => $user->id]);
+}
 
-it('signs an admin in with the emailed code', function (): void {
-    $code = null;
-    $component = Livewire::test(Login::class)->set('email', 'owner@centurion.test')->call('send');
+/** The code in the last console code email. */
+function lastConsoleCode(): string
+{
+    $code = '';
     Mail::assertSent(ConsoleCodeMail::class, function (ConsoleCodeMail $m) use (&$code): bool {
         $code = $m->code;
 
         return true;
     });
 
-    $component->set('code', $code === '000000' ? '111111' : '000000')->call('verify')->assertSet('error', "That code doesn't match.");
-    $component->set('code', $code)->call('verify')->assertRedirect(route('console.businesses'));
+    return $code;
+}
 
-    expect(session(EnsureConsoleAdmin::SESSION_KEY))->toBe('owner@centurion.test');
+it('creates the first owner with the setup key and an emailed code, then closes setup', function (): void {
+    $this->get('http://console.keverna.test/')->assertRedirect(route('console.setup'));
+
+    $setup = Livewire::test(Setup::class)
+        ->set('setupKey', 'wrong')->set('name', 'Ifeanyi')->set('email', 'Owner@Centurion.test')
+        ->set('password', 'a-long-password-1')->set('password_confirmation', 'a-long-password-1')
+        ->call('submit')->assertHasErrors('setupKey')
+        ->set('setupKey', 'setup-key-123')->call('submit')->assertHasNoErrors()->assertSet('step', 'code')
+        ->assertSet('password', '');
+
+    $setup->set('code', lastConsoleCode())->call('confirm')->assertRedirect(route('console.businesses'));
+
+    $owner = ConsoleUser::query()->sole();
+    expect($owner->email)->toBe('owner@centurion.test')
+        ->and($owner->role)->toBe(ConsoleRole::Owner)
+        ->and(Hash::check('a-long-password-1', $owner->password))->toBeTrue();
+
+    $this->get('http://console.keverna.test/setup')->assertNotFound();
+});
+
+it('serves the console setup page, not the install wizard, on the console address', function (): void {
+    $this->get('http://console.keverna.test/setup')->assertOk()->assertSee('Set up the console');
+});
+
+it('keeps setup closed without a setup key', function (): void {
+    config()->set('keverna.console_setup_key', '');
+
+    $this->get('http://console.keverna.test/setup')->assertNotFound();
+});
+
+it('signs in with password and then an emailed code', function (): void {
+    $user = consoleUser();
+
+    $login = Livewire::test(Login::class)->set('email', 'owner@centurion.test')->set('password', 'wrong-password')
+        ->call('check')->assertSet('error', 'Email or password is wrong.');
+    Mail::assertNothingSent();
+
+    $login->set('password', 'a-long-password-1')->call('check')->assertSet('userId', $user->id);
+    $login->set('code', lastConsoleCode())->call('verify')->assertRedirect(route('console.businesses'));
+
+    expect(session(EnsureConsoleAdmin::SESSION_KEY))->toBe($user->id)
+        ->and($user->refresh()->last_signed_in_at)->not->toBeNull();
 });
 
 it('keeps everyone else out of the console', function (): void {
+    consoleUser();
     $this->get('http://console.keverna.test/')->assertRedirect(route('console.login'));
 
-    $this->withSession([EnsureConsoleAdmin::SESSION_KEY => 'removed@centurion.test'])
+    $this->withSession([EnsureConsoleAdmin::SESSION_KEY => 999])
         ->get('http://console.keverna.test/')->assertRedirect(route('console.login'));
 
-    Livewire::withHeaders([])->test(Businesses::class)->assertForbidden();
+    Livewire::test(Businesses::class)->assertForbidden();
 });
 
 it('lists every business with its set-up and what needs a look', function (): void {
-    $this->withSession([EnsureConsoleAdmin::SESSION_KEY => 'owner@centurion.test'])
+    $owner = consoleUser();
+
+    $this->withSession([EnsureConsoleAdmin::SESSION_KEY => $owner->id])
         ->get('http://console.keverna.test/')
         ->assertOk()
         ->assertSee('Alpha Suites')->assertSee('alpha.keverna.test')
         ->assertSee('Bravo Homes')->assertSee('No apartment types yet')
         ->assertSee("Payments not set up: paid into the platform's Paystack account");
 
-    session([EnsureConsoleAdmin::SESSION_KEY => 'owner@centurion.test']);
+    signedIn($owner);
     Livewire::test(Businesses::class)->set('show', 'look')
         ->assertSee('Bravo Homes')->assertDontSee('Alpha Suites');
 });
 
-it('pauses and resumes a business, and records who did it', function (): void {
-    session([EnsureConsoleAdmin::SESSION_KEY => 'owner@centurion.test']);
+it('lets an admin pause and resume a business, and records who did it', function (): void {
+    signedIn(consoleUser(ConsoleRole::Admin, 'admin@centurion.test'));
 
     Livewire::test(Businesses::class)->call('pause', $this->ready->id);
     expect($this->ready->refresh()->status)->toBe(TenantStatus::Locked);
@@ -94,11 +147,72 @@ it('pauses and resumes a business, and records who did it', function (): void {
     $log = Activity::query()->withoutGlobalScopes()->where('log_name', 'console')->orderBy('id')->get();
     expect($log->pluck('event')->all())->toBe(['paused', 'resumed'])
         ->and($log->first()->tenant_id)->toBe($this->ready->id)
-        ->and($log->first()->properties['admin'])->toBe('owner@centurion.test');
+        ->and($log->first()->properties['admin'])->toBe('admin@centurion.test');
+});
+
+it('lets an owner invite a user, who sets a password from the link and can sign in', function (): void {
+    signedIn(consoleUser());
+
+    Livewire::test(Users::class)->set('name', 'Tobi')->set('email', 'Tobi@Centurion.test')->set('role', 'admin')
+        ->call('invite')->assertHasNoErrors();
+
+    $url = null;
+    Mail::assertSent(ConsoleInviteMail::class, function (ConsoleInviteMail $m) use (&$url): bool {
+        $url = $m->url;
+
+        return $m->hasTo('tobi@centurion.test') && ! $m->reset;
+    });
+    $tobi = ConsoleUser::query()->where('email', 'tobi@centurion.test')->sole();
+    expect($tobi->isActive())->toBeFalse()->and($tobi->role)->toBe(ConsoleRole::Admin);
+
+    $token = basename((string) parse_url($url, PHP_URL_PATH));
+    Livewire::test(AcceptInvite::class, ['token' => $token])
+        ->set('password', 'tobis-long-password')->set('password_confirmation', 'tobis-long-password')
+        ->call('save')->assertRedirect(route('console.login'));
+
+    expect($tobi->refresh()->isActive())->toBeTrue()
+        ->and(ConsoleUser::forInvite($token))->toBeNull();
+});
+
+it('keeps user management to owners', function (): void {
+    $admin = consoleUser(ConsoleRole::Admin, 'admin@centurion.test');
+
+    $this->withSession([EnsureConsoleAdmin::SESSION_KEY => $admin->id])
+        ->get('http://console.keverna.test/users')->assertForbidden();
+    signedIn($admin);
+    Livewire::test(Users::class)->assertForbidden();
+});
+
+it('always keeps an owner, and nobody removes or demotes themselves', function (): void {
+    $me = consoleUser();
+    $other = consoleUser(ConsoleRole::Owner, 'second@centurion.test');
+    signedIn($me);
+
+    Livewire::test(Users::class)->call('remove', $me->id)->assertForbidden();
+    Livewire::test(Users::class)->call('changeRole', $other->id, 'admin');
+    expect($other->refresh()->role)->toBe(ConsoleRole::Admin);
+
+    Livewire::test(Users::class)->call('remove', $other->id);
+    expect(ConsoleUser::query()->pluck('email')->all())->toBe(['owner@centurion.test']);
+});
+
+it('resets a password: the old one stops working and a link goes out', function (): void {
+    $other = consoleUser(ConsoleRole::Admin, 'admin@centurion.test');
+    signedIn(consoleUser());
+
+    Livewire::test(Users::class)->call('resetPassword', $other->id);
+
+    expect($other->refresh()->isActive())->toBeFalse();
+    Mail::assertSent(ConsoleInviteMail::class, fn (ConsoleInviteMail $m) => $m->hasTo('admin@centurion.test') && $m->reset);
+});
+
+it('prints a recovery link for whoever runs the servers', function (): void {
+    expect(Artisan::call('console:invite', ['email' => 'rescue@centurion.test', '--owner' => true]))->toBe(0)
+        ->and(Artisan::output())->toContain('/invite/');
+
+    expect(ConsoleUser::query()->where('email', 'rescue@centurion.test')->sole()->role)->toBe(ConsoleRole::Owner);
 });
 
 it('is not on a business address', function (): void {
-    Operator::factory()->for($this->ready)->create(['role' => OperatorRole::Manager]);
-
-    $this->get('http://alpha.keverna.test/console')->assertNotFound();
+    $this->get('http://alpha.keverna.test/users')->assertNotFound();
 });

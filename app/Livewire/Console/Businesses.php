@@ -8,7 +8,6 @@ use App\Actions\Domains\CheckOwnDomain;
 use App\Enums\TenantStatus;
 use App\Http\Middleware\EnsureConsoleAdmin;
 use App\Models\Tenant;
-use App\Platform\ConsoleAdmins;
 use App\Services\Paystack\BusinessPaystack;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
@@ -45,7 +44,7 @@ class Businesses extends Component
      */
     public function boot(): void
     {
-        abort_unless(ConsoleAdmins::allows(session(EnsureConsoleAdmin::SESSION_KEY)), 403);
+        abort_if(EnsureConsoleAdmin::user() === null, 403);
     }
 
     public function pause(int $id): void
@@ -70,13 +69,6 @@ class Businesses extends Component
         $this->dispatch('notify', message: "{$tenant->name} is running again.");
     }
 
-    public function signOut(): void
-    {
-        session()->forget(EnsureConsoleAdmin::SESSION_KEY);
-        session()->regenerate();
-        $this->redirectRoute('console.login');
-    }
-
     public function render(): View
     {
         $all = $this->rows();
@@ -97,7 +89,6 @@ class Businesses extends Component
                 'look' => $all->filter(fn ($r) => $r->issues !== [])->count(),
                 'paused' => $all->filter(fn ($r) => $r->tenant->status === TenantStatus::Locked)->count(),
             ],
-            'admin' => (string) session(EnsureConsoleAdmin::SESSION_KEY),
         ])->title('Businesses · '.config('brand.name').' console');
     }
 
@@ -165,7 +156,7 @@ class Businesses extends Component
         activity('console')
             ->performedOn($tenant)
             ->event($event)
-            ->withProperties(['admin' => (string) session(EnsureConsoleAdmin::SESSION_KEY)])
+            ->withProperties(['admin' => EnsureConsoleAdmin::user()?->email])
             ->tap(fn ($activity) => $activity->tenant_id = $tenant->id)
             ->log(ucfirst($event).' from the '.config('brand.name').' console.');
     }

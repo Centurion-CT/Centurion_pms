@@ -43,11 +43,12 @@ return [
     'support_whatsapp' => env('SUPPORT_WHATSAPP', ''),
 
     /*
-    | Email addresses that may sign in to the console on
-    | console.{central_domain}, comma-separated (docs/MULTITENANCY.md,
-    | step 7). Empty means nobody can.
+    | One-time key for the console's /setup page, which creates the first
+    | console owner (docs/MULTITENANCY.md, step 7). Whoever deploys sets it
+    | and gives it to the owner. Empty means setup is closed; once an
+    | owner exists the page is closed whatever this says.
     */
-    'console_admins' => env('CONSOLE_ADMINS', ''),
+    'console_setup_key' => env('CONSOLE_SETUP_KEY', ''),
 
     /*
     | Map tiles on the booking site (Leaflet URL template + attribution).
