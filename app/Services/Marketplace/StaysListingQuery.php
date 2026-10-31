@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Marketplace;
 
+use App\Models\Tenant;
 use App\Enums\RoomStatus;
 use App\Models\Property;
 use App\Models\Room;
@@ -404,6 +405,7 @@ final class StaysListingQuery
         $property = Property::query()
             ->withoutGlobalScope(TenantScope::class)
             ->where('public_slug', $slug)
+            ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
             ->where('is_listed_publicly', true)
             ->with(['media', 'tenant'])
             ->first();

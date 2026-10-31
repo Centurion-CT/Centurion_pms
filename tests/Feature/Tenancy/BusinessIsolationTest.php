@@ -119,3 +119,22 @@ it('still accepts payment webhooks for a paused business', function (): void {
 
     expect($this->postJson('http://bravo.keverna.test/paystack/booking-webhook', [])->status())->not->toBe(503);
 });
+
+it("does not show or book one business's stays pages on another business's address", function (): void {
+    $this->propA->forceFill(['is_listed_publicly' => true, 'public_slug' => 'alpha-wuse'])->save();
+
+    // Its own address finds it (the page itself predates this work and
+    // links to a removed route, so only "found" is checked here).
+    expect($this->get('http://alpha.keverna.test/stays/alpha-wuse')->status())->not->toBe(404);
+    $this->get('http://bravo.keverna.test/stays/alpha-wuse')->assertNotFound();
+    $this->get('http://bravo.keverna.test/stays/alpha-wuse/book')->assertNotFound();
+});
+
+it("does not show one business's booking confirmation on another business's address", function (): void {
+    $this->a->makeCurrent();
+    $room = Room::query()->where('property_id', $this->propA->id)->firstOrFail();
+    $booking = \App\Models\Booking::factory()->for($this->a)->for($room)->create(['guest_name' => 'Ada Obi']);
+    Tenant::forgetCurrent();
+
+    $this->get("http://bravo.keverna.test/stays/pay/success/{$booking->booking_ref}")->assertNotFound();
+});

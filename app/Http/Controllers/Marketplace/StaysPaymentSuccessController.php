@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Marketplace;
 
+use App\Models\Tenant;
 use App\Models\Booking;
 use App\Multitenancy\TenantScope;
 use Illuminate\Contracts\View\View;
@@ -22,6 +23,7 @@ final class StaysPaymentSuccessController
         $booking = Booking::query()
             ->withoutGlobalScope(TenantScope::class)
             ->where('booking_ref', $bookingRef)
+            ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
             ->with(['tenant', 'room.property'])
             ->first();
         if ($booking === null) {

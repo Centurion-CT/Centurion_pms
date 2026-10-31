@@ -134,6 +134,14 @@ Checked away from page requests, with tests in
   business with its own Paystack account sets
   `https://{its address}/paystack/booking-webhook` in its own dashboard.
 
+- **`/stays` pages were cross-business.** Keverna's marketplace looked up
+  properties and bookings across every business, so on one business's
+  address another's property page opened, could be booked, and
+  `/stays/pay/success/{ref}` showed any business's confirmation. Those
+  lookups now only see the current business. (The `/stays/{slug}` page
+  itself has been broken since the port: it links to a removed route. The
+  new booking site replaces it.)
+
 ## Sign-up switch
 
 `SIGNUP_OPEN` (config `keverna.signup_open`, off by default) lets the

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Marketplace;
 
+use App\Models\Tenant;
 use App\Mail\Marketplace\PropertyReportSubmitted;
 use App\Models\Property;
 use App\Multitenancy\TenantScope;
@@ -40,6 +41,7 @@ final class StaysReportController
         $property = Property::query()
             ->withoutGlobalScope(TenantScope::class)
             ->where('public_slug', $slug)
+            ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
             ->where('is_listed_publicly', true)
             ->first();
         if ($property === null) {

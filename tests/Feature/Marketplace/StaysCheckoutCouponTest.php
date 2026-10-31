@@ -53,7 +53,7 @@ beforeEach(function (): void {
         'active'    => true,
     ]);
 
-    Tenant::forgetCurrent();
+    // The business stays current: these pages only run on its own address.
 });
 
 afterEach(fn () => Tenant::forgetCurrent());

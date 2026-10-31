@@ -30,7 +30,7 @@ function seedContentProperty(array $propertyOverrides = []): Property
     ]);
     Room::factory()->for($tenant)->for($property)->for($cat, 'category')
         ->create(['status' => RoomStatus::Active]);
-    Tenant::forgetCurrent();
+    // The business stays current: these pages only run on its own address.
 
     return $property;
 }

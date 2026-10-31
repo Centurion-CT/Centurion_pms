@@ -33,7 +33,7 @@ beforeEach(function (): void {
     $this->rooms = collect(range(1, 3))->map(fn ($n) => Room::factory()
         ->for($this->tenant)->for($this->property)->for($this->category, 'category')
         ->create(['room_number' => 'D'.$n, 'status' => RoomStatus::Active]));
-    Tenant::forgetCurrent();
+    // The business stays current: these pages only run on its own address.
 });
 
 afterEach(fn () => Tenant::forgetCurrent());
