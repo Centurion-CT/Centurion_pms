@@ -34,7 +34,7 @@ class TopupSucceededMail extends Mailable implements NotTenantAware, ShouldQueue
         $amount = '₦'.number_format($this->topup->amount_naira);
 
         return new Envelope(
-            subject: $amount.' added to your Keverna wallet',
+            subject: $amount.' added to your corporate wallet',
         );
     }
 

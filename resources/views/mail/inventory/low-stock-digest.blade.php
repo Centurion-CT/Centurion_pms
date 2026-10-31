@@ -18,5 +18,5 @@ Open Inventory
 You're receiving this because you're listed as a Manager on this workspace. Adjust thresholds per product from the Inventory page.
 
 Thanks,
-The {{ config('app.name') }} team
+The {{ config('brand.name') }} team
 </x-mail::message>

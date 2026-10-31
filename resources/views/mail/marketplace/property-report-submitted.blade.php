@@ -1,9 +1,9 @@
 @component('mail::message')
-# New listing report on Keverna Stays
+# A guest reported a problem with your page
 
-A guest reported a Stays listing.
+Someone used "Report" on the {{ $propertyName }} page of your booking site.
 
-**Property:** {{ $propertyName }} ([open on marketplace]({{ $propertyUrl }}))<br>
+**Property:** {{ $propertyName }} ([open the page]({{ $propertyUrl }}))<br>
 **Slug:** `{{ $propertySlug }}`<br>
 **Reason:** {{ ucfirst($reason) }}<br>
 **Reporter email:** {{ $reporterEmail }}
@@ -20,5 +20,5 @@ Reply-to on this email is the reporter, so hitting reply talks
 to them directly.
 
 Thanks,<br>
-Keverna Stays
+{{ config('brand.name') }}
 @endcomponent

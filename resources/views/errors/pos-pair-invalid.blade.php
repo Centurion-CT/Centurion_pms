@@ -14,7 +14,7 @@
         ],
         default        => [
             'title' => "We don't recognise that code.",
-            'body'  => "The link you scanned isn't a valid Keverna POS pairing code. Try scanning it again, if it keeps failing, ask the terminal to regenerate the QR.",
+            'body'  => "The link you scanned isn't a valid ".config('brand.name')." POS pairing code. Try scanning it again, if it keeps failing, ask the terminal to regenerate the QR.",
         ],
     };
 @endphp
@@ -35,7 +35,7 @@
 <body class="lp-page" style="min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px;">
     <main class="lp-card lp-card-cream" style="max-width: 420px; width: 100%;" data-testid="pair-invalid">
         <div class="lp-card-body" style="padding: 28px 26px;">
-            <span class="lp-eyebrow-strip">Keverna POS · Pairing</span>
+            <span class="lp-eyebrow-strip">{{ config('brand.name') }} POS · Pairing</span>
             <h1 class="lp-display" style="margin: 14px 0 0; font-size: clamp(24px, 6vw, 32px); font-weight: 600; line-height: 1.1;">
                 {{ $copy['title'] }}
             </h1>

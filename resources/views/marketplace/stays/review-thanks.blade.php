@@ -1,4 +1,4 @@
-@extends('layouts.marketplace', ['title' => 'Thanks for reviewing · Keverna Stays'])
+@extends('layouts.marketplace', ['title' => 'Thanks for reviewing · '.\App\Models\Tenant::current()?->name])
 
 @section('content')
 @php

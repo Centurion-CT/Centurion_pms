@@ -37,6 +37,12 @@ return [
     'signup_open' => (bool) env('SIGNUP_OPEN', false),
 
     /*
+    | The software's WhatsApp support line on the staff sign-in pages:
+    | digits with country code (2348031234567). Empty hides the button.
+    */
+    'support_whatsapp' => env('SUPPORT_WHATSAPP', ''),
+
+    /*
     | Map tiles on the booking site (Leaflet URL template + attribution).
     | The default is Esri's street map, as in the approved design; check
     | its terms, or set a keyed provider (MapTiler, Stadia) for production

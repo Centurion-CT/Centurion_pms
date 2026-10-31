@@ -29,7 +29,7 @@ class EnsureDeskToken
         if (! $device instanceof MobileDevice || ! $device->isDesk()) {
             return response()->json([
                 'error' => 'not_a_desk',
-                'detail' => 'This device is not set up as a Keverna Desk.',
+                'detail' => 'This device is not set up as a '.config('brand.name').' Desk.',
             ], 403);
         }
 

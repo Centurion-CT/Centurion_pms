@@ -19,5 +19,5 @@ Top up now
 </x-mail::button>
 
 Thanks,
-The {{ config('app.name') }} team
+The {{ \App\Models\Tenant::current()?->name ?? config('brand.name') }} team
 </x-mail::message>

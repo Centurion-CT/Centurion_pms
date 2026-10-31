@@ -3,7 +3,7 @@
 
 Hi {{ $corporate->name }} team,
 
-Your Keverna corporate wallet has dropped below the threshold you set. Members can keep booking until the wallet hits zero, but you'll want to top up soon.
+Your corporate wallet with {{ \App\Models\Tenant::current()?->name ?? 'us' }} has dropped below the threshold you set. Members can keep booking until the wallet hits zero, but you'll want to top up soon.
 
 <x-mail::panel>
 **Available balance** &nbsp; ₦{{ number_format($wallet->available()) }}<br>
@@ -18,5 +18,5 @@ Top up now
 Memberships set to auto-renew will pause if the wallet hits zero on renewal day, top up to keep your team's bookings running.
 
 Thanks,
-The {{ config('app.name') }} team
+The {{ \App\Models\Tenant::current()?->name ?? config('brand.name') }} team
 </x-mail::message>

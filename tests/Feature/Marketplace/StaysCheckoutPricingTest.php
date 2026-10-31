@@ -110,7 +110,7 @@ it('renders a full guest-side breakdown - room + Keverna service fee + processin
     $c->assertSee('data-testid="checkout-line-room"', false);
     $c->assertSee('data-testid="checkout-line-platform"', false);
     $c->assertSee('data-testid="checkout-line-processing"', false);
-    $c->assertSee('Keverna service fee');
+    $c->assertSee(config('brand.name').' service fee');
     $c->assertSee('Payment processing');
     $c->assertSee('data-testid="checkout-total"', false);
 });

@@ -14,7 +14,7 @@
       - 'all'       -> non-essential cookies (analytics, marketing) OK
       - 'essential' -> only strictly-necessary (session, CSRF, cart)
 
-    No cookies are set by Keverna beyond what Laravel already needs
+    No cookies are set by this site beyond what Laravel already needs
     for the session + CSRF; the banner is scaffolding so we can turn
     analytics on later without another compliance pass.
 --}}

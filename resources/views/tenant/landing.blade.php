@@ -30,10 +30,10 @@
         $locationBits = array_unique(array_filter([$property->city, $property->state]));
         $locationStr  = $locationBits ? implode(', ', $locationBits) : null;
 
-        // Browser tab / share title is the install's guest-facing site
-        // title (config/brand.php); the description still carries the
-        // property and location for search results.
-        $composedTitle = config('brand.site_title') ?: config('brand.name');
+        // Browser tab / share title is the business's site title (its
+        // name unless set under Settings → Business); the description
+        // still carries the property and location for search results.
+        $composedTitle = $tenant->siteTitle();
 
         // Description: prefer tagline; else description; else compose
         // a sensible one from what we know.

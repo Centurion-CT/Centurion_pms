@@ -18,7 +18,7 @@
 <body class="lp-page" style="min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px;">
     <main class="lp-card lp-card-cream" style="max-width: 420px; width: 100%;" data-testid="device-revoked">
         <div class="lp-card-body" style="padding: 28px 26px;">
-            <span class="lp-eyebrow-strip">Keverna POS</span>
+            <span class="lp-eyebrow-strip">{{ config('brand.name') }} POS</span>
             <h1 class="lp-display" style="margin: 14px 0 0; font-size: clamp(24px, 6vw, 32px); font-weight: 600; line-height: 1.1;">
                 This device was unlinked.
             </h1>

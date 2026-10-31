@@ -354,7 +354,7 @@ class PropertyForm extends Component
             'houseRules.*.date_format' => 'Times must be HH:MM (24-hour, e.g. 13:00).',
             'publicSlug.regex' => 'Marketplace URL slug must be lowercase letters, numbers and hyphens (no spaces).',
             'publicSlug.unique' => 'That marketplace URL slug is taken by another property. Try adding your city or a differentiator.',
-            'publicSlug.required_if' => 'Pick a marketplace URL slug when listing on Keverna Stays.',
+            'publicSlug.required_if' => 'Pick a URL slug for this building.',
             'videoUrl.regex' => 'Paste a YouTube or Vimeo link, or a direct .mp4 / .webm / .mov URL.',
         ]);
 

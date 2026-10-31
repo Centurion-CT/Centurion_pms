@@ -1,4 +1,4 @@
-@extends('layouts.marketplace', ['title' => 'Already reviewed · Keverna Stays'])
+@extends('layouts.marketplace', ['title' => 'Already reviewed · '.\App\Models\Tenant::current()?->name])
 
 @section('content')
 @php

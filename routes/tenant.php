@@ -86,6 +86,7 @@ use App\Livewire\Dashboard\Housekeeping\RoomHistory as HousekeepingRoomHistory;
 use App\Livewire\Dashboard\Notifications\Index as NotificationsIndex;
 use App\Livewire\Dashboard\Payments\Index as PaymentsIndex;
 use App\Livewire\Dashboard\Reports\Index as ReportsIndex;
+use App\Livewire\Dashboard\Settings\Business as SettingsBusiness;
 use App\Livewire\Dashboard\Settings\Profile as SettingsProfile;
 use App\Livewire\Dashboard\Branches\Index as BranchesIndex;
 use App\Livewire\Dashboard\GuestRequests\Index as GuestRequestsIndex;
@@ -501,6 +502,8 @@ Route::middleware('auth:web')->group(function (): void {
             [\App\Http\Controllers\Tenant\OperatorPreferencesController::class, 'updateSidebar'])
             ->name('tenant.preferences.sidebar-variant');
         Route::middleware('role:settings')->group(function (): void {
+            Route::get('/settings/business', SettingsBusiness::class)
+                ->name('tenant.settings.business');
             Route::get('/settings/property', SettingsProperty::class)
                 ->name('tenant.settings.property');
 

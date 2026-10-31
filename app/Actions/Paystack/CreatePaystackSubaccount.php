@@ -88,7 +88,7 @@ class CreatePaystackSubaccount
                 percentageCharge: $percentageCharge,
                 primaryContactEmail: $tenant->email ?: null,
                 primaryContactPhone: $tenant->phone ?: null,
-                description: "Keverna operator · {$tenant->slug}",
+                description: config('brand.name')." business · {$tenant->slug}",
             );
             $subaccountCode = $result['subaccount_code'];
         }

@@ -6,7 +6,7 @@
 @php($count = $branches->count())
 
 @section('page', 'pg-home')
-@section('title', $business->name.($city ? ' · Apartments in '.$city : ''))
+@section('title', $business->siteTitle().($city ? ' · Apartments in '.$city : ''))
 @section('description', 'Book '.$business->name.' directly: live availability'.($count > 1 ? ' across '.$count.' buildings' : '').', paid securely online.')
 
 @section('content')

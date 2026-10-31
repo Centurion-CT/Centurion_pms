@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? View::yieldContent('title', $business->name) }}</title>
+    <title>{{ $title ?? View::yieldContent('title', $business->siteTitle()) }}</title>
     @hasSection('description')<meta name="description" content="@yield('description')">@endif
     @include('partials.favicons')
     <link rel="preconnect" href="https://fonts.bunny.net">

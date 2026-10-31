@@ -20,7 +20,7 @@
                         </svg>
                     </span>
                     <span class="lp-display text-[16px] tracking-tight" style="color: var(--color-card); font-weight: 600;">
-                        Keverna
+                        {{ \App\Models\Tenant::current()?->name ?? config('brand.name') }}
                     </span>
                 </div>
                 <span class="flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.18em]"

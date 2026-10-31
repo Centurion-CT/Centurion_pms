@@ -64,7 +64,7 @@ row has its slug and own domain set. See [subdomain-dns.md](subdomain-dns.md).
 | 3 | Platform pages on `centurionpms.com`: home, sign-up, find-my-business login with emailed links | Done |
 | 4 | Domains per business: turn the existing domain page on for everyone, own-domain redirect | Done |
 | 5 | Booking site from design Option C v2 as each business's `/` | Done |
-| 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | To do |
+| 6 | Brand split: "Centurion" = the software; business name, logo and site title move into each business's settings | Done (legal pages need the owner's wording, below) |
 | 7 | Console on `console.centurionpms.com`: businesses, needs a look, pause | To do |
 | 8 | Production cut-over: DNS, `TENANCY_MODE=domains`, Centurion's slug + own domain (see step 4 notes) | To do |
 
@@ -111,6 +111,39 @@ Checked away from page requests, with tests in
   business's bookings and top-ups.
 - Removed the guest "claim your Keverna account" email: it linked to a
   `/claim` page that doesn't exist here.
+
+## Step 6 notes: brand split
+
+"Centurion" (`config/brand.php`, `BRAND_NAME`) is the software; each
+business has its own identity.
+
+- **Settings → Business** (`App\Livewire\Dashboard\Settings\Business`,
+  managers): business name, booking-site title (`tenants.site_title`,
+  replacing the install-wide `BRAND_SITE_TITLE`; the first business keeps
+  its value on migrate), phone and email. The logo is the one uploaded
+  under Photos (`Tenant::logoUrl()`), used on the staff login, sidebar,
+  booking site and email header; without one the Centurion mark shows.
+- **Email senders:** mail sent for a business goes out under its name
+  (`App\Listeners\SendMailAsBusiness`); platform mail (sign-up codes,
+  login links) under Centurion. Sign-offs follow the same rule.
+  `APP_NAME` should be `Centurion`.
+- **Keverna left the visible text:** dashboard labels, fee lines
+  ("Centurion fee"), the staff app and POS names, email wording,
+  `/llms.txt` (now describes the business's own site), the corporate
+  portal, the Paystack subaccount label. Keverna's marketplace listing
+  toggle is gone from property settings; `/stays/{slug}` 301s to the
+  building on the booking site. Corporates once "onboarded centrally"
+  belong to, and are editable by, their business.
+- **Support WhatsApp** on the staff sign-in pages pointed at Keverna's
+  support numbers. It now uses `SUPPORT_WHATSAPP` and is hidden when
+  that's empty.
+- **Not changed, needs the owner:** the legal pages (`/terms`,
+  `/privacy`, `/cookies`, `/ndpr`) still name Keverna and FregateLab
+  Limited as the company. Who the operator, controller and processor are
+  is a legal question, so their wording should come from the owner.
+- Left alone: Keverna-era code that nothing routes to any more (central
+  identity pages, marketing pages, the stays index), and internal names
+  (`window.Keverna*`, `X-Keverna-Property`, the `kevernaFee` field).
 
 ## Step 5 notes: booking site
 

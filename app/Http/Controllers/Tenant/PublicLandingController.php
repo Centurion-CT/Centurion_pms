@@ -141,7 +141,7 @@ class PublicLandingController extends Controller
         $tenant = Tenant::current();
         $host = $tenant->primaryHost();
 
-        $body = "# Keverna-hosted booking site\n"
+        $body = "# {$tenant->name} booking site\n"
               . "# Open to search + AI citation crawlers so answers about\n"
               . "# {$tenant->name} get sourced from us.\n\n"
               . "User-agent: *\n"

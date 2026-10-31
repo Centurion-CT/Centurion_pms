@@ -61,10 +61,9 @@ final class StaysReportController
             ], 422);
         }
 
-        // Emails go to whatever address the platform configured as
-        // "from" - support@keverna.com in prod, mail-log in local.
-        // Falls back to hello@keverna.com when config has no default.
-        $to = (string) (config('mail.from.address') ?: 'hello@keverna.com');
+        // The report goes to the business whose page it is; its email is
+        // set under Settings → Business.
+        $to = (string) (Tenant::current()?->email ?: config('mail.from.address'));
 
         Mail::to($to)->queue(new PropertyReportSubmitted(
             propertyName: (string) $property->name,

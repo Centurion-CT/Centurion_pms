@@ -40,16 +40,10 @@ final class BookingSite
         return Tenant::current();
     }
 
-    /** The business's logo: the first building's uploaded logo, if any. */
+    /** The business's logo (Tenant::logoUrl), if it has uploaded one. */
     public function logo(): ?string
     {
-        foreach ($this->branches() as $branch) {
-            if (($media = $branch->getFirstMedia('logo')) !== null) {
-                return $media->getUrl();
-            }
-        }
-
-        return null;
+        return $this->business()->logoUrl();
     }
 
     /** The city every building is in, or null when they're in several. */

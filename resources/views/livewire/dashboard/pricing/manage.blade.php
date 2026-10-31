@@ -206,7 +206,7 @@
                     <dd class="lp-dl-value muted">₦{{ number_format($preview->paystackFee) }}</dd>
                 </div>
                 <div class="lp-dl-row">
-                    <dt class="lp-dl-label">Keverna fee</dt>
+                    <dt class="lp-dl-label">{{ config('brand.name') }} fee</dt>
                     <dd class="lp-dl-value muted">₦{{ number_format($preview->kevernaFee) }}</dd>
                 </div>
                 <div class="lp-dl-row">

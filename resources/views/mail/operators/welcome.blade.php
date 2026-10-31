@@ -1,5 +1,5 @@
 <x-mail::message>
-# Welcome to {{ config('app.name') }}, {{ $operator->name }}!
+# Welcome to {{ config('brand.name') }}, {{ $operator->name }}!
 
 Your booking engine for **{{ $tenant->name }}** is ready to be set up. Here's
 what to do next:
@@ -19,5 +19,5 @@ If anything stops you along the way, reply to this email and a human will
 help.
 
 Thanks,
-The {{ config('app.name') }} team
+The {{ config('brand.name') }} team
 </x-mail::message>

@@ -549,7 +549,7 @@ class OwnerReports
             }
         }
         $lines[] = '';
-        $lines[] = 'Sent from Keverna';
+        $lines[] = 'Sent from '.config('brand.name');
 
         return str_replace(['—', '–'], ['-', '-'], implode("\n", $lines));
     }

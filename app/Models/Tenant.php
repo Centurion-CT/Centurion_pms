@@ -19,6 +19,7 @@ use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property string|null $site_title
  * @property string $email
  * @property string|null $phone
  * @property string|null $plan_id
@@ -127,6 +128,30 @@ class Tenant extends SpatieTenant
             && (string) $this->dokwe_storage_bucket !== ''
             && (string) $this->dokwe_storage_access_key !== ''
             && (string) $this->dokwe_storage_secret_key !== '';
+    }
+
+    /**
+     * The business's title on its booking site and in browser tabs: its
+     * own site title, else its name (docs/MULTITENANCY.md, step 6).
+     */
+    public function siteTitle(): string
+    {
+        return trim((string) $this->site_title) !== '' ? (string) $this->site_title : (string) $this->name;
+    }
+
+    /**
+     * The business's logo: the one uploaded under Branding for its first
+     * building, else the next building that has one. Null when none.
+     */
+    public function logoUrl(): ?string
+    {
+        foreach ($this->properties()->oldest('id')->with('media')->get() as $building) {
+            if (($media = $building->getFirstMedia('logo')) !== null) {
+                return $media->getUrl();
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -91,10 +91,9 @@ it('accepts a fresh valid slug and persists it', function (): void {
         ->public_slug)->toBe('grand-plaza-abuja');
 });
 
-it('renders the marketplace fieldset + toggle in the view', function (): void {
+it('no longer shows the Keverna marketplace listing toggle', function (): void {
     Livewire::actingAs($this->manager, 'web')
         ->test(PropertyForm::class)
-        ->assertSeeHtml('data-testid="marketplace-fieldset"')
-        ->assertSeeHtml('data-testid="property-is-listed-publicly"')
-        ->assertSee('Keverna Stays marketplace');
+        ->assertDontSeeHtml('data-testid="marketplace-fieldset"')
+        ->assertDontSee('Keverna Stays marketplace');
 });

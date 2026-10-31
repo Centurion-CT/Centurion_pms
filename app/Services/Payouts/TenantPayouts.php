@@ -46,7 +46,7 @@ class TenantPayouts
     /** Web page where the owner sets the payout bank (outside /dashboard). */
     public const SETTINGS_PATH = '/settings/property';
 
-    public const NOT_CONFIGURED_REASON = 'Online payments for this property settle through Keverna. Add your bank account in Settings to receive payouts directly.';
+    public const NOT_CONFIGURED_REASON = 'Online payments for this property settle through the platform account for now. Add your bank account in Settings to receive payouts directly.';
 
     /** Paystack settlement status => host app status. */
     private const STATUS_MAP = [

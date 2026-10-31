@@ -14,5 +14,5 @@ The link is good for **24 hours**. If it expires before you get to it, ask **{{ 
 Your account isn't active until you set a password, nothing will happen if you don't accept this invite.
 
 Thanks,
-The {{ config('app.name') }} team
+The {{ config('brand.name') }} team
 </x-mail::message>

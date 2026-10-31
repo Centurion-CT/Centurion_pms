@@ -10,7 +10,7 @@
         <div style="text-align: center; margin-bottom: 28px;">
             <p style="text-transform: uppercase; letter-spacing: 0.16em;
                       font-size: 11px; color: #285480; font-weight: 600;">
-                Keverna Solo &middot; Install
+                {{ config('brand.name') }} &middot; Install
             </p>
             <h1 style="font-family: 'Playfair Display', Georgia, serif;
                        font-size: clamp(28px, 5vw, 36px); font-weight: 600;
@@ -248,7 +248,7 @@
         </form>
 
         <p style="text-align: center; margin-top: 20px; font-size: 12px; color: rgba(0,0,0,0.4);">
-            Keverna Solo &middot; single-tenant install &middot;
+            {{ config('brand.name') }} &middot; first business &middot;
             need help?
             <a href="mailto:setup@keverna.com" style="color: inherit; text-decoration: underline;">
                 setup@keverna.com
