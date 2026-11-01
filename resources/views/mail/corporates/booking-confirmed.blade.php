@@ -20,5 +20,5 @@ Your stay is locked in and billed to {{ $corporate->name }}'s corporate wallet, 
 A receipt has been recorded against your corporate wallet at {{ $corporate->name }}. The property team will receive your arrival details and welcome you on the day.
 
 Thanks,
-The {{ config('app.name') }} team
+The {{ \App\Models\Tenant::current()?->name ?? config('brand.name') }} team
 </x-mail::message>

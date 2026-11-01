@@ -218,7 +218,7 @@
                         @if ($isMarketplace)
                             <span class="lp-mono text-[10px] tracking-[0.14em] uppercase"
                                   style="color: var(--color-accent-deep); margin-left: 8px;">
-                                Keverna Stays
+                                Online booking
                             </span>
                         @endif
                     </span>
@@ -246,7 +246,7 @@
                     @if ($kevernaFee > 0)
                         <div class="lp-dl-row" data-testid="pb-keverna-fee">
                             <dt class="lp-dl-label">
-                                Keverna service fee
+                                {{ config('brand.name') }} service fee
                                 <span class="muted" style="font-weight: 400;">
                                     ({{ rtrim(rtrim(number_format($feeLabel, 1), '0'), '.') }}% · guest paid)
                                 </span>
@@ -304,7 +304,7 @@
                 @if ($isMarketplace)
                     <p style="font-size: 11.5px; color: var(--color-ink-mute); margin-top: 12px;
                               padding: 8px 10px; background: rgba(20,23,26,0.03); border-radius: 6px;">
-                        Booked through Keverna Stays. Both the {{ rtrim(rtrim(number_format($feeLabel, 1), '0'), '.') }}% service fee and Paystack processing are added to the guest total on checkout - your payout is the full room rate, and settles to your Paystack subaccount on the next Paystack cycle.
+                        Booked online. Both the {{ rtrim(rtrim(number_format($feeLabel, 1), '0'), '.') }}% service fee and Paystack processing are added to the guest total on checkout - your payout is the full room rate, and settles to your Paystack subaccount on the next Paystack cycle.
                     </p>
                 @endif
             </section>

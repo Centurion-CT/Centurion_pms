@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Paystack\CorporateWalletTopupWebhookController;
 use App\Http\Controllers\Portal\CorporateLogoutController;
 use App\Http\Controllers\Portal\CorporateWalletCallbackController;
@@ -28,14 +27,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// PRD §19: cheap subsystem ping for load balancer + uptime monitor.
-Route::get('/health', HealthController::class)->name('health');
+// /health is registered in bootstrap/app.php, outside the business-only
+// groups, so uptime checks work on any host.
 
 // Legal - linked from every marketing surface footer + the cookie-consent banner.
 Route::view('/cookies', 'legal.cookies')->name('legal.cookies');
 Route::view('/privacy', 'legal.privacy')->name('legal.privacy');
 Route::view('/terms',   'legal.terms')->name('legal.terms');
-Route::view('/ndpr',    'legal.ndpr')->name('legal.ndpr');
 
 // Newsletter one-click unsubscribe.
 Route::get('/newsletter/unsubscribe/{token}', \App\Http\Controllers\Marketing\NewsletterUnsubscribeController::class)
@@ -71,7 +69,7 @@ Route::get('/stays/pay/success/{booking_ref}', \App\Http\Controllers\Marketplace
     ->where('booking_ref', '[A-Z0-9\-]+')
     ->name('marketplace.stays.pay.success');
 
-Route::view('/stays/pay/failed', 'marketplace.stays.pay-failed')
+Route::view('/stays/pay/failed', 'site.pay-failed')
     ->name('marketplace.stays.pay.failed');
 
 // Post-stay review flow. Guest arrives via the signed link emailed at

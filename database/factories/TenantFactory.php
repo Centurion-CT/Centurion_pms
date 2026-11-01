@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\CustomDomainStatus;
 use App\Enums\TenantStatus;
 use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -66,7 +67,9 @@ class TenantFactory extends Factory
     {
         return $this->state(fn () => [
             'custom_domain' => $domain,
+            'custom_domain_status' => CustomDomainStatus::Active,
             'domain_verified_at' => now(),
+            'custom_domain_live_at' => now(),
         ]);
     }
 }

@@ -303,7 +303,7 @@ final class HostPush
         $property = self::bookingProperty($b);
 
         $title = match (true) {
-            $b->source?->value === 'online' && Str::contains((string) $b->source_note, 'Stays') => 'New booking from Keverna Stays',
+            $b->source?->value === 'online' && Str::contains((string) $b->source_note, 'Stays') => 'New online booking',
             $b->source?->value === 'online' => 'New booking from your website',
             $b->source?->value === 'walk_in' => 'New walk-in booking',
             in_array($b->source?->value, ['booking_com', 'airbnb', 'hotels_ng', 'jumia_travel'], true) => 'New booking from '.$b->source->label(),

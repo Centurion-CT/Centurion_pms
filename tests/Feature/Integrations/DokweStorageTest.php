@@ -6,7 +6,6 @@ use App\Actions\Integrations\ConnectDokweStorage;
 use App\Actions\Integrations\DisconnectDokweStorage;
 use App\Enums\OperatorRole;
 use App\Exceptions\DokweStorageConnectionException;
-use App\Http\Middleware\ConfigureTenantMediaDisk;
 use App\Livewire\Dashboard\Integrations\DokweStorage as DokweStoragePage;
 use App\Livewire\Dashboard\Integrations\Index as IntegrationsIndex;
 use App\Models\Operator;
@@ -14,7 +13,7 @@ use App\Models\Property;
 use App\Models\Tenant;
 use App\Services\Integrations\DokweStorageHandshake;
 use App\Services\Multitenancy\TenantMediaDisk;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 beforeEach(function (): void {
@@ -141,24 +140,23 @@ it('clears every dokwe column on disconnect but leaves media rows alone', functi
 /* Runtime disk swap                                                   */
 /* ------------------------------------------------------------------ */
 
-it('swaps media-library disk when a connected tenant hits the middleware', function (): void {
-    $this->tenant->forceFill([
+function connectDokwe(Tenant $tenant, string $bucket): void
+{
+    $tenant->forceFill([
         'dokwe_storage_access_key'   => 'k',
         'dokwe_storage_secret_key'   => 's',
-        'dokwe_storage_bucket'       => 'chidi-hotel',
-        'dokwe_storage_endpoint'     => 'https://chidi-hotel-s3.dokwe.com',
-        'dokwe_storage_public_url'   => 'https://chidi-hotel-file.dokwe.com',
+        'dokwe_storage_bucket'       => $bucket,
+        'dokwe_storage_endpoint'     => "https://{$bucket}-s3.dokwe.com",
+        'dokwe_storage_public_url'   => "https://{$bucket}-file.dokwe.com",
         'dokwe_storage_region'       => 'us-east-1',
         'dokwe_storage_connected_at' => now(),
     ])->save();
+}
+
+it('swaps media-library disk when a connected business becomes current', function (): void {
+    connectDokwe($this->tenant, 'chidi-hotel');
+    Tenant::forgetCurrent();
     $this->tenant->refresh()->makeCurrent();
-
-    // Reset config to a known baseline.
-    config()->set('media-library.disk_name', 'public');
-    config()->offsetUnset('filesystems.disks.'.TenantMediaDisk::DISK_NAME);
-
-    app(ConfigureTenantMediaDisk::class)
-        ->handle(Request::create('/dashboard'), fn () => new \Illuminate\Http\Response('ok'));
 
     expect(config('media-library.disk_name'))->toBe(TenantMediaDisk::DISK_NAME);
     $swapped = config('filesystems.disks.'.TenantMediaDisk::DISK_NAME);
@@ -167,15 +165,32 @@ it('swaps media-library disk when a connected tenant hits the middleware', funct
 });
 
 it('is a no-op when the tenant has not connected', function (): void {
-    // Fresh tenant, no dokwe credentials.
-    config()->set('media-library.disk_name', 'public');
-    config()->offsetUnset('filesystems.disks.'.TenantMediaDisk::DISK_NAME);
+    $this->tenant->makeCurrent();
 
-    app(ConfigureTenantMediaDisk::class)
-        ->handle(Request::create('/dashboard'), fn () => new \Illuminate\Http\Response('ok'));
-
-    expect(config('media-library.disk_name'))->toBe('public');
+    expect(config('media-library.disk_name'))->not->toBe(TenantMediaDisk::DISK_NAME);
     expect(config('filesystems.disks.'.TenantMediaDisk::DISK_NAME))->toBeNull();
+});
+
+it("never hands one business's storage to the next, as a queue worker switches", function (): void {
+    $platformDisk = config('media-library.disk_name');
+    connectDokwe($this->tenant, 'chidi-hotel');
+    $other = Tenant::factory()->create(['slug' => 'dokwe-other']);
+    $third = Tenant::factory()->create(['slug' => 'dokwe-third']);
+    connectDokwe($third, 'third-hotel');
+
+    Tenant::forgetCurrent();
+    $this->tenant->refresh()->makeCurrent();
+    expect(Storage::disk(TenantMediaDisk::DISK_NAME)->getConfig()['bucket'])->toBe('chidi-hotel');
+
+    $other->makeCurrent();
+    expect(config('media-library.disk_name'))->toBe($platformDisk)
+        ->and(config('filesystems.disks.'.TenantMediaDisk::DISK_NAME))->toBeNull();
+
+    $third->refresh()->makeCurrent();
+    expect(Storage::disk(TenantMediaDisk::DISK_NAME)->getConfig()['bucket'])->toBe('third-hotel');
+
+    Tenant::forgetCurrent();
+    expect(config('media-library.disk_name'))->toBe($platformDisk);
 });
 
 /* ------------------------------------------------------------------ */

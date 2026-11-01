@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create your Centurion account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="platform.css">
+<style>
+  /* Layout only */
+  body { background: var(--paper); }
+  .page { display: grid; grid-template-columns: 560px minmax(0, 1fr); min-height: 100vh; }
+  .slab { background: var(--navy-800); display: flex; flex-direction: column; padding: var(--s-8) var(--s-12); }
+  .slab-body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-block: var(--s-8); max-width: 440px; }
+  .slab .stepper { margin-bottom: var(--s-8); }
+  .slab .h1 { font-size: 34px; }
+  .slab .lead { font-size: var(--t-md); }
+  .slab .h1 { margin-bottom: var(--s-3); }
+  .slab form { display: grid; gap: var(--s-4); margin-top: var(--s-6); }
+  .slab .choice span { height: 36px; padding: 0 var(--s-3); }
+  .slab .field > label, .slab .label { color: var(--white); }
+  .slab .hint { color: var(--navy-300); }
+  .slab .input, .slab .address { box-shadow: none; }
+  .slab .input:focus { box-shadow: inset 0 0 0 2px var(--navy-300), 0 0 0 3px rgba(141, 182, 222, .3); }
+  .slab .address:focus-within { box-shadow: inset 0 0 0 2px var(--navy-300), 0 0 0 3px rgba(141, 182, 222, .3); }
+  .slab .address input { text-align: left; }
+  .slab .address .suffix { font-size: var(--t-md); }
+  .slab .choice span { color: var(--navy-200); box-shadow: inset 0 0 0 1px var(--navy-700); }
+  .slab .choice input:checked + span { background: var(--white); color: var(--navy-800); box-shadow: none; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  .actions { display: flex; align-items: center; gap: var(--s-4); margin-top: var(--s-2); }
+  .actions .btn-primary { background: var(--white); color: var(--navy-800); }
+  .actions .btn-primary:hover { background: var(--blue-50); }
+  .slab .meta a, .slab .linkish { color: var(--white); font-weight: 600; background: none; border: 0; padding: 0; font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--navy-300); }
+  .slab-foot { display: flex; justify-content: space-between; gap: var(--s-4); font-size: var(--t-xs); color: var(--navy-300); }
+  .slab-foot a { color: inherit; text-decoration: none; }
+  .resend { margin-top: var(--s-4); }
+  .done-card { margin-top: var(--s-8); padding: var(--s-5); border-radius: var(--r-lg); background: var(--navy-900); box-shadow: inset 0 0 0 1px var(--navy-700); }
+  .done-card .url { font: 600 var(--t-lg)/1.3 var(--display); color: var(--white); word-break: break-all; }
+
+  /* Preview: what they are getting, updated as they type */
+  .preview { display: flex; flex-direction: column; justify-content: center; gap: var(--s-6); padding: var(--s-12) var(--s-12); }
+  .preview > .meta { max-width: 520px; }
+  .site { padding: var(--s-6); display: grid; gap: var(--s-5); }
+  .site-top { display: flex; align-items: center; gap: var(--s-3); }
+  .site-top .mono { width: 36px; height: 36px; border-radius: var(--r-md); background: var(--navy-800); color: var(--white); display: grid; place-items: center; font: 600 15px/1 var(--display); }
+  .site-top b { font: 600 var(--t-md)/1.2 var(--display); color: var(--ink-900); }
+  .site-top .btn { margin-left: auto; }
+  .site-hero { border-radius: var(--r-lg); min-height: 200px; padding: var(--s-6); display: flex; flex-direction: column; justify-content: flex-end; color: var(--white); background: linear-gradient(180deg, rgba(11, 28, 45, 0) 30%, rgba(11, 28, 45, .75)), url('assets/login-default.jpg') center / cover; }
+  .site-hero h3 { font: 600 var(--t-2xl)/1.1 var(--display); margin: 0; letter-spacing: -0.01em; }
+  .site-hero p { margin: var(--s-1) 0 0; font-size: var(--t-sm); opacity: .85; }
+  .site-search { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: var(--s-2); }
+  .site-search span:not(.btn) { height: 40px; border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--line); display: flex; align-items: center; padding: 0 var(--s-3); font-size: var(--t-xs); color: var(--ink-500); }
+  .site-search .btn { height: 40px; }
+  .gets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); max-width: 720px; }
+  .gets div { font-size: var(--t-sm); color: var(--ink-500); }
+  .gets b { display: block; color: var(--ink-900); font-size: var(--t-sm); margin-bottom: 2px; word-break: break-all; }
+
+  .is-hidden { display: none !important; }
+
+  @media (max-width: 1100px) {
+    .page { grid-template-columns: minmax(0, 1fr); }
+    .preview { padding: var(--s-10) var(--gutter); }
+  }
+  @media (max-width: 760px) {
+    .slab { padding: var(--s-6) var(--gutter); }
+    .two { grid-template-columns: 1fr; }
+    .gets { grid-template-columns: 1fr; }
+    .site-search { grid-template-columns: 1fr 1fr; }
+    .actions { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="slab on-navy">
+    <a class="logo" href="home.html"><span class="logo-mark"><img src="assets/logo.png" alt=""></span>Centurion</a>
+
+    <div class="slab-body">
+      <ol class="stepper" id="stepper" aria-label="Sign-up steps"><li>Your business</li><li>Your account</li><li>Confirm email</li></ol>
+
+      <!-- Step 1: business -->
+      <div data-step="1">
+        <h1 class="h1">Tell us about your business</h1>
+        <p class="lead">This sets up your first branch. You can add more buildings later.</p>
+        <form id="f1">
+          <div class="field"><label for="biz">Business name</label><input class="input" id="biz" placeholder="e.g. Grand Palace Suites" autocomplete="organization" required></div>
+          <div class="field">
+            <label for="slug">Your address</label>
+            <div class="address"><input id="slug" placeholder="grand-palace" autocomplete="off" spellcheck="false" aria-describedby="slug-status"><span class="suffix">.centurionpms.com</span></div>
+            <p class="address-status" id="slug-status" aria-live="polite"></p>
+          </div>
+          <div class="field">
+            <span class="label" id="kind-l">What do you run?</span>
+            <div class="choice-row" role="radiogroup" aria-labelledby="kind-l">
+              <label class="choice"><input type="radio" name="kind" value="Serviced apartments" checked><span>Serviced apartments</span></label>
+              <label class="choice"><input type="radio" name="kind" value="Hotel"><span>Hotel</span></label>
+              <label class="choice"><input type="radio" name="kind" value="Guest house"><span>Guest house</span></label>
+              <label class="choice"><input type="radio" name="kind" value="Short-let"><span>Short-let</span></label>
+            </div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="city">City</label><input class="input" id="city" value="Abuja" autocomplete="address-level2"></div>
+            <div class="field"><label for="rooms">Rooms, roughly</label><select class="input" id="rooms"><option>1–10</option><option selected>11–30</option><option>31–80</option><option>More than 80</option></select></div>
+          </div>
+          <div class="actions"><button class="btn btn-primary btn-lg" type="submit" id="next1">Continue</button><p class="meta">Already on Centurion? <a href="find.html">Log in</a></p></div>
+        </form>
+      </div>
+
+      <!-- Step 2: account -->
+      <div data-step="2" class="is-hidden">
+        <h1 class="h1">Create your manager account</h1>
+        <p class="lead">You'll be the manager of <b class="on-navy" data-biz>your business</b>. You can invite your staff once you're in.</p>
+        <form id="f2">
+          <div class="field"><label for="name">Your full name</label><input class="input" id="name" autocomplete="name" placeholder="Adaeze Okafor"></div>
+          <div class="field"><label for="email">Work email</label><input class="input" id="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com"><span class="hint">We'll send a 6-digit code to confirm it.</span></div>
+          <div class="field"><label for="phone">Phone</label><input class="input" id="phone" autocomplete="tel" placeholder="0803 000 0000"></div>
+          <div class="field"><label for="pw">Password</label><input class="input" id="pw" type="password" autocomplete="new-password" placeholder="At least 10 characters"></div>
+          <div class="actions"><button class="btn btn-primary btn-lg" type="submit">Send my code</button><button class="linkish" type="button" data-go="1">Back</button></div>
+          <p class="meta small">By creating an account you agree to the <a href="#">Terms</a> and <a href="#">Privacy policy</a>.</p>
+        </form>
+      </div>
+
+      <!-- Step 3: code -->
+      <div data-step="3" class="is-hidden">
+        <h1 class="h1">Check your email</h1>
+        <p class="lead">We sent a 6-digit code to <b class="on-navy" data-email>you@yourbusiness.com</b>. It expires in 15 minutes.</p>
+        <form id="f3">
+          <div class="code" id="code" role="group" aria-label="6-digit code">
+            <input inputmode="numeric" maxlength="1" aria-label="Digit 1"><input inputmode="numeric" maxlength="1" aria-label="Digit 2"><input inputmode="numeric" maxlength="1" aria-label="Digit 3"><span class="gap"></span><input inputmode="numeric" maxlength="1" aria-label="Digit 4"><input inputmode="numeric" maxlength="1" aria-label="Digit 5"><input inputmode="numeric" maxlength="1" aria-label="Digit 6">
+          </div>
+          <div class="actions"><button class="btn btn-primary btn-lg" type="submit">Create my business</button><button class="linkish" type="button" data-go="2">Wrong email?</button></div>
+          <p class="meta resend">No email after a minute? Check spam, or <button class="linkish" type="button">send a new code</button>.</p>
+        </form>
+      </div>
+
+      <!-- Step 4: setting up, then done -->
+      <div data-step="4" class="is-hidden">
+        <h1 class="h1" id="done-title">Setting up <span data-biz>your business</span></h1>
+        <ul class="checklist" id="checklist" style="margin-top:var(--s-8)">
+          <li><span>Reserving <span data-host></span></span></li>
+          <li>Creating your first branch</li>
+          <li>Making you the manager</li>
+          <li>Preparing your booking website</li>
+        </ul>
+        <div class="done-card is-hidden" id="done-card">
+          <p class="meta" style="margin-bottom:var(--s-2)">Your desk lives at</p>
+          <p class="url" data-host-full></p>
+          <p class="meta" style="margin-top:var(--s-3)">We've emailed you this address. Bookmark it: it's where you and your staff log in.</p>
+          <div class="actions" style="margin-top:var(--s-5)"><a class="btn btn-primary btn-lg btn-block" href="#" data-open>Open my dashboard</a></div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="slab-foot"><span>© 2026 Centurion</span><span><a href="#">Privacy</a> · <a href="#">Terms</a></span></footer>
+  </section>
+
+  <aside class="preview" aria-label="Preview of what you're getting">
+    <p class="meta">What you're getting. This updates as you type.</p>
+    <div class="browser">
+      <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="browser-url">https://<b data-host>your-business.centurionpms.com</b></span></div>
+      <div class="site">
+        <div class="site-top"><span class="mono" data-mono>Y</span><b data-biz>Your business</b><span class="btn btn-secondary btn-sm">Staff log in</span></div>
+        <div class="site-hero"><h3 data-biz>Your business</h3><p><span data-kind>Serviced apartments</span> in <span data-city>Abuja</span></p></div>
+        <div class="site-search"><span>Check in</span><span>Check out</span><span>2 guests</span><span class="btn btn-primary btn-sm">Search</span></div>
+      </div>
+    </div>
+    <div class="gets">
+      <div><b data-host>your-business.centurionpms.com</b>Your booking site and staff login</div>
+      <div><b>Your own domain, later</b>Add it in Settings when you're ready</div>
+      <div><b>1 branch to start</b>Add more buildings any time</div>
+    </div>
+  </aside>
+</div>
+
+<script src="platform.js"></script>
+<script>
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const params = new URLSearchParams(location.search);
+  let step = +(params.get('step') || 1), slugTouched = !!params.get('slug');
+  const biz = $('#biz'), slug = $('#slug');
+  if (params.get('slug')) slug.value = params.get('slug');
+
+  // Sample values so each step can be opened directly for review.
+  if (step > 1 && !biz.value) { biz.value = 'Sunrise Court'; if (!slug.value) slug.value = 'sunrise-court'; $('#email').value = 'chidi@sunrisecourt.ng'; $('#name').value = 'Chidi Okeke'; }
+
+  function paint() {
+    const name = biz.value.trim() || 'Your business';
+    const host = (CX.slugify(slug.value) || 'your-business') + CX.SUFFIX;
+    $$('[data-biz]').forEach(e => e.textContent = name);
+    $$('[data-host]').forEach(e => e.textContent = host);
+    $$('[data-host-full]').forEach(e => e.textContent = 'https://' + host);
+    $$('[data-mono]').forEach(e => e.textContent = name.replace(/^the\s+/i, '').charAt(0).toUpperCase());
+    $$('[data-kind]').forEach(e => e.textContent = document.querySelector('[name=kind]:checked').value);
+    $$('[data-city]').forEach(e => e.textContent = $('#city').value || 'your city');
+    $$('[data-email]').forEach(e => e.textContent = $('#email').value || 'you@yourbusiness.com');
+  }
+  const check = CX.bindAddress(slug, $('#slug-status'), (s, r) => { $('#next1').disabled = r.state === 'is-taken'; paint(); });
+  biz.addEventListener('input', () => { if (!slugTouched) { slug.value = CX.slugify(biz.value); check(); } paint(); });
+  slug.addEventListener('input', () => slugTouched = slug.value !== '');
+  document.addEventListener('input', paint); document.addEventListener('change', paint);
+
+  function go(n) {
+    step = n;
+    $$('[data-step]').forEach(el => el.classList.toggle('is-hidden', +el.dataset.step !== n));
+    $$('#stepper li').forEach((li, i) => { li.className = i + 1 < n ? 'done' : i + 1 === n ? 'now' : ''; li.toggleAttribute('aria-current', i + 1 === n); });
+    $('#stepper').classList.toggle('is-hidden', n === 4);
+    paint();
+    const first = document.querySelector(`[data-step="${n}"] input`); if (first && n < 4) first.focus({ preventScroll: true });
+    if (n === 4) build();
+  }
+  function build() {
+    const items = $$('#checklist li'); items.forEach(li => li.classList.remove('done')); $('#done-card').classList.add('is-hidden');
+    $('#done-title').innerHTML = `Setting up <span data-biz>${biz.value || 'your business'}</span>`;
+    items.forEach((li, i) => setTimeout(() => li.classList.add('done'), 500 + i * 550));
+    setTimeout(() => { $('#done-title').textContent = "You're all set"; $('#done-card').classList.remove('is-hidden'); }, 500 + items.length * 550);
+  }
+
+  $('#f1').addEventListener('submit', e => { e.preventDefault(); if (!biz.value.trim()) { biz.focus(); return; } go(2); });
+  $('#f2').addEventListener('submit', e => { e.preventDefault(); go(3); });
+  $('#f3').addEventListener('submit', e => { e.preventDefault(); go(4); });
+  $$('[data-go]').forEach(b => b.addEventListener('click', () => go(+b.dataset.go)));
+
+  // Code boxes: type moves forward, backspace moves back, paste fills all.
+  const boxes = $$('#code input');
+  boxes.forEach((b, i) => {
+    b.addEventListener('input', () => { b.value = b.value.replace(/\D/g, ''); if (b.value && boxes[i + 1]) boxes[i + 1].focus(); });
+    b.addEventListener('keydown', e => { if (e.key === 'Backspace' && !b.value && boxes[i - 1]) boxes[i - 1].focus(); });
+    b.addEventListener('paste', e => { const d = (e.clipboardData.getData('text').match(/\d/g) || []).slice(0, 6); if (d.length) { e.preventDefault(); boxes.forEach((x, j) => x.value = d[j] || ''); boxes[Math.min(d.length, 5)].focus(); } });
+  });
+  if (step === 3 || step === 4) '482913'.split('').forEach((d, i) => boxes[i].value = step === 4 ? d : (i < 3 ? d : ''));
+
+  go(step);
+</script>
+</body>
+</html>

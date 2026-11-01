@@ -16,7 +16,7 @@
                     Integrations
                 </h1>
                 <p class="mt-2 text-[14px]" style="color: var(--color-ink-soft); max-width: 620px;">
-                    Connect your Keverna workspace to the services you already use. Each integration is optional. Anything not connected keeps running on the platform default.
+                    Connect your business to the services you already use. Each integration is optional. Anything not connected keeps running on the platform default.
                 </p>
             </div>
 

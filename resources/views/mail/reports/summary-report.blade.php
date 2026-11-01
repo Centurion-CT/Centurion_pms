@@ -6,5 +6,5 @@ Attached is the {{ strtolower($periodLabel) }} property summary for **{{ $period
 You're receiving this because your email is on {{ $tenant->name }}'s summary report list. To stop these, ask a manager to remove you from the subscribers panel on the Summary page.
 
 Thanks,<br>
-{{ config('app.name') }}
+{{ config('brand.name') }}
 </x-mail::message>

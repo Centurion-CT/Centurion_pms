@@ -18,6 +18,60 @@ return [
     'tenant_domain_suffix' => env('TENANT_DOMAIN_SUFFIX', '.keverna.test'),
 
     /*
+    | How a request finds its business (docs/MULTITENANCY.md):
+    |  - 'single'  — every request binds the first business, whatever the
+    |                host. What production runs until the wildcard DNS for
+    |                the tenant suffix is live.
+    |  - 'domains' — the host decides: a verified own domain, else
+    |                `{slug}<tenant_domain_suffix>`. The central domain and
+    |                reserved subdomains bind no business.
+    */
+    'tenancy_mode' => env('TENANCY_MODE', 'single'),
+
+    /*
+    | Whether new businesses can sign up on the platform's /signup page
+    | (docs/MULTITENANCY.md). Off by default, so the platform can go live
+    | for existing businesses before sign-up opens. When off, /signup and
+    | the home page invite people to email instead.
+    */
+    'signup_open' => (bool) env('SIGNUP_OPEN', false),
+
+    /*
+    | The software's WhatsApp support line on the staff sign-in pages:
+    | digits with country code (2348031234567). Empty hides the button.
+    */
+    'support_whatsapp' => env('SUPPORT_WHATSAPP', ''),
+
+    /*
+    | One-time key for the console's /setup page, which creates the first
+    | console owner (docs/MULTITENANCY.md, step 7). Whoever deploys sets it
+    | and gives it to the owner. Empty means setup is closed; once an
+    | owner exists the page is closed whatever this says.
+    */
+    'console_setup_key' => env('CONSOLE_SETUP_KEY', ''),
+
+    /*
+    | Map tiles on the booking site (Leaflet URL template + attribution).
+    | The default is Esri's street map, as in the approved design; check
+    | its terms, or set a keyed provider (MapTiler, Stadia) for production
+    | traffic.
+    */
+    'site_map' => [
+        'tiles' => env('SITE_MAP_TILES', 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'),
+        'attribution' => env('SITE_MAP_ATTRIBUTION', 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors'),
+    ],
+
+    /*
+    | Subdomains of the tenant suffix that never belong to a business, and
+    | that sign-up must refuse as a slug.
+    */
+    'reserved_slugs' => [
+        'www', 'app', 'admin', 'api', 'mail', 'email', 'login', 'signup', 'register',
+        'help', 'support', 'status', 'console', 'billing', 'docs', 'blog', 'cdn',
+        'static', 'assets', 'media', 'dashboard', 'cname', 'ns1', 'ns2', 'smtp',
+    ],
+
+    /*
     | The well-known CNAME target operators point their custom domain at.
     | This hostname resolves to Dokwe's ingress; the choice of DNS
     | provider (Namecheap today) doesn't matter here. Used by:
@@ -26,7 +80,17 @@ return [
     |  - App\Jobs\Domains\VerifyCustomDomain: the value we assert their
     |    live CNAME resolves to before we mark the domain verified.
     */
-    'custom_domain_cname_target' => env('CUSTOM_DOMAIN_CNAME_TARGET', 'cname.keverna.com'),
+    'custom_domain_cname_target' => env('CUSTOM_DOMAIN_CNAME_TARGET', 'cname.'.env('CENTRAL_DOMAIN', 'keverna.test')),
+
+    /*
+    | A bare domain (`grandpalace.ng`) can't carry a CNAME, so operators
+    | point it with A records at these addresses instead: Dokwe's ingress
+    | IPs, comma-separated. Empty hides the A-record option on /domain.
+    */
+    'custom_domain_a_records' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('CUSTOM_DOMAIN_A_RECORDS', '')),
+    ))),
 
     /*
     |--------------------------------------------------------------------------
@@ -40,7 +104,8 @@ return [
     | DOKWE_API_KEY + DOKWE_PROJECT_ID (and CLOUDFLARE_* for subdomain DNS).
     */
     'domain_management' => [
-        'enabled' => (bool) env('DOMAIN_MANAGEMENT_ENABLED', false),
+        // On by default once each business has its own address.
+        'enabled' => (bool) env('DOMAIN_MANAGEMENT_ENABLED', env('TENANCY_MODE', 'single') === 'domains'),
     ],
 
     /*

@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- * Ledger row for a single magic-link claim invite. Written by the
- * SendGuestClaimInvite listener; consumed by IdentityClaimController.
+ * Ledger row for a single magic-link claim invite, from Keverna's
+ * cross-property guest accounts. Centurion no longer sends the invite
+ * (its /claim page was never routed here), so nothing writes these now.
  *
  * Not scoped to a tenant — the token is issued on the central domain
  * and its purpose is precisely to cross tenants when it resolves.

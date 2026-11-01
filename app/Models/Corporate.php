@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\CorporateKycStatus;
 use App\Enums\CorporateStatus;
+use App\Multitenancy\BelongsToTenant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,8 +18,9 @@ use Illuminate\Support\Carbon;
  * A company onboarded by Keverna whose staff can book any participating
  * property using the company's wallet at negotiated rates.
  *
- * Central — never tenant-scoped. Properties opt in to accepting
- * corporate bookings via the `accepts_corporates` flag on Property.
+ * Belongs to one business, like its staff and email domains: another
+ * business never sees it (docs/MULTITENANCY.md, step 2). Properties opt
+ * in to accepting corporate bookings via the `accepts_corporates` flag.
  *
  * @property int $id
  * @property string $slug
@@ -41,6 +43,7 @@ use Illuminate\Support\Carbon;
  */
 class Corporate extends Model
 {
+    use BelongsToTenant;
     use SoftDeletes;
 
     /** @var list<string> */

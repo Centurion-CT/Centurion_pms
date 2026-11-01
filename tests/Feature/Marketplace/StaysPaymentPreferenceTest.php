@@ -60,7 +60,7 @@ beforeEach(function (): void {
     ]);
     $this->room = Room::factory()->for($this->tenant)->for($this->property)->for($cat, 'category')
         ->create(['status' => RoomStatus::Active]);
-    Tenant::forgetCurrent();
+    // The business stays current: these pages only run on its own address.
 
     config()->set('services.paystack.base_url', 'https://api.paystack.test');
     config()->set('services.paystack.secret_key', 'sk_master_key');

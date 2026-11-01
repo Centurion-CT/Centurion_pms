@@ -44,7 +44,7 @@ it('routes a Mailable through Sendpipe when MAIL_MAILER=sendpipe', function (): 
             && $r['channel'] === 'email'
             && $r['from'] === 'noreply@keverna.test'
             && $r['to'] === ['amara@x.test']
-            && str_contains((string) $r['subject'], 'Keverna')
+            && str_contains((string) $r['subject'], config('brand.name'))
             && str_contains((string) $r['html'], '424242')
             && $r->header('X-SendPipe-Key')[0] === 'sp_test_dummy';
     });

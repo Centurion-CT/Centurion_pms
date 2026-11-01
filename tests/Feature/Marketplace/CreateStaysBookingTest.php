@@ -43,7 +43,7 @@ beforeEach(function (): void {
     $this->room = Room::factory()->for($this->tenant)->for($this->property)
         ->for($this->category, 'category')
         ->create(['status' => RoomStatus::Active]);
-    Tenant::forgetCurrent();
+    // The business stays current: these pages only run on its own address.
 });
 
 afterEach(fn () => Tenant::forgetCurrent());
@@ -120,15 +120,15 @@ it('routes Paystack init via the tenant subaccount (98/2 split)', function (): v
         && str_starts_with($r['reference'], 'kev_stays_'));
 });
 
-it('restores the previous tenant context on the way out', function (): void {
+it('leaves the business it ran for current on the way out', function (): void {
     Http::fake([
         'https://api.paystack.test/*' => Http::response([
             'status' => true,
             'data' => ['authorization_url' => 'x', 'access_code' => 'y', 'reference' => 'z'],
         ]),
     ]);
-    // Central-domain callers arrive with no tenant current.
-    expect(Tenant::current())->toBeNull();
+    // Callers run on the business's own address, with it current.
+    expect(Tenant::current()?->id)->toBe($this->tenant->id);
 
     app(CreateStaysBooking::class)->handle([
         'property_slug' => $this->property->public_slug,
@@ -139,7 +139,7 @@ it('restores the previous tenant context on the way out', function (): void {
         'checkout' => Carbon::today()->addDays(3)->toDateString(),
     ], callbackUrl: 'http://x/y');
 
-    expect(Tenant::current())->toBeNull();
+    expect(Tenant::current()?->id)->toBe($this->tenant->id);
 });
 
 it('rejects an off-market property even when the slug resolves', function (): void {

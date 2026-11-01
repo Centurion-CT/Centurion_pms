@@ -10,6 +10,7 @@ use App\Models\Corporate;
 use App\Models\CorporateMember;
 use App\Models\Customer;
 use App\Models\Lease;
+use App\Models\Tenant;
 use App\Models\Unit;
 use App\Services\Corporates\CorporateBookingService;
 use App\Services\Leases\RentSchedule;
@@ -173,7 +174,7 @@ class Form extends Component
 
         $documentPath = $this->existingDocumentPath;
         if ($this->document !== null) {
-            $documentPath = $this->document->store('lease-documents', 'public');
+            $documentPath = $this->document->store('lease-documents/'.Tenant::current()?->id, 'public');
         }
 
         $lease->fill([

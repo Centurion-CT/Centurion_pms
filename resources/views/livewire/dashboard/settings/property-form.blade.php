@@ -400,148 +400,9 @@
             </p>
         </section>
 
-        {{-- Keverna Stays marketplace opt-out. Separate from `isLive`
-             above: this controls whether the property appears in the
-             central keverna.com/stays search + accepts card bookings
-             taken by Keverna on the property's behalf (98/2 split via
-             the existing Paystack subaccount). Default on for every
-             property; operator flips off here to stay off-market. --}}
-        @php
-            $marketStatus  = $isListedPublicly ? 'Listed' : 'Off-market';
-            $marketAccent  = $isListedPublicly ? 'var(--color-accent-deep)' : 'var(--color-ink-mute)';
-            $marketTint    = $isListedPublicly
-                ? 'linear-gradient(135deg, rgba(173, 203, 82, 0.08), rgba(173, 203, 82, 0.02))'
-                : 'linear-gradient(135deg, rgba(20, 23, 26, 0.03), rgba(20, 23, 26, 0.01))';
-            $marketBorder  = $isListedPublicly ? 'var(--color-line)' : 'var(--color-line-soft)';
-            $marketHeading = $isListedPublicly
-                ? 'Guests searching keverna.com/stays can find and book this property.'
-                : 'Hidden from the marketplace. Only guests with your direct link can book.';
-            $marketplaceUrl = $isListedPublicly && $publicSlug !== ''
-                ? (request()->getScheme().'://'.config('keverna.central_domain', 'keverna.com').'/stays/'.$publicSlug)
-                : null;
-        @endphp
-        <section id="section-marketplace" class="lp-section" data-testid="marketplace-fieldset"
-                 style="border: 1px solid {{ $marketBorder }}; background: {{ $marketTint }};
-                        border-radius: 14px; padding: 20px 22px; margin-top: 14px;">
-            <div class="flex flex-wrap items-start justify-between gap-4">
-                <div style="flex: 1; min-width: 240px;">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span data-testid="marketplace-status"
-                              style="display:inline-flex; align-items:center; gap:6px;
-                                     padding: 3px 10px; border-radius: 999px; font-size: 11px;
-                                     letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
-                                     background: {{ $isListedPublicly ? 'rgba(138, 174, 58, 0.14)' : 'rgba(20, 23, 26, 0.06)' }};
-                                     color: {{ $marketAccent }};">
-                            <span style="width:6px; height:6px; border-radius:50%; background: {{ $marketAccent }}; display:inline-block;"></span>
-                            {{ $marketStatus }}
-                        </span>
-                        <span style="font-size: 13px; font-weight: 600; color: var(--color-ink);">
-                            Keverna Stays marketplace
-                        </span>
-                    </div>
-                    <p style="font-size: 13.5px; color: var(--color-ink); line-height: 1.5; margin: 0;">
-                        {{ $marketHeading }}
-                    </p>
-                    @if ($marketplaceUrl)
-                        <a href="{{ $marketplaceUrl }}" target="_blank" rel="noopener"
-                           class="lp-mono"
-                           style="display: inline-flex; align-items: center; gap: 4px;
-                                  font-size: 12px; color: var(--color-ink-soft);
-                                  text-decoration: none; margin-top: 8px;
-                                  padding: 4px 8px; border-radius: 6px;
-                                  background: rgba(20, 23, 26, 0.04);">
-                            {{ $marketplaceUrl }}
-                            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-                                <path d="M4.5 2h5.5v5.5M10 2L4.5 7.5M8 6.5V10H2V4h3.5"/>
-                            </svg>
-                        </a>
-                    @endif
-                </div>
-                <button type="button"
-                        role="switch"
-                        aria-checked="{{ $isListedPublicly ? 'true' : 'false' }}"
-                        aria-label="List on Keverna Stays marketplace"
-                        data-testid="property-is-listed-publicly"
-                        wire:click="$toggle('isListedPublicly')"
-                        style="position: relative; width: 52px; height: 30px; border-radius: 999px;
-                               border: 1px solid {{ $isListedPublicly ? 'var(--color-accent-deep)' : 'var(--color-line)' }};
-                               background: {{ $isListedPublicly ? 'var(--color-accent-deep)' : 'rgba(20, 23, 26, 0.08)' }};
-                               cursor: pointer; transition: background 160ms ease, border-color 160ms ease;
-                               padding: 0; flex-shrink: 0;">
-                    <span aria-hidden="true"
-                          style="position: absolute; top: 3px; left: {{ $isListedPublicly ? '25px' : '3px' }};
-                                 width: 22px; height: 22px; border-radius: 50%;
-                                 background: #fff;
-                                 box-shadow: 0 1px 3px rgba(0,0,0,0.20);
-                                 transition: left 160ms ease;"></span>
-                </button>
-            </div>
-
-            @if ($isListedPublicly)
-                <div style="margin-top: 14px;">
-                    <label class="lp-form-label" style="display: block; margin-bottom: 6px;">Room assignment</label>
-                    <div style="display: grid; gap: 8px;">
-                        <label style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
-                                      border: 1px solid var(--color-line); border-radius: 10px;
-                                      background: {{ $staysOnlineHoldMode === 'room' ? 'rgba(173, 203, 82, 0.06)' : 'transparent' }};
-                                      cursor: pointer;">
-                            <input type="radio" wire:model.live="staysOnlineHoldMode" value="room"
-                                   data-testid="hold-mode-room"
-                                   style="margin-top: 3px;">
-                            <span>
-                                <b style="font-size: 13.5px; color: var(--color-ink);">Auto-assign a room at booking</b>
-                                <span style="display: block; font-size: 12.5px; color: var(--color-ink-mute); margin-top: 2px;">
-                                    Guest is confirmed in a specific room the moment they pay. Legacy default.
-                                </span>
-                            </span>
-                        </label>
-                        <label style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
-                                      border: 1px solid var(--color-line); border-radius: 10px;
-                                      background: {{ $staysOnlineHoldMode === 'category' ? 'rgba(173, 203, 82, 0.06)' : 'transparent' }};
-                                      cursor: pointer;">
-                            <input type="radio" wire:model.live="staysOnlineHoldMode" value="category"
-                                   data-testid="hold-mode-category"
-                                   style="margin-top: 3px;">
-                            <span>
-                                <b style="font-size: 13.5px; color: var(--color-ink);">Hold the category, assign at check-in</b>
-                                <span style="display: block; font-size: 12.5px; color: var(--color-ink-mute); margin-top: 2px;">
-                                    Guest holds a slot in the category (Deluxe, Studio, etc). Front desk picks the actual room from the Reservations page before check-in.
-                                </span>
-                            </span>
-                        </label>
-                    </div>
-                </div>
-                <div style="margin-top: 14px;">
-                    <label for="prop-public-slug" class="lp-form-label">Marketplace URL</label>
-                    <div style="display: flex; align-items: stretch; gap: 0;
-                                border: 1px solid var(--color-line); border-radius: 10px;
-                                overflow: hidden; background: #fff;">
-                        <span class="lp-mono"
-                              style="padding: 10px 12px; font-size: 12.5px; color: var(--color-ink-mute);
-                                     background: rgba(20, 23, 26, 0.03); border-right: 1px solid var(--color-line-soft);
-                                     white-space: nowrap; display: inline-flex; align-items: center;">
-                            keverna.com/stays/
-                        </span>
-                        <input id="prop-public-slug" type="text" wire:model.blur="publicSlug"
-                               maxlength="96" pattern="[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?"
-                               data-testid="property-public-slug"
-                               class="lp-mono"
-                               style="flex: 1; border: none; padding: 10px 12px; font-size: 13px;
-                                      background: transparent; color: var(--color-ink);"
-                               placeholder="my-property-lagos">
-                    </div>
-                    @error('publicSlug') <p class="lp-form-error">{{ $message }}</p> @enderror
-                    <p class="lp-form-help mt-2">
-                        Lowercase letters, numbers and hyphens only. Must be unique across every property on Keverna.
-                    </p>
-                </div>
-            @endif
-
-            <p style="font-size: 12px; color: var(--color-ink-mute); line-height: 1.55; margin: 14px 0 0;">
-                Card payments are processed by Keverna and settled to your Paystack payout account below.
-                Keverna keeps a 2% platform fee; the remaining 98% lands in your bank the same day Paystack settles.
-            </p>
-        </section>
+        {{-- Keverna's "Stays marketplace" listing toggle and public slug
+             lived here. Centurion has no marketplace: each business's
+             own booking site lists its live buildings (step 6). --}}
 
         {{-- Basics - property name + type + inventory model + description.
              Wrapped in a section anchor so the sticky sub-nav can jump
@@ -1470,10 +1331,10 @@
                            data-testid="accepts-corporates"
                            style="accent-color: var(--color-accent-deep); margin-top: 3px;">
                     <span>
-                        <strong style="font-weight: 600;">Accept Keverna Corporates</strong>
+                        <strong style="font-weight: 600;">Accept corporate bookings</strong>
                         <p class="text-[12.5px] mt-1" style="color: var(--color-ink-soft); line-height: 1.55;">
-                            When on, staff from Keverna-onboarded companies can book this property
-                            using their corporate wallet at negotiated rates. You'll see those
+                            When on, staff of your corporate clients can book this building
+                            using their corporate wallet at their negotiated rates. You'll see those
                             bookings flagged "Corporate · {company}" on the reservations list.
                             Toggle off if you don't want to participate.
                         </p>
@@ -1506,9 +1367,9 @@
         <fieldset id="section-payouts" class="lp-fieldset lp-section" data-testid="payout-fieldset">
             <legend>Payouts, bank account</legend>
             <p class="lp-form-help" style="margin-top: 4px;">
-                Guest bookings are collected via Keverna's payment partner and
+                Guest bookings are collected through {{ config('brand.name') }}'s payment partner, Paystack, and
                 settle <strong style="color: var(--color-ink);">directly to your bank account</strong> -
-                Keverna never holds your money. We deduct a
+                {{ config('brand.name') }} never holds your money. We deduct a
                 {{ number_format((float) config('services.paystack.platform_percent_charge', 2.0), 1) }}%
                 platform fee per transaction; you receive the rest.
             </p>

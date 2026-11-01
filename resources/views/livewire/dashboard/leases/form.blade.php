@@ -129,7 +129,7 @@
             <fieldset class="lp-fieldset" data-testid="corporate-fieldset">
                 <legend>Corporate (optional)</legend>
                 <p class="lp-form-help" style="margin-top: 4px;">
-                    Lease to a Keverna corporate. The first year's rent + deposit + service charge
+                    Lease to one of your corporate clients. The first year's rent + deposit + service charge
                     is held against their wallet at the negotiated rate.
                 </p>
                 <div class="grid gap-5 sm:grid-cols-2 mt-3">

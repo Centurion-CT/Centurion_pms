@@ -11,7 +11,7 @@
             {{ $corporate->name }}
         </h1>
         <p class="mt-2 text-[14.5px]" style="color: var(--color-ink-soft);">
-            Welcome back, {{ $member->name }}. Here's how your team is using Keverna.
+            Welcome back, {{ $member->name }}. Here's how your team is using your corporate account with {{ \App\Models\Tenant::current()?->name }}.
         </p>
     </div>
 

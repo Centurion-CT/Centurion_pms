@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Apartments · Option C · Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #FFFFFF;
+    --mist: #EEF3F8;
+    --navy: #0F2A44;
+    --ink-2: #4B5D70;
+    --ink-3: #8193A5;
+    --line: #DCE4EC;
+    --blue: #336799;
+    --blue-2: #285481;
+    --mint: #1B8F6A;
+    --mint-wash: #E1F3EC;
+    --sun: #F2B33D;
+    --font: 'Hanken Grotesk', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--white); color: var(--navy); font: 400 17px/1.55 var(--font); }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; border-radius: 6px; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 22px; border: 0; border-radius: 12px; background: var(--blue); color: #fff; font: 700 15px var(--font); text-decoration: none; cursor: pointer; }
+  .btn:hover { background: var(--blue-2); }
+  .btn.soft { background: var(--mist); color: var(--navy); }
+
+  .top { display: flex; align-items: center; justify-content: space-between; height: 80px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 800; font-size: 19px; letter-spacing: -0.01em; }
+  .brand img { width: 30px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { text-decoration: none; padding: 8px 14px; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--ink-2); }
+  .nav a:hover { background: var(--mist); color: var(--navy); }
+
+  /* Hero: search on the left, live map on the right */
+  .hero { display: grid; grid-template-columns: 480px 1fr; gap: 28px; padding-top: 12px; }
+  .hero h1 { font-size: 56px; line-height: 1.04; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 16px; }
+  .hero .lede { color: var(--ink-2); margin: 0 0 28px; max-width: 40ch; }
+  .card { background: var(--white); border-radius: 20px; box-shadow: 0 0 0 1px var(--line), 0 20px 40px -24px rgba(15,42,68,.25); padding: 22px; }
+  .card h2 { font-size: 15px; margin: 0 0 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--mist); color: var(--navy); font: 600 14px var(--font); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--navy); color: #fff; }
+  .chip small { font-weight: 500; opacity: .7; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr 110px; gap: 8px; margin-bottom: 14px; }
+  .fields label { background: var(--mist); border-radius: 12px; padding: 10px 14px; cursor: pointer; }
+  .fields span { display: block; font-size: 12px; color: var(--ink-2); font-weight: 600; }
+  .fields b { font-size: 16px; }
+  .card .btn { width: 100%; height: 54px; font-size: 16px; }
+  .card .hint { margin: 12px 0 0; font-size: 14px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; }
+  .live { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 4px var(--mint-wash); }
+
+  .mapbox { position: relative; background: #E6EDF4; border-radius: 24px; overflow: hidden; min-height: 640px; }
+  .mapbox .abuja-map { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .abuja-map { font-family: var(--font); }
+  .map-land { fill: #E6EDF4; }
+  .map-green { fill: #D6E8DE; }
+  .map-water { fill: #BFD5EA; }
+  .map-road { fill: none; stroke: #fff; stroke-width: 3; }
+  .map-road.major { stroke-width: 7; }
+  .map-place { font-size: 10px; fill: var(--ink-3); font-weight: 500; }
+  .map-pin { cursor: pointer; }
+  .map-pin-halo { fill: var(--blue); opacity: .14; }
+  .map-pin-dot { fill: var(--blue); stroke: #fff; stroke-width: 3; }
+  .map-pin-label { font-size: 12px; font-weight: 800; fill: var(--navy); paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round; }
+  .map-pin.on .map-pin-dot { fill: var(--navy); }
+  .map-pin.on .map-pin-halo { opacity: .3; }
+  .pin-card { position: absolute; left: 24px; bottom: 24px; width: 380px; background: var(--white); border-radius: 18px; overflow: hidden; display: grid; grid-template-columns: 130px 1fr; box-shadow: 0 20px 40px -20px rgba(15,42,68,.4); text-decoration: none; }
+  .pin-card img { width: 130px; height: 100%; object-fit: cover; }
+  .pin-card div { padding: 14px 16px; }
+  .pin-card h3 { margin: 0; font-size: 18px; }
+  .pin-card p { margin: 2px 0 8px; font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+  .pin-card .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 8px; font-size: 13px; font-weight: 700; background: var(--mist); }
+  .tag.free { background: var(--mint-wash); color: var(--mint); }
+  .map-legend { position: absolute; top: 20px; right: 20px; background: var(--white); border-radius: 12px; padding: 8px 12px; font-size: 13px; font-weight: 600; color: var(--ink-2); display: flex; gap: 8px; align-items: center; }
+
+  section { padding: 104px 0 0; }
+  .h2 { font-size: 40px; letter-spacing: -0.03em; line-height: 1.1; font-weight: 800; margin: 0 0 10px; }
+  .sub { color: var(--ink-2); margin: 0; max-width: 56ch; }
+  .sec-head { display: flex; justify-content: space-between; align-items: end; gap: 32px; margin-bottom: 32px; }
+
+  /* Stay type tabs */
+  .tabs { display: inline-flex; background: var(--mist); border-radius: 14px; padding: 4px; gap: 4px; }
+  .tabs button { flex: none; white-space: nowrap; height: 42px; padding: 0 18px; border-radius: 10px; border: 0; background: transparent; font: 700 15px var(--font); color: var(--ink-2); cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--white); color: var(--navy); box-shadow: 0 1px 3px rgba(15,42,68,.12); }
+  .apts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .apt { text-decoration: none; }
+  .apt figure { margin: 0 0 12px; border-radius: 18px; overflow: hidden; aspect-ratio: 1; position: relative; }
+  .apt img { width: 100%; height: 100%; object-fit: cover; }
+  .apt figure .tag { position: absolute; top: 12px; left: 12px; background: var(--white); }
+  .apt h3 { margin: 0; font-size: 18px; }
+  .apt p { margin: 0; font-size: 15px; color: var(--ink-2); }
+  .apt .p { margin-top: 4px; font-size: 15px; }
+  .apt .p b { font-size: 17px; }
+
+  /* Locations grid */
+  .locs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .loc { background: var(--mist); border-radius: 18px; padding: 18px; text-decoration: none; display: flex; flex-direction: column; gap: 6px; }
+  .loc:hover { background: #E3EBF3; }
+  .loc h3 { margin: 0; font-size: 20px; }
+  .loc p { margin: 0; font-size: 14px; color: var(--ink-2); line-height: 1.45; }
+  .loc .row { margin-top: auto; padding-top: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+
+  /* How it works: a real sequence */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: s; }
+  .step { border-radius: 18px; padding: 26px; box-shadow: inset 0 0 0 1px var(--line); }
+  .step::before { counter-increment: s; content: counter(s); display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: var(--navy); color: #fff; font-weight: 800; margin-bottom: 18px; }
+  .step h3 { margin: 0 0 6px; font-size: 20px; }
+  .step p { margin: 0; color: var(--ink-2); font-size: 15px; }
+
+  .cta { margin-top: 104px; background: var(--navy); color: #fff; border-radius: 28px; padding: 56px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+  .cta h2 { font-size: 40px; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.1; }
+  .cta p { margin: 0; color: #AFC1D3; }
+  .cta .btn { background: var(--sun); color: var(--navy); height: 56px; padding: 0 28px; }
+  footer { padding-top: 56px; padding-bottom: 40px; font-size: 15px; color: var(--ink-2); display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  footer nav { display: flex; gap: 22px; flex-wrap: wrap; }
+  footer a { text-decoration: none; }
+
+  @media (max-width: 1100px) {
+    .hero { grid-template-columns: 1fr; }
+    .mapbox { min-height: 480px; }
+    .apts { grid-template-columns: repeat(2, 1fr); }
+    .locs { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .wrap { padding: 0 16px; }
+    .nav { display: none; }
+    .hero h1 { font-size: 38px; margin-top: 12px; }
+    .fields { grid-template-columns: 1fr 1fr; }
+    .fields label:last-child { grid-column: 1 / -1; }
+    .mapbox { border-radius: 18px; }
+    .mapbox { min-height: 0; }
+    .mapbox .abuja-map { position: static; height: auto; }
+    .pin-card { position: static; margin: 0 12px 12px; width: auto; grid-template-columns: 100px 1fr; }
+    .pin-card img { width: 100px; }
+    .map-legend { display: none; }
+    section { padding-top: 72px; }
+    .h2 { font-size: 30px; }
+    .sec-head { flex-direction: column; align-items: start; }
+    .tabs { width: 100%; overflow-x: auto; }
+    .apts { gap: 14px; }
+    .locs, .steps { grid-template-columns: 1fr; }
+    .cta { grid-template-columns: 1fr; padding: 32px 22px; }
+    .cta h2 { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="#"><img src="../../assets/logo.png" alt="">Centurion Apartments</a>
+  <nav class="nav" aria-label="Main"><a href="#where">Locations</a><a href="#apartments">Apartments</a><a href="#">Long stays</a><a href="#">Manage booking</a><a href="tel:+2348162417819">0816 241 7819</a></nav>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>Find a free apartment anywhere in Abuja</h1>
+      <p class="lede">Search all five Centurion buildings at once. You see the same rooms our front desk sees, and you book in under two minutes.</p>
+      <form class="card" action="results.html" role="search">
+        <h2>Where</h2>
+        <div class="chips" id="chips"></div>
+        <div class="fields">
+          <label><span>Check in</span><b>Fri 6 Nov</b></label>
+          <label><span>Check out</span><b>Mon 9 Nov</b></label>
+          <label><span>Guests</span><b>2</b></label>
+        </div>
+        <button class="btn">Search 5 locations</button>
+        <p class="hint"><span class="live"></span><span id="hint"></span></p>
+      </form>
+    </div>
+    <div class="mapbox" id="where">
+      <div id="map"></div>
+      <div class="map-legend"><span class="live"></span>Free tonight</div>
+      <a class="pin-card" id="pin-card" href="results.html"></a>
+    </div>
+  </div>
+
+  <section id="apartments">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><h2 class="h2">What kind of stay?</h2><p class="sub">Every apartment is self-contained, with a kitchen, a bed made daily and 24-hour power.</p></div>
+        <div class="tabs" role="tablist" id="tabs">
+          <button role="tab" aria-selected="true" data-k="trip">A few nights</button>
+          <button role="tab" aria-selected="false" data-k="family">With family</button>
+          <button role="tab" aria-selected="false" data-k="long">A month or more</button>
+        </div>
+      </div>
+      <div class="apts" id="apts"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head"><div><h2 class="h2">Five locations, one front desk</h2><p class="sub">Call one number and reach every building, day or night.</p></div></div>
+      <div class="locs" id="locs"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head"><div><h2 class="h2">Booking takes three steps</h2></div></div>
+      <div class="steps">
+        <div class="step"><h3>Pick dates and an apartment</h3><p>Only apartments that are free for every night of your stay are shown.</p></div>
+        <div class="step"><h3>Pay by card or transfer</h3><p>Paystack keeps the payment safe. Your receipt arrives by email and WhatsApp.</p></div>
+        <div class="step"><h3>Arrive and collect your key</h3><p>Check in from 1pm. The front desk has your name, so there's nothing to fill in.</p></div>
+      </div>
+      <div class="cta">
+        <div><h2>Booking for a team or a long project?</h2><p>Monthly rates, one invoice for your company and an account manager.</p></div>
+        <a class="btn" href="#">Get a corporate quote</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>© 2026 Centurion Apartments, Abuja · 0816 241 7819</span>
+  <nav><a href="#">Locations</a><a href="#">Long stays</a><a href="#">Corporate</a><a href="#">Privacy</a><a href="#">Terms</a></nav>
+</footer>
+
+<script src="../../assets/data.js"></script>
+<script>
+  const L = CENTURION.locations;
+  const on = new Set(L.map(l => l.slug));
+  const chips = document.getElementById('chips');
+  function drawChips() {
+    chips.innerHTML = L.map(l => `<button type="button" class="chip" data-slug="${l.slug}" aria-pressed="${on.has(l.slug)}">${l.name} <small>${l.free}</small></button>`).join('');
+    const sel = L.filter(l => on.has(l.slug));
+    document.getElementById('hint').textContent = `${sel.reduce((n, l) => n + l.free, 0)} apartments free tonight in ${sel.length === L.length ? 'all locations' : sel.map(l => l.name).join(', ')}`;
+    document.querySelector('.card .btn').textContent = `Search ${sel.length} location${sel.length === 1 ? '' : 's'}`;
+  }
+  chips.addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    on.has(c.dataset.slug) && on.size > 1 ? on.delete(c.dataset.slug) : on.add(c.dataset.slug);
+    drawChips(); pick(c.dataset.slug);
+  });
+  drawChips();
+
+  document.getElementById('map').innerHTML = abujaMap({ fill: true, label: l => `${l.name}  ${naira(l.from)}` });
+  const card = document.getElementById('pin-card');
+  function pick(slug) {
+    const l = L.find(x => x.slug === slug);
+    document.querySelectorAll('.map-pin').forEach(p => p.classList.toggle('on', p.dataset.slug === slug));
+    card.href = `results.html#${slug}`;
+    card.innerHTML = `<img src="../../assets/${l.photo}" alt=""><div><h3>Centurion ${l.name}</h3><p>${l.note}</p>
+      <div class="tags"><span class="tag free">${l.free} free tonight</span><span class="tag">from ${naira(l.from)}</span></div></div>`;
+  }
+  document.querySelectorAll('.map-pin').forEach(p => {
+    p.addEventListener('mouseenter', () => pick(p.dataset.slug));
+    p.addEventListener('focus', () => pick(p.dataset.slug));
+  });
+  pick('wuse-2');
+
+  const sets = {
+    trip: [['wuse-2', 1, 'living-green.jpg'], ['zone-4', 0, 'living-cream.jpg'], ['jabi', 0, 'bedroom-bright.jpg'], ['jabi-annex', 0, 'living-open.jpg']],
+    family: [['wuse-2', 4, 'living-cream-2.jpg'], ['zone-4', 3, 'living-window.jpg'], ['jabi-annex', 2, 'living-open.jpg'], ['lifecamp', 0, 'living-warm.jpg']],
+    long: [['lifecamp', 0, 'living-warm.jpg'], ['jabi-annex', 1, 'living-green.jpg'], ['wuse-2', 3, 'living-window.jpg'], ['zone-4', 2, 'living-cream.jpg']],
+  };
+  function drawApts(k) {
+    document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k));
+    document.getElementById('apts').innerHTML = sets[k].map(([s, i, img]) => {
+      const l = L.find(x => x.slug === s), t = l.types[i];
+      const price = k === 'long' ? `<b>${naira(t.rate * 30 * 0.7)}</b> a month` : `<b>${naira(t.rate)}</b> a night`;
+      return `<a class="apt" href="results.html#${s}"><figure><img src="../../assets/${img}" alt=""><span class="tag">${l.name}</span></figure>
+        <h3>${t.name}</h3><p>Sleeps ${t.sleeps}</p><div class="p">${price}</div></a>`;
+    }).join('');
+  }
+  document.getElementById('tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) drawApts(b.dataset.k); });
+  drawApts('trip');
+
+  document.getElementById('locs').innerHTML = L.map(l => `
+    <a class="loc" href="results.html#${l.slug}"><h3>${l.name}</h3><p>${l.note}</p>
+      <div class="row"><span class="tag free">${l.free} free</span><span>from <b>${naira(l.from)}</b></span></div></a>`).join('');
+</script>
+</body>
+</html>

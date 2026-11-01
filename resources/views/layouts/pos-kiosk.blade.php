@@ -27,7 +27,7 @@
     <meta name="theme-color" content="#12100D" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Keverna POS">
+    <meta name="apple-mobile-web-app-title" content="{{ config('brand.name') }} POS">
     <link rel="apple-touch-icon" href="/icons/pos-192.png">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -55,7 +55,7 @@
                             <path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
                         </svg>
                     </span>
-                    <span class="lp-kiosk__brand-name">{{ $tenant?->name ?? 'Keverna POS' }}</span>
+                    <span class="lp-kiosk__brand-name">{{ $tenant?->name ?? config('brand.name').' POS' }}</span>
                 </div>
 
                 <div class="lp-kiosk__actions">

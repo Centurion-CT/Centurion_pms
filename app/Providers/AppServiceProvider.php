@@ -18,6 +18,7 @@ use App\Observers\PaymentPulseObserver;
 use App\Observers\PropertyObserver;
 use App\Services\Dns\DnsResolver;
 use App\Services\Dns\SystemDnsResolver;
+use App\Services\Dokwe\DokweClient;
 use App\Services\Identity\GuestClaimTokenSigner;
 use App\Services\Identity\TenantSsoTokenSigner;
 use App\Services\Push\HostPush;
@@ -41,6 +42,10 @@ class AppServiceProvider extends ServiceProvider
         // DNS lookups (PRD §6.6.2 custom domain verification). Tests override
         // this binding with FakeDnsResolver.
         $this->app->singleton(DnsResolver::class, SystemDnsResolver::class);
+
+        // Built from config/dokwe.php; throws when the API key or project
+        // is missing, which the domain jobs report as a failure.
+        $this->app->bind(DokweClient::class, fn (): DokweClient => DokweClient::default());
 
         // Central → tenant SSO handoff signer (docs/unified-login.md §3).
         // The signer HMACs URLs with the app key. Bound as a singleton so

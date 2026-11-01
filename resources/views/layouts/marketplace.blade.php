@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Keverna Stays' }}</title>
+    <title>{{ $title ?? \App\Models\Tenant::current()?->siteTitle() ?? config('brand.name') }}</title>
     <meta name="robots" content="noindex, nofollow">
 
     @include('partials.favicons')

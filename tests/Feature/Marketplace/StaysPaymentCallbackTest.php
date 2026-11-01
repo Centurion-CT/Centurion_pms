@@ -30,6 +30,7 @@ beforeEach(function (): void {
         'slug' => 'callback-test',
         'paystack_subaccount_code' => 'ACCT_x',
     ]);
+    onBusinessHost('callback-test');
     $this->tenant->makeCurrent();
     $this->property = Property::factory()->for($this->tenant)->create(['is_listed_publicly' => true]);
     $this->category = RoomCategory::factory()->for($this->tenant)->for($this->property)->create([

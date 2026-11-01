@@ -12,7 +12,10 @@
     };
     $category = $booking->roomCategory ?? $booking->room?->category;
     $photo = $category?->heroImage() ?? $booking->room?->getMedia('gallery')->first();
-    $paid = max(0, (int) $booking->total_amount - (int) $booking->balance_due);
+    // A booking still awaiting payment has balance_due 0 but nothing paid.
+    $awaiting = $booking->booking_status === \App\Enums\BookingStatus::Pending;
+    $paid = $awaiting ? 0 : max(0, (int) $booking->total_amount - (int) $booking->balance_due);
+    $due = $awaiting ? (int) $booking->total_amount : (int) $booking->balance_due;
 
     $property = $booking->room?->property ?? \App\Models\Tenant::current()?->property;
     $rules = $property?->houseRules() ?? [];
@@ -189,8 +192,8 @@
                     @if ($paid > 0)
                         <div style="color: var(--emerald);"><dt style="color: inherit;">Paid</dt><dd>₦{{ number_format($paid) }}</dd></div>
                     @endif
-                    @if ($booking->balance_due > 0)
-                        <div class="total"><dt style="color: var(--ink);">Balance due</dt><dd style="color: var(--rose);">₦{{ number_format($booking->balance_due) }}</dd></div>
+                    @if ($due > 0)
+                        <div class="total"><dt style="color: var(--ink);">Balance due</dt><dd style="color: var(--rose);">₦{{ number_format($due) }}</dd></div>
                     @else
                         <div class="total"><dt style="color: var(--ink);">Balance due</dt><dd>₦0</dd></div>
                     @endif

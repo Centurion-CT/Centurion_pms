@@ -966,10 +966,9 @@ class Show extends Component
 
             $receiptPath = null;
             if ($this->paymentReceipt !== null) {
-                // Store under a per-tenant path — receipts stay isolated
-                // per property even when the Corporate itself is central.
+                // Under the business's own folder, like guest IDs.
                 $receiptPath = $this->paymentReceipt->store(
-                    'receipts/corporate-payments/'.$corp->id,
+                    'receipts/corporate-payments/'.$corp->tenant_id.'/'.$corp->id,
                     'public',
                 );
             }

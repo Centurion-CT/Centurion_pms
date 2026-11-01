@@ -20,7 +20,7 @@
          expire in 5 minutes. --}}
     <section class="lp-dash-card" data-testid="mobile-pair-card">
         <div class="lp-dash-card-head">
-            <span class="lp-dash-card-title">Link the Keverna mobile app</span>
+            <span class="lp-dash-card-title">Link the {{ config('brand.name') }} mobile app</span>
             @if ($mobileCode !== null)
                 <button type="button" wire:click="cancelPhoneLink"
                         data-testid="mobile-pair-cancel"
@@ -52,7 +52,7 @@
                 </div>
                 <div>
                     <p class="text-[13.5px]" style="color: var(--color-ink-soft); margin: 0 0 10px;">
-                        Open the Keverna app on your phone, tap <strong style="color: var(--color-ink);">Pair a device</strong>,
+                        Open the {{ config('brand.name') }} app on your phone, tap <strong style="color: var(--color-ink);">Pair a device</strong>,
                         and scan the QR above.
                     </p>
                     <p class="text-[13.5px]" style="color: var(--color-ink-soft); margin: 10px 0;">

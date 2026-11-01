@@ -38,17 +38,24 @@ use Throwable;
 class InitiateBookingPayment
 {
     /**
-     * @param  string|null  $callbackUrl  Overrides the config default so
-     *                                    marketplace / portal flows can
-     *                                    land on their own confirmation
-     *                                    pages instead of the tenant one.
+     * @param  string|null  $callbackUrl  Where Paystack sends the guest
+     *                                    back. Defaults to the payment
+     *                                    return page on the address the
+     *                                    guest is booking on.
      * @param  string|null  $referencePrefix  Overrides "kev_book_" so
      *                                    marketplace payments are easy
      *                                    to spot in Paystack + audit logs.
      */
     public function handle(Booking $booking, ?string $callbackUrl = null, ?string $referencePrefix = null): string
     {
-        [$client, $subaccountCode] = $this->resolvePaystackClient($booking);
+        // No usable Paystack account (e.g. no key configured) fails before
+        // a Payment row exists; release the room all the same.
+        try {
+            [$client, $subaccountCode] = $this->resolvePaystackClient($booking);
+        } catch (Throwable $e) {
+            $this->abortBooking($booking, null);
+            throw $e;
+        }
 
         // Deposit when the booking carries one, otherwise full payment.
         $isDeposit = $booking->deposit_amount > 0;
@@ -74,7 +81,7 @@ class InitiateBookingPayment
                 'email' => $booking->guest_email,
                 'amount_ngn' => $amountNgn,
                 'reference' => $reference,
-                'callback_url' => $callbackUrl ?? (string) config('services.paystack.callback_url'),
+                'callback_url' => $callbackUrl ?? route('marketplace.stays.pay.callback'),
                 'metadata' => [
                     'booking_id' => $booking->id,
                     'tenant_id' => $booking->tenant_id,
@@ -156,10 +163,10 @@ class InitiateBookingPayment
      * thrown by the caller surfaces a friendly message on the
      * booking form instead.
      */
-    private function abortBooking(Booking $booking, Payment $payment): void
+    private function abortBooking(Booking $booking, ?Payment $payment): void
     {
         DB::transaction(function () use ($booking, $payment): void {
-            $payment->forceFill(['status' => PaymentStatus::Failed])->save();
+            $payment?->forceFill(['status' => PaymentStatus::Failed])->save();
 
             AvailabilityBlock::query()
                 ->withoutGlobalScope(TenantScope::class)

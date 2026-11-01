@@ -585,7 +585,7 @@
 
                 <div class="lp-sidebar-brand">
                     <span class="lp-sidebar-brand-mark" aria-hidden>
-                        <img src="{{ asset(config('brand.logo')) }}" alt="" width="20" height="23">
+                        <img src="{{ \App\Models\Tenant::current()?->logoUrl() ?? asset(config('brand.logo')) }}" alt="" width="20" height="23" style="object-fit: contain;">
                     </span>
                     <span class="lp-sidebar-brand-text">
                         <span class="name">{{ \App\Models\Tenant::current()?->name ?? 'Your property' }}</span>

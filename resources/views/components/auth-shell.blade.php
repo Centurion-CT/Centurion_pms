@@ -22,7 +22,7 @@
 
     <section class="cx-slab">
         <a href="{{ url('/') }}" class="cx-brand">
-            <span class="cx-brand-mark"><img src="{{ asset(config('brand.logo')) }}" alt="{{ config('brand.name') }}"></span>
+            <span class="cx-brand-mark"><img src="{{ $tenant?->logoUrl() ?? asset(config('brand.logo')) }}" alt="" style="object-fit: contain;"></span>
             <span>
                 <span class="cx-brand-name" style="display:block;">{{ $tenantDisplayName }}</span>
                 <span class="cx-brand-sub">{{ $subtitle }}</span>
@@ -34,7 +34,7 @@
         </div>
 
         <footer class="cx-foot">
-            <span>© {{ date('Y') }} {{ config('brand.name') }}</span>
+            <span>{{ $tenantDisplayName }} · runs on {{ config('brand.name') }}</span>
             <nav>
                 <a href="{{ route('legal.privacy') }}">Privacy</a>
                 <a href="{{ route('legal.terms') }}">Terms</a>

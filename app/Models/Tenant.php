@@ -19,6 +19,7 @@ use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property string|null $site_title
  * @property string $email
  * @property string|null $phone
  * @property string|null $plan_id
@@ -41,6 +42,8 @@ use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
  * @property string|null $custom_domain_verification_token
  * @property CustomDomainStatus|null $custom_domain_status
  * @property Carbon|null $domain_verified_at
+ * @property Carbon|null $custom_domain_live_at
+ * @property int $custom_domain_failed_checks
  * @property Carbon|null $subdomain_provisioned_at
  * @property Carbon|null $slug_changed_at
  * @property Carbon|null $subscription_expires_at
@@ -88,6 +91,8 @@ class Tenant extends SpatieTenant
             'dokwe_storage_connected_at' => 'datetime',
             'custom_domain_status' => CustomDomainStatus::class,
             'domain_verified_at' => 'datetime',
+            'custom_domain_live_at' => 'datetime',
+            'custom_domain_failed_checks' => 'integer',
             'subdomain_provisioned_at' => 'datetime',
             'slug_changed_at' => 'datetime',
             'subscription_expires_at' => 'datetime',
@@ -114,9 +119,8 @@ class Tenant extends SpatieTenant
 
     /**
      * True when the tenant has connected their own Dokwe Storage space
-     * via the Integrations page — used by ConfigureTenantMediaDisk
-     * middleware to decide whether to swap MediaLibrary's disk for
-     * this request.
+     * via the Integrations page — used by the UseTenantMediaDisk switch
+     * task to decide whether to swap MediaLibrary's disk.
      */
     public function hasDokweStorage(): bool
     {
@@ -127,12 +131,48 @@ class Tenant extends SpatieTenant
     }
 
     /**
-     * The host (subdomain or verified custom domain) used by the booking engine
+     * The business's title on its booking site and in browser tabs: its
+     * own site title, else its name (docs/MULTITENANCY.md, step 6).
+     */
+    public function siteTitle(): string
+    {
+        return trim((string) $this->site_title) !== '' ? (string) $this->site_title : (string) $this->name;
+    }
+
+    /**
+     * The business's logo: the one uploaded under Branding for its first
+     * building, else the next building that has one. Null when none.
+     */
+    public function logoUrl(): ?string
+    {
+        foreach ($this->properties()->oldest('id')->with('media')->get() as $building) {
+            if (($media = $building->getFirstMedia('logo')) !== null) {
+                return $media->getUrl();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * True once the business's own domain is verified and answering for it
+     * over HTTPS (App\Actions\Domains\CheckOwnDomain). Only then do links
+     * and the booking site move to it.
+     */
+    public function ownDomainIsLive(): bool
+    {
+        return $this->custom_domain !== null
+            && $this->domain_verified_at !== null
+            && $this->custom_domain_live_at !== null;
+    }
+
+    /**
+     * The host (subdomain or live own domain) used by the booking engine
      * for canonical URL generation (PRD §10 SEO requirement).
      */
     public function primaryHost(): string
     {
-        if ($this->custom_domain !== null && $this->domain_verified_at !== null) {
+        if ($this->ownDomainIsLive()) {
             return $this->custom_domain;
         }
 

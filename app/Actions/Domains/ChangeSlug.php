@@ -7,6 +7,7 @@ namespace App\Actions\Domains;
 use App\Jobs\Domains\ProvisionTenantSubdomain;
 use App\Models\SlugRedirect;
 use App\Models\Tenant;
+use App\Platform\BusinessAddress;
 use App\Services\SlugGenerator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,8 @@ use Illuminate\Validation\ValidationException;
  *  - Once per year (slug_changed_at must be NULL or > 365 days old)
  *  - New slug must be unique among tenants AND among unexpired redirects
  *  - Old slug becomes a 90-day 301 redirect to the new one
- *  - New {slug}.keverna.com CNAME is provisioned via ProvisionTenantSubdomain
+ *  - New slug follows the sign-up rules (App\Platform\BusinessAddress)
+ *  - ProvisionTenantSubdomain stamps the new subdomain (wildcard DNS covers it)
  *
  * Returns the refreshed tenant.
  */
@@ -26,7 +28,10 @@ class ChangeSlug
 {
     private const REDIRECT_TTL_DAYS = 90;
 
-    public function __construct(private SlugGenerator $slugs) {}
+    public function __construct(
+        private SlugGenerator $slugs,
+        private BusinessAddress $address,
+    ) {}
 
     public function handle(Tenant $tenant, string $desiredSlug): Tenant
     {
@@ -34,11 +39,18 @@ class ChangeSlug
 
         $newSlug = Str::slug($desiredSlug);
         if ($newSlug === '') {
-            throw ValidationException::withMessages(['slug' => __('Slug cannot be empty.')]);
+            throw ValidationException::withMessages(['slug' => __('Enter an address.')]);
         }
 
         if ($newSlug === $tenant->slug) {
             return $tenant; // no-op
+        }
+
+        // Same rules as sign-up (length, characters, reserved words);
+        // collisions get their own message below.
+        $check = $this->address->check($newSlug);
+        if (! $check['available'] && ! $this->address->taken($newSlug)) {
+            throw ValidationException::withMessages(['slug' => $check['message']]);
         }
 
         $this->guardCollision($tenant, $newSlug);
@@ -79,7 +91,7 @@ class ChangeSlug
         }
 
         throw ValidationException::withMessages([
-            'slug' => __('You can only change your slug once every 365 days. Last change: :date', [
+            'slug' => __('You can change your address once a year. You last changed it on :date.', [
                 'date' => $tenant->slug_changed_at->toFormattedDateString(),
             ]),
         ]);
@@ -102,7 +114,7 @@ class ChangeSlug
         if ($clashTenant || $clashRedirect) {
             $suggestion = $this->slugs->fromPropertyName($newSlug);
             throw ValidationException::withMessages([
-                'slug' => __('That slug is taken. Try :suggestion.', ['suggestion' => $suggestion]),
+                'slug' => __('That address is taken. Try :suggestion.', ['suggestion' => $suggestion]),
             ]);
         }
     }

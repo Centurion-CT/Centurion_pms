@@ -103,7 +103,7 @@ class Form extends Component
                 // Only this tenant's owned corps are editable here;
                 // corps onboarded centrally stay read-only.
                 if ((int) $corp->created_by_tenant_id !== (int) $tenant->id) {
-                    throw new RuntimeException('This corporate was onboarded centrally — edits go through Keverna admin.');
+                    throw new RuntimeException("This corporate belongs to another business and can't be edited here.");
                 }
                 $corp->forceFill($data)->save();
             } else {

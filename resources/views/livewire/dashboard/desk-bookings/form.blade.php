@@ -73,7 +73,7 @@
             <fieldset class="lp-fieldset" data-testid="corporate-fieldset">
                 <legend>Corporate (optional)</legend>
                 <p class="lp-form-help" style="margin-top: 4px;">
-                    Attribute this booking to a Keverna corporate. Negotiated rates apply automatically
+                    Attribute this booking to one of your corporate clients. Negotiated rates apply automatically
                     and the cost is held against the corporate's wallet.
                 </p>
                 <div class="grid gap-5 sm:grid-cols-2 mt-3">

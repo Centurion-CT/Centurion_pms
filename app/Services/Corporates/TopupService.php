@@ -7,7 +7,8 @@ namespace App\Services\Corporates;
 use App\Models\Corporate;
 use App\Models\CorporateMember;
 use App\Models\CorporateWalletTopup;
-use App\Services\Paystack\PaystackClient;
+use App\Models\Tenant;
+use App\Services\Paystack\BusinessPaystack;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -66,7 +67,10 @@ class TopupService
             'note'                => $note,
         ]);
 
-        $client = PaystackClient::forSubscriptions();
+        // Paid into the corporate's business's own Paystack account, the
+        // same one its guests' bookings use (BusinessPaystack).
+        $tenant = $this->businessOf($corporate);
+        $client = BusinessPaystack::client($tenant);
         try {
             $init = $client->initializeTransaction([
                 'email'        => $admin->email,
@@ -79,6 +83,7 @@ class TopupService
                     'corporate_member_id'   => $admin->id,
                     'note'                  => $note,
                 ],
+                'subaccount'   => BusinessPaystack::subaccount($tenant),
             ]);
         } catch (\Throwable $e) {
             // Paystack didn't accept the init — leave the row as
@@ -109,7 +114,10 @@ class TopupService
             ->where('reference', $reference)
             ->first();
 
-        if ($topup === null) {
+        // The corporate is scoped to the current business, so another
+        // business's top-up stops here, before anything is changed.
+        $corporate = $topup?->corporate;
+        if ($topup === null || $corporate === null) {
             return false;
         }
 
@@ -117,8 +125,7 @@ class TopupService
             return false;
         }
 
-        $client = PaystackClient::forSubscriptions();
-        $verified = $client->verifyTransaction($reference);
+        $verified = BusinessPaystack::client($this->businessOf($corporate))->verifyTransaction($reference);
 
         if (($verified['status'] ?? '') !== 'success') {
             $topup->update(['status' => CorporateWalletTopup::STATUS_FAILED]);
@@ -130,11 +137,6 @@ class TopupService
             // Amount tampering — fail loud rather than credit.
             $topup->update(['status' => CorporateWalletTopup::STATUS_FAILED]);
 
-            return false;
-        }
-
-        $corporate = $topup->corporate;
-        if ($corporate === null) {
             return false;
         }
 
@@ -169,5 +171,10 @@ class TopupService
         if ($topup->isPending()) {
             $topup->update(['status' => CorporateWalletTopup::STATUS_CANCELLED]);
         }
+    }
+
+    private function businessOf(Corporate $corporate): Tenant
+    {
+        return Tenant::query()->findOrFail($corporate->tenant_id);
     }
 }

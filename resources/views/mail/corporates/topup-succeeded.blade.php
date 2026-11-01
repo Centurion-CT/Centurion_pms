@@ -3,7 +3,7 @@
 
 Hi {{ $corporate->name }} team,
 
-Your top-up has cleared. The funds are now available for bookings, memberships, leases and desk sessions across Keverna.
+Your top-up has cleared. The funds are now available for bookings, memberships, leases and desk sessions with {{ \App\Models\Tenant::current()?->name ?? 'us' }}.
 
 <x-mail::panel>
 **Reference** &nbsp; {{ $topup->reference }}<br>
@@ -15,10 +15,10 @@ Your top-up has cleared. The funds are now available for bookings, memberships, 
 @endif
 </x-mail::panel>
 
-<x-mail::button :url="config('app.url').'/corporates/wallet'">
+<x-mail::button :url="$walletUrl">
 View wallet
 </x-mail::button>
 
 Thanks,
-The {{ config('app.name') }} team
+The {{ \App\Models\Tenant::current()?->name ?? config('brand.name') }} team
 </x-mail::message>

@@ -62,7 +62,7 @@
                 <span class="kv-trust-bar__word">this period.</span>
             </div>
             <div class="kv-trust-bar__line kv-trust-bar__line--mute">
-                <span class="kv-trust-bar__word">Keverna took</span>
+                <span class="kv-trust-bar__word">{{ config('brand.name') }} took</span>
                 <span class="kv-trust-bar__zero" data-testid="revenue-trust-fee">₦0</span>
                 <span class="kv-trust-bar__word">.</span>
             </div>

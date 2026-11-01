@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Apartments · Option A · Search results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F3F5F7; --white: #FFFFFF; --ink: #13202D; --ink-2: #4A5A6A; --ink-3: #7B8896;
+    --line: #D6DDE4; --blue: #336799; --blue-deep: #1F466B; --blue-wash: #E3ECF5; --amber: #D9902A; --full: #C5CDD5;
+    --font: 'Schibsted Grotesk', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.5 var(--font); }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+  .top { display: flex; align-items: center; justify-content: space-between; height: 76px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 700; font-size: 19px; }
+  .brand img { width: 30px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; padding: 0 22px; border-radius: 8px; border: 0; background: var(--blue); color: #fff; font: 600 15px var(--font); text-decoration: none; cursor: pointer; }
+  .btn:hover { background: var(--blue-deep); }
+  .btn:disabled { background: var(--full); cursor: default; }
+  .btn.sm { height: 40px; padding: 0 16px; font-size: 14px; }
+  .btn.line { background: var(--white); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .btn.line:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+
+  /* Search sentence, now compact */
+  .ask { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; background: var(--white); border-radius: 12px; padding: 14px 14px 14px 24px; box-shadow: 0 0 0 1px var(--line); font-size: 20px; font-weight: 600; }
+  .ask .field { color: var(--blue); border-bottom: 2px solid var(--blue); cursor: pointer; }
+  .ask .btn { margin-left: auto; }
+
+  .layout { display: grid; grid-template-columns: 1fr 360px; gap: 32px; padding: 32px 0 96px; align-items: start; }
+  .summary-line { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
+  .summary-line h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0; }
+  .summary-line span { color: var(--ink-2); }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .chip { height: 36px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--white); box-shadow: inset 0 0 0 1px var(--line); font: 500 14px var(--font); color: var(--ink-2); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: #fff; box-shadow: none; }
+
+  /* One block per location */
+  .loc { background: var(--white); border-radius: 14px; box-shadow: 0 0 0 1px var(--line); margin-bottom: 20px; overflow: hidden; scroll-margin-top: 20px; }
+  .loc-head { display: grid; grid-template-columns: 180px 1fr auto; gap: 22px; padding: 18px; align-items: center; border-bottom: 1px solid var(--line); }
+  .loc-head img { width: 180px; height: 120px; object-fit: cover; border-radius: 8px; }
+  .loc-head h2 { margin: 0 0 4px; font-size: 24px; letter-spacing: -0.02em; }
+  .loc-head p { margin: 0; color: var(--ink-2); font-size: 15px; max-width: 50ch; }
+  .loc-head .meta { margin-top: 8px; font-size: 14px; color: var(--ink-3); display: flex; gap: 14px; }
+  /* Mini bars: one per night of the stay, filled by how many apartments are free */
+  .nights { display: flex; gap: 6px; align-items: end; height: 64px; padding-right: 6px; }
+  .nights div { width: 22px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--ink-3); }
+  .nights i { display: block; width: 100%; background: var(--blue); border-radius: 3px 3px 0 0; }
+  .nights i.low { background: var(--amber); }
+  .row { display: grid; grid-template-columns: 1fr 110px 180px 130px; gap: 16px; align-items: center; padding: 16px 22px; border-bottom: 1px solid var(--line); }
+  .row:last-child { border-bottom: 0; }
+  .row.picked { background: var(--blue-wash); }
+  .row.gone { color: var(--ink-3); }
+  .row .name { font-weight: 700; font-size: 17px; }
+  .row .sub { font-size: 14px; color: var(--ink-3); }
+  .row .left { font-size: 14px; font-weight: 600; color: var(--blue); }
+  .row .left.low { color: var(--amber); }
+  .row .left.none { color: var(--ink-3); font-weight: 500; }
+  .row .price { text-align: right; }
+  .row .price b { font-size: 18px; display: block; }
+  .row .price s { color: var(--ink-3); font-size: 13px; margin-right: 6px; }
+  .row .price span { font-size: 13px; color: var(--ink-3); }
+  .row .btn { width: 100%; }
+
+  /* Stay summary */
+  .stay { position: sticky; top: 20px; background: var(--white); border-radius: 14px; box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); }
+  .steps span { padding: 14px 0; text-align: center; font-size: 13px; color: var(--ink-3); border-bottom: 3px solid transparent; }
+  .steps span.on { color: var(--ink); font-weight: 700; border-color: var(--blue); }
+  .stay-body { padding: 22px; }
+  .stay h3 { margin: 0 0 4px; font-size: 20px; }
+  .stay .where { color: var(--ink-2); font-size: 15px; margin: 0 0 18px; }
+  .stay dl { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 0 0 18px; font-size: 15px; }
+  .stay dt { color: var(--ink-2); }
+  .stay dd { margin: 0; text-align: right; }
+  .stay .total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; border-top: 1px solid var(--line); margin-bottom: 18px; }
+  .stay .total b { font-size: 28px; letter-spacing: -0.02em; }
+  .stay .btn { width: 100%; height: 52px; font-size: 16px; }
+  .stay .fine { font-size: 13px; color: var(--ink-3); margin: 12px 0 0; }
+  .stay .empty { color: var(--ink-2); font-size: 15px; margin: 0; }
+
+  @media (max-width: 1000px) {
+    .layout { grid-template-columns: 1fr; }
+    .stay { position: fixed; top: auto; left: 0; right: 0; bottom: 0; border-radius: 14px 14px 0 0; z-index: 5; }
+    .steps, .stay dl, .stay .where, .stay .fine { display: none; }
+    .stay-body { display: flex; align-items: center; gap: 14px; padding: 12px 16px; }
+    .stay h3 { font-size: 15px; }
+    .stay .total { border: 0; padding: 0; margin: 0 0 0 auto; }
+    .stay .total span { display: none; }
+    .stay .total b { font-size: 20px; }
+    .stay .btn { width: auto; height: 46px; }
+    .layout { padding-bottom: 120px; }
+  }
+  @media (max-width: 720px) {
+    .wrap { padding: 0 16px; }
+    .ask { font-size: 16px; padding: 14px; }
+    .ask .btn { width: 100%; }
+    .loc-head { grid-template-columns: 96px 1fr; }
+    .loc-head img { width: 96px; height: 96px; }
+    .nights { grid-column: 1 / -1; }
+    .row { grid-template-columns: 1fr auto; }
+    .row .left { grid-row: 2; }
+    .row .btn { grid-column: 1 / -1; }
+    .summary-line { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="home.html"><img src="../assets/logo.png" alt="">Centurion Apartments</a>
+  <a class="btn line sm" href="tel:+2348162417819">Call 0816 241 7819</a>
+</header>
+
+<div class="wrap">
+  <div class="ask" role="search">
+    <span>In <span class="field" tabindex="0" role="button">all 5 locations</span></span>
+    <span>from <span class="field" tabindex="0" role="button">Fri 6 Nov</span> to <span class="field" tabindex="0" role="button">Mon 9 Nov</span></span>
+    <span>for <span class="field" tabindex="0" role="button">2 guests</span></span>
+    <button class="btn sm" type="button">Update</button>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="summary-line">
+        <h1 id="count"></h1>
+        <span>3 nights · prices are for the whole apartment</span>
+      </div>
+      <div class="chips" role="group" aria-label="Filter by location" id="chips"></div>
+      <div id="results"></div>
+    </div>
+
+    <aside class="stay" aria-live="polite">
+      <div class="steps"><span class="on">1 Apartment</span><span>2 Your details</span><span>3 Pay</span></div>
+      <div class="stay-body" id="stay"></div>
+    </aside>
+  </div>
+</div>
+
+<script src="../assets/data.js"></script>
+<script>
+  const L = CENTURION.locations, NIGHTS = 3, days = ['Fri', 'Sat', 'Sun'];
+  let filter = 'all', picked = null;
+
+  const chips = document.getElementById('chips');
+  chips.innerHTML = [['all', 'All locations'], ...L.map(l => [l.slug, l.name])]
+    .map(([k, n]) => `<button class="chip" data-k="${k}" aria-pressed="${k === filter}">${n}</button>`).join('');
+  chips.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; filter = b.dataset.k; render(); });
+
+  function render() {
+    chips.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.k === filter));
+    const shown = L.filter(l => filter === 'all' || l.slug === filter);
+    const free = shown.reduce((n, l) => n + l.types.filter(t => t.left > 0).length, 0);
+    document.getElementById('count').textContent = `${free} apartment types free`;
+    document.getElementById('results').innerHTML = shown.map(l => `
+      <section class="loc" id="${l.slug}">
+        <div class="loc-head">
+          <img src="../assets/${l.photo}" alt="">
+          <div>
+            <h2>${l.name}</h2>
+            <p>${l.note}</p>
+            <div class="meta"><span>${l.address}</span>${l.rating ? `<span>${l.rating}/10 · ${l.reviews} reviews</span>` : ''}</div>
+          </div>
+          <div class="nights" title="Apartments free each night">
+            ${days.map((d, i) => { const f = Math.max(0, l.free - i); return `<div><i class="${f <= 2 ? 'low' : ''}" style="height:${Math.max(4, f * 8)}px"></i>${d}</div>`; }).join('')}
+          </div>
+        </div>
+        ${l.types.map((t, i) => {
+          const id = l.slug + i, on = picked === id, gone = t.left === 0;
+          return `<div class="row ${on ? 'picked' : ''} ${gone ? 'gone' : ''}">
+            <div><div class="name">${t.name}</div><div class="sub">Sleeps ${t.sleeps} · kitchen · Wi‑Fi · 24h power</div></div>
+            <div class="left ${gone ? 'none' : t.left <= 1 ? 'low' : ''}">${gone ? 'Booked' : t.left === 1 ? 'Last one' : t.left + ' left'}</div>
+            <div class="price num">${t.was ? `<s>${naira(t.was)}</s>` : ''}<b>${naira(t.rate)}</b><span>${naira(t.rate * NIGHTS)} for ${NIGHTS} nights</span></div>
+            <button class="btn ${on ? '' : 'line'} sm" data-pick="${id}" ${gone ? 'disabled' : ''}>${gone ? 'Booked' : on ? 'Chosen' : 'Choose'}</button>
+          </div>`;
+        }).join('')}
+      </section>`).join('');
+    stay();
+  }
+
+  document.getElementById('results').addEventListener('click', e => {
+    const b = e.target.closest('[data-pick]'); if (!b) return; picked = b.dataset.pick; render();
+  });
+
+  function stay() {
+    const el = document.getElementById('stay');
+    const l = picked && L.find(l => picked.startsWith(l.slug) && l.types[picked.slice(l.slug.length)]);
+    if (!l) { el.innerHTML = '<p class="empty">Choose an apartment to see the total. You can still change dates or location here.</p><div class="total" style="border:0"><span></span></div><button class="btn" disabled>Continue</button>'; return; }
+    const t = l.types[picked.slice(l.slug.length)];
+    el.innerHTML = `
+      <div><h3>${t.name}</h3><p class="where">Centurion ${l.name} · ${l.address}</p></div>
+      <dl class="num"><dt>Fri 6 Nov to Mon 9 Nov</dt><dd>${NIGHTS} nights</dd><dt>${naira(t.rate)} × ${NIGHTS}</dt><dd>${naira(t.rate * NIGHTS)}</dd><dt>Guests</dt><dd>2</dd></dl>
+      <div class="total num"><span>Total</span><b>${naira(t.rate * NIGHTS)}</b></div>
+      <button class="btn">Continue</button>
+      <p class="fine">Free cancellation up to 24 hours before check-in. Pay by card or transfer on the next step.</p>`;
+  }
+
+  picked = 'wuse-21';
+  render();
+</script>
+</body>
+</html>

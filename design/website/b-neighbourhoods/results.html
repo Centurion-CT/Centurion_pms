@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centurion Apartments · Option B · Availability</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --stone: #E8ECE8; --paper: #F6F7F5; --forest: #173A30; --forest-2: #24503F;
+    --ink: #17201C; --ink-2: #4C5A53; --ink-3: #7E8A84; --line: #CDD5D0; --brass: #B07F27;
+    --display: 'Bodoni Moda', Georgia, serif; --body: 'Manrope', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.6 var(--body); }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 3px solid var(--brass); outline-offset: 3px; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 48px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 24px; border: 0; border-radius: 2px; background: var(--forest); color: #fff; font: 600 15px var(--body); text-decoration: none; cursor: pointer; }
+  .btn:hover { background: var(--forest-2); }
+  .btn.line { background: transparent; color: var(--forest); box-shadow: inset 0 0 0 1px var(--forest); }
+  .btn.line:hover { background: var(--forest); color: #fff; }
+  .btn:disabled { background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1px var(--line); cursor: default; }
+
+  header.bar { position: sticky; top: 0; z-index: 4; background: var(--forest); color: #fff; }
+  .bar-in { display: flex; align-items: center; gap: 32px; height: 76px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 600; }
+  .brand img { width: 28px; filter: brightness(0) invert(1); }
+  .search { display: flex; margin-left: auto; background: rgba(255,255,255,.08); }
+  .search span { padding: 10px 20px; border-right: 1px solid rgba(255,255,255,.14); font-size: 14px; }
+  .search span small { display: block; font-size: 12px; opacity: .65; }
+  .search button { background: #fff; color: var(--forest); border: 0; padding: 0 22px; font: 600 14px var(--body); cursor: pointer; }
+
+  .title { padding-top: 64px; padding-bottom: 40px; display: flex; justify-content: space-between; align-items: end; gap: 40px; }
+  .title h1 { font: 400 64px/1.02 var(--display); margin: 0; letter-spacing: -0.02em; max-width: 14ch; }
+  .jump { display: flex; gap: 22px; flex-wrap: wrap; font-size: 15px; }
+  .jump a { text-decoration: none; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+  .jump a:hover { border-color: var(--ink); }
+
+  .hood { display: grid; grid-template-columns: 420px 1fr; gap: 56px; padding: 48px 0; border-top: 1px solid var(--line); scroll-margin-top: 90px; }
+  .hood-side { position: sticky; top: 100px; align-self: start; }
+  .hood-side img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; margin-bottom: 20px; }
+  .hood-side h2 { font: 400 48px/1 var(--display); margin: 0 0 12px; }
+  .hood-side p { margin: 0 0 8px; color: var(--ink-2); font-size: 15px; }
+  .hood-side .addr { font-size: 14px; color: var(--ink-3); }
+  .apt { display: grid; grid-template-columns: 200px 1fr auto; gap: 28px; padding: 24px 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .apt:first-child { padding-top: 0; }
+  .apt img { width: 200px; height: 140px; object-fit: cover; }
+  .apt h3 { font: 400 28px/1.1 var(--display); margin: 0 0 6px; }
+  .apt .facts { font-size: 14px; color: var(--ink-2); margin: 0 0 10px; }
+  .apt .avail { font-size: 14px; font-weight: 600; color: var(--forest-2); }
+  .apt .avail.low { color: var(--brass); }
+  .apt .avail.none { color: var(--ink-3); font-weight: 500; }
+  .apt .price { text-align: right; min-width: 190px; }
+  .apt .price b { display: block; font: 400 30px/1.1 var(--display); }
+  .apt .price span { display: block; font-size: 13px; color: var(--ink-3); margin-bottom: 12px; }
+  .apt.gone { opacity: .55; }
+
+  /* Booking drawer */
+  .scrim { position: fixed; inset: 0; background: rgba(10,28,22,.4); opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 8; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: 100%; background: var(--paper); z-index: 9; transform: translateX(100%); transition: transform .35s cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column; }
+  .open .scrim { opacity: 1; pointer-events: auto; }
+  .open .drawer { transform: none; }
+  .drawer img { width: 100%; height: 220px; object-fit: cover; }
+  .drawer-body { padding: 28px 32px; overflow: auto; flex: 1; }
+  .drawer h2 { font: 400 36px/1.1 var(--display); margin: 0 0 4px; }
+  .drawer .where { color: var(--ink-2); margin: 0 0 24px; }
+  .drawer dl { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin: 0 0 22px; padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .drawer dt { color: var(--ink-2); }
+  .drawer dd { margin: 0; text-align: right; }
+  .drawer .total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; }
+  .drawer .total b { font: 400 40px var(--display); }
+  .drawer label { display: block; font-size: 13px; color: var(--ink-2); margin-bottom: 14px; }
+  .drawer input { display: block; width: 100%; height: 48px; margin-top: 6px; border: 1px solid var(--line); background: #fff; padding: 0 14px; font: 500 16px var(--body); }
+  .drawer-foot { padding: 20px 32px; border-top: 1px solid var(--line); background: #fff; }
+  .drawer-foot .btn { width: 100%; height: 54px; font-size: 16px; }
+  .drawer-foot p { margin: 10px 0 0; font-size: 13px; color: var(--ink-3); text-align: center; }
+  .close { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: #fff; font-size: 20px; cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .drawer, .scrim { transition: none; } }
+
+  @media (max-width: 1100px) {
+    .hood { grid-template-columns: 1fr; gap: 28px; }
+    .hood-side { position: static; }
+    .hood-side img { aspect-ratio: 16 / 9; }
+  }
+  @media (max-width: 720px) {
+    .wrap { padding: 0 16px; }
+    .bar-in { flex-wrap: wrap; height: auto; padding: 12px 0; gap: 10px; }
+    .search { margin-left: 0; width: 100%; overflow-x: auto; }
+    .search span { padding: 8px 12px; white-space: nowrap; }
+    .title { flex-direction: column; align-items: start; padding-top: 36px; }
+    .title h1 { font-size: 40px; }
+    .hood-side h2 { font-size: 38px; }
+    .apt { grid-template-columns: 96px 1fr; gap: 14px; }
+    .apt img { width: 96px; height: 96px; }
+    .apt h3 { font-size: 22px; }
+    .apt .price { grid-column: 1 / -1; text-align: left; display: flex; align-items: center; justify-content: space-between; min-width: 0; }
+    .apt .price span { margin: 0; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="home.html"><img src="../assets/logo.png" alt="">Centurion</a>
+    <div class="search" role="search">
+      <span><small>Where</small>Any neighbourhood</span>
+      <span><small>Dates</small>Fri 6 – Mon 9 Nov</span>
+      <span><small>Guests</small>2</span>
+      <button type="button">Change</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="title">
+    <h1>Free for your three nights in Abuja</h1>
+    <nav class="jump" aria-label="Jump to neighbourhood" id="jump"></nav>
+  </div>
+  <div id="list"></div>
+</main>
+
+<div id="booking">
+  <div class="scrim" data-close></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title" id="drawer"></aside>
+</div>
+
+<script src="../assets/data.js"></script>
+<script>
+  const L = CENTURION.locations, NIGHTS = 3;
+  const pics = ['bedroom-bright.jpg', 'living-window.jpg', 'living-cream-2.jpg', 'living-open.jpg', 'bedroom-dark.jpg', 'living-warm.jpg'];
+  document.getElementById('jump').innerHTML = L.map(l => `<a href="#${l.slug}">${l.name}</a>`).join('');
+  document.getElementById('list').innerHTML = L.map(l => `
+    <section class="hood" id="${l.slug}">
+      <div class="hood-side">
+        <img src="../assets/${l.photo}" alt="${l.name}">
+        <h2>${l.name}</h2>
+        <p>${l.note}</p>
+        <p class="addr">${l.address}${l.rating ? ` · ${l.rating}/10 from ${l.reviews} guests` : ''}</p>
+      </div>
+      <div>${l.types.map((t, i) => {
+        const gone = t.left === 0;
+        return `<article class="apt ${gone ? 'gone' : ''}">
+          <img src="../assets/${pics[(i + l.slug.length) % pics.length]}" alt="">
+          <div>
+            <h3>${t.name}</h3>
+            <p class="facts">Sleeps ${t.sleeps} · full kitchen · workspace · Wi‑Fi</p>
+            <span class="avail ${gone ? 'none' : t.left === 1 ? 'low' : ''}">${gone ? 'Taken for these dates' : t.left === 1 ? 'One left for these dates' : t.left + ' free for these dates'}</span>
+          </div>
+          <div class="price">
+            <div><b>${naira(t.rate)}</b><span>a night · ${naira(t.rate * NIGHTS)} in total</span></div>
+            <button class="btn ${gone ? '' : 'line'}" data-book="${l.slug}|${i}" ${gone ? 'disabled' : ''}>${gone ? 'Taken' : 'Book this'}</button>
+          </div>
+        </article>`;
+      }).join('')}</div>
+    </section>`).join('');
+
+  const booking = document.getElementById('booking'), drawer = document.getElementById('drawer');
+  function open(slug, i) {
+    const l = L.find(x => x.slug === slug), t = l.types[i];
+    drawer.innerHTML = `
+      <button class="close" data-close aria-label="Close">×</button>
+      <img src="../assets/${l.photo}" alt="">
+      <div class="drawer-body">
+        <h2 id="d-title">${t.name}</h2>
+        <p class="where">Centurion ${l.name}, ${l.address}</p>
+        <dl><dt>Check in</dt><dd>Fri 6 Nov, from 1pm</dd><dt>Check out</dt><dd>Mon 9 Nov, by noon</dd><dt>${naira(t.rate)} × ${NIGHTS} nights</dt><dd>${naira(t.rate * NIGHTS)}</dd></dl>
+        <div class="total"><span>Total</span><b>${naira(t.rate * NIGHTS)}</b></div>
+        <label>Full name<input autocomplete="name" placeholder="As on your ID"></label>
+        <label>Phone<input autocomplete="tel" placeholder="080…"></label>
+        <label>Email<input autocomplete="email" placeholder="For your confirmation"></label>
+      </div>
+      <div class="drawer-foot"><button class="btn">Pay ${naira(t.rate * NIGHTS)}</button><p>Card or bank transfer. Free cancellation until 24 hours before check-in.</p></div>`;
+    booking.classList.add('open');
+    drawer.querySelector('.close').focus();
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-book]');
+    if (b) { const [s, i] = b.dataset.book.split('|'); open(s, +i); }
+    if (e.target.closest('[data-close]')) booking.classList.remove('open');
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') booking.classList.remove('open'); });
+  if (location.search.includes('open')) open('zone-4', 0);
+</script>
+</body>
+</html>

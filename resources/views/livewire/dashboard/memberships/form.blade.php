@@ -112,7 +112,7 @@
             <fieldset class="lp-fieldset" data-testid="corporate-fieldset">
                 <legend>Corporate (optional)</legend>
                 <p class="lp-form-help" style="margin-top: 4px;">
-                    Attribute this membership to a Keverna corporate. The first period is held
+                    Attribute this membership to one of your corporate clients. The first period is held
                     against the corporate's wallet at the negotiated rate.
                 </p>
                 <div class="grid gap-5 sm:grid-cols-2 mt-3">

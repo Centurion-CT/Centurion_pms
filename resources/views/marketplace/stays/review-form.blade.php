@@ -1,4 +1,4 @@
-@extends('layouts.marketplace', ['title' => 'Review your stay · Keverna Stays'])
+@extends('layouts.marketplace', ['title' => 'Review your stay · '.\App\Models\Tenant::current()?->name])
 
 @section('content')
 @php
@@ -12,7 +12,7 @@
         <span style="width: 24px; height: 24px; border-radius: 6px; background: #14171A; color: #fff; display: inline-flex; align-items: center; justify-content: center;">
             <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
         </span>
-        Keverna
+        {{ \App\Models\Tenant::current()?->name }}
     </a>
 
     <h1 style="font-size: clamp(22px, 3.5vw, 28px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 6px;">

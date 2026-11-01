@@ -160,6 +160,7 @@ final class CreateStaysBooking
         $property = Property::query()
             ->withoutGlobalScope(TenantScope::class)
             ->where('public_slug', $input['property_slug'])
+            ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
             ->where('is_listed_publicly', true)
             ->with('tenant')
             ->first();

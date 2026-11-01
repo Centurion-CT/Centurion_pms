@@ -71,6 +71,13 @@ it('prefers a verified custom domain for primaryHost', function (): void {
     expect($tenant->primaryHost())->toBe('reservations.grandpalace.com');
 });
 
+it('keeps primaryHost on the subdomain until the own domain is live', function (): void {
+    $tenant = Tenant::factory()->withCustomDomain('book.grandpalace.com')
+        ->create(['slug' => 'grand-palace', 'custom_domain_live_at' => null]);
+
+    expect($tenant->primaryHost())->toBe('grand-palace.keverna.test');
+});
+
 it('ignores an unverified custom domain for primaryHost', function (): void {
     $tenant = Tenant::factory()->create([
         'slug' => 'pending-tenant',

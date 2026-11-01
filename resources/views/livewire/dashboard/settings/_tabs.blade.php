@@ -5,6 +5,7 @@
     $myRole = auth('web')->user()?->role ?? \App\Enums\OperatorRole::Manager;
     $tabs = [
         ['key' => 'profile',  'label' => 'Profile',  'route' => 'tenant.settings.profile',  'module' => 'settings_profile'],
+        ['key' => 'business', 'label' => 'Business', 'route' => 'tenant.settings.business', 'module' => 'settings'],
         ['key' => 'property', 'label' => 'Property', 'route' => 'tenant.settings.property', 'module' => 'settings'],
     ];
     $tabs = array_values(array_filter($tabs, fn ($t) => $myRole->canAccessModule($t['module'])));

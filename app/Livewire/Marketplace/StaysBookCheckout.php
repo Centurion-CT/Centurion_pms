@@ -271,6 +271,7 @@ final class StaysBookCheckout extends Component
         $property = Property::query()
             ->withoutGlobalScope(TenantScope::class)
             ->where('public_slug', $this->slug)
+            ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
             ->where('is_listed_publicly', true)
             ->with(['media', 'tenant'])
             ->first();
@@ -550,6 +551,7 @@ final class StaysBookCheckout extends Component
         $property = Property::query()
             ->withoutGlobalScope(TenantScope::class)
             ->where('public_slug', $this->slug)
+            ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
             ->with('tenant')
             ->first();
         if ($property === null) {
@@ -632,6 +634,7 @@ final class StaysBookCheckout extends Component
         $tenantId = (int) Property::query()
             ->withoutGlobalScope(TenantScope::class)
             ->where('public_slug', $this->slug)
+            ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
             ->value('tenant_id');
 
         // Prefer a match on the property's own tenant - the same

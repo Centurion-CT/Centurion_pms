@@ -24,7 +24,7 @@ class EmailOtpMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Your '.config('app.name').' verification code');
+        return new Envelope(subject: 'Your '.config('brand.name').' verification code');
     }
 
     public function content(): Content

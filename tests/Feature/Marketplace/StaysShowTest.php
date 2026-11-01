@@ -22,6 +22,7 @@ function seedShowProperty(string $tenantSlug, array $overrides = []): Property
 {
     $tenant = Tenant::factory()->create(['slug' => $tenantSlug]);
     $tenant->makeCurrent();
+    onBusinessHost($tenantSlug);
     $city = $overrides['city'] ?? 'Lagos';
     $property = Property::factory()->for($tenant)->create(array_merge([
         'name'  => 'Stays Show Property',
@@ -71,6 +72,7 @@ it('404s for an off-market property even if the slug exists', function (): void 
 it('404s for a property with no active rooms', function (): void {
     $tenant = Tenant::factory()->create(['slug' => 'no-rooms']);
     $tenant->makeCurrent();
+    onBusinessHost('no-rooms');
     $prop = Property::factory()->for($tenant)->create([
         'name' => 'Empty Property',
         'is_listed_publicly' => true,
@@ -82,6 +84,9 @@ it('404s for a property with no active rooms', function (): void {
 });
 
 it('404s for a slug that does not exist', function (): void {
+    Tenant::factory()->create(['slug' => 'show-missing']);
+    onBusinessHost('show-missing');
+
     $this->get(route('marketplace.stays.show', ['slug' => 'nowhere-xyz-123']))
         ->assertNotFound();
 });

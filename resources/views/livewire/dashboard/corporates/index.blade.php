@@ -15,7 +15,7 @@
                     Corporates
                 </h1>
                 <p class="mt-2 text-[14px]" style="color: var(--color-ink-soft); max-width: 620px;">
-                    Register a corporate to profile their staff for pre-authorized check-in, or view the ones you have done business with. Corporates onboarded centrally by Keverna stay read-only here.
+                    Register a corporate to profile their staff for pre-authorized check-in, or view the ones you have done business with.
                 </p>
                 <div class="lp-res-idx-hero-actions">
                     <a href="{{ route('tenant.corporates.create') }}" wire:navigate
@@ -237,7 +237,7 @@
             @include('livewire.dashboard._partials._empty', [
                 'icon'  => 'sparkle',
                 'title' => 'No corporate bookings yet.',
-                'sub'   => 'Toggle "Accept Keverna Corporates" on your property settings so onboarded companies can book with you at negotiated rates.',
+                'sub'   => 'Turn on "Accept corporate bookings" in your property settings so your corporate clients can book at their negotiated rates.',
             ])
         </section>
     @else

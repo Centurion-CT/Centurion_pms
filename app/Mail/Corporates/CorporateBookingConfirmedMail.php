@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mail\Corporates;
 
+use App\Mail\Bookings\Concerns\BindsBookingTenant;
 use App\Models\Booking;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,6 +26,7 @@ use Spatie\Multitenancy\Jobs\NotTenantAware;
  */
 class CorporateBookingConfirmedMail extends Mailable implements NotTenantAware, ShouldQueue
 {
+    use BindsBookingTenant;
     use Queueable;
     use SerializesModels;
 

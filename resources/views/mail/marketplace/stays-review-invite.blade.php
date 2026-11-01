@@ -12,9 +12,9 @@ raising the bar.
 Leave a review
 @endcomponent
 
-If you had any trouble during your stay, just reply to this email
-and we'll loop in the property.
+If anything went wrong during your stay, call the front desk and
+we'll put it right.
 
 Thanks,<br>
-Keverna Stays
+The team at {{ $propertyName }}
 @endcomponent

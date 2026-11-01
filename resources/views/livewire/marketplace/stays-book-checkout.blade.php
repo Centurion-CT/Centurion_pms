@@ -216,7 +216,7 @@
             <span class="kv-brand-mark" aria-hidden>
                 <svg viewBox="0 0 12 12" fill="none"><path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
             </span>
-            <span>Keverna</span>
+            <span>{{ \App\Models\Tenant::current()?->name }}</span>
         </a>
 
         {{-- Back-to-property escape. Preserves the guest's date +
@@ -565,8 +565,8 @@
 
                     @if ($bd['platform_fee'] > 0)
                         <div class="kv-summary-line" data-testid="checkout-line-platform">
-                            <span title="Keverna's service fee for the marketplace booking">
-                                Keverna service fee
+                            <span title="The booking fee for online bookings">
+                                {{ config('brand.name') }} service fee
                                 <!-- <span style="color: #6A6A6A; font-size: 12px;">
                                     ({{ rtrim(rtrim(number_format($bd['platform_fee_percent'], 1), '0'), '.') }}%)
                                 </span> -->

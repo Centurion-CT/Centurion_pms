@@ -27,7 +27,7 @@ beforeEach(function (): void {
 });
 
 afterEach(function (): void {
-    // Tenant::forgetCurrent() isn't strictly needed (SoloTenantFinder
+    // Tenant::forgetCurrent() isn't strictly needed (HostTenantFinder
     // memoises on the request boundary and each test builds a fresh
     // Livewire request) but the SaaS-era test conventions did this
     // explicitly, so keep the pattern.

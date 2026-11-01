@@ -118,6 +118,7 @@ final class StaysReviewController
         $booking = Booking::query()
             ->withoutGlobalScope(TenantScope::class)
             ->where('booking_ref', $bookingRef)
+            ->where('tenant_id', Tenant::current()?->getKey()) // this business only (docs/MULTITENANCY.md)
             ->with([
                 'tenant',
                 'room' => fn ($q) => $q->withoutGlobalScope(TenantScope::class),

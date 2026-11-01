@@ -43,7 +43,7 @@ beforeEach(function (): void {
     collect(range(1, 2))->each(fn ($n) => Room::factory()
         ->for($this->tenant)->for($this->property)->for($this->standard, 'category')
         ->create(['room_number' => 'S'.$n, 'status' => RoomStatus::Active]));
-    Tenant::forgetCurrent();
+    // The business stays current: these pages only run on its own address.
 });
 
 afterEach(fn () => Tenant::forgetCurrent());
@@ -110,7 +110,7 @@ it('renders a full guest-side breakdown - room + Keverna service fee + processin
     $c->assertSee('data-testid="checkout-line-room"', false);
     $c->assertSee('data-testid="checkout-line-platform"', false);
     $c->assertSee('data-testid="checkout-line-processing"', false);
-    $c->assertSee('Keverna service fee');
+    $c->assertSee(config('brand.name').' service fee');
     $c->assertSee('Payment processing');
     $c->assertSee('data-testid="checkout-total"', false);
 });

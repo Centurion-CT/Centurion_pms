@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\CorporateMemberRole;
 use App\Enums\CorporateMemberStatus;
+use App\Multitenancy\BelongsToTenant;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,6 +34,7 @@ use Illuminate\Support\Carbon;
  */
 class CorporateMember extends Authenticatable implements CanResetPasswordContract
 {
+    use BelongsToTenant;
     use Notifiable;
     use SoftDeletes;
 

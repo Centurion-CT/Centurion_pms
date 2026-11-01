@@ -25,7 +25,7 @@ use Throwable;
 final class NearbyPlaceGeocoder
 {
     private const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
-    private const USER_AGENT = 'Keverna/1.0 (hello@keverna.com)';
+
     private const CACHE_TTL_DAYS = 30;
     private const TIMEOUT_SECONDS = 4;
 
@@ -59,7 +59,7 @@ final class NearbyPlaceGeocoder
     {
         try {
             $response = Http::withHeaders([
-                'User-Agent' => self::USER_AGENT,
+                'User-Agent' => config('brand.name').'/1.0 (hello@'.config('keverna.central_domain').')',
                 'Accept' => 'application/json',
             ])
                 ->timeout(self::TIMEOUT_SECONDS)

@@ -55,7 +55,7 @@ class EnsureHostAppOperator
         if (! in_array($operator->role, self::ALLOWED_ROLES, true)) {
             return response()->json([
                 'error' => 'role_not_supported',
-                'detail' => 'This app is for owners, managers and front desk. Housekeeping uses the Keverna staff app.',
+                'detail' => 'This app is for owners, managers and front desk. Housekeeping uses the '.config('brand.name').' Staff app.',
             ], 403);
         }
 

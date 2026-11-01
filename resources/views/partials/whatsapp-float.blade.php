@@ -1,47 +1,25 @@
 {{--
-    Floating WhatsApp CTA. Fixed to the bottom-right on every public
-    marketing surface (landing, pricing, /for-hosts, /demo, etc.).
-    Uses Keverna's olive palette so it reads as brand-consistent while
-    keeping the WhatsApp glyph so visitors recognise what tapping it
-    does.
-
-    Number is +234 704 304 3061 → the wa.me path strips the leading
-    plus per WhatsApp's format. Pre-fills a friendly opener so the
-    first thing that lands on our number gives us a bit of context
-    (which page they came from).
+    Floating WhatsApp button to the software's support line, on the staff
+    sign-in pages. The number is SUPPORT_WHATSAPP (config
+    keverna.support_whatsapp, digits with country code, no plus); with no
+    number set the button isn't shown. It used to point at Keverna's
+    support numbers (docs/MULTITENANCY.md, step 6).
 
     Positioning avoids stacking on top of the cookie-consent banner
     (bottom-right on desktop, full width on mobile) by lifting a hair
     higher and adding a wider safe-area margin.
 --}}
 @php
-    // Number swaps per visitor region so support in Nairobi lands on
-    // a Kenyan line, Cape Town on a South African line, etc. Reads the
-    // 90-day `kv_region` cookie set by the region picker; Nigeria is
-    // the fallback if unset (Keverna is Nigeria-first). The map must
-    // stay in sync with KV_COUNTRIES in resources/views/partials/region-picker.blade.php.
-    $waNumbersByRegion = [
-        'NG'   => '2347043043061',
-        'KE'   => '254700043061',
-        'ZA'   => '27100043061',
-        'GH'   => '233240043061',
-        'INTL' => '2347043043061',
-    ];
-    $picked = (string) request()->cookie('kv_region', '');
-    $waNumber = $waNumbersByRegion[$picked] ?? $waNumbersByRegion['NG'];
-
-    // Message differs by context so the first contact with support
-    // lands on Keverna's number already anchored on what the visitor
-    // was trying to do. `$context` is passed via @include(..., ['context' => 'auth'])
-    // from the auth layouts; marketing surfaces get the default.
-    $context = $context ?? 'marketing';
+    $waNumber = preg_replace('/\D+/', '', (string) config('keverna.support_whatsapp'));
+    $brand = (string) config('brand.name');
+    $context = $context ?? 'auth';
     $waMessage = match ($context) {
-        'auth'    => "Hi Keverna, I'm having trouble signing in and need a hand.",
-        'portal'  => 'Hi Keverna, I have a question about the corporate portal.',
-        default   => 'Hi Keverna, I have a question about running my property.',
+        'portal' => "Hi {$brand} support, I have a question about the corporate portal.",
+        default => "Hi {$brand} support, I'm having trouble signing in and need a hand.",
     };
     $waHref = 'https://wa.me/'.$waNumber.'?text='.rawurlencode($waMessage);
 @endphp
+@if ($waNumber !== '')
 
 <style>
     .kv-wa-float {
@@ -154,7 +132,7 @@
    target="_blank" rel="noopener noreferrer"
    class="kv-wa-float"
    data-testid="whatsapp-float"
-   aria-label="Chat with Keverna on WhatsApp">
+   aria-label="Chat with {{ $brand }} support on WhatsApp">
     {{-- Two rippling olive rings behind the button. Purely decorative. --}}
     <span class="kv-wa-ring" aria-hidden="true"></span>
     <span class="kv-wa-ring kv-wa-ring--delay" aria-hidden="true"></span>
@@ -164,3 +142,4 @@
         <path d="M16.03 4C9.42 4 4.06 9.35 4.06 15.96c0 2.11.55 4.17 1.61 5.98L4 28l6.24-1.63a11.9 11.9 0 0 0 5.79 1.47h.01c6.6 0 11.96-5.35 11.96-11.95 0-3.19-1.24-6.19-3.5-8.44a11.9 11.9 0 0 0-8.47-3.45zm0 21.8h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.7.97.99-3.6-.24-.37a9.83 9.83 0 0 1-1.5-5.25c0-5.44 4.42-9.86 9.86-9.86 2.63 0 5.1 1.03 6.96 2.9a9.79 9.79 0 0 1 2.89 6.98c0 5.44-4.42 9.86-9.85 9.86zm5.4-7.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.66.15-.2.3-.76.96-.94 1.16-.17.2-.34.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.64-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.51.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.66-1.6-.91-2.19-.24-.57-.48-.49-.66-.5l-.56-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.1 3.2 5.09 4.49.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.75-.72 2-1.41.24-.7.24-1.29.17-1.41-.07-.13-.27-.2-.57-.34z"/>
     </svg>
 </a>
+@endif

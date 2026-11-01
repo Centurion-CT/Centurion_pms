@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\Domains\CheckOwnDomain;
 use App\Enums\CustomDomainStatus;
 use App\Jobs\Domains\AttachCustomDomainToDokwe;
 use App\Jobs\Domains\VerifyCustomDomain;
@@ -65,12 +66,12 @@ it('VerifyCustomDomain dispatches AttachCustomDomainToDokwe on success', functio
     ]);
 
     $dns = new FakeDnsResolver;
-    $dns->withCname('reservations.grandpalace.com', 'cname.keverna.test')
-        ->withTxt('reservations.grandpalace.com', ['kev_token_abc']);
+    $dns->withTxt('_centurion-verify.reservations.grandpalace.com', ['kev_token_abc']);
 
     Bus::fake([AttachCustomDomainToDokwe::class]);
+    Http::fake();
 
-    (new VerifyCustomDomain($tenant->id))->handle($dns);
+    (new VerifyCustomDomain($tenant->id))->handle($dns, app(CheckOwnDomain::class));
 
     expect($tenant->refresh()->custom_domain_status)->toBe(CustomDomainStatus::Active);
     Bus::assertDispatched(AttachCustomDomainToDokwe::class,
@@ -84,12 +85,12 @@ it('does NOT dispatch AttachCustomDomainToDokwe when DNS check fails', function 
         'custom_domain_status' => CustomDomainStatus::Pending,
     ]);
 
-    // DNS deliberately missing CNAME → verify loop must NOT cascade.
+    // DNS deliberately missing the TXT record → verify loop must NOT cascade.
     $dns = new FakeDnsResolver;
 
     Bus::fake([AttachCustomDomainToDokwe::class, VerifyCustomDomain::class]);
 
-    (new VerifyCustomDomain($tenant->id))->handle($dns);
+    (new VerifyCustomDomain($tenant->id))->handle($dns, app(CheckOwnDomain::class));
 
     Bus::assertNotDispatched(AttachCustomDomainToDokwe::class);
 });

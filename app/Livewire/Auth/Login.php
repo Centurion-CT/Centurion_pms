@@ -34,6 +34,15 @@ class Login extends Component
 
     public bool $remember = false;
 
+    /** Prefill from the "your login links" email (centurionpms.com/login). */
+    public function mount(): void
+    {
+        $email = request()->query('email');
+        if (is_string($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->email = $email;
+        }
+    }
+
     public function authenticate(): void
     {
         $this->validate();

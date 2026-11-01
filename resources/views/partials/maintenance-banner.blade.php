@@ -4,7 +4,7 @@
          data-state="{{ $window['state'] }}"
          style="background:#fef3c7;color:#78350f;padding:8px;text-align:center;">
         @if ($window['state'] === 'active')
-            Keverna is in scheduled maintenance until
+            {{ config('brand.name') }} is in scheduled maintenance until
             {{ $window['end']->format('H:i') }}. Bookings keep working but
             dashboard saves may be intermittent.
         @else
