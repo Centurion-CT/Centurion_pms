@@ -17,12 +17,11 @@ beforeEach(function (): void {
     $this->tenant = Tenant::factory()->create(['slug' => 'multi-branch', 'name' => 'Citistay']);
 });
 
-it('sends the root to the staff sign-in, even with several branches', function (): void {
+it('shows the booking page at the root, not the staff sign-in, with several branches', function (): void {
     Property::factory()->live()->for($this->tenant)->create(['name' => 'Citistay Abuja']);
     Property::factory()->live()->for($this->tenant)->create(['name' => 'Citistay Lagos']);
 
-    $this->get('http://multi-branch.keverna.test/')
-        ->assertRedirect(route('tenant.login'));
+    $this->get('http://multi-branch.keverna.test/')->assertOk();
 });
 
 it('renders a specific branch at /branches/{slug}', function (): void {

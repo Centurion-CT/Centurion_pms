@@ -94,10 +94,18 @@ it('shows each business only its own buildings and apartments', function (): voi
         ->assertOk()->assertSee('3 apartments free for your dates')->assertDontSee('Penthouse');
 });
 
-it('sends the address to the staff login while no building is live', function (): void {
+it('shows the landing page, not the staff login, while nothing can be booked yet', function (): void {
     Property::query()->withoutGlobalScopes()->where('tenant_id', $this->b->id)->update(['is_live' => false]);
+    $this->b->forceFill(['phone' => '0809 000 2222'])->save();
 
-    $this->get('http://bravo.keverna.test/')->assertRedirect(route('tenant.login'));
+    $this->get('http://bravo.keverna.test/')
+        ->assertOk()
+        ->assertSee('Bravo Homes')
+        ->assertSee('Online booking opens soon')
+        ->assertSee('0809 000 2222')
+        ->assertDontSee('Choose your address');
+
+    $this->get('http://bravo.keverna.test/apartments')->assertOk()->assertSee('Online booking opens soon');
 });
 
 it('filters by building and leaves out apartments taken for the stay', function (): void {

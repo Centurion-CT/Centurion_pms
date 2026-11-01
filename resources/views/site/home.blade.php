@@ -14,23 +14,38 @@
 
 <main>
     <div class="container">
-        <div class="hero">
-            <h1 class="display">Find a free apartment {{ $count > 1 ? 'anywhere ' : '' }}{{ $city ? 'in '.$city : 'with us' }}</h1>
-            <p class="lead">
-                @if ($count > 1)
-                    {{ $count }} buildings, live from our front desk. Pick a spot on the map and book online.
-                @else
-                    Live from our front desk. Pick your dates and book online.
-                @endif
-            </p>
-        </div>
-        <div class="search-row">
-            @include('site.partials.search', ['stay' => $stay])
-        </div>
-
         @if ($count === 0)
-            <div class="empty"><p class="lead">Online booking isn't open yet. Call us to book.</p></div>
+            {{-- Nothing bookable yet (no live building with an apartment
+                 type): the landing page still shows, with the contacts. --}}
+            <div class="hero">
+                <h1 class="display">{{ $business->siteTitle() }}</h1>
+                <p class="lead">Online booking opens soon. Until then, call or email us to book.</p>
+            </div>
+            <div class="empty" style="display:flex;gap:var(--s-3);flex-wrap:wrap">
+                @if ($business->phone)
+                    <a class="btn btn-primary btn-lg" href="tel:{{ preg_replace('/[^0-9+]/', '', $business->phone) }}">Call {{ $business->phone }}</a>
+                @endif
+                @if ($business->email)
+                    <a class="btn btn-secondary btn-lg" href="mailto:{{ $business->email }}">Email {{ $business->email }}</a>
+                @endif
+            </div>
         @else
+            <div class="hero">
+                <h1 class="display">Find a free apartment {{ $count > 1 ? 'anywhere ' : '' }}{{ $city ? 'in '.$city : 'with us' }}</h1>
+                <p class="lead">
+                    @if ($count > 1)
+                        {{ $count }} buildings, live from our front desk. Pick a spot on the map and book online.
+                    @else
+                        Live from our front desk. Pick your dates and book online.
+                    @endif
+                </p>
+            </div>
+            <div class="search-row">
+                @include('site.partials.search', ['stay' => $stay])
+            </div>
+        @endif
+
+        @if ($count > 0)
             <div class="stage" id="explore" x-data>
                 @if ($mapPins !== [])
                     <div class="map" id="map"></div>
@@ -104,6 +119,7 @@
         </section>
     @endif
 
+    @if ($count > 0)
     <section class="block">
         <div class="container">
             <div class="block-head"><h2 class="h1">How booking works</h2></div>
@@ -115,6 +131,7 @@
             </div>
         </div>
     </section>
+    @endif
 </main>
 
 @include('site.partials.footer')

@@ -38,7 +38,12 @@
                 <p class="meta">{{ $stay->label() }} · {{ $stay->adults }} {{ \Illuminate\Support\Str::plural('adult', $stay->adults) }}. Prices are for the whole apartment. The bars show the next {{ \App\Site\BookingSite::STRIP_NIGHTS }} nights; your {{ $stay->nights() }} {{ $stay->nights() === 1 ? 'is' : 'are' }} underlined.</p>
             </div>
         </div>
-        @if ($listings->isEmpty())
+        @if ($branches->isEmpty())
+            <div class="empty">
+                <p class="lead">Online booking opens soon.</p>
+                <p class="meta" style="margin-top:var(--s-2)">Until then, call @if ($business->phone){{ $business->phone }} @endif or email @if ($business->email)<a href="mailto:{{ $business->email }}">{{ $business->email }}</a> @endif to book.</p>
+            </div>
+        @elseif ($listings->isEmpty())
             <div class="empty">
                 <p class="lead">Nothing is free for every night of {{ $stay->label() }}.</p>
                 @php($filtered = $where->isNotEmpty() || $size !== '')

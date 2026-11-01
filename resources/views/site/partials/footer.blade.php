@@ -9,11 +9,13 @@
                     <p style="margin:0;max-width:32ch">{{ $site->branches()->count() }} buildings{{ $site->city() ? ' in '.$site->city() : '' }}, one front desk.</p>
                 @endif
             </div>
-            <div><h4>Locations</h4>
-                @foreach ($site->branches() as $branch)
-                    <a href="{{ route('site.results', ['where' => [$branch->slug]]) }}">{{ $branch->name }}</a>
-                @endforeach
-            </div>
+            @if ($site->branches()->isNotEmpty())
+                <div><h4>Locations</h4>
+                    @foreach ($site->branches() as $branch)
+                        <a href="{{ route('site.results', ['where' => [$branch->slug]]) }}">{{ $branch->name }}</a>
+                    @endforeach
+                </div>
+            @endif
             <div><h4>Stay</h4><a href="{{ route('site.results') }}">Apartments</a><a href="{{ route('site.manage') }}">Manage a booking</a></div>
             <div><h4>Front desk</h4>
                 @if ($business->phone)<a href="tel:{{ preg_replace('/[^0-9+]/', '', $business->phone) }}">{{ $business->phone }}</a>@endif

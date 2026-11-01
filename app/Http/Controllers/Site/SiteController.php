@@ -9,7 +9,6 @@ use App\Site\BookingSite;
 use App\Site\Listing;
 use App\Site\Stay;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -17,23 +16,18 @@ use Illuminate\Support\Collection;
  * The booking site's browsing pages on each business's address
  * (docs/MULTITENANCY.md, step 5; design: design/website/c-map):
  * the home page with the map, and the results page with its detail
- * panel. Both are plain GET pages, so every view has a shareable URL
+ * panel. `/` is always the landing page; a business with nothing
+ * bookable yet shows "online booking opens soon" with its contacts. Both are plain GET pages, so every view has a shareable URL
  * and works without JavaScript; the map is the only scripted part.
  */
 final class SiteController
 {
     public function __construct(private readonly BookingSite $site) {}
 
-    public function home(Request $request): View|RedirectResponse
+    public function home(Request $request): View
     {
         $stay = Stay::fromRequest($request);
         $branches = $this->site->branches();
-
-        // No building is live yet: the address is the staff login, as
-        // before the booking site existed.
-        if ($branches->isEmpty()) {
-            return redirect()->route('tenant.login');
-        }
         $listings = $this->site->listings($branches, $stay);
 
         return view('site.home', [

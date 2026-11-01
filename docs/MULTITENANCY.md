@@ -40,8 +40,13 @@ Rules:
   `centurionpms.com` address 301 to the own domain; `/login` and `/dashboard`
   keep working on both. If the own domain stops pointing at us, verification
   lapses and the redirect stops on its own.
-- `/` is the booking site once a business has a live building; until then it
-  redirects to `/login`.
+- `/` is always the business's booking site, never a redirect to `/login`.
+  Until it has a live building with an apartment type, the page shows the
+  business name, "Online booking opens soon" and its phone and email.
+- The platform home (sign-up, "find my business") exists only with
+  `TENANCY_MODE=domains`. In `single` mode every address is the one
+  business's booking site, so the central domain shows that, not the
+  platform home.
 
 ## Rollout switch
 
