@@ -31,6 +31,8 @@ class Business extends Component
 
     public string $brandColor = '';
 
+    public bool $listedOnStays = false;
+
     public function mount(): void
     {
         $tenant = $this->tenant();
@@ -38,6 +40,7 @@ class Business extends Component
         $this->siteTitle = (string) $tenant->site_title;
         $this->phone = (string) $tenant->phone;
         $this->email = (string) $tenant->email;
+        $this->listedOnStays = $tenant->listed_on_stays_at !== null;
 
         $color = strtolower((string) $tenant->property?->primary_color);
         $this->brandColor = $color === BusinessColor::UNSET ? '' : $color;
@@ -64,6 +67,7 @@ class Business extends Component
             'site_title' => trim((string) $data['siteTitle']) ?: null,
             'phone' => trim((string) $data['phone']) ?: null,
             'email' => strtolower(trim($data['email'])),
+            'listed_on_stays_at' => $this->listedOnStays ? ($this->tenant()->listed_on_stays_at ?? now()) : null,
         ])->save();
 
         // One colour for the business, whichever branch is looked at.

@@ -263,6 +263,22 @@ apartment and no photos:
   itself has been broken since the port: it links to a removed route. The
   new booking site replaces it.)
 
+## Stays marketplace
+
+`/stays` on the central domain lists every business that opted in
+(Settings → Business, `tenants.listed_on_stays_at`; empty by default).
+
+- `App\Platform\StaysDirectory` is the only guest-facing reader across
+  businesses. It shows live buildings with a bookable apartment type,
+  for businesses in Trial or Active, so pausing one removes it at once.
+  `properties.is_listed_publicly` is Keverna's opt-out, which defaults to
+  on, so it isn't treated as consent.
+- With dates it asks each business's own `BookingSite`, in that business's
+  context, so availability and totals match its site.
+- Booking stays on the business's address: cards link to `/apartments`
+  there, carrying the search. That needs the wildcard DNS (step 8).
+- `/stays` on a business's own address still redirects to its apartments.
+
 ## Sign-up switch
 
 `SIGNUP_OPEN` (config `keverna.signup_open`, off by default) lets the

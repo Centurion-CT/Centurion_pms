@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Platform\AddressCheckController;
 use App\Http\Controllers\Paystack\PlatformPaystackWebhookController;
 use App\Http\Controllers\Platform\OpenDashboardController;
+use App\Http\Controllers\Platform\StaysController;
 use App\Http\Middleware\EnsureSignUpOpen;
 use App\Livewire\Platform\FindBusiness;
 use App\Livewire\Platform\SignUp;
@@ -21,6 +22,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/', 'platform.home')->name('platform.home');
+
+// The marketplace: every business that chose to be listed. Throttled because
+// a search with dates checks availability business by business.
+Route::get('/stays', StaysController::class)
+    ->middleware('throttle:60,1')
+    ->name('platform.stays');
 
 Route::get('/address-check', AddressCheckController::class)
     ->middleware('throttle:60,1')
