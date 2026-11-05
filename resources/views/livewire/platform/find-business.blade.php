@@ -14,10 +14,9 @@
                     <div class="field">
                         <label for="slug">Your business address</label>
                         <div class="address">
-                            <input id="slug" wire:model="slug" placeholder="your-business" autocomplete="off" spellcheck="false" maxlength="30" aria-describedby="slug-note" autofocus
+                            <input id="slug" wire:model="slug" placeholder="your-business" autocomplete="off" spellcheck="false" aria-describedby="slug-note"
                                    x-on:input="$el.value = $el.value.toLowerCase().replace(/[^a-z0-9-]/g, '')">
                             <span class="suffix">{{ $suffix }}</span>
-                            <button class="btn btn-primary" type="submit">Go</button>
                         </div>
                         @error('slug')
                             <p class="error" id="slug-note">{{ $message }}</p>
@@ -25,16 +24,18 @@
                             <p class="hint" id="slug-note">If your business uses its own domain, you can log in there too.</p>
                         @enderror
                     </div>
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Go to my login</button>
                 </form>
 
-                <p class="or">Don't know your address?</p>
-                <form wire:submit="sendLinks" style="margin-top:16px">
+                <div class="divider"></div>
+
+                <form wire:submit="sendLinks">
                     <div class="field">
-                        <label for="email">Your work email</label>
-                        <input class="input" id="email" type="email" wire:model="email" autocomplete="email" placeholder="you@yourbusiness.com">
+                        <label for="email">Don't know your address?</label>
+                        <input class="input" id="email" type="email" wire:model="email" autocomplete="email" placeholder="Your work email">
                         @error('email')<p class="error">{{ $message }}</p>@enderror
                     </div>
-                    <button class="btn btn-outline-light btn-lg btn-block" type="submit" wire:loading.attr="disabled">Email me my login links</button>
+                    <button class="btn btn-outline btn-lg btn-block" type="submit" wire:loading.attr="disabled" wire:target="sendLinks">Email me my login links</button>
                 </form>
                 @if (config('keverna.signup_open'))
                     <p class="meta" style="margin-top:32px">New to {{ config('brand.name') }}? <a href="{{ route('platform.signup') }}">Create an account</a></p>
@@ -50,15 +51,11 @@
         <footer class="slab-foot"><span>© {{ date('Y') }} {{ config('brand.name') }}</span><a href="mailto:{{ $helpEmail }}">Need help?</a></footer>
     </section>
 
-    <aside class="side" aria-label="What the login links email looks like">
-        <div class="card" style="background:#fff;border-radius:12px;box-shadow:var(--e-soft)">
-            <div class="mail-head"><span>From {{ config('brand.name') }}</span><b>Your {{ config('brand.name') }} login links</b></div>
-            <div class="mail-body">
-                <p>Pick the business you want to log in to:</p>
-                <div class="mail-row"><span class="biz-mark">G</span><span><b>Grand Palace Suites</b><small>grandpalace{{ $suffix }} · Manager</small></span><span class="btn btn-primary btn-sm">Log in</span></div>
-                <div class="mail-row"><span class="biz-mark" style="background:#2E7D6B">S</span><span><b>Sunrise Court</b><small>sunrise-court{{ $suffix }} · Front desk</small></span><span class="btn btn-primary btn-sm">Log in</span></div>
-                <p class="meta">The links open your business's login page. Nobody can log in without your password.</p>
-            </div>
+    <aside class="side" aria-hidden="true">
+        <div>
+            <p>Your business, at its own address</p>
+            <p class="side-address">{!! str_replace('.', '.<wbr>', e('grandpalace'.$suffix)) !!}</p>
         </div>
+        <div class="side-bars" aria-hidden="true"><i></i><i></i><i></i></div>
     </aside>
 </div>

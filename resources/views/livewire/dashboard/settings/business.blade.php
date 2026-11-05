@@ -43,12 +43,23 @@
         </div>
         <p class="lp-form-help" style="margin-top: -6px;">Guests see this phone and email on your booking site.</p>
 
+        <div>
+            <label for="biz-color" class="lp-form-label">Your colour <span style="color: var(--color-ink-mute); font-weight: 400;">(optional)</span></label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="color" aria-label="Pick your colour" x-bind:value="$wire.brandColor || '#336799'" x-on:input="$wire.brandColor = $event.target.value"
+                       style="flex: none; width: 44px; height: 44px; padding: 2px; border: 1px solid var(--color-line); border-radius: 8px; background: none; cursor: pointer;">
+                <input id="biz-color" type="text" wire:model="brandColor" maxlength="7" class="lp-input" placeholder="#336799" style="max-width: 160px;" data-testid="business-color">
+            </div>
+            @error('brandColor') <p class="lp-form-error">{{ $message }}</p> @enderror
+            <p class="lp-form-help mt-1">Used on your staff sign-in page and in your emails. Leave empty to use {{ config('brand.name') }}'s.</p>
+        </div>
+
         <div style="display: flex; align-items: center; gap: 14px; padding-top: 4px; border-top: 1px solid var(--color-line-soft);">
             @if ($logo)
                 <img src="{{ $logo }}" alt="" style="width: 44px; height: 44px; object-fit: contain; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 1px var(--color-line);">
                 <p class="lp-form-help" style="margin: 0;">Your logo. Change it under <a href="{{ route('tenant.branding.photos') }}" wire:navigate>Photos</a>.</p>
             @else
-                <p class="lp-form-help" style="margin: 0;">No logo yet. Upload one under <a href="{{ route('tenant.branding.photos') }}" wire:navigate>Photos</a>; until then the {{ config('brand.name') }} mark is shown.</p>
+                <p class="lp-form-help" style="margin: 0;">No logo yet. Upload one under <a href="{{ route('tenant.branding.photos') }}" wire:navigate>Photos</a>.</p>
             @endif
         </div>
 

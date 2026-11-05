@@ -6,7 +6,6 @@ namespace App\Livewire\Auth;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -23,19 +22,11 @@ class ForgotPassword extends Component
     {
         $this->validate();
 
-        $broker = Password::broker('operators');
+        // The same answer whatever the broker says, including for a
+        // throttled email: only someone who works here can be throttled.
+        Password::broker('operators')->sendResetLink(['email' => $this->email]);
 
-        $response = $broker->sendResetLink(['email' => $this->email]);
-
-        if ($response === Password::RESET_LINK_SENT) {
-            $this->status = __($response);
-
-            return;
-        }
-
-        throw ValidationException::withMessages([
-            'email' => __($response),
-        ]);
+        $this->status = 'sent';
     }
 
     public function render(): View

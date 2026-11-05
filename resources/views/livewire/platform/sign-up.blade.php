@@ -1,26 +1,18 @@
 {{-- Sign-up (App\Livewire\Platform\SignUp). Design: design/platform/superdesign/04–06. --}}
 @php($suffix = config('keverna.tenant_domain_suffix'))
 @php($helpEmail = 'hello@'.config('keverna.central_domain'))
-@php($steps = ['business' => 'Your business', 'account' => 'Your account', 'code' => 'Confirm email'])
-@php($order = array_keys($steps))
+@php($order = ['business', 'account', 'code'])
 <div class="page">
     <section class="slab">
         <a class="logo" href="{{ route('platform.home') }}"><span class="logo-mark"><img src="{{ asset(config('brand.logo')) }}" alt=""></span>{{ config('brand.name') }}</a>
 
         <div class="slab-body">
             @if ($step !== 'done')
-                <ol class="stepper" aria-label="Sign-up steps">
-                    @foreach ($steps as $key => $label)
-                        @php($i = array_search($key, $order, true))
-                        @php($now = array_search($step, $order, true))
-                        <li @class(['done' => $i < $now, 'now' => $i === $now]) @if ($i === $now) aria-current="step" @endif>{{ $label }}</li>
-                    @endforeach
-                </ol>
+                <p class="step-of">Step {{ array_search($step, $order, true) + 1 }} of {{ count($order) }}</p>
             @endif
 
             @if ($step === 'business')
                 <h1 class="h1">Tell us about your business</h1>
-                <p class="lead">This sets up your first branch. You can add more buildings later.</p>
                 <form wire:submit="submitBusiness">
                     <div class="field">
                         <label for="name">Business name</label>
@@ -50,7 +42,7 @@
                     <div class="two">
                         <div class="field">
                             <label for="city">City</label>
-                            <input class="input" id="city" wire:model="city" wire:input.debounce.300ms="$refresh" placeholder="Abuja" autocomplete="address-level2">
+                            <input class="input" id="city" wire:model="city" placeholder="Abuja" autocomplete="address-level2">
                             @error('city')<p class="error">{{ $message }}</p>@enderror
                         </div>
                         <div class="field">
@@ -99,7 +91,7 @@
                 </form>
             @elseif ($step === 'code')
                 <h1 class="h1">Check your email</h1>
-                <p class="lead">We sent a 6-digit code to <b>{{ $email }}</b>. It expires in {{ \App\Platform\SignUpCode::TTL_MINUTES }} minutes.</p>
+                <p class="lead">We sent a 6-digit code to <b>{{ $email }}</b>. It works for {{ \App\Platform\SignUpCode::TTL_MINUTES }} minutes.</p>
                 <form wire:submit="confirm"
                       x-data="{ d: ['', '', '', '', '', ''],
                                 sync() { $wire.code = this.d.join('') },
@@ -142,23 +134,14 @@
         <footer class="slab-foot"><span>© {{ date('Y') }} {{ config('brand.name') }}</span><a href="mailto:{{ $helpEmail }}">Need help?</a></footer>
     </section>
 
-    <aside class="side" aria-label="Preview of your booking site">
-        <p class="meta">{{ $step === 'done' ? 'Your booking site is live.' : "What you're getting. This updates as you type." }}</p>
-        <div class="browser">
-            <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="burl">https://<b>{{ $previewHost }}</b></span></div>
-            <div class="site">
-                <div class="site-top"><span class="mono">{{ mb_strtoupper(mb_substr(trim($name) ?: 'Y', 0, 1)) }}</span><b>{{ trim($name) ?: 'Your business' }}</b><span class="staff">Staff log in</span></div>
-                <div class="site-hero" style="--room-photo: url('{{ asset('platform/room.jpg') }}')">
-                    <h3>{{ trim($name) ?: 'Your business' }}</h3>
-                    <p>{{ $kindLabel }} in {{ trim($city) ?: 'your city' }}</p>
-                </div>
-                <div class="site-search"><span>Check in</span><span>Check out</span><span>2 guests</span><span class="go">Search</span></div>
-            </div>
+    <aside class="side">
+        <div>
+            <p>{{ ['code' => 'Almost yours', 'done' => 'Your booking site is live'][$step] ?? 'Your booking site and staff login' }}</p>
+            <p class="side-address">{!! str_replace('.', '.<wbr>', e($previewHost)) !!}</p>
+            @if ($step === 'business')
+                <p class="side-note">One branch to start. Add more buildings and your own domain any time.</p>
+            @endif
         </div>
-        <div class="gets">
-            <div><b>{{ $previewHost }}</b>Your booking site and staff login</div>
-            <div><b>Your own domain, later</b>Add it in Settings when you're ready</div>
-            <div><b>1 branch to start</b>Add more buildings any time</div>
-        </div>
+        <div class="side-bars" aria-hidden="true"><i></i><i></i><i></i></div>
     </aside>
 </div>

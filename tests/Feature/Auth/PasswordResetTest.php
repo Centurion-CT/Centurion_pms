@@ -56,13 +56,15 @@ it('builds the reset email with a link to the staff reset page', function (): vo
     });
 });
 
-it('errors when the email is not registered', function (): void {
+it('answers the same for an unknown email, and sends nothing', function (): void {
     Notification::fake();
 
     Livewire::test(ForgotPassword::class)
         ->set('email', 'ghost@x.test')
         ->call('sendResetLink')
-        ->assertHasErrors(['email']);
+        ->assertHasNoErrors()
+        ->assertSet('status', 'sent')
+        ->assertSee('Check your email');
 
     Notification::assertNothingSent();
 });
