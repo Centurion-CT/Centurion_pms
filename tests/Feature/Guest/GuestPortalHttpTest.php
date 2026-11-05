@@ -80,6 +80,12 @@ it('keeps guests on the booking site, with no staff login in the header', functi
         ->assertDontSee('Log in');
 });
 
+it('keeps the booking page out of search and previews', function (): void {
+    $this->get('http://gphttp.keverna.test/guest/booking/'.$this->booking->booking_ref.'?token='.$this->token)
+        ->assertSee('noindex, nofollow', false)
+        ->assertDontSee('og:title', false);
+});
+
 it('404s the show page with no token', function (): void {
     $response = $this->get('http://gphttp.keverna.test/guest/booking/'.$this->booking->booking_ref);
 

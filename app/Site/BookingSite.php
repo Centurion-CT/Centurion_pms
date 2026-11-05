@@ -7,12 +7,14 @@ namespace App\Site;
 use App\Enums\RoomStatus;
 use App\Models\AvailabilityBlock;
 use App\Models\Property;
+use App\Models\Review;
 use App\Models\Room;
 use App\Models\RoomCategory;
 use App\Models\Tenant;
 use App\Services\Pricing\PricingCalculator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Throwable;
 
 /**
@@ -28,6 +30,9 @@ final class BookingSite
 {
     /** Nights in an availability strip, starting at check-in. */
     public const STRIP_NIGHTS = 14;
+
+    /** Reviews on an apartment's page. */
+    public const REVIEWS_SHOWN = 6;
 
     /** @var Collection<int, Property>|null */
     private ?Collection $branches = null;
@@ -49,11 +54,24 @@ final class BookingSite
     /** A photo for the home page's hero, or null until the business has one. */
     public function heroPhoto(): ?string
     {
+        return $this->firstPhoto()?->getUrl();
+    }
+
+    /** The picture on a link to the site: a small photo, else the logo. */
+    public function sharePhoto(): ?string
+    {
+        $media = $this->firstPhoto();
+
+        return $media !== null ? Photo::url($media) : $this->logo();
+    }
+
+    private function firstPhoto(): ?Media
+    {
         foreach ($this->branches() as $branch) {
             $media = $branch->getFirstMedia('hero') ?? $branch->getFirstMedia('gallery')
                 ?? $branch->roomCategories->map(fn (RoomCategory $t) => $t->getFirstMedia('gallery'))->filter()->first();
             if ($media !== null) {
-                return $media->getUrl();
+                return $media;
             }
         }
 
@@ -182,6 +200,27 @@ final class BookingSite
             ->filter(fn (Listing $l) => $l->type->capacity_adults >= $stay->adults)
             ->filter(fn (Listing $l) => $includeTaken || $l->freeForStay > 0)
             ->values();
+    }
+
+    /**
+     * Reviews the business shows for an apartment type: those of its rooms
+     * and those of the whole building, newest first.
+     *
+     * @return array{average: float, count: int, items: Collection<int, Review>}
+     */
+    public function reviews(RoomCategory $type): array
+    {
+        $query = Review::query()
+            ->where('is_displayed', true)
+            ->where(fn ($q) => $q
+                ->whereIn('room_id', $type->rooms()->select('id'))
+                ->orWhere(fn ($q) => $q->where('property_id', $type->property_id)->whereNull('room_id')));
+
+        return [
+            'average' => round((float) (clone $query)->avg('rating'), 1),
+            'count' => (clone $query)->count(),
+            'items' => $query->latest('id')->take(self::REVIEWS_SHOWN)->get(),
+        ];
     }
 
     /** Price for a stay in an apartment type, or null when it can't be priced. */

@@ -211,12 +211,13 @@ it('short-circuits to already-reviewed when a Review row exists for the booking'
         ->assertSee("already reviewed");
 });
 
-it('shows the new review on the /stays/{slug} property detail page', function (): void {
+it("shows the new review on the apartment's page, with the guest's first name", function (): void {
     Tenant::forgetCurrent();
+    $this->property->forceFill(['is_live' => true])->save();
     $booking = Booking::factory()->for($this->tenant)->for($this->room)->create([
         'booking_status' => BookingStatus::CheckedOut,
         'source_note' => 'Keverna Stays marketplace',
-        'guest_name' => 'Chika A.',
+        'guest_name' => 'Chika Adeyemi',
     ]);
 
     $this->post(signedReviewUrl($booking->booking_ref, 'store'), [
@@ -224,9 +225,10 @@ it('shows the new review on the /stays/{slug} property detail page', function ()
         'body'   => 'Verified stay, absolutely worth it.',
     ]);
 
-    $this->get(route('marketplace.stays.show', ['slug' => $this->property->public_slug]))
+    $this->get(route('site.apartment', ['branch' => $this->property->slug, 'type' => $this->category->slug]))
         ->assertOk()
-        ->assertSee('Chika A.')
+        ->assertSee('<b>Chika</b>', false)
+        ->assertDontSee('Adeyemi')
         ->assertSee('Verified stay, absolutely worth it.')
-        ->assertSee('Verified');
+        ->assertSee('Stayed here');
 });

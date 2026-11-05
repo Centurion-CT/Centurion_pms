@@ -11,7 +11,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? $business->name }}</title>
+    @php($pageTitle = $title ?? $business->name)
+    <title>{{ $pageTitle }}</title>
+    @include('site.partials.meta', ['noindex' => ! ($browsing ?? false)])
     @include('partials.favicons')
     @include('partials.public.theme')
     @include('site.partials.styles')

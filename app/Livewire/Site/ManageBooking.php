@@ -56,7 +56,7 @@ class ManageBooking extends Component
     {
         return view('livewire.site.manage-booking')
             ->title('Manage your booking · '.$site->business()->name)
-            ->layoutData(['pageClass' => 'pg-manage']);
+            ->layoutData(['pageClass' => 'pg-manage', 'noindex' => true]);
     }
 
     private function contactMatches(Booking $booking): bool

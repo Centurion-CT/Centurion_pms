@@ -11,6 +11,7 @@
 
 @section('page', 'pg-checkout')
 @section('title', 'Booked · '.$booking->booking_ref)
+@section('noindex', '1')
 
 @section('content')
 @include('site.partials.header', ['nav' => false, 'help' => true])

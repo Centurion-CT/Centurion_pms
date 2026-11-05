@@ -1,6 +1,7 @@
 @extends('site.layouts.app')
 
 @section('title', 'Review your stay · '.\App\Models\Tenant::current()?->name)
+@section('noindex', '1')
 
 @section('content')
 @include('site.partials.header', ['nav' => false, 'help' => true])
@@ -37,7 +38,7 @@
         </div>
 
         <button class="btn btn-primary btn-lg btn-block" type="submit" data-testid="review-submit">Submit review</button>
-        <p class="meta">Reviews are shown publicly on the property page with your first name. The property never sees your email.</p>
+        <p class="meta">Reviews are shown publicly on the apartment's page with your first name. Your email is never shown.</p>
     </form>
 </main>
 @include('site.partials.footer')

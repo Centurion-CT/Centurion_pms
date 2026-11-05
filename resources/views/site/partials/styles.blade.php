@@ -177,6 +177,21 @@ p.meta { margin: 0; }
 .marker.is-active { background: var(--panel); color: #FFF; }
 .marker.is-dim { opacity: .55; }
 
+.review-link { margin: -16px 0 20px; font-weight: 600; }
+.site .review-link a { color: var(--c-ink); text-decoration: none; }
+.review-link span, .review-score span { color: #B97A12; }
+.review-score { margin: -4px 0 16px; color: var(--c-ink); }
+.review-score b { font-size: 20px; font-weight: 600; }
+.review-list { display: flex; flex-direction: column; gap: 20px; margin-bottom: 12px; }
+.review-item + .review-item { padding-top: 20px; border-top: 1px solid var(--c-rule); }
+.review-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0 0 6px; color: var(--c-ink); }
+.review-head b { font-weight: 600; }
+.review-stars { color: #B97A12; letter-spacing: 1px; }
+.review-stars i { color: var(--c-rule); font-style: normal; }
+.review-body { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+.review-reply { margin: 12px 0 0; padding: 12px 14px; border-radius: 8px; background: var(--c-band); overflow-wrap: anywhere; }
+.review-reply b { display: block; font-weight: 600; color: var(--c-ink); }
+
 .back { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
 .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin: 8px 0 32px; border-radius: 12px; overflow: hidden; }
 .gallery img { width: 100%; height: 400px; object-fit: cover; }

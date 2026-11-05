@@ -100,6 +100,7 @@ final class SiteController
             'listing' => $listing,
             'rules' => $building->houseRules(),
             'calendar' => $this->calendar($listing, $stay),
+            'reviews' => $this->site->reviews($listing->type),
             'canPay' => BusinessPaystack::available($this->site->business()),
         ]);
     }

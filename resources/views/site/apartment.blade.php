@@ -12,6 +12,8 @@
 
 @section('page', 'pg-apartment')
 @section('title', $type->name.' · '.$business->name)
+@section('description', \Illuminate\Support\Str::limit(trim($type->name.' at '.$branch->name.', sleeps '.$listing->sleeps().($q ? ', from ₦'.number_format($q->perNight()).' a night' : '').'. '.$type->description), 200))
+@section('share_image', $photos === [] ? '' : $listing->photo())
 
 @section('content')
 @include('site.partials.header', ['nav' => false])
@@ -31,6 +33,9 @@
         <div class="apartment-main">
             <h1 class="title">{{ $type->name }}</h1>
             <p class="meta">{{ $branch->address ? $branch->address.', ' : '' }}{{ $branch->name }} · sleeps {{ $listing->sleeps() }}</p>
+            @if ($reviews['count'] > 0)
+                <p class="review-link"><a href="#reviews"><span aria-hidden="true">★</span> {{ number_format($reviews['average'], 1) }} · {{ $reviews['count'] }} {{ \Illuminate\Support\Str::plural('review', $reviews['count']) }}</a></p>
+            @endif
             @if ($type->description)<p class="lead">{{ $type->description }}</p>@endif
 
             @if ($amenities->isNotEmpty())
@@ -60,6 +65,10 @@
                     <p class="meta">{{ $stay->label() }}, {{ $stay->nights() }} {{ \Illuminate\Support\Str::plural('night', $stay->nights()) }}.@if ($t = \App\Site\Stay::time($rules['check_in_from'] ?? '')) Check in from {{ $t }}.@endif @if ($t = \App\Site\Stay::time($rules['check_out_to'] ?? ''))Check out by {{ $t }}.@endif</p>
                 </div>
             </section>
+
+            @if ($reviews['count'] > 0)
+                @include('site.partials.reviews', ['reviews' => $reviews, 'business' => $business])
+            @endif
         </div>
 
         <aside class="book-card" aria-label="Book {{ $type->name }}">
