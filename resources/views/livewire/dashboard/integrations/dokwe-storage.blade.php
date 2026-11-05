@@ -56,7 +56,7 @@
 
         <div>
             <label for="dokwe-bucket" class="lp-form-label">Space (bucket) name</label>
-            <input id="dokwe-bucket" type="text" wire:model.live.debounce.400ms="bucket"
+            <input id="dokwe-bucket" type="text" wire:model="bucket" wire:input.debounce.400ms="$refresh"
                    data-testid="dokwe-bucket" required class="lp-input"
                    placeholder="chidi-hotel" autocomplete="off">
             <p class="lp-form-help mt-1">
