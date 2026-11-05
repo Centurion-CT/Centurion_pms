@@ -63,6 +63,14 @@
             @endif
         </div>
 
+        <label style="display: flex; align-items: flex-start; gap: 10px; padding-top: 14px; border-top: 1px solid var(--color-line-soft); cursor: pointer;">
+            <input type="checkbox" wire:model="listedOnStays" data-testid="business-listed-on-stays" style="margin-top: 4px;">
+            <span>
+                <span class="lp-form-label" style="margin: 0;">List my business on {{ config('brand.name') }} Stays</span>
+                <span class="lp-form-help" style="display: block;">Your live buildings, photos, starting prices and displayed reviews appear at {{ config('keverna.central_domain') }}/stays, so more guests can find you. They book on your own site.</span>
+            </span>
+        </label>
+
         <div class="flex justify-end">
             <button type="submit" class="lp-btn lp-btn--primary">
                 <span wire:loading.remove wire:target="save">Save</span>

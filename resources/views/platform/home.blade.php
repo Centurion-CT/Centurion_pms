@@ -6,6 +6,7 @@
 @section('title', config('brand.name').' · Software for apartments and hotels')
 
 @php($suffix = config('keverna.tenant_domain_suffix'))
+@php($hasStays = app(\App\Platform\StaysDirectory::class)->anyListed())
 @php($helpEmail = 'hello@'.config('keverna.central_domain'))
 @php($signupOpen = config('keverna.signup_open'))
 @php($setupMail = 'mailto:'.$helpEmail.'?subject='.rawurlencode('Setting up on '.config('brand.name')))
@@ -15,6 +16,7 @@
     <div class="container">
         <a class="logo" href="{{ route('platform.home') }}"><span class="logo-mark"><img src="{{ asset(config('brand.logo')) }}" alt=""></span>{{ config('brand.name') }}</a>
         <nav class="nav" aria-label="Main">
+            @if ($hasStays)<a href="{{ route('platform.stays') }}">Find a stay</a>@endif
             <a href="#tour">Front desk</a><a href="#tour">Branches</a><a href="#tour">Booking site</a><a href="#questions">Questions</a>
         </nav>
         <div class="end">

@@ -38,6 +38,7 @@ use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
  * @property string|null $dokwe_storage_public_url
  * @property string $dokwe_storage_region
  * @property Carbon|null $dokwe_storage_connected_at
+ * @property Carbon|null $listed_on_stays_at
  * @property string|null $custom_domain
  * @property string|null $custom_domain_verification_token
  * @property CustomDomainStatus|null $custom_domain_status
@@ -90,6 +91,7 @@ class Tenant extends SpatieTenant
             'dokwe_storage_secret_key' => 'encrypted',
             'dokwe_storage_connected_at' => 'datetime',
             'custom_domain_status' => CustomDomainStatus::class,
+            'listed_on_stays_at' => 'datetime',
             'domain_verified_at' => 'datetime',
             'custom_domain_live_at' => 'datetime',
             'custom_domain_failed_checks' => 'integer',

@@ -1,7 +1,8 @@
 {{-- Check in and check out. The native date input does the picking; with
-     JavaScript it sits invisibly over a readable "Thu 10 Dec". --}}
-<label class="seg seg-date"><span class="seg-label">Check in</span><span class="seg-value">{{ $stay->checkin->format('D j M') }}</span><input type="date" name="in" value="{{ $stay->checkin->toDateString() }}" min="{{ now()->toDateString() }}" required></label>
-<label class="seg seg-date"><span class="seg-label">Check out</span><span class="seg-value">{{ $stay->checkout->format('D j M') }}</span><input type="date" name="out" value="{{ $stay->checkout->toDateString() }}" min="{{ now()->addDay()->toDateString() }}" required></label>
+     JavaScript it sits invisibly over a readable "Thu 10 Dec". With no
+     $stay the guest hasn't chosen dates, and they stay optional. --}}
+<label class="seg seg-date"><span class="seg-label">Check in</span><span class="seg-value">{{ $stay?->checkin->format('D j M') ?? 'Any date' }}</span><input type="date" name="in" value="{{ $stay?->checkin->toDateString() }}" min="{{ now()->toDateString() }}" @required($stay)></label>
+<label class="seg seg-date"><span class="seg-label">Check out</span><span class="seg-value">{{ $stay?->checkout->format('D j M') ?? 'Any date' }}</span><input type="date" name="out" value="{{ $stay?->checkout->toDateString() }}" min="{{ now()->addDay()->toDateString() }}" @required($stay)></label>
 @once
     @push('scripts')
         <script>
