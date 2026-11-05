@@ -43,6 +43,10 @@ Route::get('/newsletter/unsubscribe/{token}', \App\Http\Controllers\Marketing\Ne
 Route::get('/sitemap.xml', \App\Http\Controllers\SitemapController::class)->name('sitemap');
 Route::get('/llms.txt', \App\Http\Controllers\LlmsGuideController::class)->name('llms-guide');
 
+// Old marketplace search: redirects to the business's apartments.
+Route::get('/stays', \App\Http\Controllers\Marketplace\StaysIndexController::class)
+    ->name('marketplace.stays.index');
+
 // Property detail page - rooms + reviews + book CTA. Solo mode has one
 // property so this is effectively the hotel's public site. Multi-branch
 // installs get one page per branch, chosen from `/` via the property
@@ -51,8 +55,8 @@ Route::get('/stays/{slug}', \App\Http\Controllers\Marketplace\StaysShowControlle
     ->where('slug', '[a-z0-9\-]+')
     ->name('marketplace.stays.show');
 
-// Livewire checkout — guest info + room pick + Paystack redirect.
-Route::get('/stays/{slug}/book', \App\Livewire\Marketplace\StaysBookCheckout::class)
+// Keverna's checkout: old links go to the building's apartments, as above.
+Route::get('/stays/{slug}/book', \App\Http\Controllers\Marketplace\StaysShowController::class)
     ->where('slug', '[a-z0-9\-]+')
     ->name('marketplace.stays.book');
 

@@ -412,7 +412,7 @@
                            data-testid="related-category-{{ $r->id }}">
                             <div class="rd-related-photo">
                                 @if ($hero)
-                                    <img src="{{ $hero->getUrl('medium') }}"
+                                    <img src="{{ \App\Site\Photo::url($hero) }}"
                                          alt="{{ $hero->getCustomProperty('alt') ?: $r->name }}"
                                          loading="lazy">
                                 @endif

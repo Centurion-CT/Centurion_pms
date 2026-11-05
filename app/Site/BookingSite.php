@@ -46,10 +46,30 @@ final class BookingSite
         return $this->business()->logoUrl();
     }
 
+    /** A photo for the home page's hero, or null until the business has one. */
+    public function heroPhoto(): ?string
+    {
+        foreach ($this->branches() as $branch) {
+            $media = $branch->getFirstMedia('hero') ?? $branch->getFirstMedia('gallery')
+                ?? $branch->roomCategories->map(fn (RoomCategory $t) => $t->getFirstMedia('gallery'))->filter()->first();
+            if ($media !== null) {
+                return $media->getUrl();
+            }
+        }
+
+        return null;
+    }
+
+    /** The cities the buildings are in, each once. */
+    public function cities(): Collection
+    {
+        return $this->branches()->pluck('city')->filter()->unique()->values();
+    }
+
     /** The city every building is in, or null when they're in several. */
     public function city(): ?string
     {
-        $cities = $this->branches()->pluck('city')->filter()->unique();
+        $cities = $this->cities();
 
         return $cities->count() === 1 ? (string) $cities->first() : null;
     }
@@ -177,13 +197,5 @@ final class BookingSite
         } catch (Throwable) {
             return null;
         }
-    }
-
-    /** How many apartments of each building are free tonight. */
-    public function freeTonight(Property $branch): int
-    {
-        $free = $this->freeByNight($branch->roomCategories, Carbon::today(), 1);
-
-        return (int) collect($free)->sum(fn (array $nights) => array_sum($nights));
     }
 }

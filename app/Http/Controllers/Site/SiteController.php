@@ -5,20 +5,22 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Site;
 
 use App\Models\Property;
+use App\Services\Paystack\BusinessPaystack;
 use App\Site\BookingSite;
 use App\Site\Listing;
 use App\Site\Stay;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 /**
  * The booking site's browsing pages on each business's address
- * (docs/MULTITENANCY.md, step 5; design: design/website/c-map):
- * the home page with the map, and the results page with its detail
- * panel. `/` is always the landing page; a business with nothing
- * bookable yet shows "online booking opens soon" with its contacts. Both are plain GET pages, so every view has a shareable URL
- * and works without JavaScript; the map is the only scripted part.
+ * (docs/MULTITENANCY.md, step 5): the home page, the results page with
+ * its map, and one page per apartment type. `/` is always the landing
+ * page; a business with nothing bookable yet shows "online booking opens
+ * soon" with its contacts. All are plain GET pages, so every view has a
+ * shareable URL and works without JavaScript.
  */
 final class SiteController
 {
@@ -33,16 +35,15 @@ final class SiteController
         return view('site.home', [
             'stay' => $stay,
             'branches' => $branches,
-            'freeTonight' => $branches->mapWithKeys(fn (Property $b) => [$b->id => $this->site->freeTonight($b)]),
-            'featured' => $this->byPrice($listings)->take(4),
+            'featured' => $this->byPrice($listings)->take(3),
             'listingCount' => $listings->count(),
             'longStays' => $this->longStays($branches),
-            'mapPins' => $this->mapPins($branches),
-            'city' => $this->site->city(),
+            'cities' => $this->site->cities(),
+            'heroPhoto' => $this->site->heroPhoto(),
         ]);
     }
 
-    public function results(Request $request): View
+    public function results(Request $request): View|RedirectResponse
     {
         $stay = Stay::fromRequest($request);
         $branches = $this->site->branches();
@@ -59,10 +60,13 @@ final class SiteController
             ->values();
         $shown = $sort === 'free' ? $shown->sortByDesc('freeForStay')->values() : $this->byPrice($shown);
 
-        $open = null;
+        // Old links opened a side panel here; the apartment has its own page now.
         if (($pick = (int) $request->query('open', 0)) > 0) {
             $open = $this->site->listings($branches, $stay, includeTaken: true)
                 ->first(fn (Listing $l) => $l->type->id === $pick);
+            if ($open !== null) {
+                return redirect()->route('site.apartment', ['branch' => $open->branch->slug, 'type' => $open->type->slug] + $stay->query(), 301);
+            }
         }
 
         return view('site.results', [
@@ -74,9 +78,29 @@ final class SiteController
             'sizes' => $sizes,
             'countByBranch' => $all->countBy(fn (Listing $l) => $l->branch->slug),
             'listings' => $shown,
-            'open' => $open,
-            'calendar' => $open ? $this->calendar($open, $stay) : null,
             'mapPins' => $this->mapPins($branches),
+        ]);
+    }
+
+    public function apartment(Request $request, string $branch, string $type): View|RedirectResponse
+    {
+        $stay = Stay::fromRequest($request);
+        $building = $this->site->branches()->firstWhere('slug', $branch);
+        abort_if($building === null || $building->roomCategories->firstWhere('slug', $type) === null, 404);
+
+        // Left out only when the party is too big for this apartment.
+        $listing = $this->site->listings(collect([$building]), $stay, includeTaken: true)
+            ->first(fn (Listing $l) => $l->type->slug === $type);
+        if ($listing === null) {
+            return redirect()->route('site.results', $stay->query());
+        }
+
+        return view('site.apartment', [
+            'stay' => $stay,
+            'listing' => $listing,
+            'rules' => $building->houseRules(),
+            'calendar' => $this->calendar($listing, $stay),
+            'canPay' => BusinessPaystack::available($this->site->business()),
         ]);
     }
 
@@ -126,7 +150,7 @@ final class SiteController
 
     /**
      * The months the stay touches (one or two) as calendar cells for the
-     * detail panel.
+     * apartment page.
      *
      * @return list<array{month: string, cells: list<array{day: ?int, state: string}>}>
      */

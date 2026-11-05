@@ -60,7 +60,7 @@ class Review extends Component
             'booking' => $booking,
             'eligible' => $this->eligible($booking),
             'existingReview' => $booking->review,
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest');
     }
 
     private function eligible(Booking $booking): bool

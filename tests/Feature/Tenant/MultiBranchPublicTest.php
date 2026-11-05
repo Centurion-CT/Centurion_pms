@@ -31,28 +31,7 @@ it('renders a specific branch at /branches/{slug}', function (): void {
     $response = $this->get('http://multi-branch.keverna.test/branches/'.$lagos->slug);
 
     $response->assertOk();
-    $response->assertSeeHtml('data-testid="hero"');
     $response->assertSee('Citistay Lagos');
-});
-
-it('renders the guest branch switcher on a branch landing when multiple exist', function (): void {
-    Property::factory()->live()->for($this->tenant)->create(['name' => 'Citistay Abuja']);
-    $lagos = Property::factory()->live()->for($this->tenant)->create(['name' => 'Citistay Lagos']);
-
-    $response = $this->get('http://multi-branch.keverna.test/branches/'.$lagos->slug);
-
-    $response->assertOk();
-    $response->assertSeeHtml('data-testid="branch-switcher"');
-    $response->assertSeeHtml('data-testid="branch-switcher-item-'.$lagos->slug.'"');
-});
-
-it('omits the switcher entirely for single-branch tenants', function (): void {
-    $only = Property::factory()->live()->for($this->tenant)->create(['name' => 'Only Branch']);
-
-    $response = $this->get('http://multi-branch.keverna.test/branches/'.$only->slug);
-
-    $response->assertOk();
-    $response->assertDontSeeHtml('data-testid="branch-switcher"');
 });
 
 it('404s on a slug that belongs to another tenant', function (): void {

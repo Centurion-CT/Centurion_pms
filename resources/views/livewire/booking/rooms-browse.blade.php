@@ -34,8 +34,8 @@
         .cx-row { display: grid; grid-template-columns: 1fr; background: var(--white); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; text-decoration: none; transition: border-color 150ms ease; }
         @media (min-width: 820px) { .cx-row { grid-template-columns: 340px 1fr; } }
         .cx-row:hover { border-color: rgba(51, 103, 153, 0.45); }
-        .cx-row-photo { min-height: 220px; background: var(--blue-50); }
-        .cx-row-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .cx-row-photo { position: relative; min-height: 220px; background: var(--blue-50); }
+        .cx-row-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
         .cx-row-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 6px; }
         .cx-row-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
         .cx-row-name { font-family: var(--display); font-weight: 600; font-size: 24px; margin: 0; }
@@ -150,7 +150,7 @@
                        class="cx-row {{ $isFull ? 'is-full' : '' }}" data-testid="category-card-{{ $category->id }}">
                         <div class="cx-row-photo">
                             @if ($entry->hero)
-                                <img src="{{ $entry->hero->getUrl('medium') }}" alt="{{ $entry->hero->getCustomProperty('alt') ?: $category->name }}" loading="lazy">
+                                <img src="{{ \App\Site\Photo::url($entry->hero) }}" alt="{{ $entry->hero->getCustomProperty('alt') ?: $category->name }}" loading="lazy">
                             @endif
                         </div>
                         <div class="cx-row-body">

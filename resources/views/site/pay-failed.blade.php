@@ -17,15 +17,14 @@
 @section('content')
 @include('site.partials.header', ['nav' => false, 'help' => true])
 
-<main class="container page" data-testid="stays-pay-failed">
-    <div class="narrow">
-        <h1 class="h1">Payment didn't go through</h1>
-        <p class="lead" style="margin-top:var(--s-3)">{{ $friendly }}</p>
-        <div style="display:flex;gap:var(--s-3);flex-wrap:wrap;margin-top:var(--s-8)">
-            <a class="btn btn-primary" href="{{ route('site.results') }}">Try again</a>
-            <a class="btn btn-secondary" href="{{ route('site.manage') }}">Find my booking</a>
-        </div>
-        <p class="meta" style="margin-top:var(--s-6)">Reference code: {{ $reason }}</p>
+<main class="container container--narrow narrow" data-testid="stays-pay-failed">
+    <h1 class="title">Payment didn't go through</h1>
+    <p class="lead">{{ $friendly }}</p>
+    <div class="actions">
+        <a class="btn btn-primary" href="{{ route('site.results') }}">Try again</a>
+        <a class="btn btn-secondary" href="{{ route('site.manage') }}">Find my booking</a>
     </div>
+    <p class="meta" style="margin-top:24px">Reference code: {{ $reason }}</p>
 </main>
+@include('site.partials.footer')
 @endsection

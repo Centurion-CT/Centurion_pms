@@ -104,7 +104,7 @@
         }
         .gp-appbar-brand .kicker {
             display: block;
-            font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+            font-size: 13px;
             color: var(--gp-ink-mute); font-weight: 600;
             margin-bottom: 1px;
         }
@@ -164,7 +164,7 @@
             pointer-events: none;
         }
         .gp-hero .eyebrow {
-            font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+            font-size: 13px;
             color: color-mix(in srgb, var(--gp-paper) 60%, transparent);
             font-weight: 600;
         }
@@ -184,7 +184,7 @@
         }
         .gp-hero-strip .stat { flex: 1; min-width: 0; }
         .gp-hero-strip .stat .k {
-            font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+            font-size: 13px;
             color: color-mix(in srgb, var(--gp-paper) 55%, transparent);
             font-weight: 600;
         }
@@ -201,7 +201,7 @@
 
         /* Section header - quiet label above tile groups. */
         .gp-section-title {
-            font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+            font-size: 13px;
             color: var(--gp-ink-mute); font-weight: 600;
             margin: 20px 4px 10px;
         }
@@ -221,8 +221,7 @@
 
         /* Forms */
         .gp-form-label {
-            display: block; font-size: 12px; letter-spacing: 0.06em;
-            text-transform: uppercase; color: var(--gp-ink-mute);
+            display: block; font-size: 12px; color: var(--gp-ink-mute);
             font-weight: 600; margin-bottom: 6px;
         }
         .gp-input, .gp-textarea, .gp-select {
@@ -255,7 +254,7 @@
         .gp-btn {
             display: inline-flex; align-items: center; justify-content: center;
             gap: 8px; padding: 14px 20px;
-            border-radius: 999px; border: 0; cursor: pointer;
+            border-radius: 8px; border: 0; cursor: pointer;
             font: inherit; font-size: 14.5px; font-weight: 600;
             transition: transform 120ms, opacity 120ms;
             min-height: 48px;
@@ -263,7 +262,7 @@
         .gp-btn:active { transform: scale(0.98); }
         .gp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .gp-btn--primary {
-            background: var(--gp-ink); color: var(--gp-paper);
+            background: var(--gp-accent); color: #FFFFFF;
             width: 100%;
         }
         .gp-btn--accent {
@@ -417,9 +416,11 @@
     <header class="gp-appbar">
         <div class="gp-appbar-inner">
             <div class="gp-appbar-brand">
-                <span class="gp-appbar-mark" aria-hidden style="background: #FFFFFF; padding: 3px;">
-                    <img src="{{ $property?->getFirstMedia('logo')?->getUrl() ?: asset(config('brand.logo')) }}" alt="" style="width: 100%; height: 100%; object-fit: contain;">
-                </span>
+                @if ($portalLogo = \App\Models\Tenant::current()?->logoUrl())
+                    <span class="gp-appbar-mark" aria-hidden style="background: #FFFFFF; padding: 3px;">
+                        <img src="{{ $portalLogo }}" alt="" style="width: 100%; height: 100%; object-fit: contain;">
+                    </span>
+                @endif
                 <span class="brand-text">
                     <span class="kicker">Guest portal</span>
                     <span class="name">{{ \App\Models\Tenant::current()?->name ?: ($property?->name ?? 'Your room') }}</span>
@@ -684,8 +685,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
                             <div style="flex: 1; min-width: 0;">
                                 <p style="margin: 0; font-size: 11px; font-weight: 700;
-                                          letter-spacing: 0.08em; text-transform: uppercase;
-                                          color: #B85C42;">
+                                          color: var(--gp-danger);">
                                     Late check-out fee accruing
                                 </p>
                                 <p style="margin: 4px 0 0; font-size: 13px; color: var(--gp-ink); line-height: 1.5;">
@@ -700,7 +700,7 @@
                                 </p>
                             </div>
                             <div style="text-align: right; flex-shrink: 0;">
-                                <div class="lp-mono" style="font-size: 18px; font-weight: 600; color: #B85C42;">
+                                <div class="lp-mono" style="font-size: 18px; font-weight: 600; color: var(--gp-danger);">
                                     +₦{{ number_format((int) $lateProjection['amount']) }}
                                 </div>
                                 <div style="font-size: 10.5px; color: var(--gp-ink-mute); margin-top: 2px;">
@@ -1424,8 +1424,8 @@
                                             wire:confirm="Cancel this request? The front desk won't act on it."
                                             data-testid="portal-request-cancel-{{ $r->id }}"
                                             style="margin-top: 10px; background: transparent;
-                                                   color: var(--gp-danger, #B85C42);
-                                                   border: 1px solid var(--gp-danger, #B85C42);
+                                                   color: var(--gp-danger);
+                                                   border: 1px solid var(--gp-danger);
                                                    padding: 6px 14px; border-radius: 999px;
                                                    font-family: inherit; font-size: 12px; font-weight: 500;
                                                    cursor: pointer;">
@@ -1518,8 +1518,7 @@
                 <div style="margin-top: 16px; padding: 16px 18px;
                             background: var(--gp-card-deep); border-radius: 12px;">
                     <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                        <span style="font-family: ui-monospace, monospace; font-size: 10.5px;
-                                     letter-spacing: 0.16em; text-transform: uppercase;
+                        <span style="font-family: ui-monospace, monospace; font-size: 13px;
                                      color: var(--gp-ink-mute);">
                             Room
                         </span>
@@ -1529,8 +1528,7 @@
                     </div>
                     <div style="display: flex; justify-content: space-between;
                                 align-items: baseline; margin-top: 6px;">
-                        <span style="font-family: ui-monospace, monospace; font-size: 10.5px;
-                                     letter-spacing: 0.16em; text-transform: uppercase;
+                        <span style="font-family: ui-monospace, monospace; font-size: 13px;
                                      color: var(--gp-ink-mute);">
                             Nights &middot; rate
                         </span>
@@ -1575,13 +1573,12 @@
                             border-radius: 12px;
                             display: flex; align-items: center; justify-content: space-between; gap: 12px;">
                     <div>
-                        <div style="font-family: ui-monospace, monospace; font-size: 10.5px;
-                                    letter-spacing: 0.16em; text-transform: uppercase;
+                        <div style="font-family: ui-monospace, monospace; font-size: 13px;
                                     color: var(--gp-ink-mute);">
                             Balance owed
                         </div>
                         <div style="font-family: 'Fraunces', Georgia, serif; font-size: 22px;
-                                    font-weight: 600; color: {{ $billOutstanding > 0 ? '#B85C42' : '#4C956C' }};
+                                    font-weight: 600; color: {{ $billOutstanding > 0 ? 'var(--gp-danger)' : 'var(--gp-ok)' }};
                                     margin-top: 2px; letter-spacing: -0.01em;">
                             @if ($billOutstanding > 0)
                                 ₦{{ number_format($billOutstanding) }}
@@ -1643,8 +1640,7 @@
                 <div style="display: grid; gap: 10px; margin-top: 16px;">
                     @if ($wifi || $wifiPass)
                         <div style="padding: 14px 16px; background: var(--gp-card-deep); border-radius: 12px;">
-                            <div style="font-family: ui-monospace, monospace; font-size: 10.5px;
-                                        letter-spacing: 0.16em; text-transform: uppercase;
+                            <div style="font-family: ui-monospace, monospace; font-size: 13px;
                                         color: var(--gp-ink-mute);">
                                 📶 WiFi
                             </div>
@@ -1664,8 +1660,7 @@
 
                     @if ($checkoutBy)
                         <div style="padding: 14px 16px; background: var(--gp-card-deep); border-radius: 12px;">
-                            <div style="font-family: ui-monospace, monospace; font-size: 10.5px;
-                                        letter-spacing: 0.16em; text-transform: uppercase;
+                            <div style="font-family: ui-monospace, monospace; font-size: 13px;
                                         color: var(--gp-ink-mute);">
                                 🔑 Check-out
                             </div>
@@ -1682,8 +1677,7 @@
 
                     @if ($quietHours)
                         <div style="padding: 14px 16px; background: var(--gp-card-deep); border-radius: 12px;">
-                            <div style="font-family: ui-monospace, monospace; font-size: 10.5px;
-                                        letter-spacing: 0.16em; text-transform: uppercase;
+                            <div style="font-family: ui-monospace, monospace; font-size: 13px;
                                         color: var(--gp-ink-mute);">
                                 🌙 Quiet hours
                             </div>
@@ -1700,8 +1694,7 @@
                     ] as [$emoji, $label, $policy])
                         @if ($policy)
                             <div style="padding: 14px 16px; background: var(--gp-card-deep); border-radius: 12px;">
-                                <div style="font-family: ui-monospace, monospace; font-size: 10.5px;
-                                            letter-spacing: 0.16em; text-transform: uppercase;
+                                <div style="font-family: ui-monospace, monospace; font-size: 13px;
                                             color: var(--gp-ink-mute);">
                                     {{ $emoji }} {{ $label }}
                                 </div>
@@ -1813,10 +1806,7 @@
         @endif
 
         <div class="gp-brand">
-            <p style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0;">
-                Powered by
-                {{ config('brand.name') }}
-            </p>
+            <p style="font-size: 13px; margin: 0;">Runs on {{ config('brand.name') }}</p>
         </div>
 
         <template x-if="toast">

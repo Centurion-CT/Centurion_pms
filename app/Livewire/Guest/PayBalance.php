@@ -48,6 +48,6 @@ class PayBalance extends Component
 
         return view('livewire.guest.pay-balance', [
             'booking' => $booking,
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest');
     }
 }

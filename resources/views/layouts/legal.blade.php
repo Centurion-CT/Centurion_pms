@@ -5,9 +5,10 @@
 @php
     $tenant = \App\Models\Tenant::current();
     $property = $tenant?->property;
+    $color = \App\Support\BusinessColor::forSignIn($tenant);
 @endphp
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" @if ($color) style="--panel: {{ $color }}; --action: {{ $color }}; --on-panel: #FFFFFF;" @endif>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,8 +16,9 @@
     <link rel="canonical" href="{{ url()->current() }}">
     @include('partials.favicons')
     @include('partials.public.theme')
+    @include('site.partials.styles')
     <style>
-        body { min-height: 100vh; display: flex; flex-direction: column; }
+        :root { --blue-600: var(--action-hover); }
         .cx-legal-main { flex: 1 0 auto; }
         .cx-legal-head { background: var(--white); border-bottom: 1px solid var(--line); }
         .cx-legal-head .cx-wrap { max-width: 1080px; padding-block: 48px; }
@@ -32,8 +34,7 @@
         .cx-toc a { display: block; padding: 6px 0; color: var(--ink-soft); text-decoration: none; }
         .cx-toc a:hover, .cx-toc a.is-active { color: var(--blue-600); }
         .cx-toc a.is-active { font-weight: 600; }
-        .cx-legal-doc { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 28px; font-size: 16px; line-height: 1.75; color: var(--ink-soft); max-width: 76ch; }
-        @media (min-width: 768px) { .cx-legal-doc { padding: 40px; } }
+        .cx-legal-doc { background: #FFF; padding: 0; font-size: 16px; line-height: 1.75; color: var(--ink-soft); max-width: 76ch; }
         .cx-legal-doc h2 { font-family: var(--display); font-weight: 600; font-size: 24px; color: var(--ink); margin: 32px 0 10px; scroll-margin-top: 96px; }
         .cx-legal-doc h2:first-child { margin-top: 0; }
         .cx-legal-doc h3 { font-size: 18px; color: var(--ink); margin: 22px 0 6px; }
@@ -46,8 +47,8 @@
         .cx-legal-doc th, .cx-legal-doc td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
     </style>
 </head>
-<body>
-    @include('partials.public.topbar')
+<body class="site">
+    @include('site.partials.header', ['nav' => true])
 
     <main class="cx-legal-main">
         <header class="cx-legal-head">
@@ -68,7 +69,7 @@
         </div>
     </main>
 
-    @include('partials.public.footer')
+    @include('site.partials.footer')
 
     <script>
         (function () {

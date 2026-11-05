@@ -51,6 +51,35 @@ it('renders the show page when token is valid', function (): void {
     $response->assertSee($this->booking->booking_ref);
 });
 
+it('leads with the balance when a deposit is paid, with its due date', function (): void {
+    $this->booking->update(['booking_status' => BookingStatus::OnHold, 'total_amount' => 100_000, 'balance_due' => 70_000, 'balance_due_at' => '2030-03-04']);
+
+    $this->get('http://gphttp.keverna.test/guest/booking/'.$this->booking->booking_ref.'?token='.$this->token)
+        ->assertOk()
+        ->assertSeeInOrder(['₦70,000 left to pay', 'Due by Mon 4 Mar', 'Pay the balance'])
+        ->assertSee("You've paid ₦30,000 of ₦100,000", false);
+});
+
+it('offers the front desk when a balance has no due date', function (): void {
+    $this->booking->update(['booking_status' => BookingStatus::OnHold, 'total_amount' => 100_000, 'balance_due' => 70_000, 'balance_due_at' => null]);
+
+    $this->get('http://gphttp.keverna.test/guest/booking/'.$this->booking->booking_ref.'?token='.$this->token)
+        ->assertSee('Pay now, or at the front desk when you arrive.');
+});
+
+it('shows no balance section on a booking paid in full', function (): void {
+    $this->booking->update(['balance_due' => 0]);
+
+    $this->get('http://gphttp.keverna.test/guest/booking/'.$this->booking->booking_ref.'?token='.$this->token)
+        ->assertDontSee('left to pay');
+});
+
+it('keeps guests on the booking site, with no staff login in the header', function (): void {
+    $this->get('http://gphttp.keverna.test/guest/booking/'.$this->booking->booking_ref.'?token='.$this->token)
+        ->assertSee('site-header', false)
+        ->assertDontSee('Log in');
+});
+
 it('404s the show page with no token', function (): void {
     $response = $this->get('http://gphttp.keverna.test/guest/booking/'.$this->booking->booking_ref);
 

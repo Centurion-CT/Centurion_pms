@@ -24,6 +24,7 @@ class RedirectToOwnDomain
     public const BOOKING_PAGES = [
         'tenant.landing',
         'site.results',
+        'site.apartment',
         'site.checkout',
         'site.manage',
         'tenant.branch.*',
@@ -32,6 +33,7 @@ class RedirectToOwnDomain
         'tenant.rooms.show',
         'tenant.units.browse',
         'tenant.workspaces.browse',
+        'marketplace.stays.index',
         'marketplace.stays.show',
         'marketplace.stays.book',
         'legal.*',
