@@ -51,9 +51,7 @@
             <header class="lp-kiosk__header" data-testid="pos-kiosk-header">
                 <div class="lp-kiosk__brand">
                     <span class="lp-kiosk__brand-mark" aria-hidden>
-                        <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
-                            <path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-                        </svg>
+                <x-business-mark />
                     </span>
                     <span class="lp-kiosk__brand-name">{{ $tenant?->name ?? config('brand.name').' POS' }}</span>
                 </div>

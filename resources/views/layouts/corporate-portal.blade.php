@@ -77,9 +77,7 @@
                    data-corp-sidebar>
                 <div class="lp-sidebar-brand">
                     <span class="lp-sidebar-brand-mark" aria-hidden>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                            <path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-                        </svg>
+                        <x-business-mark :fallback="$corporate?->name" />
                     </span>
                     <span class="lp-sidebar-brand-text">
                         <span class="name">{{ $corporate?->name ?? 'Corporate' }}</span>

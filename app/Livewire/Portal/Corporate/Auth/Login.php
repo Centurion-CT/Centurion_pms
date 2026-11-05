@@ -7,9 +7,12 @@ namespace App\Livewire\Portal\Corporate\Auth;
 use App\Enums\CorporateMemberRole;
 use App\Enums\CorporateMemberStatus;
 use App\Models\CorporateMember;
+use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -42,6 +45,15 @@ class Login extends Component
 
         $email = strtolower(trim($data['email']));
 
+        // The same limit as staff sign-in: these admins spend a company
+        // wallet, so guessing has to be slow here too.
+        $throttleKey = 'corporate-login:'.Str::transliterate($email.'|'.request()->ip());
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            event(new Lockout(request()));
+
+            $this->refuse(__('auth.throttle', ['seconds' => RateLimiter::availableIn($throttleKey)]));
+        }
+
         /** @var CorporateMember|null $member */
         $member = CorporateMember::query()
             ->where('email', $email)
@@ -58,15 +70,25 @@ class Login extends Component
             || $member->role !== CorporateMemberRole::Admin
             || $member->status !== CorporateMemberStatus::Active
             || ! ($member->corporate?->status?->isLive() ?? false)) {
-            $this->dispatch('sign-in-refused');
+            RateLimiter::hit($throttleKey);
 
-            throw ValidationException::withMessages(['email' => $genericError]);
+            $this->refuse($genericError);
         }
+
+        RateLimiter::clear($throttleKey);
 
         Auth::guard('corporate')->login($member, $this->remember);
         $member->forceFill(['last_login_at' => now()])->save();
 
         $this->redirectRoute('corporate.dashboard', navigate: true);
+    }
+
+    /** The page shows this above the form and puts focus on the password. */
+    private function refuse(string $message): never
+    {
+        $this->dispatch('sign-in-refused');
+
+        throw ValidationException::withMessages(['email' => $message]);
     }
 
     public function render(): View

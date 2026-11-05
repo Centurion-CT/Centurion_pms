@@ -30,7 +30,7 @@
 </head>
 <body>
     {{ $slot ?? '' }}
-    {{ $__env->yieldContent('content') }}
+    @yield('content')
     @livewireScripts
 </body>
 </html>
