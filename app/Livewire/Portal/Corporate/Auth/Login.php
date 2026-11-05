@@ -51,13 +51,15 @@ class Login extends Component
         // We intentionally use one error message for "no such user"
         // and "wrong password" so the form doesn't double as a
         // member-enumeration oracle.
-        $genericError = 'Email or password is incorrect.';
+        $genericError = "That email and password don't match. Try again.";
 
         if ($member === null
             || ! Hash::check($data['password'], (string) $member->password)
             || $member->role !== CorporateMemberRole::Admin
             || $member->status !== CorporateMemberStatus::Active
             || ! ($member->corporate?->status?->isLive() ?? false)) {
+            $this->dispatch('sign-in-refused');
+
             throw ValidationException::withMessages(['email' => $genericError]);
         }
 

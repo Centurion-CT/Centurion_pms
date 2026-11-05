@@ -87,6 +87,18 @@ it('refuses a colour too pale for white text', function (): void {
         ->assertHasErrors('brandColor');
 });
 
+it('gives corporate customers the same sign-in, with no status claims and a way to reach the business', function (): void {
+    $this->tenant->forceFill(['phone' => '0803 000 2222'])->save();
+
+    $this->get('http://auth-pages.keverna.test/corporates/login')
+        ->assertOk()
+        ->assertSee('Sign in to Marina Lodge')
+        ->assertSee('cx-login')
+        ->assertSee('Contact Marina Lodge on 0803 000 2222')
+        ->assertDontSee('All systems operational')
+        ->assertDontSee('keverna.com');
+});
+
 it('sets the console apart while signed out', function (): void {
     Tenant::forgetCurrent();
     ConsoleUser::query()->create(['name' => 'Owner', 'email' => 'owner@centurion.test', 'password' => 'E2e-Console-Pass-2026', 'role' => ConsoleRole::Owner]);
