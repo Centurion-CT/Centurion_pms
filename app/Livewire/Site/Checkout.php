@@ -14,6 +14,7 @@ use App\Models\Property;
 use App\Models\RoomCategory;
 use App\Services\Availability\RangeNotAvailableException;
 use App\Services\Bookings\RoomAllocator;
+use App\Services\Paystack\BusinessPaystack;
 use App\Site\BookingSite;
 use App\Site\Stay;
 use Illuminate\Contracts\View\View;
@@ -90,6 +91,11 @@ class Checkout extends Component
             'pay' => ['required', 'in:full,deposit'],
         ], [], ['firstName' => 'first name', 'lastName' => 'last name', 'phone' => 'phone number']);
 
+        // Nothing to pay into: stop before a booking is created.
+        if (! BusinessPaystack::available($site->business())) {
+            throw ValidationException::withMessages(['booking' => $this->noPaymentsMessage($site)]);
+        }
+
         $type = $this->type();
         $stay = $this->stay();
         $quote = $site->quote($type, $stay);
@@ -150,9 +156,21 @@ class Checkout extends Component
             'stay' => $stay,
             'quote' => $site->quote($type, $stay),
             'available' => $free !== [] && min($free) > 0,
+            'canPay' => BusinessPaystack::available($site->business()),
+            'noPaymentsMessage' => $this->noPaymentsMessage($site),
             'rules' => $type->property->houseRules(),
             'photo' => ($media = $type->getFirstMedia('gallery') ?? $type->property->getFirstMedia('hero')) ? $media->getUrl() : null,
         ])->title('Book '.$type->name.' · '.$site->business()->name)->layoutData(['pageClass' => 'pg-checkout']);
+    }
+
+    private function noPaymentsMessage(BookingSite $site): string
+    {
+        $business = $site->business();
+        $phone = trim((string) $business->phone);
+
+        return $phone !== ''
+            ? "{$business->name} isn't taking online payments yet. Call {$phone} to book."
+            : "{$business->name} isn't taking online payments yet.";
     }
 
     private function type(): RoomCategory

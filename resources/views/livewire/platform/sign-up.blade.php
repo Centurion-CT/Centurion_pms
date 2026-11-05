@@ -24,13 +24,13 @@
                 <form wire:submit="submitBusiness">
                     <div class="field">
                         <label for="name">Business name</label>
-                        <input class="input" id="name" wire:model.live.debounce.300ms="name" placeholder="e.g. Grand Palace Suites" autocomplete="organization" autofocus>
+                        <input class="input" id="name" wire:model="name" wire:input.debounce.300ms="$refresh" placeholder="e.g. Grand Palace Suites" autocomplete="organization" autofocus>
                         @error('name')<p class="error">{{ $message }}</p>@enderror
                     </div>
                     <div class="field">
                         <label for="slug">Your address</label>
                         <div class="address">
-                            <input id="slug" wire:model.live.debounce.300ms="slug" placeholder="your-business" autocomplete="off" spellcheck="false" maxlength="30" aria-describedby="slug-status">
+                            <input id="slug" wire:model="slug" wire:input.debounce.300ms="$refresh" placeholder="your-business" autocomplete="off" spellcheck="false" maxlength="30" aria-describedby="slug-status">
                             <span class="suffix">{{ $suffix }}</span>
                         </div>
                         @error('slug')
@@ -50,7 +50,7 @@
                     <div class="two">
                         <div class="field">
                             <label for="city">City</label>
-                            <input class="input" id="city" wire:model.live.debounce.300ms="city" placeholder="Abuja" autocomplete="address-level2">
+                            <input class="input" id="city" wire:model="city" wire:input.debounce.300ms="$refresh" placeholder="Abuja" autocomplete="address-level2">
                             @error('city')<p class="error">{{ $message }}</p>@enderror
                         </div>
                         <div class="field">
@@ -63,7 +63,7 @@
                         </div>
                     </div>
                     <div class="actions">
-                        <button class="btn btn-primary btn-lg" type="submit" wire:loading.attr="disabled">Continue</button>
+                        <button class="btn btn-primary btn-lg" type="submit" wire:loading.attr="disabled" wire:target="submitBusiness">Continue</button>
                         <p class="meta">Already on {{ config('brand.name') }}? <a href="{{ route('platform.login') }}">Log in</a></p>
                     </div>
                 </form>
@@ -93,7 +93,7 @@
                         @error('password')<p class="error">{{ $message }}</p>@enderror
                     </div>
                     <div class="actions">
-                        <button class="btn btn-primary btn-lg" type="submit" wire:loading.attr="disabled">Send my code</button>
+                        <button class="btn btn-primary btn-lg" type="submit" wire:loading.attr="disabled" wire:target="submitAccount">Send my code</button>
                         <button class="link" type="button" wire:click="back('business')">Back</button>
                     </div>
                 </form>
@@ -114,7 +114,7 @@
                     </div>
                     @if ($codeError)<p class="error" role="alert">{{ $codeError }}</p>@endif
                     <div class="actions">
-                        <button class="btn btn-primary btn-lg" type="submit" wire:loading.attr="disabled">Create my business</button>
+                        <button class="btn btn-primary btn-lg" type="submit" wire:loading.attr="disabled" wire:target="confirm">Create my business</button>
                         <button class="link" type="button" wire:click="back('account')">Wrong email?</button>
                     </div>
                     <p class="meta">No email after a minute? Check spam, or <button class="link" type="button" wire:click="resend">send a new code</button>.</p>

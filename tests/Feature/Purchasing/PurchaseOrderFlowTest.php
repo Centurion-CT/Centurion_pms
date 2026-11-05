@@ -52,7 +52,7 @@ it('creates a draft PO with subtotal + total computed from lines', function (): 
     );
 
     expect($po->status)->toBe(PurchaseOrderStatus::Draft);
-    expect($po->reference)->toStartWith('KV-PO-');
+    expect($po->reference)->toStartWith('PO-');
     expect($po->subtotal)->toBe(24 * 800);
     expect($po->total)->toBe(24 * 800);
     expect($po->lines)->toHaveCount(1);

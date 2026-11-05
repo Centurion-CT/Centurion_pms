@@ -636,7 +636,7 @@
                 @php
                     $canPay = $selectedRoom && $bd && $bd['total'] > 0 && $this->isContactComplete();
                 @endphp
-                <button type="submit" form="" wire:click="pay" wire:loading.attr="disabled"
+                <button type="submit" form="" wire:click="pay" wire:loading.attr="disabled" wire:target="pay"
                         class="kv-pay" data-testid="checkout-pay-btn"
                         style="margin-top: 14px;"
                         @if (! $canPay) disabled @endif>

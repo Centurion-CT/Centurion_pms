@@ -308,6 +308,14 @@ the server. Tests run with it on.
   cross addresses, so it needs its own cookie), and a "What does it cost?"
   answer, left out until pricing is decided.
 
+## Branch records
+
+`php artisan branches:check` is read-only. Forms once filed everything under
+a business's first branch, so run it before cut-over: it lists rooms, rate
+rules and reviews that disagree about their branch, and branches with no
+rooms. A room filed under the first branch with its category looks normal,
+so the business has to confirm those.
+
 ## Not mirrored to keverna-solo
 
 Everything in this plan stays in centurion-hms. keverna-solo remains a

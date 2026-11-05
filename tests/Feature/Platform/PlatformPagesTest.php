@@ -180,6 +180,14 @@ it('waits a minute before sending another code', function (): void {
     Mail::assertSent(SignUpCodeMail::class, 2);
 });
 
+it('never submits sign-up without what was just typed', function (): void {
+    // A debounced wire:model holds the value back from a quick submit, and a
+    // button disabled by any request swallows the click.
+    $this->get('http://keverna.test/signup')
+        ->assertSee('wire:model="city" wire:input.debounce.300ms="$refresh"', escape: false)
+        ->assertSee('wire:loading.attr="disabled" wire:target="submitBusiness"', escape: false);
+});
+
 it('hands the new manager to their own address, signed in', function (): void {
     [$component, $code] = signUpToCode();
     $component->set('code', $code)->call('confirm');

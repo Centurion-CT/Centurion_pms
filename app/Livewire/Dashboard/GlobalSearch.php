@@ -84,7 +84,7 @@ class GlobalSearch extends Component
                 report($e);
             }
 
-            // Booking refs are stored uppercase (KV-XXXX). Uppercase
+            // Booking refs are stored uppercase (BK-XXXX). Uppercase
             // the needle for the ref match so an operator typing
             // "kv-3s8" still lands the reservation on Postgres (LIKE
             // is case-sensitive on default collations).

@@ -9,7 +9,7 @@ use App\Multitenancy\TenantScope;
 use Random\Randomizer;
 
 /**
- * Generates short, human-friendly booking references like `KV-A4F9R2C7` that
+ * Generates short, human-friendly booking references like `BK-A4F9R2C7` that
  * the guest types on the phone + reads in email confirmations (PRD §6.4.2).
  *
  * Uses an alphabet stripped of look-alikes (0/O/1/I/L) so support agents
@@ -22,7 +22,7 @@ class BookingReferenceGenerator
 
     private const LENGTH = 8;
 
-    private const PREFIX = 'KV-';
+    private const PREFIX = 'BK-';
 
     public function __construct(private readonly Randomizer $randomizer = new Randomizer) {}
 

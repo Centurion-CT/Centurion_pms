@@ -70,7 +70,7 @@ final class DevMailPreview
 
         $booking = new class($tenant, $room) {
             public string $guest_name = 'Amaka Onwudiwe';
-            public string $booking_ref = 'KV-7Q3W9K';
+            public string $booking_ref = 'BK-7Q3W9K';
             public int $adults = 2;
             public int $children = 0;
             public int $nights = 2;
@@ -209,7 +209,7 @@ final class DevMailPreview
             'mail.approvals.checkin-requested' => [
                 'requesterName' => 'Chinedu Ike',
                 'guestName'   => 'Amaka Onwudiwe',
-                'bookingRef'  => 'KV-7Q3W9K',
+                'bookingRef'  => 'BK-7Q3W9K',
                 'roomLabel'   => 'Terrace Suite 4',
                 'checkin'     => Carbon::now()->addDay()->toFormattedDateString(),
                 'checkout'    => Carbon::now()->addDays(3)->toFormattedDateString(),

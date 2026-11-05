@@ -75,10 +75,12 @@ class PublicLandingController extends Controller
         // Branch-scoped route (/branches/{slug}) — dispatch to the same
         // marketplace stays view so multi-branch tenants get identical
         // chrome per branch. The nav's branches picker relies on this
-        // to actually link somewhere useful.
+        // to actually link somewhere useful. A listed branch with no
+        // rooms yet has no apartments to show, so it keeps its landing.
         if ($property !== null
             && $property->is_listed_publicly
-            && ($property->public_slug ?? '') !== '') {
+            && ($property->public_slug ?? '') !== ''
+            && $property->rooms()->active()->exists()) {
             return app(\App\Http\Controllers\Marketplace\StaysShowController::class)(
                 $request,
                 (string) $property->public_slug,

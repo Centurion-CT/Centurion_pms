@@ -171,7 +171,7 @@ class EmailTemplateRenderer
             'guest_name'       => 'Amara Okafor',
             'guest_email'      => 'amara@example.com',
             'guest_phone'      => '+234 800 123 4567',
-            'booking_ref'      => 'KV-7XQ2H9P',
+            'booking_ref'      => 'BK-7XQ2H9P',
             'room_name'        => 'Deluxe Suite · 102',
             'checkin_date'     => now()->addDays(3)->toFormattedDateString(),
             'checkout_date'    => now()->addDays(5)->toFormattedDateString(),

@@ -197,7 +197,7 @@ async function pullDelta() {
 
 /**
  * Public search API — called by the Alpine wrapper on every
- * keystroke. Case-insensitive, matches booking_ref prefix (KV-…)
+ * keystroke. Case-insensitive, matches booking_ref prefix (BK-…)
  * or guest_name / guest_phone anywhere; guest_email prefix.
  * Bounded at MAX_SEARCH_HITS so a wide query can't stall the UI.
  */

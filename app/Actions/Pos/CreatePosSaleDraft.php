@@ -150,6 +150,6 @@ class CreatePosSaleDraft
     {
         $prefix = strtoupper(substr($outlet->slug, 0, 3)) ?: 'POS';
 
-        return 'KV-'.$prefix.'-'.Str::upper(Str::random(6));
+        return $prefix.'-'.Str::upper(Str::random(6));
     }
 }
