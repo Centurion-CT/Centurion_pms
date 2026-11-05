@@ -5,18 +5,18 @@
 <div class="ws-page">
     <style>
         .ws-page {
-            --ws-paper:    #FAF7F2;
-            --ws-paper-2:  #F2EEE6;
+            --ws-paper: #FFFFFF;
+            --ws-paper-2: var(--c-band);
             --ws-card:     #FFFFFF;
-            --ws-ink:      #14171A;
-            --ws-ink-soft: #3D434A;
-            --ws-ink-mute: #7A7F87;
-            --ws-line:     rgba(20, 23, 26, 0.10);
-            --ws-line-soft:rgba(20, 23, 26, 0.06);
+            --ws-ink: var(--c-ink);
+            --ws-ink-soft: var(--c-body);
+            --ws-ink-mute: var(--c-mute);
+            --ws-line: var(--c-line);
+            --ws-line-soft: var(--c-rule);
 
             background: var(--ws-paper);
             color: var(--ws-ink);
-            font-family: var(--body-font, 'Inter', sans-serif);
+            font-family: var(--body-font, system-ui, sans-serif);
             -webkit-font-smoothing: antialiased;
             padding-bottom: 4rem;
         }
@@ -25,12 +25,11 @@
             padding: 56px 0 28px;
         }
         .ws-eyebrow {
-            font-family: var(--display-font, 'Fraunces', serif);
-            font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-            color: var(--ws-ink-mute);
+            font-family: var(--display-font, system-ui, sans-serif);
+            font-size: 15px; color: var(--ws-ink-mute);
         }
         .ws-title {
-            font-family: var(--display-font, 'Fraunces', serif);
+            font-family: var(--display-font, system-ui, sans-serif);
             font-size: clamp(30px, 4.6vw, 52px); line-height: 1.05;
             margin-top: 14px; font-weight: 600; letter-spacing: -0.01em;
         }
@@ -38,24 +37,23 @@
 
         .ws-section { margin-top: 48px; }
         .ws-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
-        .ws-section-title { font-family: var(--display-font, 'Fraunces', serif); font-size: 22px; font-weight: 600; letter-spacing: -0.005em; }
-        .ws-section-meta { color: var(--ws-ink-mute); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+        .ws-section-title { font-family: var(--display-font, system-ui, sans-serif); font-size: 22px; font-weight: 600; letter-spacing: -0.005em; }
+        .ws-section-meta { color: var(--ws-ink-mute); font-size: 15px; }
 
         .ws-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
         .ws-card {
             background: var(--ws-card);
             border: 1px solid var(--ws-line-soft);
-            border-radius: 18px;
+            border-radius: 8px;
             padding: 20px 22px;
             display: grid; gap: 8px;
         }
-        .ws-card-name { font-family: var(--display-font, 'Fraunces', serif); font-size: 19px; font-weight: 600; }
+        .ws-card-name { font-family: var(--display-font, system-ui, sans-serif); font-size: 19px; font-weight: 600; }
         .ws-card-tag {
-            font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
-            color: var(--ws-ink-mute);
+            font-size: 15px; color: var(--ws-ink-mute);
         }
         .ws-card-desc { color: var(--ws-ink-soft); font-size: 13.5px; line-height: 1.55; }
-        .ws-card-stats { display: flex; gap: 16px; font-size: 12.5px; color: var(--ws-ink-mute); margin-top: 4px; }
+        .ws-card-stats { display: flex; gap: 16px; font-size: 15px; color: var(--ws-ink-mute); margin-top: 4px; }
 
         .ws-plan-card {
             background: linear-gradient(160deg, var(--ws-paper-2) 0%, var(--ws-card) 65%);
@@ -64,27 +62,29 @@
             padding: 22px 24px;
             display: grid; gap: 10px;
         }
-        .ws-plan-price { font-family: var(--display-font, 'Fraunces', serif); font-size: 28px; font-weight: 600; letter-spacing: -0.01em; }
+        .ws-plan-price { font-family: var(--display-font, system-ui, sans-serif); font-size: 28px; font-weight: 600; letter-spacing: -0.01em; }
         .ws-plan-suffix { font-size: 13px; color: var(--ws-ink-soft); font-weight: 500; }
 
         .ws-form-card {
             background: var(--ws-card);
             border: 1px solid var(--ws-line);
-            border-radius: 22px;
+            border-radius: 8px;
             padding: 28px 28px;
         }
         .ws-input {
+            font-family: inherit;
             width: 100%; padding: 10px 14px; border: 1px solid var(--ws-line);
-            background: var(--ws-paper); border-radius: 10px;
+            background: #FFFFFF; border-radius: 8px;
             font-size: 14px; color: var(--ws-ink);
         }
         .ws-input:focus { outline: none; border-color: var(--ws-ink); }
-        .ws-label { font-size: 11px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--ws-ink-mute); }
+        .ws-label { font-size: 15px; color: var(--ws-ink-mute); }
         .ws-btn {
+            font-family: inherit;
             display: inline-flex; align-items: center; gap: 10px;
-            padding: 11px 18px; border-radius: 999px; cursor: pointer;
-            background: var(--primary, var(--ws-ink));
-            color: var(--ws-paper); border: 0; font-size: 13.5px; font-weight: 500;
+            padding: 11px 18px; border-radius: 8px; cursor: pointer;
+            background: var(--action);
+            color: #FFFFFF; border: 0; font-size: 13.5px; font-weight: 500;
         }
         .ws-btn:hover { filter: brightness(0.92); }
         .ws-empty { color: var(--ws-ink-mute); font-size: 13px; font-style: italic; }
@@ -96,11 +96,10 @@
         .ws-plan-card--soon { opacity: 0.72; position: relative; }
         .ws-card-tag--soon {
             display: inline-flex; align-items: center; gap: 6px;
-            padding: 3px 8px; border-radius: 999px;
+            padding: 3px 8px; border-radius: 8px;
             background: color-mix(in srgb, var(--primary, var(--ws-ink)) 8%, transparent);
             color: var(--primary, var(--ws-ink));
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            letter-spacing: 0.14em;
+            font-weight: 600;
         }
 
         /* ── Mobile polish (≤640px) ────────────────────────────────
@@ -122,7 +121,7 @@
             .ws-plan-card { padding: 18px 20px; }
             .ws-plan-price { font-size: 24px; }
 
-            .ws-form-card { padding: 20px 18px; border-radius: 18px; }
+            .ws-form-card { padding: 20px 18px; border-radius: 8px; }
             .ws-btn { width: 100%; justify-content: center; }
         }
     </style>

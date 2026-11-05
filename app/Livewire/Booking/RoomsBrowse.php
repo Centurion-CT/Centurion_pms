@@ -171,7 +171,7 @@ class RoomsBrowse extends Component
             'totalCategoryCount' => $totalCategoryCount,
             'unavailableCount' => $unavailableCount,
             'tooSmallCount' => $tooSmallCount,
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest', ['browsing' => true]);
     }
 
     /**

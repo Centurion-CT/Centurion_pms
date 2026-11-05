@@ -102,6 +102,6 @@ class WorkspacesBrowse extends Component
         return view('livewire.booking.workspaces-browse', [
             'workspaces' => Workspace::query()->active()->orderBy('name')->get(),
             'plans'      => WorkspacePlan::query()->active()->orderBy('price_naira')->get(),
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest', ['browsing' => true]);
     }
 }

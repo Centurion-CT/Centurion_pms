@@ -72,7 +72,7 @@ class Show extends Component
             'walletCanCoverOutstanding' => $walletBalance > 0 && (int) $booking->outstandingTotal() > 0
                 && $walletBalance >= (int) $booking->outstandingTotal(),
             'recentWalletTx' => $recentWalletTx,
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest');
     }
 
     private function canPayBalance(Booking $booking): bool

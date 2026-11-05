@@ -87,7 +87,7 @@ it('shows each business only its own buildings and apartments', function (): voi
     $this->get('http://alpha.keverna.test/')
         ->assertOk()
         ->assertSee('Alpha Suites')->assertSee('Wuse 2')->assertSee('Jabi')
-        ->assertSee('Find a free apartment anywhere in Abuja')
+        ->assertSee('Apartments in Abuja')
         ->assertDontSee('Lekki')->assertDontSee('Penthouse');
 
     $this->get('http://alpha.keverna.test/apartments')
@@ -123,16 +123,75 @@ it('filters by building and leaves out apartments taken for the stay', function 
         ->assertSee('2 apartments free')->assertSee('Studio');
 });
 
-it('opens the detail panel with the price for the stay', function (): void {
+it('gives each apartment its own page with the price for the stay', function (): void {
     $this->a->makeCurrent();
     $studio = RoomCategory::query()->where('name', 'Studio')->firstOrFail();
     Tenant::forgetCurrent();
     $in = Carbon::today()->addDays(3);
+    $q = ['in' => $in->toDateString(), 'out' => $in->copy()->addDays(2)->toDateString()];
 
-    $this->get('http://alpha.keverna.test/apartments?'.http_build_query(['in' => $in->toDateString(), 'out' => $in->copy()->addDays(2)->toDateString(), 'open' => $studio->id]))
+    $this->get('http://alpha.keverna.test/apartments/wuse-2/'.$studio->slug.'?'.http_build_query($q))
         ->assertOk()
         ->assertSee('₦60,000 × 2 nights')
         ->assertSee('/book/wuse-2/'.$studio->slug, false);
+});
+
+it('sends old detail-panel links to the apartment page', function (): void {
+    $this->a->makeCurrent();
+    $studio = RoomCategory::query()->where('name', 'Studio')->firstOrFail();
+    Tenant::forgetCurrent();
+
+    $this->get('http://alpha.keverna.test/apartments?open='.$studio->id)
+        ->assertStatus(301)
+        ->assertRedirectContains('/apartments/wuse-2/'.$studio->slug);
+});
+
+it("does not open another business's apartment page", function (): void {
+    $this->get('http://alpha.keverna.test/apartments/lekki/penthouse')->assertNotFound();
+});
+
+it('sends a party too big for the apartment back to the results', function (): void {
+    $this->a->makeCurrent();
+    $studio = RoomCategory::query()->where('name', 'Studio')->firstOrFail();
+    Tenant::forgetCurrent();
+
+    $this->get('http://alpha.keverna.test/apartments/wuse-2/'.$studio->slug.'?adults=12')
+        ->assertRedirectContains('/apartments?');
+});
+
+it('stands the three bars in for photos a new business has not added', function (): void {
+    $this->get('http://alpha.keverna.test/')->assertSee('class="bars', false);
+});
+
+it("puts the business's own colour on the site", function (): void {
+    $this->a->makeCurrent();
+    $this->a->property->update(['primary_color' => '#0f6b5c']);
+    Tenant::forgetCurrent();
+
+    $this->get('http://alpha.keverna.test/')->assertSee('--action: #0f6b5c', false);
+});
+
+it('sends old checkout links to the building on the booking site', function (): void {
+    $this->a->makeCurrent();
+    Property::query()->where('slug', 'wuse-2')->update(['public_slug' => 'wuse-2', 'is_listed_publicly' => true]);
+    Tenant::forgetCurrent();
+
+    $this->get('http://alpha.keverna.test/stays/wuse-2/book?checkin=2030-03-04&checkout=2030-03-06')
+        ->assertStatus(301)
+        ->assertRedirectContains('in=2030-03-04');
+});
+
+it('keeps the old room pages working inside the booking site', function (): void {
+    $this->a->makeCurrent();
+    $studio = RoomCategory::query()->where('name', 'Studio')->firstOrFail();
+    Tenant::forgetCurrent();
+
+    foreach (['/rooms', '/categories/'.$studio->slug, '/privacy'] as $path) {
+        $this->get('http://alpha.keverna.test'.$path)
+            ->assertOk()
+            ->assertSee('site-header', false)
+            ->assertDontSee('data-testid="site-nav"', false);
+    }
 });
 
 it('books the apartment and sends the guest to Paystack, returning to this address', function (): void {

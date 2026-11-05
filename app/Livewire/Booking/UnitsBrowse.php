@@ -114,6 +114,6 @@ class UnitsBrowse extends Component
                 ->whereIn('status', [UnitStatus::Available->value])
                 ->orderBy('name')
                 ->get(),
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest', ['browsing' => true]);
     }
 }

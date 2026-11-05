@@ -300,7 +300,7 @@ class CategoryDetail extends Component
             'rating' => $categoryRating,
             'propertyRating' => $propertyRating,
             'packages' => $packages,
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest', ['browsing' => true]);
     }
 
     private function buildPreview(PricingCalculator $pricing, ?Room $representativeRoom, int $packagesTotal = 0): ?PricingBreakdown

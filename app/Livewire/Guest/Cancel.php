@@ -54,7 +54,7 @@ class Cancel extends Component
             'booking' => $booking,
             'isAlreadyCancelled' => ! $booking->booking_status->holdsInventory(),
             'depositForfeitPreview' => $this->depositForfeitPreview($booking),
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest');
     }
 
     private function depositForfeitPreview(Booking $booking): bool

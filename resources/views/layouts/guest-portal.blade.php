@@ -6,7 +6,7 @@
     // renders its own sticky app-bar; no site-wide nav or footer here.
     $tenant   = \App\Models\Tenant::current();
     $property = $tenant?->property;
-    $primary  = $property?->primary_color ?? '#14171A';
+    $color    = \App\Support\BusinessColor::forSignIn($tenant);
 
     // Per-tenant font theme, same whitelist tenant-public uses so the
     // guest portal picks up the operator's brand fonts.
@@ -57,6 +57,19 @@
         }
         a { color: inherit; text-decoration: none; }
     </style>
+    @if ($color)
+        {{-- Daytime only: the night palette stays navy. html:root outranks the
+             page's own :root tokens, which load after this. --}}
+        <style>
+            @media (prefers-color-scheme: light) {
+                html:root {
+                    --gp-primary: {{ $color }}; --gp-accent: {{ $color }}; --gp-navy: {{ $color }};
+                    --gp-accent-deep: color-mix(in srgb, {{ $color }} 82%, #000);
+                    --gp-navy-deep: color-mix(in srgb, {{ $color }} 72%, #000);
+                }
+            }
+        </style>
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>

@@ -29,7 +29,23 @@ final class Listing
             return null;
         }
 
-        return $media->hasGeneratedConversion('medium') ? $media->getUrl('medium') : $media->getUrl();
+        return Photo::url($media);
+    }
+
+    /**
+     * Up to three photos for the apartment page: its own, then its building's.
+     *
+     * @return list<string>
+     */
+    public function photos(): array
+    {
+        return collect([...$this->type->getMedia('gallery'), $this->branch->getFirstMedia('hero'), ...$this->branch->getMedia('gallery')])
+            ->filter()
+            ->unique('id')
+            ->take(3)
+            ->map(fn ($media) => $media->getUrl())
+            ->values()
+            ->all();
     }
 
     public function sleeps(): int

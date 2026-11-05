@@ -74,6 +74,6 @@ class Packages extends Component
             'selected' => $selected,
             'available' => $available,
             'outstandingTotal' => $booking->outstandingTotal(),
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest');
     }
 }

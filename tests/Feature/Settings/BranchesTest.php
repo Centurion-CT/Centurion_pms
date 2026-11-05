@@ -76,7 +76,7 @@ it('sends a listed branch page to its apartments', function (): void {
         ->assertRedirectContains('/apartments');
 });
 
-it('shows a listed branch with no rooms yet its landing, not a 404', function (): void {
+it('shows a listed branch with no rooms yet a page of its own, not a 404', function (): void {
     $this->lagos->forceFill(['slug' => 'lagos', 'public_slug' => 'lagos', 'is_listed_publicly' => true, 'is_live' => true])->save();
 
     $this->get('http://branches-dash.keverna.test/branches/lagos')->assertOk();

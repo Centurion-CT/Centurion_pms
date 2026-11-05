@@ -58,12 +58,12 @@
         <div class="rd-gallery" data-testid="gallery">
             @if ($heroPhoto)
                 <div class="g-main">
-                    <img src="{{ $heroPhoto->getUrl('medium') }}"
+                    <img src="{{ \App\Site\Photo::url($heroPhoto) }}"
                          alt="{{ $heroPhoto->getCustomProperty('alt') ?: $room->name }}">
                 </div>
                 @foreach ($thumbs as $m)
                     <div>
-                        <img src="{{ $m->getUrl('medium') }}"
+                        <img src="{{ \App\Site\Photo::url($m) }}"
                              alt="{{ $m->getCustomProperty('alt') ?: $room->name }}"
                              loading="lazy">
                     </div>
@@ -270,7 +270,7 @@
                            data-testid="related-room-{{ $r->id }}">
                             <div class="rd-related-photo">
                                 @if ($hero)
-                                    <img src="{{ $hero->getUrl('medium') }}"
+                                    <img src="{{ \App\Site\Photo::url($hero) }}"
                                          alt="{{ $hero->getCustomProperty('alt') ?: $r->name }}"
                                          loading="lazy">
                                 @endif

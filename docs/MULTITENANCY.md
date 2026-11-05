@@ -167,8 +167,8 @@ business has its own identity.
   ("Centurion fee"), the staff app and POS names, email wording,
   `/llms.txt` (now describes the business's own site), the corporate
   portal, the Paystack subaccount label. Keverna's marketplace listing
-  toggle is gone from property settings; `/stays/{slug}` 301s to the
-  building on the booking site. Corporates once "onboarded centrally"
+  toggle is gone from property settings; `/stays` 301s to the
+  apartments and `/stays/{slug}` to the building on the booking site. Corporates once "onboarded centrally"
   belong to, and are editable by, their business.
 - **Support WhatsApp** on the staff sign-in pages pointed at Keverna's
   support numbers. It now uses `SUPPORT_WHATSAPP` and is hidden when
@@ -180,22 +180,26 @@ business has its own identity.
   trustmark page) is removed. The owner should still review the
   wording.
 - Left alone: Keverna-era code that nothing routes to any more (central
-  identity pages, marketing pages, the stays index), and internal names
+  identity pages, marketing pages, the stays index view), and internal names
   (`window.Keverna*`, `X-Keverna-Property`, the `kevernaFee` field).
 
 ## Step 5 notes: booking site
 
 Built from design Option C v2 ("Map Desk", `design/website/c-map`), on every
-business's address:
+business's address, then redesigned on 5 Nov 2026 so one shell runs from home
+page to the guest's own booking and still reads well for a business with one
+apartment and no photos:
 
 | Path | Page |
 | --- | --- |
-| `/` | Home: search, map with a marker per building, building list, apartments free for the default stay, long-stay rates, how booking works (`SiteController::home`) |
-| `/apartments` | Apartments free for a stay, filters by building and type, map; `?open={type id}` swaps the map for the detail panel (`SiteController::results`) |
+| `/` | Home: search, apartments free for the default stay, locations, long-stay rates, good to know (`SiteController::home`) |
+| `/apartments` | Apartments free for a stay, filters by building and type, the map when buildings have positions (`SiteController::results`) |
+| `/apartments/{building}/{type}` | One apartment: photos, the stay on a calendar, price and Book (`SiteController::apartment`). Old `?open={type id}` links 301 here |
 | `/book/{building}/{type}` | Checkout: who's staying, pay in full or the deposit, then Paystack (`App\Livewire\Site\Checkout`) |
 | `/stays/pay/success/{ref}` | Booked (or "waiting for your payment" while unpaid) |
 | `/stays/pay/failed` | Payment didn't go through |
 | `/manage` | Find a booking by reference + email or phone, then the existing guest booking page (`App\Livewire\Site\ManageBooking`) |
+| `/guest/booking/{ref}` | The guest's booking and self-service pages, on the same header and footer (`site.layouts.guest`) |
 
 - Everything comes from the business's data (`App\Site\BookingSite`): live
   buildings, active apartment types, free counts per night (same rule as
@@ -207,8 +211,17 @@ business's address:
   a latitude/longitude (for the map), photos on its apartment types, its
   phone and email, check-in times and a cancellation policy in house
   rules, and optionally monthly rates and nearby places.
-- Not built from the design: the "features" row (power, kitchen, security)
-  and review scores, which need per-business content; the home page's tabs.
+- The site takes the business's logo and colour (Settings → Business), as the
+  staff sign-in does. With no photo the three bars stand in; a business that
+  can't take payments gets "Book by phone" at checkout instead of a form.
+- Not built: review scores, which need per-business content.
+- Two booking paths remain. `/rooms`, `/categories/{slug}` and `/rooms/{id}`
+  sit in the same shell but have extras at booking, discount codes and
+  corporate rates, which `/book/{building}/{type}` doesn't yet. Merge them
+  once the new checkout has those. Nothing on the site links to them.
+- `/stays/{slug}/book` 301s to the building's apartments, and
+  `/branches/{slug}` with nothing bookable shows `site.branch`. The in-room
+  portal keeps its own app-like layout, in the business's colour and logo.
 - Map tiles default to Esri's street map, as in the design
   (`SITE_MAP_TILES`); CARTO's free tiles now need a key. Check the tile
   provider's terms before heavy production traffic.

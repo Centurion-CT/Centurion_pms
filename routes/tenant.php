@@ -176,6 +176,7 @@ Route::get('/__tenant-ping', function () {
 // to the staff login, as before.
 Route::get('/', [SiteController::class, 'home'])->name('tenant.landing');
 Route::get('/apartments', [SiteController::class, 'results'])->name('site.results');
+Route::get('/apartments/{branch}/{type}', [SiteController::class, 'apartment'])->name('site.apartment');
 Route::get('/book/{branch}/{type}', SiteCheckout::class)->name('site.checkout');
 Route::get('/manage', SiteManageBooking::class)->middleware('throttle:30,1')->name('site.manage');
 Route::get('/sitemap.xml', [PublicLandingController::class, 'sitemap'])->name('tenant.sitemap');

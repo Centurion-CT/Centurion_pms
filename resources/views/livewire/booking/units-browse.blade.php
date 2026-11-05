@@ -5,30 +5,29 @@
 <div class="rs-page">
     <style>
         .rs-page {
-            --rs-paper:    #FAF7F2;
-            --rs-paper-2:  #F2EEE6;
+            --rs-paper: #FFFFFF;
+            --rs-paper-2: var(--c-band);
             --rs-card:     #FFFFFF;
-            --rs-ink:      #14171A;
-            --rs-ink-soft: #3D434A;
-            --rs-ink-mute: #7A7F87;
-            --rs-line:     rgba(20, 23, 26, 0.10);
-            --rs-line-soft:rgba(20, 23, 26, 0.06);
+            --rs-ink: var(--c-ink);
+            --rs-ink-soft: var(--c-body);
+            --rs-ink-mute: var(--c-mute);
+            --rs-line: var(--c-line);
+            --rs-line-soft: var(--c-rule);
 
             background: var(--rs-paper);
             color: var(--rs-ink);
-            font-family: var(--body-font, 'Inter', sans-serif);
+            font-family: var(--body-font, system-ui, sans-serif);
             -webkit-font-smoothing: antialiased;
             padding-bottom: 4rem;
         }
         .rs-shell { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
         .rs-hero { padding: 56px 0 28px; }
         .rs-eyebrow {
-            font-family: var(--display-font, 'Fraunces', serif);
-            font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-            color: var(--rs-ink-mute);
+            font-family: var(--display-font, system-ui, sans-serif);
+            font-size: 15px; color: var(--rs-ink-mute);
         }
         .rs-title {
-            font-family: var(--display-font, 'Fraunces', serif);
+            font-family: var(--display-font, system-ui, sans-serif);
             font-size: clamp(30px, 4.6vw, 52px); line-height: 1.05;
             margin-top: 14px; font-weight: 600; letter-spacing: -0.01em;
         }
@@ -36,53 +35,54 @@
 
         .rs-section { margin-top: 48px; }
         .rs-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
-        .rs-section-title { font-family: var(--display-font, 'Fraunces', serif); font-size: 22px; font-weight: 600; letter-spacing: -0.005em; }
-        .rs-section-meta { color: var(--rs-ink-mute); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+        .rs-section-title { font-family: var(--display-font, system-ui, sans-serif); font-size: 22px; font-weight: 600; letter-spacing: -0.005em; }
+        .rs-section-meta { color: var(--rs-ink-mute); font-size: 15px; }
 
         .rs-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
         .rs-card {
             background: var(--rs-card);
             border: 1px solid var(--rs-line-soft);
-            border-radius: 18px;
+            border-radius: 8px;
             padding: 22px 24px;
             display: grid; gap: 10px;
         }
-        .rs-card-name { font-family: var(--display-font, 'Fraunces', serif); font-size: 20px; font-weight: 600; }
-        .rs-card-tag { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rs-ink-mute); }
+        .rs-card-name { font-family: var(--display-font, system-ui, sans-serif); font-size: 20px; font-weight: 600; }
+        .rs-card-tag { font-size: 15px; color: var(--rs-ink-mute); }
         .rs-card-desc { color: var(--rs-ink-soft); font-size: 13.5px; line-height: 1.55; }
-        .rs-card-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--rs-ink-mute); margin-top: 4px; }
-        .rs-price { font-family: var(--display-font, 'Fraunces', serif); font-size: 22px; font-weight: 600; }
+        .rs-card-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 15px; color: var(--rs-ink-mute); margin-top: 4px; }
+        .rs-price { font-family: var(--display-font, system-ui, sans-serif); font-size: 22px; font-weight: 600; }
         .rs-price-suffix { font-size: 13px; color: var(--rs-ink-soft); font-weight: 500; }
 
         .rs-form-card {
             background: var(--rs-card);
             border: 1px solid var(--rs-line);
-            border-radius: 22px;
+            border-radius: 8px;
             padding: 28px 28px;
         }
         .rs-input {
+            font-family: inherit;
             width: 100%; padding: 10px 14px; border: 1px solid var(--rs-line);
-            background: var(--rs-paper); border-radius: 10px;
+            background: #FFFFFF; border-radius: 8px;
             font-size: 14px; color: var(--rs-ink);
         }
         .rs-input:focus { outline: none; border-color: var(--rs-ink); }
-        .rs-label { font-size: 11px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--rs-ink-mute); }
+        .rs-label { font-size: 15px; color: var(--rs-ink-mute); }
         .rs-btn {
+            font-family: inherit;
             display: inline-flex; align-items: center; gap: 10px;
-            padding: 11px 18px; border-radius: 999px; cursor: pointer;
-            background: var(--primary, var(--rs-ink));
-            color: var(--rs-paper); border: 0; font-size: 13.5px; font-weight: 500;
+            padding: 11px 18px; border-radius: 8px; cursor: pointer;
+            background: var(--action);
+            color: #FFFFFF; border: 0; font-size: 13.5px; font-weight: 500;
         }
         .rs-btn:hover { filter: brightness(0.92); }
         .rs-empty { color: var(--rs-ink-mute); font-size: 13px; font-style: italic; }
         .rs-card--soon { opacity: 0.72; }
         .rs-card-tag--soon {
             display: inline-flex; align-items: center; gap: 6px;
-            padding: 3px 8px; border-radius: 999px;
+            padding: 3px 8px; border-radius: 8px;
             background: color-mix(in srgb, var(--primary, var(--rs-ink)) 8%, transparent);
             color: var(--primary, var(--rs-ink));
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            letter-spacing: 0.14em;
+            font-weight: 600;
         }
 
         /* Stack the unit + move-in grid on mobile, `1fr 1fr` was
@@ -111,7 +111,7 @@
             .rs-card-name { font-size: 18px; }
             .rs-price { font-size: 20px; }
 
-            .rs-form-card { padding: 20px 18px; border-radius: 18px; }
+            .rs-form-card { padding: 20px 18px; border-radius: 8px; }
             .rs-btn { width: 100%; justify-content: center; }
         }
     </style>

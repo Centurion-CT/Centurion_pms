@@ -76,6 +76,6 @@ class RequestChange extends Component
         return view('livewire.guest.request-change', [
             'booking' => $booking,
             'pendingRequest' => $pending,
-        ])->layout('layouts.tenant-public');
+        ])->layout('site.layouts.guest');
     }
 }
