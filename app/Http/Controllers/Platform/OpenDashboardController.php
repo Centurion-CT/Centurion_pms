@@ -13,14 +13,15 @@ use Illuminate\Http\RedirectResponse;
  * "Open my dashboard" at the end of sign-up. The new manager is signed in
  * on centurionpms.com, but their desk lives on their own address, where
  * this session doesn't reach. Hand them over with a short-lived one-time
- * login link (PostRegistrationLoginLink), made fresh on each click.
+ * login link (PostRegistrationLoginLink). The handover works once: left
+ * in the session it would sign anyone back in after they log out.
  */
 class OpenDashboardController extends Controller
 {
     public function __invoke(PostRegistrationLoginLink $links): RedirectResponse
     {
         $operator = Operator::query()->withoutGlobalScopes()->with('tenant')
-            ->find(session()->get('signup.operator_id'));
+            ->find(session()->pull('signup.operator_id'));
 
         if ($operator === null || $operator->tenant === null) {
             return redirect()->route('platform.login');

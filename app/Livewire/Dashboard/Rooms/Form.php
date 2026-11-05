@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Livewire\Dashboard\Rooms;
 
 use App\Enums\RoomStatus;
+use App\Models\Property;
 use App\Models\Room;
 use App\Models\RoomCategory;
 use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -115,7 +117,7 @@ class Form extends Component
     protected function rules(): array
     {
         $tenantId = (int) Tenant::current()?->id;
-        $propertyId = Tenant::current()?->property?->id;
+        $propertyId = $this->branch()?->id;
 
         // Unique per property, front desk relies on the number to
         // look up a guest by their key fob etc.
@@ -174,9 +176,7 @@ class Form extends Component
 
         $data = $this->validate();
 
-        /** @var Tenant $tenant */
-        $tenant = Tenant::current();
-        $property = $tenant?->property;
+        $property = $this->branch();
         if ($property === null) {
             throw new NotFoundHttpException('No property, finish onboarding first.');
         }
@@ -229,9 +229,20 @@ class Form extends Component
         $this->redirectRoute('tenant.rooms.index');
     }
 
+    /**
+     * The branch this form works in: a new room joins the branch being
+     * worked in, an edited one stays in its own.
+     */
+    private function branch(): ?Property
+    {
+        return $this->roomId !== null
+            ? Room::query()->find($this->roomId)?->property
+            : app(PropertyContext::class)->current();
+    }
+
     public function render(): View
     {
-        $property = Tenant::current()?->property;
+        $property = $this->branch();
         $categories = $property
             ? RoomCategory::query()->where('property_id', $property->id)
                 ->orderBy('name')->get()

@@ -117,13 +117,13 @@ class PurchaseOrder extends Model
     }
 
     /**
-     * Short human-readable reference — KV-PO-abcd. Kept unique per tenant
+     * Short human-readable reference — PO-abcd. Kept unique per tenant
      * (see the migration's unique index); collision retry is defensive.
      */
     private static function mintReference(int $tenantId): string
     {
         do {
-            $candidate = 'KV-PO-'.strtolower(Str::random(6));
+            $candidate = 'PO-'.strtolower(Str::random(6));
         } while (
             self::query()
                 ->withoutGlobalScope(\App\Multitenancy\TenantScope::class)

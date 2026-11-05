@@ -8,6 +8,7 @@ use App\Enums\ReviewChannel;
 use App\Models\Review;
 use App\Models\Room;
 use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -130,7 +131,7 @@ class Editor extends Component
 
         /** @var Tenant $tenant */
         $tenant = Tenant::current();
-        $property = $tenant->property;
+        $property = app(PropertyContext::class)->current();
         if ($property === null) {
             $this->addError('body', __('Property is missing, finish onboarding first.'));
 
@@ -169,7 +170,7 @@ class Editor extends Component
 
         $attrs = [
             'tenant_id'     => $tenant->id,
-            'property_id'   => $property->id,
+            'property_id'   => $existing?->property_id ?? $property->id,
             'room_id'       => $this->room_id,
             'guest_name'    => $this->guest_name,
             'guest_country' => trim($this->guest_country) !== '' ? trim($this->guest_country) : null,

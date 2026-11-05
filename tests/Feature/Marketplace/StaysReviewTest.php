@@ -123,7 +123,9 @@ it('renders the review form for a checked-out booking via a signed URL', functio
     $this->get(signedReviewUrl($booking->booking_ref))
         ->assertOk()
         ->assertSee('How was your stay?')
-        ->assertSee($booking->booking_ref);
+        ->assertSee($booking->booking_ref)
+        // Real markup, not the page's source printed as text.
+        ->assertSee('data-testid="stays-review-form"', escape: false);
 });
 
 it('rejects an unsigned URL with 403', function (): void {

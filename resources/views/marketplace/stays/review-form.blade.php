@@ -10,7 +10,7 @@
 <div style="max-width: 640px; margin: 0 auto; padding: 40px 24px 60px;" data-testid="stays-review-form">
     <a href="/" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 18px; margin-bottom: 20px; color: #14171A;">
         <span style="width: 24px; height: 24px; border-radius: 6px; background: #14171A; color: #fff; display: inline-flex; align-items: center; justify-content: center;">
-            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 1.5v9M3 6L9 1.5M3 6l6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+                <x-business-mark />
         </span>
         {{ \App\Models\Tenant::current()?->name }}
     </a>

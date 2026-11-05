@@ -460,6 +460,8 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 .field .error, .form-error { font-size: var(--t-sm); color: #B42318; margin: 0; }
 .page { padding-block: var(--s-12) var(--s-24); }
 a.chip { text-decoration: none; }
+body.pg-home { min-height: 100vh; display: flex; flex-direction: column; }
+body.pg-home > main { flex: 1; }
 .pg-results .site-header .search { width: 700px; }
 .search-compact .seg input[type=date] { min-width: 8.2em; }
 .page .narrow { max-width: 640px; }

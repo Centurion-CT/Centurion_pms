@@ -73,7 +73,7 @@ it('creates a booking + payment + returns a Paystack auth url', function (): voi
     ], callbackUrl: 'http://central.test/stays/pay/callback');
 
     expect($result['authorization_url'])->toBe('https://checkout.paystack.test/marketplace-abc');
-    expect($result['booking_ref'])->toStartWith('KV-');
+    expect($result['booking_ref'])->toStartWith('BK-');
 
     $booking = Booking::query()
         ->withoutGlobalScope(TenantScope::class)

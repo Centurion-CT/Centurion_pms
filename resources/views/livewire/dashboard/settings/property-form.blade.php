@@ -820,7 +820,7 @@
 
         <div>
             <label for="prop-video-url" class="lp-form-label">Video tour</label>
-            <input id="prop-video-url" type="url" wire:model.live.debounce.500ms="videoUrl" maxlength="400"
+            <input id="prop-video-url" type="url" wire:model="videoUrl" wire:input.debounce.500ms="$refresh" maxlength="400"
                    data-testid="property-video-url" class="lp-input"
                    placeholder="YouTube, Vimeo, or a direct .mp4 URL">
             <p class="lp-form-help mt-2">

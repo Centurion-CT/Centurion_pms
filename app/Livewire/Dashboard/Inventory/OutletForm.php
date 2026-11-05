@@ -9,6 +9,7 @@ use App\Enums\OutletType;
 use App\Models\Operator;
 use App\Models\Outlet;
 use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
@@ -75,14 +76,18 @@ class OutletForm extends Component
         $data = $this->validate();
 
         $tenant = Tenant::current();
-        $propertyId = $tenant?->property?->id;
+        $isNew = $this->outletId === null;
+        $outlet = $isNew ? new Outlet : Outlet::query()->findOrFail($this->outletId);
+
+        // A new outlet joins the branch being worked in; an edited one
+        // stays in its own.
+        $propertyId = $isNew ? app(PropertyContext::class)->current()?->id : $outlet->property_id;
         if ($propertyId === null) {
             session()->flash('error', 'Set up your property before creating outlets.');
 
             return;
         }
 
-        $isNew = $this->outletId === null;
         $canManagePrices = $this->currentRole()->canManagePrices();
 
         // role.prices middleware already gates the create route; this is
@@ -90,8 +95,6 @@ class OutletForm extends Component
         if ($isNew && ! $canManagePrices) {
             throw new AuthorizationException('Only managers can create outlets.');
         }
-
-        $outlet = $isNew ? new Outlet : Outlet::query()->findOrFail($this->outletId);
 
         $fillData = [
             'tenant_id' => $tenant->id,

@@ -44,10 +44,14 @@
                     </div>
 
                     <div class="submit">
-                        <button class="btn btn-primary btn-lg" type="submit" wire:loading.attr="disabled">
+                        @if ($canPay)
+                        <button class="btn btn-primary btn-lg" type="submit" wire:loading.attr="disabled" wire:target="book">
                             <span wire:loading.remove wire:target="book">Pay ₦{{ number_format($pay === 'deposit' && $quote->deposit > 0 ? $quote->deposit : $quote->total) }}</span>
                             <span wire:loading wire:target="book">Opening Paystack…</span>
                         </button>
+                        @else
+                        <p class="form-error" role="alert" style="flex-basis:100%">{{ $noPaymentsMessage }}</p>
+                        @endif
                         <p class="meta">By paying you agree to the <a href="{{ route('legal.terms') }}">terms</a>{{ ($rules['cancellation_policy'] ?? '') !== '' ? ' and the cancellation policy' : '' }}.</p>
                         @error('booking')<p class="form-error" role="alert" style="flex-basis:100%">{{ $message }}</p>@enderror
                     </div>

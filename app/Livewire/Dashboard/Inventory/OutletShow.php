@@ -16,8 +16,8 @@ use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\StockRequest;
 use App\Models\Store;
-use App\Models\Tenant;
 use App\Services\Inventory\DailyStockSheet;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Layout;
@@ -262,12 +262,12 @@ class OutletShow extends Component
 
     /**
      * True when the current property runs on `store_and_requisition`.
-     * Cheap to call multiple times, reads a cast enum off the
-     * already-loaded tenant.
+     * The mode is set per branch, so this reads the branch being
+     * worked in.
      */
     private function usesCentralStore(): bool
     {
-        $property = Tenant::current()?->property;
+        $property = app(PropertyContext::class)->current();
         $mode = $property?->stock_model ?? StockModel::StoreAndRequisition;
 
         return $mode->usesCentralStore();

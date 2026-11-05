@@ -3,12 +3,14 @@
 declare(strict_types=1);
 
 use App\Enums\VerificationChannel;
+use App\Events\TenantOnboarded;
 use App\Livewire\Onboarding\EmailVerification;
 use App\Mail\Onboarding\EmailOtpMail;
 use App\Models\Operator;
 use App\Models\Tenant;
 use App\Models\VerificationCode;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
@@ -31,7 +33,9 @@ it('queues an OTP mail on mount', function (): void {
     Mail::assertQueued(EmailOtpMail::class);
 });
 
-it('marks the email verified on correct code and advances to step 3', function (): void {
+it('marks the email verified on correct code, fires TenantOnboarded and opens the dashboard', function (): void {
+    Event::fake([TenantOnboarded::class]);
+
     // Bootstrap a known code so we can submit a deterministic value.
     VerificationCode::query()->create([
         'operator_id' => $this->operator->id,
@@ -46,10 +50,11 @@ it('marks the email verified on correct code and advances to step 3', function (
         ->test(EmailVerification::class)
         ->set('code', '424242')
         ->call('submit')
-        ->assertRedirect(route('tenant.onboarding.phone'))
+        ->assertRedirect(route('tenant.dashboard'))
         ->assertHasNoErrors();
 
     expect($this->operator->fresh()->email_verified_at)->not->toBeNull();
+    Event::assertDispatched(TenantOnboarded::class);
 });
 
 it('shows an error for incorrect codes', function (): void {

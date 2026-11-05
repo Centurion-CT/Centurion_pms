@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Dashboard\Stores;
 
 use App\Enums\StockModel;
-use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -24,7 +24,7 @@ class Disabled extends Component
 {
     public function render(): View
     {
-        $property = Tenant::current()?->property;
+        $property = app(PropertyContext::class)->current();
 
         return view('livewire.dashboard.stores.disabled', [
             'property' => $property,

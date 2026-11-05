@@ -49,14 +49,39 @@
         .tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--fill); color: var(--ink-700); white-space: nowrap; }
         .tag-ok { background: var(--green-50); color: var(--green); } .tag-warn { background: var(--amber-50); color: var(--amber); } .tag-bad { background: var(--red-50); color: var(--red); }
         [x-cloak] { display: none !important; }
+        /* Signed out: all navy, so it can't be mistaken for a business's login. */
+        body.guest { box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; padding: 40px clamp(16px, 5vw, 72px); background: var(--navy-900); color: #A9C5E1; font-size: 16px; }
+        .guest-brand { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 18px; color: #fff; }
+        .guest-brand img { width: 40px; height: 40px; border-radius: 8px; background: #fff; object-fit: contain; }
+        .guest-brand small { font-weight: 400; font-size: 15px; color: #A9C5E1; }
+        .guest main { width: 100%; max-width: 400px; align-self: center; padding: 0; }
+        .guest .wrap { max-width: none; padding: 0; }
+        .guest h1 { font-size: 36px; color: #fff; }
+        .guest .lead { margin-top: 12px; color: #A9C5E1; }
+        .guest .lead b { color: #fff; }
+        .guest a, .guest .meta { color: #A9C5E1; }
+        .guest .guest-form { display: flex; flex-direction: column; gap: 20px; margin-top: 28px; }
+        .guest .field label { color: #fff; }
+        .guest .input { height: 48px; font-size: 16px; }
+        .guest .input:focus { box-shadow: 0 0 0 3px #8DB6DE; }
+        .guest .btn-primary { height: 48px; background: #8DB6DE; color: var(--navy-900); }
+        .guest .btn-primary:hover { background: #A9C5E1; }
+        .guest .btn-text { height: auto; padding: 0; background: none; color: #A9C5E1; text-decoration: underline; text-underline-offset: 3px; }
+        .guest .error { color: #F7B4BF; margin: 0; }
+        .guest :focus-visible { outline-color: #8DB6DE; }
+        .guest-foot { font-size: 13px; }
+        body.guest > [x-data] { position: absolute; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink-900); color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 14px; }
     </style>
 </head>
-<body>
+@php($consoleUser = \App\Http\Middleware\EnsureConsoleAdmin::user())
+<body @class(['guest' => ! $consoleUser])>
+    @unless ($consoleUser)
+        <div class="guest-brand"><img src="{{ asset(config('brand.logo')) }}" alt="">{{ config('brand.name') }} <small>console</small></div>
+    @else
     <header class="bar">
         <div class="wrap">
             <a class="brand" href="{{ route('console.businesses') }}"><img src="{{ asset(config('brand.logo')) }}" alt="">{{ config('brand.name') }} <small>console</small></a>
-            @php($consoleUser = \App\Http\Middleware\EnsureConsoleAdmin::user())
             @if ($consoleUser)
                 <nav class="nav" aria-label="Console">
                     <a href="{{ route('console.businesses') }}" @class(['on' => request()->routeIs('console.businesses')])>Businesses</a>
@@ -71,7 +96,11 @@
             @endif
         </div>
     </header>
+    @endunless
     <main><div class="wrap">{{ $slot }}</div></main>
+    @unless ($consoleUser)
+        <footer class="guest-foot">© {{ date('Y') }} {{ config('brand.name') }}</footer>
+    @endunless
     <div x-data="{ msg: '', t: null }" x-on:notify.window="msg = $event.detail.message ?? $event.detail[0]?.message ?? ''; clearTimeout(t); t = setTimeout(() => msg = '', 3500)">
         <div class="toast" x-show="msg" x-text="msg" x-cloak role="status"></div>
     </div>

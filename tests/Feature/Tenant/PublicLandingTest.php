@@ -24,10 +24,10 @@ it('shows "Coming Soon" when the property is not yet live', function (): void {
     $response->assertSeeText('coming soon');
 });
 
-it('sends the root to the staff sign-in', function (): void {
+it('shows the booking page at the root, not the staff sign-in, before anything is bookable', function (): void {
     Tenant::factory()->create(['slug' => 'no-prop', 'name' => 'No Property Co']);
 
-    $this->get('http://no-prop.keverna.test/')->assertRedirect(route('tenant.login'));
+    $this->get('http://no-prop.keverna.test/')->assertOk()->assertSee('Online booking opens soon');
 });
 
 it('shows the full landing page when the property is live', function (): void {

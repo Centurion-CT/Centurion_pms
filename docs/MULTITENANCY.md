@@ -40,8 +40,13 @@ Rules:
   `centurionpms.com` address 301 to the own domain; `/login` and `/dashboard`
   keep working on both. If the own domain stops pointing at us, verification
   lapses and the redirect stops on its own.
-- `/` is the booking site once a business has a live building; until then it
-  redirects to `/login`.
+- `/` is always the business's booking site, never a redirect to `/login`.
+  Until it has a live building with an apartment type, the page shows the
+  business name, "Online booking opens soon" and its phone and email.
+- The platform home (sign-up, "find my business") exists only with
+  `TENANCY_MODE=domains`. In `single` mode every address is the one
+  business's booking site, so the central domain shows that, not the
+  platform home.
 
 ## Rollout switch
 
@@ -291,8 +296,9 @@ the server. Tests run with it on.
   right. The password is hashed into the session at step 2 and never sent
   back to the browser.
 - "Open my dashboard" (`/signup/open`) hands the manager to their own
-  address with the one-time `PostRegistrationLoginLink`. They land on the
-  existing onboarding, which asks them to verify their phone (skippable).
+  address with the one-time `PostRegistrationLoginLink`. The email is
+  already confirmed, so they land straight on the dashboard. The phone
+  number is stored unverified.
 - `/login` on the platform finds a business by address, or emails a link to
   each business's staff login. It never says whether an email exists.
 - Staff emails are now unique per business (`operators.tenant_id, email`),
@@ -301,6 +307,14 @@ the server. Tests run with it on.
 - Not built: "used on this device" on the platform login (sessions don't
   cross addresses, so it needs its own cookie), and a "What does it cost?"
   answer, left out until pricing is decided.
+
+## Branch records
+
+`php artisan branches:check` is read-only. Forms once filed everything under
+a business's first branch, so run it before cut-over: it lists rooms, rate
+rules and reviews that disagree about their branch, and branches with no
+rooms. A room filed under the first branch with its category looks normal,
+so the business has to confirm those.
 
 ## Not mirrored to keverna-solo
 

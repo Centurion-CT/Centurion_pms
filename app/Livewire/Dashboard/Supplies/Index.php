@@ -9,7 +9,7 @@ use App\Enums\StockModel;
 use App\Models\Outlet;
 use App\Models\Product;
 use App\Models\StockRequest;
-use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
@@ -92,7 +92,7 @@ class Index extends Component
 
         // Per-department properties can't file requisitions, so the
         // "N pending" chip on each card is dead data; suppress it.
-        $usesCentralStore = (Tenant::current()?->property?->stock_model
+        $usesCentralStore = (app(PropertyContext::class)->current()?->stock_model
             ?? StockModel::StoreAndRequisition)->usesCentralStore();
 
         return view('livewire.dashboard.supplies.index', [

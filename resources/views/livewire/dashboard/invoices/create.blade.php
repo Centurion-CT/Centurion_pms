@@ -108,7 +108,7 @@
                     <div class="flex justify-between items-center gap-3">
                         <dt style="color: var(--color-ink-soft);">Already paid</dt>
                         <dd class="lp-mono">
-                            <input type="number" min="0" wire:model.live.debounce.300ms="depositApplied"
+                            <input type="number" min="0" wire:model="depositApplied" wire:input.debounce.300ms="$refresh"
                                    data-testid="invoice-deposit"
                                    class="lp-input" style="width: 130px; text-align: right;" />
                         </dd>

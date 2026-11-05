@@ -83,6 +83,25 @@ it('availableRooms returns rooms that fit the party size + date range', function
     expect($numbers)->toBe(['101', '102']);
 });
 
+it('availableRooms offers the branch the operator is working in', function (): void {
+    $second = Property::factory()->for($this->tenant)->create();
+    $category = RoomCategory::factory()->for($this->tenant)->for($second)->create(['capacity_adults' => 2]);
+    Room::factory()->for($this->tenant)->for($second)->for($category, 'category')->create(['room_number' => '201']);
+    $this->frontdesk->forceFill(['current_property_id' => $second->id])->save();
+
+    $checkin = Carbon::tomorrow()->toDateString();
+    $checkout = Carbon::tomorrow()->addDays(2)->toDateString();
+
+    $response = $this->getJson(
+        mobileBookingsUrl($this->tenant,
+            "/api/mobile/v1/rooms/available?checkin=$checkin&checkout=$checkout&adults=2&children=0"),
+        bearerForBookings($this->frontdesk),
+    );
+
+    $response->assertOk();
+    expect(collect($response->json('data'))->pluck('room_number')->all())->toBe(['201']);
+});
+
 it('availableRooms filters out rooms whose category cannot fit the party', function (): void {
     $checkin = Carbon::tomorrow()->toDateString();
     $checkout = Carbon::tomorrow()->addDays(2)->toDateString();

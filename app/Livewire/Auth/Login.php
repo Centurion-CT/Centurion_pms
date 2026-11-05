@@ -57,9 +57,7 @@ class Login extends Component
         )) {
             RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+            $this->refuse(__("That email and password don't match. Try again, or reset your password."));
         }
 
         /** @var Operator $operator */
@@ -79,7 +77,7 @@ class Login extends Component
                 default => __('Your account isn\'t activated yet. Check your invite email and click the activation link, or ask your manager to resend it.'),
             };
 
-            throw ValidationException::withMessages(['email' => $message]);
+            $this->refuse($message);
         }
 
         RateLimiter::clear($this->throttleKey());
@@ -100,9 +98,15 @@ class Login extends Component
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
-        throw ValidationException::withMessages([
-            'email' => __('auth.throttle', ['seconds' => $seconds]),
-        ]);
+        $this->refuse(__('auth.throttle', ['seconds' => $seconds]));
+    }
+
+    /** The page shows this above the form and puts focus on the password. */
+    private function refuse(string $message): never
+    {
+        $this->dispatch('sign-in-refused');
+
+        throw ValidationException::withMessages(['email' => $message]);
     }
 
     protected function throttleKey(): string

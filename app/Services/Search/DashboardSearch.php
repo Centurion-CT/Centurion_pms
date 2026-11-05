@@ -43,7 +43,7 @@ class DashboardSearch
             return collect();
         }
 
-        // Refs are stored uppercase (KV-XXXX): uppercase for the ref
+        // Refs are stored uppercase (BK-XXXX): uppercase for the ref
         // match so LIKE stays case-insensitive on Postgres; lower both
         // sides for the text fields.
         $needleUpper = mb_strtoupper($needle);

@@ -180,6 +180,14 @@ it('waits a minute before sending another code', function (): void {
     Mail::assertSent(SignUpCodeMail::class, 2);
 });
 
+it('never submits sign-up without what was just typed', function (): void {
+    // A debounced wire:model holds the value back from a quick submit, and a
+    // button disabled by any request swallows the click.
+    $this->get('http://keverna.test/signup')
+        ->assertSee('wire:model="name" wire:input.debounce.300ms="$refresh"', escape: false)
+        ->assertSee('wire:loading.attr="disabled" wire:target="submitBusiness"', escape: false);
+});
+
 it('hands the new manager to their own address, signed in', function (): void {
     [$component, $code] = signUpToCode();
     $component->set('code', $code)->call('confirm');
@@ -192,8 +200,26 @@ it('hands the new manager to their own address, signed in', function (): void {
 
     expect($link)->toStartWith('http://sunrise-court.keverna.test/auth/post-registration?token=');
 
-    $this->get($link)->assertRedirect();
+    $this->get($link)->assertRedirect('http://sunrise-court.keverna.test/onboarding');
     $this->assertAuthenticatedAs($manager, 'web');
+
+    // Sign-up confirmed the email, so nothing stands before the dashboard.
+    $this->get('http://sunrise-court.keverna.test/onboarding')->assertRedirect(route('tenant.dashboard'));
+    Mail::assertQueued(OperatorWelcomeMail::class, 1);
+});
+
+it('hands over once, so nobody can get back in after logging out', function (): void {
+    [$component, $code] = signUpToCode();
+    $component->set('code', $code)->call('confirm');
+    $manager = Operator::query()->withoutGlobalScopes()->where('email', 'chidi@sunrisecourt.ng')->sole();
+
+    $this->withSession(['signup.operator_id' => $manager->id])
+        ->get('http://keverna.test/signup/open')
+        ->assertRedirectContains('/auth/post-registration');
+
+    expect(session()->has('signup.operator_id'))->toBeFalse();
+
+    $this->get('http://keverna.test/signup/open')->assertRedirect(route('platform.login'));
 });
 
 it('sends someone to their business login by address', function (): void {

@@ -113,7 +113,7 @@ class Terminal extends Component
         $this->bookingLookupError = '';
         $ref = trim($this->bookingRef);
         if ($ref === '') {
-            $this->bookingLookupError = 'Enter a booking reference (e.g. KV-XXXXXX).';
+            $this->bookingLookupError = 'Enter a booking reference (e.g. BK-XXXXXX).';
 
             return;
         }

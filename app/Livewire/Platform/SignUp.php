@@ -225,7 +225,6 @@ class SignUp extends Component
         return view('livewire.platform.sign-up', [
             'addressCheck' => $check,
             'previewHost' => BusinessAddress::host($this->slug !== '' ? $this->slug : 'your-business'),
-            'kindLabel' => self::KINDS[$this->kind][0] ?? '',
         ])->title('Create your '.config('brand.name').' account');
     }
 

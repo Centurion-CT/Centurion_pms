@@ -18,8 +18,8 @@ use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\StockRequest;
 use App\Models\Store;
-use App\Models\Tenant;
 use App\Services\Inventory\DailyStockSheet;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Layout;
@@ -403,7 +403,7 @@ class Show extends Component
 
     private function usesCentralStore(): bool
     {
-        $property = Tenant::current()?->property;
+        $property = app(PropertyContext::class)->current();
         $mode = $property?->stock_model ?? StockModel::StoreAndRequisition;
 
         return $mode->usesCentralStore();

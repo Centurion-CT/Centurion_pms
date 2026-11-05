@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Enums\StockModel;
-use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,8 +29,7 @@ class EnsureCentralStoreMode
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $tenant = Tenant::current();
-        $property = $tenant?->property;
+        $property = app(PropertyContext::class)->current();
         $mode = $property?->stock_model ?? StockModel::StoreAndRequisition;
 
         if (! $mode->usesCentralStore()) {

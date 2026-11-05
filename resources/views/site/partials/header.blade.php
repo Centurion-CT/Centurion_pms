@@ -8,7 +8,7 @@
             @include('site.partials.search', ['compact' => true])
         @elseif ($nav ?? true)
             <nav class="site-nav" aria-label="Main">
-                <a href="{{ route('tenant.landing') }}#explore">Locations</a>
+                @if ($site->branches()->isNotEmpty())<a href="{{ route('tenant.landing') }}#explore">Locations</a>@endif
                 <a href="{{ route('site.results') }}">Apartments</a>
                 @if ($longStays ?? false)<a href="{{ route('tenant.landing') }}#long">Long stays</a>@endif
             </nav>

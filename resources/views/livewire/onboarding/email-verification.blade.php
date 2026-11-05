@@ -6,7 +6,7 @@
     <div class="mx-auto" style="max-width: 480px;">
         <div class="text-center">
             <span class="lp-mono text-[10.5px] tracking-[0.16em] uppercase" style="color: var(--color-ink-mute);">
-                Step 2 of 3
+                Step 2 of 2
             </span>
             <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                 style="color: var(--color-ink); font-weight: 600; line-height: 1.06;">

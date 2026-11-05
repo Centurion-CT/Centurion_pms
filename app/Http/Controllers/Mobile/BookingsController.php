@@ -15,8 +15,8 @@ use App\Http\Resources\Mobile\AvailableRoomResource;
 use App\Http\Resources\Mobile\ReservationResource;
 use App\Models\Operator;
 use App\Models\Property;
-use App\Models\Tenant;
 use App\Services\Bookings\RoomAllocator;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -62,9 +62,10 @@ class BookingsController extends Controller
             'children' => ['nullable', 'integer', 'min:0', 'max:20'],
         ]);
 
-        $this->guardRole($this->operator($request));
+        $operator = $this->operator($request);
+        $this->guardRole($operator);
 
-        $property = Tenant::current()?->property;
+        $property = app(PropertyContext::class)->current($operator);
         if ($property === null) {
             return AvailableRoomResource::collection(collect());
         }

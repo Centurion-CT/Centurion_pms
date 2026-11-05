@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- * A single POS transaction. `reference` is human-readable (KV-BAR-abcd)
+ * A single POS transaction. `reference` is human-readable (BAR-ABCDEF)
  * so operators can call it out during disputes without exposing raw ids.
  *
  * A sale is either walk-in (booking_id null) or charge-to-room

@@ -30,6 +30,13 @@ final class BusinessPaystack
             : PaystackClient::forPlatform();
     }
 
+    /** False when no account could take this business's payments at all. */
+    public static function available(Tenant $tenant): bool
+    {
+        return (self::subaccount($tenant) === null && (string) ($tenant->paystack_secret_key ?? '') !== '')
+            || (string) config('services.paystack.secret_key') !== '';
+    }
+
     public static function subaccount(Tenant $tenant): ?string
     {
         $code = (string) ($tenant->paystack_subaccount_code ?? '');

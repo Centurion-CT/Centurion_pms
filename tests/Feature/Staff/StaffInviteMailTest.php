@@ -250,12 +250,9 @@ it('activate saves password on operator + identity, stamps activated_at, logs in
         ->and(Hash::check('BrandNew99abcd', (string) $identity->password))->toBeTrue()
         ->and($op->activated_at)->not->toBeNull()
         ->and($op->last_login_at)->not->toBeNull()
-        // Magic-link click counts as email verification; invitees
-        // skip the phone step so they land straight on the dashboard,
-        // not on the onboarding email/phone screens.
+        // Magic-link click counts as email verification, so invitees
+        // land straight on the dashboard, not on the onboarding screens.
         ->and($op->email_verified_at)->not->toBeNull()
-        ->and($op->phone_verification_skipped_at)->not->toBeNull()
-        ->and($op->hasResolvedPhoneStep())->toBeTrue()
         ->and(Auth::guard('web')->id())->toBe($op->id)
         ->and(session()->has(OperatorInviteClaimController::SESSION_KEY))->toBeFalse();
 });

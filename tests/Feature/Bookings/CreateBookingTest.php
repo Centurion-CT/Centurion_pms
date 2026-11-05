@@ -87,11 +87,11 @@ it('creates a Pending booking with priced totals + reserves the nights', functio
     expect($blocks->pluck('booking_id')->unique()->all())->toBe([$booking->id]);
 });
 
-it('generates a unique KV- prefixed booking ref', function (): void {
+it('generates a unique BK- prefixed booking ref', function (): void {
     $booking = app(CreateBooking::class)->handle($this->room, bookingReq());
 
-    expect($booking->booking_ref)->toStartWith('KV-');
-    expect($booking->booking_ref)->toMatch('/^KV-[A-Z2-9]{8}$/');
+    expect($booking->booking_ref)->toStartWith('BK-');
+    expect($booking->booking_ref)->toMatch('/^BK-[A-Z2-9]{8}$/');
 });
 
 it('produces distinct refs across many bookings (collision-free)', function (): void {
