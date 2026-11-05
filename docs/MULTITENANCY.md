@@ -23,7 +23,7 @@ The host decides the business. The path decides the part of it.
 
 | Address | Serves |
 | --- | --- |
-| `centurionpms.com` (and `www.`) | Platform: home, sign-up, "find my business" login. No business is bound. |
+| `centurionpms.com` (and `www.`) | Platform: home, sign-up, `/stays`, and `/login`: email and password, which lands staff on their business or a chooser. No business is bound. |
 | `{slug}.centurionpms.com/` | That business's booking site |
 | `{slug}.centurionpms.com/login` | That business's staff login, then `/dashboard` |
 | Verified own domain, e.g. `centurionapartments.ng` | The same booking site and `/login` |
@@ -262,6 +262,15 @@ apartment and no photos:
   lookups now only see the current business. (The `/stays/{slug}` page
   itself has been broken since the port: it links to a removed route. The
   new booking site replaces it.)
+
+## Central login
+
+`/login` on the central domain takes an email and password. Staff accounts
+stay per business: `App\Livewire\Platform\FindBusiness` checks the password
+against each account with that email, then hands over through the one-time
+link sign-up uses, because sessions don't cross addresses. Several matches
+show a chooser of only the accounts that password opened. There's still no
+shared identity: a password change at one business changes that account only.
 
 ## Stays marketplace
 

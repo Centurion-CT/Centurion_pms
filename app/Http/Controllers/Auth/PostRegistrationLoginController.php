@@ -39,7 +39,7 @@ class PostRegistrationLoginController extends Controller
 
         $operator = Operator::query()->find($payload['operator_id']);
 
-        if ($operator === null || $operator->tenant_id !== $tenant->id) {
+        if ($operator === null || $operator->tenant_id !== $tenant->id || ! $operator->canSignIn()) {
             throw new HttpException(403, 'Invalid post-registration token.');
         }
 
