@@ -222,6 +222,142 @@ it('hands over once, so nobody can get back in after logging out', function (): 
     $this->get('http://keverna.test/signup/open')->assertRedirect(route('platform.login'));
 });
 
+/** A staff account at a new business. */
+function centralStaff(string $slug, array $attrs = []): Operator
+{
+    $tenant = Tenant::factory()->create(['slug' => $slug, 'name' => ucfirst($slug)] + array_intersect_key($attrs, ['status' => 1]));
+
+    return Operator::factory()->for($tenant)->create(array_diff_key($attrs, ['status' => 1]) + [
+        'email' => 'tobi@example.ng', 'password' => 'a-long-password', 'role' => OperatorRole::Manager, 'activated_at' => now(),
+    ]);
+}
+
+it('signs staff in from the central login and lands them on their business, ready to use', function (): void {
+    $operator = centralStaff('grandpalace');
+
+    $component = Livewire::test(FindBusiness::class)
+        ->set('email', 'Tobi@Example.ng')->set('password', 'a-long-password')->call('signIn')
+        ->assertHasNoErrors();
+
+    $link = $component->effects['redirect'];
+    expect($link)->toStartWith('http://grandpalace.keverna.test/auth/post-registration?token=');
+
+    $this->get($link)->assertRedirect();
+    $this->assertAuthenticatedAs($operator, 'web');
+
+    auth()->guard('web')->logout();
+    $this->get($link)->assertForbidden();
+});
+
+it('shows no sample business on the shared login', function (): void {
+    $this->get('http://keverna.test/login')->assertOk()->assertDontSee('grandpalace')->assertSee('Work email');
+});
+
+it('never keeps the password in the page', function (): void {
+    centralStaff('grandpalace');
+
+    Livewire::test(FindBusiness::class)
+        ->set('email', 'tobi@example.ng')->set('password', 'wrong-password')->call('signIn')
+        ->assertSet('password', '')
+        ->assertDontSee('wrong-password');
+});
+
+it('refuses a wrong password and an unknown email with the same words', function (): void {
+    centralStaff('grandpalace');
+
+    Livewire::test(FindBusiness::class)->set('email', 'tobi@example.ng')->set('password', 'nope')->call('signIn')
+        ->assertHasErrors('signIn')->assertNoRedirect()->assertSee("That email and password don&#039;t match", false);
+    Livewire::test(FindBusiness::class)->set('email', 'stranger@example.ng')->set('password', 'nope')->call('signIn')
+        ->assertHasErrors('signIn')->assertNoRedirect()->assertSee("That email and password don&#039;t match", false);
+});
+
+it('shows a chooser of only the businesses that password opens', function (): void {
+    $one = centralStaff('grandpalace');
+    $two = centralStaff('sunrise');
+    $other = centralStaff('elsewhere', ['password' => 'a-different-password']);
+
+    $component = Livewire::test(FindBusiness::class)
+        ->set('email', 'tobi@example.ng')->set('password', 'a-long-password')->call('signIn')
+        ->assertNoRedirect()
+        ->assertSee('Choose a business')
+        ->assertSee('Grandpalace')->assertSee('Sunrise')->assertDontSee('Elsewhere')
+        ->assertSet('password', '');
+
+    $component->call('open', $two->id);
+    expect($component->effects['redirect'])->toStartWith('http://sunrise.keverna.test/auth/post-registration');
+});
+
+it('keeps the page working after the password, with a new session id but the same form token', function (): void {
+    centralStaff('grandpalace');
+    centralStaff('sunrise');
+    session()->start();
+    $id = session()->getId();
+    $token = session()->token();
+
+    Livewire::test(FindBusiness::class)
+        ->set('email', 'tobi@example.ng')->set('password', 'a-long-password')->call('signIn')
+        ->assertSee('Choose a business');
+
+    expect(session()->getId())->not->toBe($id)
+        ->and(session()->token())->toBe($token);
+});
+
+it("won't open an account the password didn't open, whatever the browser sends", function (): void {
+    centralStaff('grandpalace');
+    centralStaff('sunrise');
+    $other = centralStaff('elsewhere', ['password' => 'a-different-password']);
+
+    Livewire::test(FindBusiness::class)
+        ->set('email', 'tobi@example.ng')->set('password', 'a-long-password')->call('signIn')
+        ->call('open', $other->id)
+        ->assertNoRedirect()
+        ->assertHasErrors('signIn');
+});
+
+it('explains a suspended account, a revoked one and a paused business, but only after the right password', function (): void {
+    centralStaff('suspended', ['suspended_at' => now()]);
+    Livewire::test(FindBusiness::class)->set('email', 'tobi@example.ng')->set('password', 'a-long-password')->call('signIn')
+        ->assertNoRedirect()->assertSee('temporarily suspended');
+    Livewire::test(FindBusiness::class)->set('email', 'tobi@example.ng')->set('password', 'wrong')->call('signIn')
+        ->assertDontSee('temporarily suspended');
+
+    centralStaff('paused', ['email' => 'ada@example.ng', 'status' => TenantStatus::Locked]);
+    Livewire::test(FindBusiness::class)->set('email', 'ada@example.ng')->set('password', 'a-long-password')->call('signIn')
+        ->assertNoRedirect()->assertSee("isn&#039;t open", false);
+
+    centralStaff('invited', ['email' => 'new@example.ng', 'activated_at' => null]);
+    Livewire::test(FindBusiness::class)->set('email', 'new@example.ng')->set('password', 'a-long-password')->call('signIn')
+        ->assertNoRedirect()->assertSee('activated');
+});
+
+it('skips a paused business and goes straight to the open one', function (): void {
+    centralStaff('paused', ['status' => TenantStatus::Locked]);
+    centralStaff('grandpalace');
+
+    $component = Livewire::test(FindBusiness::class)->set('email', 'tobi@example.ng')->set('password', 'a-long-password')->call('signIn');
+
+    expect($component->effects['redirect'])->toStartWith('http://grandpalace.keverna.test/');
+});
+
+it('stops after five wrong passwords, even with the right one', function (): void {
+    centralStaff('grandpalace');
+    $component = Livewire::test(FindBusiness::class)->set('email', 'tobi@example.ng');
+    foreach (range(1, 5) as $_) {
+        $component->set('password', 'wrong')->call('signIn');
+    }
+
+    $component->set('password', 'a-long-password')->call('signIn')->assertNoRedirect()->assertHasErrors('signIn');
+});
+
+it('refuses a handover link once the account can no longer sign in', function (): void {
+    $operator = centralStaff('grandpalace');
+    $link = app(App\Services\PostRegistrationLoginLink::class)->generate($operator->tenant, $operator);
+    $operator->forceFill(['suspended_at' => now()])->save();
+
+    $this->get($link)->assertForbidden();
+    $this->assertGuest('web');
+});
+
 it('sends someone to their business login by address', function (): void {
     Tenant::factory()->create(['slug' => 'grandpalace']);
 

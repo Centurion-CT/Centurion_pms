@@ -156,6 +156,12 @@
     .slab .lead b { color: var(--ink-900); font-weight: 600; }
     .slab .meta { color: var(--ink-500); }
     .slab .meta a, .slab .link { color: var(--blue); font-weight: 500; background: none; border: 0; padding: 0; font: inherit; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+    .alert { margin: 20px 0 0; padding: 12px 14px; border-radius: 8px; background: #FBE7EA; color: #A12A40; font-size: 15px; }
+    .businesses { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+    .business { display: block; width: 100%; padding: 14px 16px; border: 1px solid var(--ink-500); border-radius: 8px; background: #fff; font: inherit; text-align: left; cursor: pointer; }
+    .business:hover { border-color: var(--blue); background: #EAF1F8; }
+    .business b { display: block; font-weight: 600; color: var(--ink-900); }
+    .business span { font-size: 14px; color: var(--ink-500); }
     .slab form { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
     .step-of { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--blue); }
     .field { display: grid; gap: 6px; }
@@ -214,6 +220,7 @@
         .side { padding: 28px 16px; }
         .side-address { font-size: 24px; }
         .side-bars { display: none; }
+        .side:has(> .side-bars:only-child) { display: none; }
     }
     @media (max-width: 1000px) {
         .hero .display { font-size: 44px; }

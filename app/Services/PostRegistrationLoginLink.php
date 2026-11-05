@@ -14,8 +14,9 @@ use Illuminate\Support\Str;
 use JsonException;
 
 /**
- * Builds a one-shot, encrypted token that lets a freshly-registered operator
- * land on their tenant subdomain already authenticated.
+ * Builds a one-shot, encrypted token that lets an operator land on their
+ * tenant subdomain already authenticated: after sign-up, and after signing
+ * in on the central domain.
  *
  * We use Crypt (HMAC-authenticated AES-256-CBC under APP_KEY) instead of
  * Laravel's signed-URL helpers because those use the central request host
