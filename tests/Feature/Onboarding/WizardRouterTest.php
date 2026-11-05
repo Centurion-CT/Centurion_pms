@@ -34,7 +34,7 @@ it('routes an operator with a property but no email verified to step 2', functio
     $response->assertRedirect(route('tenant.onboarding.email'));
 });
 
-it('routes an operator with property + email verified but no phone to step 3', function (): void {
+it('sends an operator with property + email verified to the dashboard, phone or not', function (): void {
     $operator = Operator::factory()
         ->for($this->tenant)
         ->unverified()
@@ -44,7 +44,11 @@ it('routes an operator with property + email verified but no phone to step 3', f
     $response = $this->actingAs($operator, 'web')
         ->get('http://wizard-routes.keverna.test/onboarding');
 
-    $response->assertRedirect(route('tenant.onboarding.phone'));
+    $response->assertRedirect(route('tenant.dashboard'));
+
+    $this->actingAs($operator, 'web')
+        ->get('http://wizard-routes.keverna.test/dashboard')
+        ->assertOk();
 });
 
 it('routes a fully-onboarded operator to the dashboard', function (): void {
@@ -86,25 +90,4 @@ it('a fully-onboarded operator can reach /dashboard', function (): void {
 
     $response->assertOk();
     $response->assertSee($operator->name);
-});
-
-it('an operator who skipped the phone step reaches the dashboard', function (): void {
-    // WhatsApp/Sendpipe escape hatch — skipped counts as resolved.
-    $operator = Operator::factory()
-        ->for($this->tenant)
-        ->unverified()
-        ->create([
-            'email_verified_at' => now(),
-            'phone_verification_skipped_at' => now(),
-        ]);
-    Property::factory()->for($this->tenant)->create();
-
-    $response = $this->actingAs($operator, 'web')
-        ->get('http://wizard-routes.keverna.test/onboarding');
-
-    $response->assertRedirect(route('tenant.dashboard'));
-
-    $this->actingAs($operator, 'web')
-        ->get('http://wizard-routes.keverna.test/dashboard')
-        ->assertOk();
 });

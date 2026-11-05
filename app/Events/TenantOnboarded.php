@@ -9,7 +9,7 @@ use App\Models\Tenant;
 use Illuminate\Foundation\Events\Dispatchable;
 
 /**
- * Fired when an operator completes all three onboarding steps (PRD §6.1.1).
+ * Fired when an operator finishes the onboarding wizard (PRD §6.1.1).
  * Downstream listeners (added in later sections):
  *   - Provision the tenant's {slug}.keverna.com DNS record (§5)
  *   - Send the welcome mailer with getting-started checklist (§17)

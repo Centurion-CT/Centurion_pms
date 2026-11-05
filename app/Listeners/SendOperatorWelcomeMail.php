@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Mail;
  * Sends the first-touch welcome mail to the operator who just finished the
  * onboarding wizard (PRD §7.1). Hooks {@see TenantOnboarded} rather than
  * the raw Operator::created event so we only mail once they've actually
- * verified email + phone.
+ * verified their email. Self sign-up confirms the email first and sends this
+ * mail itself ({@see \App\Livewire\Platform\SignUp}), so it never fires this.
  *
  * Synchronous listener; the mailable it queues IS what defers to the
  * queue worker — see {@see SendBookingCancelledMail} for the same reason.

@@ -192,8 +192,12 @@ it('hands the new manager to their own address, signed in', function (): void {
 
     expect($link)->toStartWith('http://sunrise-court.keverna.test/auth/post-registration?token=');
 
-    $this->get($link)->assertRedirect();
+    $this->get($link)->assertRedirect('http://sunrise-court.keverna.test/onboarding');
     $this->assertAuthenticatedAs($manager, 'web');
+
+    // Sign-up confirmed the email, so nothing stands before the dashboard.
+    $this->get('http://sunrise-court.keverna.test/onboarding')->assertRedirect(route('tenant.dashboard'));
+    Mail::assertQueued(OperatorWelcomeMail::class, 1);
 });
 
 it('hands over once, so nobody can get back in after logging out', function (): void {

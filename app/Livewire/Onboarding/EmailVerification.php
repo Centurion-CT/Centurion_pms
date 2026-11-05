@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Onboarding;
 
 use App\Enums\VerificationChannel;
+use App\Events\TenantOnboarded;
 use App\Models\Operator;
+use App\Models\Tenant;
 use App\Services\Otp\OtpCooldownException;
 use App\Services\Otp\OtpResult;
 use App\Services\Otp\OtpService;
@@ -72,9 +74,14 @@ class EmailVerification extends Component
 
     private function onSuccess(): void
     {
-        $this->operator()->markEmailAsVerified();
+        $operator = $this->operator();
+        $operator->markEmailAsVerified();
 
-        $this->redirectRoute('tenant.onboarding.phone');
+        /** @var Tenant $tenant */
+        $tenant = Tenant::current();
+        TenantOnboarded::dispatch($tenant, $operator);
+
+        $this->redirectRoute('tenant.dashboard');
     }
 
     private function operator(): Operator

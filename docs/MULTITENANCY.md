@@ -296,8 +296,9 @@ the server. Tests run with it on.
   right. The password is hashed into the session at step 2 and never sent
   back to the browser.
 - "Open my dashboard" (`/signup/open`) hands the manager to their own
-  address with the one-time `PostRegistrationLoginLink`. They land on the
-  existing onboarding, which asks them to verify their phone (skippable).
+  address with the one-time `PostRegistrationLoginLink`. The email is
+  already confirmed, so they land straight on the dashboard. The phone
+  number is stored unverified.
 - `/login` on the platform finds a business by address, or emails a link to
   each business's staff login. It never says whether an email exists.
 - Staff emails are now unique per business (`operators.tenant_id, email`),

@@ -141,7 +141,6 @@ use App\Livewire\Guest\Show as GuestShow;
 use App\Livewire\Site\Checkout as SiteCheckout;
 use App\Livewire\Site\ManageBooking as SiteManageBooking;
 use App\Livewire\Onboarding\EmailVerification;
-use App\Livewire\Onboarding\PhoneVerification;
 use App\Livewire\Onboarding\PropertyBasics;
 use App\Models\Operator;
 use App\Models\Tenant;
@@ -329,16 +328,12 @@ Route::middleware('auth:web')->group(function (): void {
         if ($operator->email_verified_at === null) {
             return redirect()->route('tenant.onboarding.email');
         }
-        if (! $operator->hasResolvedPhoneStep()) {
-            return redirect()->route('tenant.onboarding.phone');
-        }
 
         return redirect()->route('tenant.dashboard');
     })->name('tenant.onboarding');
 
     Route::get('/onboarding/property', PropertyBasics::class)->name('tenant.onboarding.property');
     Route::get('/onboarding/email', EmailVerification::class)->name('tenant.onboarding.email');
-    Route::get('/onboarding/phone', PhoneVerification::class)->name('tenant.onboarding.phone');
 
     // Dashboard home (PRD §6.2.1 / §15). Gated by completed onboarding.
     // Solo mode has no billing enforcement — the property runs on the

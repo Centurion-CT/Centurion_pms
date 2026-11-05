@@ -132,11 +132,8 @@ class ActivateInvite extends Component
                 'activated_at' => $now,
                 // Clicking the signed magic link is proof the invitee
                 // controls the invite email, no separate verification
-                // needed. Same rationale skips the phone step: they
-                // were vouched for by a manager on this tenant, not
-                // walk-in customers we need to reach at OTP time.
+                // needed.
                 'email_verified_at' => $op->email_verified_at ?? $now,
-                'phone_verification_skipped_at' => $op->phone_verification_skipped_at ?? $now,
                 'last_login_at' => $now,
                 'invite_token_hash' => null,
                 'invite_expires_at' => null,

@@ -329,27 +329,11 @@ class Operator extends Authenticatable implements CanResetPasswordContract, Must
     }
 
     /**
-     * Onboarding-gate check: true if the operator has either verified their
-     * phone or explicitly deferred that step. Used by RequireCompleteOnboarding
-     * so a broken Sendpipe/WhatsApp delivery can't strand them at step 3.
-     */
-    public function hasResolvedPhoneStep(): bool
-    {
-        return $this->phone_verified_at !== null
-            || $this->phone_verification_skipped_at !== null;
-    }
-
-    /**
      * Mirrors Laravel's MustVerifyEmail::markEmailAsVerified() but for the
-     * phone channel (PRD §6.1.1 step 3). Used by the OTP service.
+     * phone channel.
      */
     public function markPhoneAsVerified(): bool
     {
         return $this->forceFill(['phone_verified_at' => now()])->save();
-    }
-
-    public function markPhoneVerificationSkipped(): bool
-    {
-        return $this->forceFill(['phone_verification_skipped_at' => now()])->save();
     }
 }

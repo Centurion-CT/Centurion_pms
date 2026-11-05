@@ -10,10 +10,9 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Gates the operator dashboard behind the 3-step onboarding wizard (PRD §6.1.1).
- * Redirects to the next incomplete step until all three are done; lets the
- * request through once Property exists + email_verified_at + the phone step
- * is resolved (either verified OR explicitly skipped — see Operator::hasResolvedPhoneStep).
+ * Gates the operator dashboard behind the onboarding wizard (PRD §6.1.1).
+ * Redirects to the next incomplete step; lets the request through once a
+ * Property exists and email_verified_at is set.
  *
  * Trusts auth:web to have run first — apply AFTER auth in the middleware stack.
  */
@@ -36,10 +35,6 @@ class RequireCompleteOnboarding
 
         if ($operator->email_verified_at === null) {
             return redirect()->route('tenant.onboarding.email');
-        }
-
-        if (! $operator->hasResolvedPhoneStep()) {
-            return redirect()->route('tenant.onboarding.phone');
         }
 
         return $next($request);
