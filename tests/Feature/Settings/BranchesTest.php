@@ -3,9 +3,12 @@
 declare(strict_types=1);
 
 use App\Enums\OperatorRole;
+use App\Enums\RoomStatus;
 use App\Livewire\Dashboard\Branches\Index as BranchesIndex;
 use App\Models\Operator;
 use App\Models\Property;
+use App\Models\Room;
+use App\Models\RoomCategory;
 use App\Models\Tenant;
 use App\Services\Properties\PropertyContext;
 use Livewire\Livewire;
@@ -61,6 +64,16 @@ it('PropertyContext ignores a saved pick belonging to another tenant', function 
 
     // Falls back to the tenant's first property, not the foreign one.
     expect($picked->id)->toBe($this->main->id);
+});
+
+it('sends a listed branch page to its apartments', function (): void {
+    $this->lagos->forceFill(['slug' => 'lagos', 'public_slug' => 'lagos', 'is_listed_publicly' => true, 'is_live' => true])->save();
+    $category = RoomCategory::factory()->for($this->tenant)->for($this->lagos)->create();
+    Room::factory()->for($this->tenant)->for($this->lagos)->for($category, 'category')->create(['status' => RoomStatus::Active]);
+
+    $this->get('http://branches-dash.keverna.test/branches/lagos')
+        ->assertStatus(301)
+        ->assertRedirectContains('/apartments');
 });
 
 it('the /dashboard/branches/switch endpoint persists the pick', function (): void {

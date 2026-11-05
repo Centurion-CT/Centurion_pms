@@ -8,7 +8,7 @@ use App\Enums\DepositType;
 use App\Enums\RoomBookingType;
 use App\Enums\RoomStatus;
 use App\Models\RoomCategory;
-use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -218,17 +218,18 @@ class Form extends Component
     {
         $data = $this->validate();
 
-        $tenant = Tenant::current();
-        $propertyId = $tenant?->property?->id;
+        $category = $this->categoryId
+            ? RoomCategory::query()->findOrFail($this->categoryId)
+            : new RoomCategory;
+
+        // A new category joins the branch being worked in; an edited
+        // one stays in its own.
+        $propertyId = $category->exists ? $category->property_id : app(PropertyContext::class)->current()?->id;
         if ($propertyId === null) {
             session()->flash('error', 'Set up your property before creating room categories.');
 
             return;
         }
-
-        $category = $this->categoryId
-            ? RoomCategory::query()->findOrFail($this->categoryId)
-            : new RoomCategory;
 
         $category->fill([
             'property_id' => $propertyId,

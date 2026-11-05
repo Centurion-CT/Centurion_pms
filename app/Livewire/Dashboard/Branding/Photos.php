@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Dashboard\Branding;
 
 use App\Models\Property;
-use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\UploadedFile;
 use Livewire\Attributes\Layout;
@@ -175,14 +175,12 @@ class Photos extends Component
 
     private function property(): Property
     {
-        /** @var Tenant|null $tenant */
-        $tenant = Tenant::current();
-        // Re-query rather than reading `$tenant->property`, the relation
-        // caches its media collection on first access, so a follow-up
-        // action (delete, reorder, setHero) would see the pre-upload
-        // snapshot and silently no-op. Matches the fresh-fetch pattern
-        // used by Rooms\MediaManager::room().
-        $property = $tenant?->property()->first();
+        // The branch being worked in, fetched fresh each call: a held
+        // model caches its media collection on first access, so a
+        // follow-up action (delete, reorder, setHero) would see the
+        // pre-upload snapshot and silently no-op. Matches the fresh-fetch
+        // pattern used by Rooms\MediaManager::room().
+        $property = app(PropertyContext::class)->current();
         if ($property === null) {
             throw new NotFoundHttpException;
         }

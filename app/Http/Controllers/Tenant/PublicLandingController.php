@@ -18,6 +18,7 @@ use App\Models\Workspace;
 use App\Models\WorkspacePlan;
 use App\Services\Bookings\RoomAllocator;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -43,7 +44,7 @@ class PublicLandingController extends Controller
 {
     private const CACHE_TTL_SECONDS = 300; // 5 minutes per PRD §10
 
-    public function show(Request $request, ?Property $property = null): View|Response
+    public function show(Request $request, ?Property $property = null): View|Response|RedirectResponse
     {
         /** @var Tenant $tenant */
         $tenant = Tenant::current();

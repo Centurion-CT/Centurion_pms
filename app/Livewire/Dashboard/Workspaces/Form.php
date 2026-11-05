@@ -7,6 +7,7 @@ namespace App\Livewire\Dashboard\Workspaces;
 use App\Enums\WorkspaceType;
 use App\Models\Tenant;
 use App\Models\Workspace;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -71,7 +72,7 @@ class Form extends Component
 
         /** @var Tenant $tenant */
         $tenant = Tenant::current();
-        $property = $tenant?->property;
+        $property = app(PropertyContext::class)->current();
         if ($property === null) {
             throw new NotFoundHttpException('Finish onboarding first.');
         }

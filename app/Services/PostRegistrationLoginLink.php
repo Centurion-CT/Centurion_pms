@@ -8,7 +8,9 @@ use App\Models\Operator;
 use App\Models\Tenant;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 use JsonException;
 
 /**
@@ -21,8 +23,9 @@ use JsonException;
  * (the tenant subdomain). The token carries its own expiry; the receiving
  * route verifies that the operator belongs to the resolved tenant.
  *
- * Lifetime: 5 minutes. Tokens are single-use only by convention — the
- * receiving controller invalidates session and rotates tokens on consumption.
+ * Lifetime: 5 minutes. Single-use: redeem() records each token's id for as
+ * long as it could still verify, so the link can't be replayed from browser
+ * history after logging out.
  */
 class PostRegistrationLoginLink
 {
@@ -31,6 +34,7 @@ class PostRegistrationLoginLink
     public function generate(Tenant $tenant, Operator $operator): string
     {
         $token = Crypt::encryptString(json_encode([
+            'id' => Str::random(32),
             'operator_id' => $operator->id,
             'tenant_id' => $tenant->id,
             'expires_at' => Carbon::now()->addMinutes(self::LIFETIME_MINUTES)->timestamp,
@@ -52,7 +56,24 @@ class PostRegistrationLoginLink
     }
 
     /**
-     * @return array{operator_id: int, tenant_id: int}|null
+     * verify(), and spend the token so a second use fails.
+     *
+     * @return array{id: string, operator_id: int, tenant_id: int}|null
+     */
+    public function redeem(string $token, Tenant $tenant): ?array
+    {
+        $payload = $this->verify($token, $tenant);
+        if ($payload === null) {
+            return null;
+        }
+
+        $firstUse = Cache::add('post-registration-login:'.$payload['id'], true, Carbon::now()->addMinutes(self::LIFETIME_MINUTES + 1));
+
+        return $firstUse ? $payload : null;
+    }
+
+    /**
+     * @return array{id: string, operator_id: int, tenant_id: int}|null
      */
     public function verify(string $token, Tenant $tenant): ?array
     {
@@ -63,7 +84,7 @@ class PostRegistrationLoginLink
         }
 
         if (! is_array($payload)
-            || ! isset($payload['operator_id'], $payload['tenant_id'], $payload['expires_at'])
+            || ! isset($payload['id'], $payload['operator_id'], $payload['tenant_id'], $payload['expires_at'])
         ) {
             return null;
         }
@@ -77,6 +98,7 @@ class PostRegistrationLoginLink
         }
 
         return [
+            'id' => (string) $payload['id'],
             'operator_id' => (int) $payload['operator_id'],
             'tenant_id' => (int) $payload['tenant_id'],
         ];

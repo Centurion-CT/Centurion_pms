@@ -8,6 +8,7 @@ use App\Enums\EmailTemplateKey;
 use App\Models\EmailTemplate;
 use App\Models\Tenant;
 use App\Services\Email\EmailTemplateRenderer;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
@@ -110,7 +111,7 @@ class Edit extends Component
     public function render(EmailTemplateRenderer $renderer): View
     {
         $key = $this->keyEnum();
-        $property = Tenant::current()?->property;
+        $property = app(PropertyContext::class)->current();
 
         $context = $renderer->sampleContext(
             propertyName: (string) ($property?->name ?? 'Your Property'),

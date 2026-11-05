@@ -32,6 +32,21 @@ it('updates last_login_at when the token is consumed', function (): void {
     expect($operator->fresh()->last_login_at)->not->toBeNull();
 });
 
+it('refuses a link that has already been used', function (): void {
+    $tenant = Tenant::factory()->create(['slug' => 'used-once']);
+    $operator = Operator::factory()->for($tenant)->create();
+
+    $url = app(PostRegistrationLoginLink::class)->generate($tenant, $operator);
+    parse_str((string) parse_url($url, PHP_URL_QUERY), $params);
+    $link = 'http://used-once.keverna.test/auth/post-registration?token='.urlencode($params['token']);
+
+    $this->get($link)->assertRedirect();
+    auth()->guard('web')->logout();
+
+    $this->get($link)->assertForbidden();
+    expect(auth()->guard('web')->check())->toBeFalse();
+});
+
 it('rejects a token that has been tampered with', function (): void {
     $tenant = Tenant::factory()->create(['slug' => 'tamper-test']);
     Operator::factory()->for($tenant)->create();

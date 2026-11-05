@@ -8,6 +8,7 @@ use App\Models\Property;
 use App\Models\RateRule;
 use App\Models\RoomCategory;
 use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Layout;
@@ -130,14 +131,13 @@ class Index extends Component
 
         /** @var Tenant $tenant */
         $tenant = Tenant::current();
-        $property = $tenant->property;
+        $property = app(PropertyContext::class)->current();
         if ($property === null) return;
 
         $categoryId = $this->categoryId !== '' ? (int) $this->categoryId : null;
 
         $attrs = [
             'tenant_id'         => $tenant->id,
-            'property_id'       => $property->id,
             'room_category_id'  => $categoryId,
             'label'             => trim($this->label) !== '' ? trim($this->label) : null,
             'rate_ngn'          => $this->rate_ngn,
@@ -154,6 +154,7 @@ class Index extends Component
         if ($this->editingRuleId !== null) {
             RateRule::query()->where('id', $this->editingRuleId)->update($attrs);
         } else {
+            $attrs['property_id'] = $property->id;
             $attrs['created_by_operator_id'] = \Illuminate\Support\Facades\Auth::guard('web')->id();
             RateRule::query()->create($attrs);
         }
@@ -194,9 +195,7 @@ class Index extends Component
 
     public function render(): View
     {
-        /** @var Tenant $tenant */
-        $tenant = Tenant::current();
-        $property = $tenant->property;
+        $property = app(PropertyContext::class)->current();
         if ($property === null) throw new NotFoundHttpException;
 
         $categories = RoomCategory::query()

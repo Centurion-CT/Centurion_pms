@@ -17,8 +17,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  * and signs the operator in to their tenant subdomain (PRD §6.1.1 — operator
  * "redirected to dashboard" after onboarding).
  *
- * Token contents are verified server-side; expired, tampered, or wrong-tenant
- * tokens 403.
+ * Token contents are verified server-side; expired, tampered, wrong-tenant
+ * or already-used tokens 403.
  */
 class PostRegistrationLoginController extends Controller
 {
@@ -31,7 +31,7 @@ class PostRegistrationLoginController extends Controller
             throw new HttpException(403, 'Invalid post-registration token.');
         }
 
-        $payload = $linkBuilder->verify($token, $tenant);
+        $payload = $linkBuilder->redeem($token, $tenant);
 
         if ($payload === null) {
             throw new HttpException(403, 'Invalid post-registration token.');

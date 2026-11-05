@@ -11,6 +11,7 @@ use App\Models\CreditLine;
 use App\Models\Customer;
 use App\Models\Room;
 use App\Models\Tenant;
+use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -116,8 +117,7 @@ class Form extends Component
 
     public function render(): View
     {
-        $tenant = Tenant::current();
-        $property = $tenant?->property;
+        $property = app(PropertyContext::class)->current();
 
         $rooms = $property === null
             ? collect()

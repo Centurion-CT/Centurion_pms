@@ -196,6 +196,20 @@ it('hands the new manager to their own address, signed in', function (): void {
     $this->assertAuthenticatedAs($manager, 'web');
 });
 
+it('hands over once, so nobody can get back in after logging out', function (): void {
+    [$component, $code] = signUpToCode();
+    $component->set('code', $code)->call('confirm');
+    $manager = Operator::query()->withoutGlobalScopes()->where('email', 'chidi@sunrisecourt.ng')->sole();
+
+    $this->withSession(['signup.operator_id' => $manager->id])
+        ->get('http://keverna.test/signup/open')
+        ->assertRedirectContains('/auth/post-registration');
+
+    expect(session()->has('signup.operator_id'))->toBeFalse();
+
+    $this->get('http://keverna.test/signup/open')->assertRedirect(route('platform.login'));
+});
+
 it('sends someone to their business login by address', function (): void {
     Tenant::factory()->create(['slug' => 'grandpalace']);
 
