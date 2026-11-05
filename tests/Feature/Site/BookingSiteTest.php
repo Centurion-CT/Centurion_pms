@@ -10,6 +10,7 @@ use App\Livewire\Site\ManageBooking;
 use App\Models\AvailabilityBlock;
 use App\Models\Booking;
 use App\Models\Property;
+use App\Models\Review;
 use App\Models\Room;
 use App\Models\RoomCategory;
 use App\Models\Tenant;
@@ -191,6 +192,77 @@ it('keeps the old room pages working inside the booking site', function (): void
             ->assertOk()
             ->assertSee('site-header', false)
             ->assertDontSee('data-testid="site-nav"', false);
+    }
+});
+
+it('shows reviews the business displays for this apartment, with first names only', function (): void {
+    $this->a->makeCurrent();
+    $studio = RoomCategory::query()->where('name', 'Studio')->firstOrFail();
+    $deluxe = RoomCategory::query()->where('name', 'Deluxe')->firstOrFail();
+    $room = $studio->rooms()->firstOrFail();
+    $review = fn (array $attrs) => Review::factory()->for($this->a)->for($this->wuse)->create($attrs);
+    $review(['room_id' => $room->id, 'guest_name' => 'Ada Obi', 'rating' => 5, 'body' => 'Lovely studio.', 'response_body' => 'Thank you, Ada!']);
+    $review(['guest_name' => 'Musa Bello', 'rating' => 4, 'body' => 'Great building.']);
+    $review(['room_id' => $room->id, 'guest_name' => 'Hidden Guest', 'is_displayed' => false, 'body' => 'Should stay private.']);
+    Review::factory()->for($this->a)->for($this->jabi)->create(['room_id' => $deluxe->rooms()->first()->id, 'body' => 'About another apartment.']);
+    Tenant::forgetCurrent();
+
+    $this->get('http://alpha.keverna.test/apartments/wuse-2/'.$studio->slug)
+        ->assertOk()
+        ->assertSee('What guests said')
+        ->assertSee('4.5')
+        ->assertSee('from 2 reviews')
+        ->assertSee('Lovely studio.')
+        ->assertSee('Great building.')
+        ->assertSee('Reply from Alpha Suites')
+        ->assertSee('Thank you, Ada!')
+        ->assertSee('<b>Ada</b>', false)
+        ->assertDontSee('Obi')
+        ->assertDontSee('Should stay private.')
+        ->assertDontSee('About another apartment.');
+});
+
+it('leaves the reviews section out when there are none to show', function (): void {
+    $this->a->makeCurrent();
+    $studio = RoomCategory::query()->where('name', 'Studio')->firstOrFail();
+    Tenant::forgetCurrent();
+
+    $this->get('http://alpha.keverna.test/apartments/wuse-2/'.$studio->slug)->assertDontSee('What guests said');
+});
+
+it('gives public pages a link preview on the business address', function (): void {
+    $this->a->makeCurrent();
+    $studio = RoomCategory::query()->where('name', 'Studio')->firstOrFail();
+    $studio->update(['description' => "Guests' favourite corner."]);
+    Tenant::forgetCurrent();
+
+    $this->get('http://alpha.keverna.test/')
+        ->assertSee('<meta property="og:title"', false)
+        ->assertSee('<link rel="canonical" href="https://alpha.keverna.test/">', false)
+        ->assertSee('<meta property="og:site_name" content="Alpha Suites">', false);
+
+    $this->get('http://alpha.keverna.test/apartments/wuse-2/'.$studio->slug.'?in=2030-03-04')
+        ->assertSee('<link rel="canonical" href="https://alpha.keverna.test/apartments/wuse-2/'.$studio->slug.'">', false)
+        ->assertSee('from ₦60,000 a night', false)
+        ->assertSee('Guests&#039; favourite corner.', false)
+        ->assertDontSee('&amp;#039;', false);
+});
+
+it('points previews at the live own domain', function (): void {
+    $this->a->forceFill(['custom_domain' => 'alpha.ng', 'domain_verified_at' => now(), 'custom_domain_live_at' => now()])->save();
+
+    $this->get('http://alpha.ng/')->assertSee('<meta property="og:url" content="https://alpha.ng/">', false);
+});
+
+it('keeps private guest pages out of search and previews', function (): void {
+    $this->a->makeCurrent();
+    $studio = RoomCategory::query()->where('name', 'Studio')->firstOrFail();
+    Tenant::forgetCurrent();
+
+    foreach (['/manage', '/book/wuse-2/'.$studio->slug, '/stays/pay/failed'] as $path) {
+        $this->get('http://alpha.keverna.test'.$path)
+            ->assertSee('noindex, nofollow', false)
+            ->assertDontSee('og:title', false);
     }
 });
 

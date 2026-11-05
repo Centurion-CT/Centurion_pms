@@ -214,7 +214,11 @@ apartment and no photos:
 - The site takes the business's logo and colour (Settings → Business), as the
   staff sign-in does. With no photo the three bars stand in; a business that
   can't take payments gets "Book by phone" at checkout instead of a form.
-- Not built: review scores, which need per-business content.
+- Reviews the business shows (dashboard → Reviews) appear on the apartment's
+  page: its rooms' and the whole building's, newest first, first names only.
+- Public pages carry search and link-preview tags
+  (`site.partials.meta`); checkout, find my booking, the guest's booking and
+  the review pages are noindex with no preview.
 - Two booking paths remain. `/rooms`, `/categories/{slug}` and `/rooms/{id}`
   sit in the same shell but have extras at booking, discount codes and
   corporate rates, which `/book/{building}/{type}` doesn't yet. Merge them

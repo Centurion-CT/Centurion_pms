@@ -8,6 +8,7 @@
 
 @section('page', 'pg-results')
 @section('title', 'Apartments free '.$stay->label().' · '.$business->name)
+@section('description', 'See which '.$business->name.' apartments are free for your dates, and book directly.')
 
 @section('content')
 @include('site.partials.header', ['compact' => true, 'where' => $where->all(), 'stay' => $stay])

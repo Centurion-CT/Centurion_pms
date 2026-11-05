@@ -160,7 +160,7 @@ class Checkout extends Component
             'noPaymentsMessage' => $this->noPaymentsMessage($site),
             'rules' => $type->property->houseRules(),
             'photo' => ($media = $type->getFirstMedia('gallery') ?? $type->property->getFirstMedia('hero')) ? $media->getUrl() : null,
-        ])->title('Book '.$type->name.' · '.$site->business()->name)->layoutData(['pageClass' => 'pg-checkout']);
+        ])->title('Book '.$type->name.' · '.$site->business()->name)->layoutData(['pageClass' => 'pg-checkout', 'noindex' => true]);
     }
 
     private function noPaymentsMessage(BookingSite $site): string

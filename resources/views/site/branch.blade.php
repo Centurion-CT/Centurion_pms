@@ -6,6 +6,7 @@
 
 @section('page', 'pg-branch')
 @section('title', $branch->name.' · '.$business->name)
+@section('description', $branch->name.' by '.$business->name.'. Call or email us to book.')
 
 @section('content')
 @include('site.partials.header')

@@ -13,6 +13,7 @@
 
 @section('page', 'pg-checkout')
 @section('title', "Payment didn't go through")
+@section('noindex', '1')
 
 @section('content')
 @include('site.partials.header', ['nav' => false, 'help' => true])
