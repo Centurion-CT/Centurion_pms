@@ -5,7 +5,6 @@
         @include('_partials._back-button')
 
         <div class="mt-4">
-            <span class="lp-eyebrow-strip">Integration</span>
             <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                 style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                 Dokwe Storage

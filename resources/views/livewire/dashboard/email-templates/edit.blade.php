@@ -10,7 +10,6 @@
 
         <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
             <div>
-                <span class="lp-eyebrow-strip">Email template</span>
                 <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                     {{ $keyEnum->label() }}
@@ -79,7 +78,7 @@
                                 style="cursor: pointer; transition: background 160ms;"
                                 data-copied="">
                             <span class="lp-mono">{{ $v['token'] }}</span>
-                            <span style="color: var(--color-ink-mute); margin-left: 6px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;">
+                            <span style="color: var(--color-ink-mute); margin-left: 6px; font-size: 10px;">
                                 {{ $v['label'] }}
                             </span>
                         </button>

@@ -3,7 +3,6 @@
     <div>
         @include('_partials._back-button')
         <div class="mt-4">
-            <span class="lp-eyebrow-strip">Room history</span>
             <h1 class="lp-display mt-3 text-[clamp(24px,3vw,32px)]"
                 style="color: var(--color-ink); font-weight: 600; line-height: 1.05;">
                 Rm {{ $room->room_number ?? '-' }}
@@ -57,7 +56,7 @@
                     align-items: center; justify-content: space-between;">
             <div style="min-width: 0; flex: 1 1 260px;">
                 <div class="lp-mono text-[11px]"
-                     style="color: #B91C1C; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;">
+                     style="color: #B91C1C; font-weight: 600;">
                     Flagged &middot; out of service
                 </div>
                 <p class="text-[13px]" style="color: var(--color-ink); margin-top: 2px;">
@@ -94,7 +93,7 @@
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div style="min-width: 0;">
                     <div class="lp-mono text-[11px]"
-                         style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+                         style="color: var(--color-ink-mute);">
                         Manager controls
                     </div>
                     <p class="text-[12.5px]" style="color: var(--color-ink-soft); margin-top: 2px;">
@@ -240,7 +239,7 @@
                             ] as [$role, $at, $byId])
                                 <div style="padding: 6px 10px; border: 1px solid var(--color-line-soft); border-radius: 6px;">
                                     <div class="lp-mono text-[10px]"
-                                         style="letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-mute);">
+                                         style=" color: var(--color-ink-mute);">
                                         {{ $role }}
                                     </div>
                                     @if ($at)
@@ -284,7 +283,7 @@
                             {{-- Good (checked items with no damage flag). --}}
                             <div>
                                 <div class="lp-mono text-[10.5px]"
-                                     style="letter-spacing: 0.08em; text-transform: uppercase; color: #166534;">
+                                     style=" color: #166534;">
                                     Good ({{ $ticked }}/{{ $totalItems }})
                                 </div>
                                 @php
@@ -306,7 +305,7 @@
                             {{-- Bad (damage-flagged items). --}}
                             <div>
                                 <div class="lp-mono text-[10.5px]"
-                                     style="letter-spacing: 0.08em; text-transform: uppercase; color: #B85C42;">
+                                     style=" color: #B85C42;">
                                     Flagged ({{ $damage->count() }})
                                     @if ($openDamage->count() > 0)
                                         · <span style="color: #B85C42;">{{ $openDamage->count() }} still open</span>

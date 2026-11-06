@@ -8,7 +8,6 @@
     <section class="lp-res-idx-hero" data-testid="reservations-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Operate</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Reservations
@@ -151,8 +150,7 @@
                                 {{ $b->roomCategory?->name ?? 'Category' }}
                                 <span class="lp-tag" style="font-size: 9.5px; padding: 1px 6px; margin-left: 4px;
                                                             background: var(--color-surface-2);
-                                                            color: var(--color-ink-mute);
-                                                            text-transform: uppercase; letter-spacing: 0.05em;">
+                                                            color: var(--color-ink-mute);">
                                     Unassigned
                                 </span>
                                 <span style="color: var(--color-ink-mute);">·</span>
@@ -208,8 +206,7 @@
                 @media (max-width: 900px) { .lp-heatmap-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
                 @media (max-width: 520px) { .lp-heatmap-grid { grid-template-columns: 1fr; } }
                 .lp-heatmap-month { background: var(--color-card-deep); border-radius: 10px; padding: 10px; }
-                .lp-heatmap-month-title { font-size: 11.5px; font-weight: 600; color: var(--color-ink);
-                    letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+                .lp-heatmap-month-title { font-size: 11.5px; font-weight: 600; color: var(--color-ink); margin-bottom: 6px; }
                 .lp-heatmap-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
                 /* Cell = square tile with a small day number centred
                    inside. Number is white on the coloured tiers, ink
@@ -252,8 +249,7 @@
                 }
                 .lp-heatmap-cell--past-active:hover { outline: 1px solid var(--color-ink); outline-offset: 1px; }
                 .lp-heatmap-dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
-                    font-size: 9.5px; color: var(--color-ink-mute); text-align: center;
-                    letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 3px; }
+                    font-size: 9.5px; color: var(--color-ink-mute); text-align: center; margin-bottom: 3px; }
                 .lp-heatmap-legend { display: flex; gap: 12px; align-items: center; margin-top: 10px;
                     font-size: 11.5px; color: var(--color-ink-mute); flex-wrap: wrap; }
                 .lp-heatmap-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
@@ -405,7 +401,7 @@
             gap: 10px; margin-bottom: 12px;
         }
         .lp-sheet-title {
-            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-family: var(--font-display);
             font-size: 18px; font-weight: 600; color: var(--color-ink);
             margin: 0;
         }

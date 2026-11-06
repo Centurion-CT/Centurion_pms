@@ -44,7 +44,7 @@
                                 border-bottom: 1px solid var(--color-line-soft);">
                         <div>
                             <p class="lp-mono text-[10.5px]"
-                               style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;"
+                               style="color: var(--color-ink-mute);"
                                x-text="panel.subtitle"></p>
                             <h3 class="lp-display"
                                 style="font-size: 18px; font-weight: 600; margin-top: 1px; line-height: 1.15;"
@@ -65,8 +65,7 @@
                             <template x-for="k in panel.kpis" :key="k.label">
                                 <div style="background: var(--color-card-deep); border-radius: 10px;
                                             padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
-                                    <span style="font-size: 10.5px; letter-spacing: 0.12em;
-                                                 text-transform: uppercase; color: var(--color-ink-mute);"
+                                    <span style="font-size: 10.5px; color: var(--color-ink-mute);"
                                           x-text="k.label"></span>
                                     <span class="lp-num" style="font-size: 16px; color: var(--color-ink); font-weight: 600;"
                                           x-text="k.value"></span>
@@ -82,7 +81,7 @@
                         {{-- Default: bookings list (channel / category / room) --}}
                         <template x-if="!panel.kind || panel.kind === 'bookings'">
                             <div>
-                                <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 6px;">
+                                <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 6px;">
                                     Bookings in this window
                                 </p>
                                 <ul style="list-style: none; padding: 0; margin: 0;
@@ -125,7 +124,7 @@
                         {{-- Cashflow: daily table --}}
                         <template x-if="panel.kind === 'daily'">
                             <div>
-                                <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 6px;">
+                                <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 6px;">
                                     Daily activity
                                 </p>
                                 <table class="lp-table" data-testid="finance-breakdown-daily"
@@ -160,7 +159,7 @@
                         {{-- Ledger: single-transaction metadata card --}}
                         <template x-if="panel.kind === 'ledger_detail'">
                             <div>
-                                <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 6px;">
+                                <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 6px;">
                                     Transaction details
                                 </p>
                                 <dl style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -168,7 +167,7 @@
                                     data-testid="finance-breakdown-ledger">
                                     <template x-for="d in (panel.details || [])" :key="d.label">
                                         <div>
-                                            <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;"
+                                            <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;"
                                                 x-text="d.label"></dt>
                                             <dd style="margin: 0; word-break: break-all;" x-text="d.value"></dd>
                                         </div>

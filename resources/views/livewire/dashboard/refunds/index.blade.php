@@ -7,7 +7,6 @@
     <section class="lp-res-idx-hero" data-testid="refunds-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Business</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Refunds
@@ -185,8 +184,7 @@
                                 </span>
                                 <span class="lp-mono"
                                       style="padding: 2px 8px; border-radius: 999px;
-                                             font-size: 9.5px;
-                                             letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+                                             font-size: 9.5px; font-weight: 600;
                                              background: {{ $statusChipBg }}; color: {{ $statusChipFg }};">
                                     {{ str_replace('_', ' ', $statusVal) }}
                                 </span>
@@ -213,7 +211,7 @@
                             <span class="lp-invoice-total" style="color: #A8650A;">
                                 ₦{{ number_format($held) }}
                             </span>
-                            <span class="lp-mono" style="font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-mute);">
+                            <span class="lp-mono" style="font-size: 9px; color: var(--color-ink-mute);">
                                 held
                             </span>
                         </div>

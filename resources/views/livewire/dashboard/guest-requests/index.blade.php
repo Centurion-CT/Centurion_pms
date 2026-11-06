@@ -7,7 +7,6 @@
     <section class="lp-res-idx-hero" data-testid="gr-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Guest requests</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     In-room portal requests
@@ -335,7 +334,7 @@
                                 display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;">
                         <div>
                             <p class="lp-mono text-[10.5px]"
-                               style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                               style="color: var(--color-ink-mute);">
                                 {{ $selected->kind->label() }}
                             </p>
                             <h2 class="lp-display" style="font-size: 20px; font-weight: 600; margin-top: 4px; line-height: 1.2;">
@@ -379,7 +378,7 @@
                         @if ($selected->notes || $bodyKV !== [])
                             <div style="background: var(--color-card-deep); border-radius: 10px; padding: 12px 14px;
                                         display: grid; gap: 8px;">
-                                <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0;">
+                                <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0;">
                                     Request
                                 </p>
                                 @if ($selected->notes)
@@ -398,7 +397,7 @@
 
                         {{-- Guest contact --}}
                         <div>
-                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 6px;">
+                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 6px;">
                                 Contact
                             </p>
                             <div style="display: grid; gap: 4px; font-size: 13px;">
@@ -425,7 +424,7 @@
 
                         {{-- Message thread --}}
                         <div>
-                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 6px;">
+                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 6px;">
                                 Messages
                             </p>
                             @if ($messages->isEmpty())

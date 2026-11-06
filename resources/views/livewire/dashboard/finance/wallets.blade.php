@@ -9,7 +9,6 @@
     <section class="lp-res-idx-hero mt-3" data-testid="wallets-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Finance · Wallets</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Guest wallets

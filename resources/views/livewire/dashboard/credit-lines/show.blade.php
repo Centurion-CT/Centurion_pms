@@ -4,7 +4,6 @@
         @include('_partials._back-button')
         <div class="mt-4 flex flex-wrap items-start justify-between gap-3">
             <div>
-                <span class="lp-eyebrow-strip">Credit line</span>
                 <h1 class="lp-display mt-3 text-[clamp(24px,3vw,32px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.05;">
                     {{ $line->name }}
@@ -29,8 +28,7 @@
                     };
                 @endphp
                 <span class="lp-mono text-[11px]"
-                      style="padding: 4px 10px; border-radius: 999px;
-                             letter-spacing: 0.06em; text-transform: uppercase; {{ $badge[0] }}">
+                      style="padding: 4px 10px; border-radius: 999px; {{ $badge[0] }}">
                     {{ $badge[1] }}
                 </span>
                 <a href="{{ route('tenant.credit-lines.edit', $line) }}" wire:navigate
@@ -94,7 +92,7 @@
         <section class="lp-dash-card" data-testid="cl-limit-hint" style="padding: 12px 14px;">
             <div class="flex flex-wrap items-baseline justify-between gap-2">
                 <span class="lp-mono text-[11px]"
-                      style="letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-mute);">
+                      style=" color: var(--color-ink-mute);">
                     Spending limit
                 </span>
                 <span class="text-[12.5px]"
@@ -222,7 +220,7 @@
         <div class="flex flex-wrap items-end gap-3">
             <div style="flex: 1 1 160px; min-width: 140px;">
                 <label for="cl-from" class="lp-form-label"
-                       style="font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px;">
+                       style="font-size: 10.5px; margin-bottom: 2px;">
                     From
                 </label>
                 <input id="cl-from" type="date" wire:model.live="fromDate"
@@ -230,7 +228,7 @@
             </div>
             <div style="flex: 1 1 160px; min-width: 140px;">
                 <label for="cl-to" class="lp-form-label"
-                       style="font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px;">
+                       style="font-size: 10.5px; margin-bottom: 2px;">
                     To
                 </label>
                 <input id="cl-to" type="date" wire:model.live="toDate"

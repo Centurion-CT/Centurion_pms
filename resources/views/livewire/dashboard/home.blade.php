@@ -107,7 +107,6 @@
                                      min-width: 18px; height: 18px; padding: 0 6px;
                                      background: var(--color-ink); color: var(--color-accent);
                                      border-radius: 999px;
-                                     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
                                      font-size: 10.5px; font-weight: 700; line-height: 1;">
                             {{ $checkinCount }}
                         </span>
@@ -131,7 +130,7 @@
                             padding: 8px 0;">
                     <div style="padding: 10px 14px 8px; border-bottom: 1px solid var(--color-line-soft);">
                         <p class="lp-mono text-[10.5px]"
-                           style="color: var(--color-ink-mute); letter-spacing: 0.16em; text-transform: uppercase;">
+                           style="color: var(--color-ink-mute);">
                             Arriving today
                         </p>
                         <p class="text-[13px]" style="color: var(--color-ink);">
@@ -239,7 +238,6 @@
                                      min-width: 18px; height: 18px; padding: 0 6px;
                                      background: var(--color-ink); color: var(--color-card);
                                      border-radius: 999px;
-                                     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
                                      font-size: 10.5px; font-weight: 700; line-height: 1;">
                             {{ $checkoutCount }}
                         </span>
@@ -260,7 +258,7 @@
                             padding: 8px 0;">
                     <div style="padding: 10px 14px 8px; border-bottom: 1px solid var(--color-line-soft);">
                         <p class="lp-mono text-[10.5px]"
-                           style="color: var(--color-ink-mute); letter-spacing: 0.16em; text-transform: uppercase;">
+                           style="color: var(--color-ink-mute);">
                             In-house · check out any time
                         </p>
                         <p class="text-[13px]" style="color: var(--color-ink);">
@@ -300,16 +298,14 @@
                                             @if ($isOverdue)
                                                 <span data-testid="dash-quick-checkout-tag-overdue"
                                                       style="font-size: 9.5px; padding: 1px 6px; border-radius: 999px;
-                                                             background: #FEE2E2; color: #9F1F1F; font-weight: 600;
-                                                             letter-spacing: 0.04em; text-transform: uppercase;">
+                                                             background: #FEE2E2; color: #9F1F1F; font-weight: 600;">
                                                     Overdue
                                                 </span>
                                             @elseif ($isDueToday)
                                                 <span data-testid="dash-quick-checkout-tag-today"
                                                       style="font-size: 9.5px; padding: 1px 6px; border-radius: 999px;
                                                              background: rgba(122, 110, 167, 0.15);
-                                                             color: #4B4570; font-weight: 600;
-                                                             letter-spacing: 0.04em; text-transform: uppercase;">
+                                                             color: #4B4570; font-weight: 600;">
                                                     Due today
                                                 </span>
                                             @endif
@@ -486,7 +482,7 @@
 
                     <div style="padding-bottom: 10px; border-bottom: 1px solid var(--color-line-soft);">
                         <p class="lp-mono text-[10.5px]"
-                           style="color: var(--color-ink-mute); letter-spacing: 0.16em; text-transform: uppercase;">
+                           style="color: var(--color-ink-mute);">
                             Add charge
                         </p>
                         <p class="text-[12.5px] mt-1" style="color: var(--color-ink-soft); line-height: 1.4;">
@@ -1146,19 +1142,18 @@
     @page { size: 80mm auto; margin: 0; }
     html, body { margin: 0; padding: 0; }
     body {
-        width: 72mm; padding: 4mm 4mm 6mm;
-        font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        width: 72mm; padding: 4mm 4mm 6mm;"SFMono-Regular", Menlo, Consolas, monospace;
         font-size: 11px; line-height: 1.35; color: #000;
     }
     h1 { font-size: 13px; text-align: center; margin: 0 0 2px; letter-spacing: 0.5px; }
-    .sub { text-align: center; font-size: 10px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .sub { text-align: center; font-size: 10px; margin-bottom: 8px; letter-spacing: 1px; }
     .rule { border-top: 1px dashed #000; margin: 6px 0; }
     .row  { display: flex; justify-content: space-between; gap: 6px; }
     .row .l { flex: 1 1 auto; word-break: break-word; }
     .row .r { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
     .meta { margin: 6px 0; }
     .meta div { display: flex; justify-content: space-between; gap: 6px; }
-    .label { text-transform: uppercase; font-size: 9px; letter-spacing: 0.8px; color: #333; }
+    .label { font-size: 9px; letter-spacing: 0.8px; color: #333; }
     .total { font-weight: 700; }
     .foot { text-align: center; font-size: 9.5px; margin-top: 8px; color: #333; }
     @media print { body { width: auto; } }
@@ -1282,7 +1277,7 @@
                                                 border-bottom: 1px solid var(--color-line-soft);">
                                         <div>
                                             <p class="lp-mono text-[10.5px]"
-                                               style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                                               style="color: var(--color-ink-mute);">
                                                 In-house · <span x-text="panel.ref"></span>
                                             </p>
                                             <h3 class="lp-display"
@@ -1308,19 +1303,19 @@
                                         <dl style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
                                                    column-gap: 12px; row-gap: 8px; margin: 0;">
                                             <div>
-                                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Check-in</dt>
+                                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Check-in</dt>
                                                 <dd style="margin: 0;" x-text="panel.checkin"></dd>
                                             </div>
                                             <div>
-                                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Check-out</dt>
+                                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Check-out</dt>
                                                 <dd style="margin: 0;" x-text="panel.checkout"></dd>
                                             </div>
                                             <div>
-                                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Nights</dt>
+                                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Nights</dt>
                                                 <dd style="margin: 0;" x-text="panel.nights"></dd>
                                             </div>
                                             <div>
-                                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Guest phone</dt>
+                                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Guest phone</dt>
                                                 <dd style="margin: 0;" x-text="panel.guest_phone || '-'"></dd>
                                             </div>
                                         </dl>
@@ -1353,7 +1348,7 @@
 
                                         {{-- Unsettled charges --}}
                                         <div x-show="panel.unsettled.length > 0">
-                                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 4px;">Unsettled charges</p>
+                                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 4px;">Unsettled charges</p>
                                             <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px;">
                                                 <template x-for="c in panel.unsettled" :key="c.description + c.amount">
                                                     <li class="flex justify-between"
@@ -1369,7 +1364,7 @@
 
                                         {{-- Recent payments --}}
                                         <div x-show="panel.payments.length > 0">
-                                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 4px;">Recent payments</p>
+                                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 4px;">Recent payments</p>
                                             <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px;">
                                                 <template x-for="(p, i) in panel.payments" :key="i">
                                                     <li class="flex justify-between"

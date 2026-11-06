@@ -264,7 +264,7 @@
                     padding: 24px 26px 22px;">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--color-line);">
                 <div>
-                    <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                    <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                         Request from store
                     </div>
                     <h2 style="font-family: var(--font-body); font-size: 18px; font-weight: 600; color: var(--color-ink); margin: 4px 0 0;">
@@ -363,7 +363,7 @@
                             <tr>
                                 <td class="lp-mono text-[11px]" style="color: var(--color-ink-soft);">{{ $m->occurred_at?->format('M j · g:i A') }}</td>
                                 <td>{{ $m->product?->name ?? '-' }}</td>
-                                <td class="lp-mono text-[11px]" style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.06em;">{{ $m->reason->label() }}</td>
+                                <td class="lp-mono text-[11px]" style="color: var(--color-ink-mute);">{{ $m->reason->label() }}</td>
                                 <td style="text-align: right;" class="lp-mono">
                                     <span style="color: {{ $m->delta > 0 ? 'var(--color-accent-deep)' : '#B85C42' }}; font-weight: 600;">
                                         {{ $m->delta > 0 ? '+' : '' }}{{ $m->delta }}

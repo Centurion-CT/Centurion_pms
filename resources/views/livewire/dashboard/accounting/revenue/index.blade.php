@@ -7,7 +7,6 @@
     <section class="lp-res-idx-hero mt-3" data-testid="revenue-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Accounting · Revenue</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Revenue snapshot
@@ -106,7 +105,7 @@
     {{-- ── KPI strip ────────────────────────────────────────────── --}}
     <section class="grid gap-3 sm:grid-cols-4" data-testid="revenue-kpis">
         <div class="lp-dash-card" style="padding: 16px;">
-            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">
                 Collected
             </p>
             <p class="lp-num-lg mt-1" style="color: var(--color-ink); font-size: 22px;">
@@ -121,7 +120,7 @@
             @endif
         </div>
         <div class="lp-dash-card" style="padding: 16px;">
-            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">
                 Billed
             </p>
             <p class="lp-num-lg mt-1" style="color: var(--color-ink); font-size: 22px;">
@@ -136,7 +135,7 @@
             @endif
         </div>
         <div class="lp-dash-card" style="padding: 16px;">
-            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">
                 Refunded
             </p>
             <p class="lp-num-lg mt-1" style="color: {{ $kpis['refunded'] > 0 ? '#B85C42' : 'var(--color-ink)' }}; font-size: 22px;">
@@ -147,7 +146,7 @@
             </p>
         </div>
         <div class="lp-dash-card" style="padding: 16px;">
-            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">
                 Net
             </p>
             <p class="lp-num-lg mt-1" style="color: var(--color-ink); font-size: 22px;">
@@ -223,14 +222,14 @@
             @endphp
             <div style="display: flex; gap: 12px; margin: 8px 0 14px;">
                 <div style="flex: 1;">
-                    <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">Rooms</p>
+                    <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">Rooms</p>
                     <p class="lp-num-lg mt-1" style="color: var(--color-ink); font-size: 20px;">
                         ₦{{ number_format($source_split['rooms']) }}
                     </p>
                     <p class="text-[11px] mt-0.5" style="color: var(--color-ink-mute);">{{ $roomShare }}%</p>
                 </div>
                 <div style="flex: 1;">
-                    <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">POS</p>
+                    <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">POS</p>
                     <p class="lp-num-lg mt-1" style="color: var(--color-ink); font-size: 20px;">
                         ₦{{ number_format($source_split['pos']) }}
                     </p>
@@ -247,7 +246,7 @@
 
             @if (! empty($topDays))
                 <p class="lp-mono text-[10.5px] mt-5"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+                   style="color: var(--color-ink-mute);">
                     Top collection days
                 </p>
                 <ul style="list-style: none; padding: 0; margin: 6px 0 0;

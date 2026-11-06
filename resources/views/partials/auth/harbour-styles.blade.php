@@ -67,9 +67,12 @@
     .cx-bars-photo { background-size: cover; background-position: center; clip-path: polygon(0% 56%, 30% 56%, 30% 100%, 35% 100%, 35% 28%, 65% 28%, 65% 100%, 70% 100%, 70% 0%, 100% 0%, 100% 100%, 0% 100%); }
     .cx-bars-solid { display: flex; align-items: flex-end; gap: 5%; }
     .cx-bars-solid i { flex: 1 1 0; }
-    .cx-bars-solid i:nth-child(1) { height: 44%; background: rgba(255, 255, 255, .14); }
-    .cx-bars-solid i:nth-child(2) { height: 72%; background: rgba(255, 255, 255, .22); }
-    .cx-bars-solid i:nth-child(3) { height: 100%; background: rgba(255, 255, 255, .32); }
+    .cx-bars-solid i:nth-child(1) { height: 44%; background: #26527D; }
+    .cx-bars-solid i:nth-child(2) { height: 72%; background: #336799; }
+    .cx-bars-solid i:nth-child(3) { height: 100%; background: #8DB6DE; }
+    .cx-login[style] .cx-bars-solid i:nth-child(1) { background: color-mix(in srgb, var(--cx-panel) 82%, #FFF); }
+    .cx-login[style] .cx-bars-solid i:nth-child(2) { background: color-mix(in srgb, var(--cx-panel) 62%, #FFF); }
+    .cx-login[style] .cx-bars-solid i:nth-child(3) { background: color-mix(in srgb, var(--cx-panel) 40%, #FFF); }
 
     /* Phones and small tablets: the form first, the panel a slim band. */
     @media (max-width: 900px) {

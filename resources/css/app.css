@@ -218,7 +218,7 @@
         font-weight: 500;
     }
     .lp-page .lp-mono {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         /* Money + reference codes often ride on .lp-mono. Even though the
            font is monospaced, `tabular-nums lining-nums` locks digit widths
            consistently across OS-fallback fonts (Menlo vs Consolas differ
@@ -385,7 +385,7 @@
             var(--color-card-deep);
         color: var(--color-ink-mute);
         display: flex; align-items: center; justify-content: center;
-        font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+        font-size: 11px; letter-spacing: 0;
         text-align: center; padding: 1rem;
     }
 
@@ -557,8 +557,7 @@
     .lp-page .lp-form-label {
         display: block;
         font-size: 10.5px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         margin-bottom: 8px;
         font-weight: 500;
@@ -906,8 +905,7 @@
     .lp-page .lp-sidebar-brand-text .sub {
         font-size: 10.5px;
         color: rgba(236, 237, 239, 0.55);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         margin-top: 2px;
     }
     /* Operator-mode LED. Olive counterpart to the admin surface's
@@ -968,7 +966,7 @@
     }
     .lp-page .lp-sidebar-branches-trigger .eyebrow {
         font-size: 9.5px; font-weight: 600;
-        letter-spacing: 0.16em; text-transform: uppercase;
+        letter-spacing: 0;
         color: rgba(236, 237, 239, 0.55);
     }
     .lp-page .lp-sidebar-branches-trigger .name {
@@ -1026,7 +1024,7 @@
     .lp-page .lp-sidebar-label {
         padding: 10px 10px 6px;
         font-size: 9.5px; font-weight: 600;
-        letter-spacing: 0.2em; text-transform: uppercase;
+        letter-spacing: 0;
         color: rgba(236, 237, 239, 0.42);
     }
     /* Recent's label — non-clickable, matches static label look. */
@@ -1230,7 +1228,7 @@
     .lp-page .lp-nav-section-head {
         padding: 8px 6px 4px;
         font-size: 9.5px; font-weight: 600;
-        letter-spacing: 0.2em; text-transform: uppercase;
+        letter-spacing: 0;
         color: rgba(236, 237, 239, 0.42);
     }
 
@@ -1446,7 +1444,7 @@
         display: inline-flex; align-items: center; gap: 5px;
         font-size: 9.5px; font-weight: 600;
         color: var(--color-accent-deep);
-        letter-spacing: 0.12em; text-transform: uppercase;
+        letter-spacing: 0;
         padding: 3px 8px;
         background: rgba(93, 132, 44, 0.12);
         border-radius: 999px;
@@ -1798,8 +1796,7 @@
     }
     .lp-page .lp-arrivals-ref {
         font-size: 10.5px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .lp-arrivals-meta {
@@ -1817,8 +1814,7 @@
         border-radius: 999px;
         font-size: 10.5px;
         font-weight: 600;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        letter-spacing: 0;
     }
 
     /* ── Needs attention card ──────────────────────────────────
@@ -1876,8 +1872,7 @@
     .lp-page .lp-attention-kind {
         font-family: var(--font-mono);
         font-size: 9.5px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         padding: 2px 6px;
         border-radius: 999px;
     }
@@ -2032,7 +2027,7 @@
     .lp-page .lp-rates-month-label {
         font-family: var(--font-mono);
         font-size: 11px;
-        letter-spacing: 0.06em;
+        letter-spacing: 0;
         color: var(--color-ink-soft);
         padding: 0 8px;
         white-space: nowrap;
@@ -2082,7 +2077,7 @@
     }
     .lp-page .rates-cal-month-year {
         font-family: var(--font-mono);
-        font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+        font-size: 10px; letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .rates-cal-dow,
@@ -2091,7 +2086,7 @@
     }
     .lp-page .rates-cal-dow span {
         font-family: var(--font-mono);
-        font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+        font-size: 9.5px; letter-spacing: 0;
         color: var(--color-ink-mute);
         text-align: center; padding: 4px 0;
     }
@@ -2181,14 +2176,14 @@
     }
     .lp-page .lp-rate-legend-hint {
         font-family: var(--font-mono);
-        font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase;
+        font-size: 9.5px; letter-spacing: 0;
         color: var(--color-ink-mute);
         font-weight: 500;
     }
     .lp-page .lp-rate-sub-label {
         display: block;
         font-family: var(--font-mono);
-        font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+        font-size: 9.5px; letter-spacing: 0;
         color: var(--color-ink-mute);
         margin-bottom: 4px;
     }
@@ -2232,9 +2227,8 @@
         border-radius: 999px;
         font-family: var(--font-mono);
         font-size: 10.5px;
-        letter-spacing: 0.06em;
+        letter-spacing: 0;
         font-weight: 600;
-        text-transform: uppercase;
     }
     .lp-page .lp-rate-delta--down {
         background: rgba(226, 237, 200, 0.7);
@@ -2294,7 +2288,7 @@
     .lp-page .lp-rate-toggle-label {
         font-family: var(--font-mono);
         font-size: 11px;
-        letter-spacing: 0.08em; text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink);
     }
 
@@ -2335,8 +2329,7 @@
         display: block;
         font-family: var(--font-mono);
         font-size: 8.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         margin-bottom: 2px;
         line-height: 1;
@@ -2344,8 +2337,7 @@
     .lp-page .lp-cal-header-month {
         display: block;
         font-size: 8.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         margin-bottom: 1px;
         line-height: 1;
@@ -2388,8 +2380,7 @@
     .lp-page .lp-cal-matrix .lp-cal-group-count.lp-mono {
         font-family: var(--font-mono);
         font-size: 10px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .lp-cal-matrix .lp-cal-room-label a.lp-mono {
@@ -2431,8 +2422,7 @@
     .lp-page .lp-cal-legend-label {
         font-family: var(--font-mono);
         font-size: 10.5px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink);
         font-weight: 600;
     }
@@ -2463,8 +2453,7 @@
         border-radius: 999px;
         font-family: var(--font-mono);
         font-size: 10px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         font-weight: 600;
         border: 1px solid transparent;
     }
@@ -2481,8 +2470,7 @@
     .lp-page .lp-editorial-table thead th {
         font-family: var(--font-mono);
         font-size: 10px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         font-weight: 500;
         text-align: left;
@@ -2554,8 +2542,7 @@
         border-radius: 999px;
         font-family: var(--font-mono);
         font-size: 10px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         font-weight: 600;
     }
     .lp-page .lp-channel-delta--paid {
@@ -2648,8 +2635,7 @@
         display: flex; align-items: center; justify-content: center;
         font-family: var(--font-mono);
         font-size: 8.5px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-paper);
         background: rgba(20, 17, 12, 0.7);
         opacity: 0;
@@ -2677,8 +2663,7 @@
     .lp-page .lp-category-type {
         font-family: var(--font-mono);
         font-size: 10px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         background: var(--color-card-deep);
         border: 1px solid var(--color-line-soft);
@@ -2747,7 +2732,7 @@
     .lp-page .lp-invoice-pdf {
         display: inline-flex; align-items: center; gap: 4px;
         font-family: var(--font-mono);
-        font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
+        font-size: 10.5px; letter-spacing: 0;
         color: var(--color-ink-soft);
         padding: 3px 8px;
         border: 1px solid var(--color-line-soft);
@@ -2811,8 +2796,7 @@
     }
     .lp-page .lp-ih-accrued-label {
         font-size: 10px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
 
@@ -2825,8 +2809,7 @@
     }
     .lp-page .lp-bookings-ref {
         font-size: 10.5px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink);
         font-weight: 600;
     }
@@ -2884,8 +2867,7 @@
     }
     .lp-page .lp-gr-ref {
         font-size: 11px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .lp-gr-body {
@@ -2975,8 +2957,7 @@
     .lp-page .lp-res-idx-pulse-label {
         font-family: var(--font-mono);
         font-size: 10.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         margin: 3px 0 0;
     }
@@ -3066,8 +3047,7 @@
     .lp-page .lp-res-hero-breakdown dt {
         font-family: var(--font-mono);
         font-size: 10.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         margin: 0;
     }
@@ -3193,8 +3173,7 @@
     }
     .lp-page .lp-guest-modal-eyebrow {
         font-size: 10.5px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .lp-guest-modal-close {
@@ -3276,8 +3255,7 @@
     }
     .lp-page .lp-guest-contact-label {
         font-size: 10.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         font-family: var(--font-mono);
     }
@@ -3318,8 +3296,7 @@
     }
     .lp-page .lp-guest-crm-label {
         font-size: 10.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         font-family: var(--font-mono);
     }
@@ -3336,8 +3313,7 @@
     }
     .lp-page .lp-guest-modal-block-label {
         font-size: 10.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .lp-guest-modal-block-body {
@@ -3508,8 +3484,7 @@
     .lp-page .lp-partpay-method-col { display: grid; gap: 8px; }
     .lp-page .lp-partpay-method-label {
         font-size: 10.5px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .lp-partpay-hint {
@@ -3989,7 +3964,7 @@
         font-weight: 500;
         color: var(--color-ink-mute);
         padding: 2px 0 8px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
     }
     .lp-page .lp-heat-table td.lp-heat-room {
         text-align: left; padding: 4px 10px 4px 0;
@@ -4000,7 +3975,7 @@
     .lp-page .lp-heat-cell {
         height: 30px; min-width: 30px;
         border-radius: 6px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-weight: 600;
     }
     .lp-page .lp-heat-cell--free      { background: var(--color-accent-soft); color: var(--color-accent-deep); }
@@ -4033,8 +4008,7 @@
         text-align: left;
         font-weight: 500;
         font-size: 10.5px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         padding: 14px 14px;
         border-bottom: 1px solid var(--color-line);
@@ -4064,10 +4038,9 @@
         letter-spacing: -0.015em;
     }
     .lp-page .lp-table .lp-table-ref {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 11.5px;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
 
@@ -4079,8 +4052,7 @@
         padding: 3px 9px;
         font-size: 11px;
         font-weight: 500;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         border-radius: 9999px;
         background: var(--color-card-deep);
         color: var(--color-ink-soft);
@@ -4241,8 +4213,7 @@
         padding: 0 8px;
         font-family: var(--font-body);
         font-size: 10.5px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         font-weight: 500;
     }
@@ -4312,8 +4283,7 @@
     .lp-page .lp-dl-row:last-child  { padding-bottom: 0; }
     .lp-page .lp-dl-label {
         font-size: 10.5px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         font-weight: 500;
         padding-top: 2px;
@@ -4435,7 +4405,7 @@
     }
     .lp-page .photo-manager__meta {
         font-family: var(--font-mono, monospace);
-        font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+        font-size: 11px; letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .photo-manager__drop {
@@ -4475,7 +4445,7 @@
     }
     .lp-page .photo-manager__pending-title {
         font-family: var(--font-mono, monospace);
-        font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+        font-size: 11px; letter-spacing: 0;
         color: var(--color-ink-mute);
         margin-bottom: 8px;
     }
@@ -4518,7 +4488,7 @@
         padding: 3px 8px; border-radius: 999px;
         background: var(--color-accent-deep); color: #fff;
         font-family: var(--font-mono, monospace);
-        font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;
+        font-size: 9.5px; letter-spacing: 0;
         font-weight: 600;
         z-index: 2;
     }
@@ -4587,14 +4557,14 @@
     }
     .lp-page .photo-manager__pending-fallback-note {
         font-size: 10.5px; color: var(--color-ink-mute);
-        letter-spacing: 0.06em; text-transform: uppercase;
+        letter-spacing: 0;
     }
     .lp-page .photo-manager__pending-chip {
         position: absolute; bottom: 6px; left: 6px;
         padding: 3px 7px; border-radius: 999px;
         background: rgba(20,23,26,0.78); color: var(--color-card);
         font-family: var(--font-mono, monospace);
-        font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;
+        font-size: 9.5px; letter-spacing: 0;
     }
     .lp-page .photo-manager__bulk-bar {
         position: sticky; bottom: 16px;
@@ -4678,7 +4648,7 @@
     .lp-page .logo-uploader__empty {
         display: flex; flex-direction: column; align-items: center; gap: 6px;
         color: var(--color-ink-mute);
-        font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase;
+        font-size: 11.5px; letter-spacing: 0;
         font-family: var(--font-mono, monospace);
     }
     .lp-page .logo-uploader__delete {
@@ -4702,7 +4672,7 @@
         padding: 3px 8px; border-radius: 999px;
         background: var(--color-accent-deep); color: #fff;
         font-family: var(--font-mono, monospace);
-        font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;
+        font-size: 9.5px; letter-spacing: 0;
         font-weight: 600;
     }
     .lp-page .logo-uploader__loading {
@@ -4807,7 +4777,7 @@
     .lp-page .lp-pos__tile .stock {
         font-family: var(--font-mono, monospace);
         font-size: 10.5px; color: var(--color-ink-mute);
-        letter-spacing: 0.04em; text-transform: uppercase;
+        letter-spacing: 0;
     }
     /* ── POS kiosk mode ─────────────────────────────────────────
        html[data-kiosk="true"] is set by the terminal's Alpine/JS
@@ -4864,8 +4834,7 @@
         -webkit-backdrop-filter: blur(6px);
         font-family: var(--font-mono, monospace);
         font-size: 10.5px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         font-weight: 600;
         cursor: pointer;
         box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.35);
@@ -5064,8 +5033,7 @@
     .lp-page .lp-receipt__head { text-align: center; }
     .lp-page .lp-receipt__brand {
         font-family: var(--font-mono, "Courier New", ui-monospace, monospace);
-        font-size: 14px; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 0.05em;
+        font-size: 14px; font-weight: 700; letter-spacing: 0;
         margin: 0 0 2px !important;
     }
     .lp-page .lp-receipt__addr {
@@ -5074,8 +5042,7 @@
     }
     .lp-page .lp-receipt__outlet {
         margin-top: 6px !important;
-        font-size: 11.5px; font-weight: 600;
-        text-transform: uppercase; letter-spacing: 0.06em;
+        font-size: 11.5px; font-weight: 600; letter-spacing: 0;
     }
     .lp-page .lp-receipt__ref { font-size: 11px; color: #000; }
 
@@ -5106,8 +5073,7 @@
         font-size: 12.5px;
     }
     .lp-page .lp-receipt__totals .grand {
-        font-size: 14.5px; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 0.04em;
+        font-size: 14.5px; font-weight: 700; letter-spacing: 0;
         margin-top: 4px;
     }
 
@@ -5120,8 +5086,7 @@
     .lp-page .lp-receipt__thanks {
         margin-top: 6px !important;
         text-align: center;
-        font-weight: 700; font-size: 12.5px;
-        text-transform: uppercase; letter-spacing: 0.08em;
+        font-weight: 700; font-size: 12.5px; letter-spacing: 0;
     }
 
     @media print {
@@ -5218,7 +5183,7 @@
         display: inline-flex;
         gap: 1px;
         color: var(--color-accent-deep);
-        font-size: 13px; letter-spacing: 0.04em;
+        font-size: 13px; letter-spacing: 0;
     }
 
     /* ─── Calendar cell grid (room-view) ────────────────────────────── */
@@ -5233,7 +5198,7 @@
         height: 44px;
         display: flex; align-items: center; justify-content: center;
         border-radius: 8px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 12.5px; font-weight: 600;
         background: var(--color-accent-soft);
         color: var(--color-accent-deep);
@@ -5251,7 +5216,7 @@
         text-align: center; font-size: 11px;
     }
     .lp-page .lp-cal-matrix thead th {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         color: var(--color-ink-mute);
         font-weight: 500;
         padding: 4px 0 8px;
@@ -5270,7 +5235,7 @@
     .lp-page .lp-cal-matrix td {
         height: 28px; min-width: 26px;
         border-radius: 5px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-weight: 600;
         background: var(--color-accent-soft);
         color: var(--color-accent-deep);
@@ -5348,7 +5313,7 @@
         transform: translateX(1px);
     }
     .lp-page .lp-cal-matrix .lp-cal-chip-glyph {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 12px;
         font-weight: 600;
         opacity: 0.85;
@@ -5508,7 +5473,7 @@
         background: var(--color-ink);
         color: var(--color-paper);
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em;
+        font-size: 9.5px; font-weight: 600; letter-spacing: 0;
     }
     .lp-page .lp-shift-ribbon__pulse {
         position: relative;
@@ -5586,8 +5551,7 @@
     .lp-page .lp-cal-agenda__weekday {
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 10px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
     }
     .lp-page .lp-cal-agenda__daynum {
@@ -5602,8 +5566,7 @@
     .lp-page .lp-cal-agenda__month {
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 9.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         margin-top: 2px;
     }
@@ -5616,8 +5579,7 @@
         border-radius: 999px;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 9px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
     }
     .lp-page .lp-cal-agenda__body {
         display: grid; gap: 6px;
@@ -5725,8 +5687,7 @@
         display: inline-flex; align-items: center; gap: 8px;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 10.5px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: rgba(238, 239, 241, 0.68);
     }
     .lp-page .kv-trust-bar__dash {
@@ -5977,7 +5938,7 @@
     }
     .lp-page .lp-audit-row:first-child { border-top: 0; }
     .lp-page .lp-audit-row .ts {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 11.5px;
         color: var(--color-ink-mute);
         padding-top: 1px;
@@ -6023,8 +5984,7 @@
     .lp-page .lp-heat-table .lp-cal-group-type {
         font-family: var(--font-body);
         font-size: 10px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         margin-right: 8px;
     }
@@ -6034,7 +5994,7 @@
         padding: 2px 8px;
         background: var(--color-card);
         border-radius: 9999px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 10.5px;
         color: var(--color-ink-soft);
     }
@@ -6047,11 +6007,11 @@
     .lp-page .lp-cal-matrix .lp-cal-room-label,
     .lp-page .lp-heat-table .lp-cal-room-label {
         padding-left: 28px !important;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 12px;
         font-weight: 500;
         color: var(--color-ink);
-        letter-spacing: 0.04em;
+        letter-spacing: 0;
     }
     .lp-page .lp-cal-matrix .lp-cal-room-label a:hover,
     .lp-page .lp-heat-table .lp-cal-room-label a:hover {
@@ -6289,7 +6249,7 @@
         color: var(--color-accent-deep);
         border-radius: 9999px;
         font-size: 11px; font-weight: 600;
-        letter-spacing: 0.06em; text-transform: uppercase;
+        letter-spacing: 0;
     }
 
     .lp-page .lp-sheet-body {
@@ -6339,14 +6299,14 @@
     .lp-page .lp-discount-applied .code {
         display: inline-block;
         margin-top: 2px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 11px;
         font-weight: 500;
         background: var(--color-card);
         color: var(--color-ink);
         padding: 2px 8px;
         border-radius: 6px;
-        letter-spacing: 0.06em;
+        letter-spacing: 0;
         width: fit-content;
     }
     .lp-page .lp-discount-applied .off {
@@ -6361,8 +6321,7 @@
         font-size: 11px;
         font-weight: 400;
         color: var(--color-ink-mute);
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         margin-left: 4px;
     }
     .lp-page .lp-discount-applied > button {
@@ -6433,7 +6392,7 @@
         text-overflow: ellipsis;
     }
     .lp-page .lp-typeahead-body .stat {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 10.5px;
         color: var(--color-ink-soft);
         letter-spacing: 0.02em;
@@ -6487,7 +6446,7 @@
         min-width: 0;
     }
     .lp-page .lp-search-select-current .num {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 13px;
         color: var(--color-ink);
         white-space: nowrap;
@@ -6585,7 +6544,7 @@
         gap: 8px;
     }
     .lp-page .lp-search-select-row-body .num {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 12.5px;
         color: var(--color-ink);
     }
@@ -6688,7 +6647,7 @@
         border-color: var(--color-ink);
     }
     .lp-page .lp-chip .count {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-family: var(--font-body);
         font-size: 11px;
         opacity: 0.75;
     }
@@ -6757,7 +6716,7 @@
         gap: 8px;
         font-size: 11px;
         color: var(--color-ink-mute);
-        letter-spacing: 0.04em;
+        letter-spacing: 0;
         margin-bottom: 4px;
     }
     .lp-page .lp-timeline-row .meta .label {
@@ -6769,8 +6728,7 @@
         font-weight: 500;
         font-family: var(--font-body);
         font-size: 10.5px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
+        letter-spacing: 0;
     }
     .lp-page .lp-timeline-row .meta .label--system {
         background: var(--color-accent-soft);
@@ -6806,8 +6764,7 @@
     }
     .lp-page .lp-kpi .label {
         font-size: 10px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         color: var(--color-ink-mute);
         font-weight: 500;
     }
@@ -6895,7 +6852,7 @@
         .lp-page .lp-table thead th {
             padding: 10px 12px;
             font-size: 9.5px;
-            letter-spacing: 0.12em;
+            letter-spacing: 0;
         }
         .lp-page .lp-table tbody td { padding: 10px 12px; }
         .lp-page .lp-table .lp-table-amount { font-size: 13.5px; }
@@ -7099,7 +7056,7 @@
 }
 .lp-kiosk__operator-role {
     font-family: var(--font-mono, monospace);
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 10px; letter-spacing: 0;
     color: var(--color-ink-mute);
     margin-top: 2px;
 }
@@ -7295,7 +7252,7 @@
 .kv-auth-mob-nav-panel .foot {
     padding: 8px 14px 6px;
     font-family: ui-monospace, monospace;
-    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-size: 10px; letter-spacing: 0;
     color: rgba(20, 17, 12, 0.5);
 }
 
@@ -7427,8 +7384,7 @@
     padding: 0;
     font-family: var(--font-mono);
     font-size: 10.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     color: var(--color-ink-mute);
 }
 .lp-gsearch-panel {
@@ -7518,202 +7474,267 @@
 
 
 
-/* ═══════════════════════════════════════════════════════════════════
-   Centurion "Harbour" staff shell (approved mockup 3A, "Daylight").
-   A full-height white sidebar against the mist page, list rows with
-   each module's colour as a tinted icon square, and a calm topbar.
-   Unlayered on purpose: it sits after the layered component rules
-   above and overrides the old floating graphite sidebar for both
-   sidebar variants (list = the 3A default; tiles still available).
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* Shell: sidebar flush to the left edge, no floating-card gutter. */
-.lp-page.lp-shell-dash { padding: 0; gap: 0; grid-template-columns: 300px 1fr; }
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash { grid-template-columns: 260px 1fr; }
-@media (max-width: 1099px) {
-    .lp-page.lp-shell-dash { grid-template-columns: 276px 1fr; }
-    html[data-sidebar-variant="list"] .lp-page.lp-shell-dash { grid-template-columns: 236px 1fr; }
+/*
+ * PMS redesign (Nov 2026). One look across every staff page: a navy menu,
+ * a white top bar, slim page headers and plain tables. Layer-free on
+ * purpose, so these win over the component layer above without touching
+ * each page. Canvas: PMS redesign.
+ */
+.lp-page {
+    --color-paper: #F6F8FA;
+    --color-ink: #14202C;
+    --color-ink-soft: #364656;
+    --color-ink-mute: #5E6F80;
+    --color-line: #D9E2EA;
+    --color-line-soft: #E8EEF3;
+    --font-mono: var(--font-body);
 }
-
-/* Sidebar surface. */
-.lp-page.lp-shell-dash .lp-sidebar {
-    background: #FFFFFF;
-    color: var(--color-ink);
-    box-shadow: none;
-    padding: 0 12px 12px;
-    gap: 6px;
+.lp-page.lp-shell-dash {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 0;
+    min-height: 100vh; padding: 0; max-width: none; background: var(--color-paper);
+    font-feature-settings: 'tnum' 1;
 }
+.lp-page .lp-main { min-width: 0; padding: 0; }
+.lp-page main { min-width: 0; }
+
+/* Menu */
+.lp-page .lp-sidebar {
+    position: sticky; top: 0; height: 100vh; max-height: none; width: auto;
+    padding: 12px; gap: 16px; border-radius: 0; box-shadow: none; border: 0;
+    background: var(--color-ink-deep); color: #C5D6E6;
+}
+.lp-page .lp-sidebar-brand { padding: 4px 8px; gap: 10px; margin: 0; border: 0; background: none; }
+.lp-page .lp-sidebar-brand-mark { width: 32px; height: 32px; padding: 2px; border-radius: 8px; background: #FFF; box-shadow: none; flex: none; }
+.lp-page .lp-sidebar-brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+.lp-page .lp-sidebar-brand-text .name { color: #FFF; font-family: var(--font-body); font-size: 15px; font-weight: 600; white-space: normal; }
+.lp-page .lp-sidebar-brand-text .sub { display: none; }
+.lp-page .lp-sidebar-section { padding: 0; margin: 0; border: 0; }
+.lp-page .lp-nav-section-head { margin: 0 0 4px; padding: 0 10px; color: #A9C5E1; font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.lp-page .lp-nav-grid { display: block; padding: 0; }
+.lp-page .lp-nav-tile {
+    position: relative; display: flex; flex-direction: row; align-items: center; gap: 10px;
+    width: auto; min-height: 36px; padding: 0 10px; border-radius: 8px;
+    background: transparent; color: #C5D6E6; font-size: 15px; font-weight: 500; text-decoration: none;
+}
+.lp-page .lp-nav-tile:hover { background: rgba(255, 255, 255, 0.07); color: #FFF; }
+.lp-page .lp-nav-tile:active { transform: none; }
+.lp-page .lp-nav-tile.is-active { background: rgba(255, 255, 255, 0.13); color: #FFF; }
+.lp-page .lp-nav-tile-icon, .lp-page .lp-nav-tile.is-active .lp-nav-tile-icon, .lp-page .lp-nav-tile:hover .lp-nav-tile-icon {
+    position: static; width: 18px; height: 18px; flex: none; padding: 0; border: 0; border-radius: 0;
+    background: none; box-shadow: none; color: inherit; transform: none;
+}
+.lp-page .lp-nav-tile-icon::before, .lp-page .lp-nav-tile-icon::after { display: none; }
+.lp-page .lp-nav-tile-icon svg { width: 18px; height: 18px; color: inherit; stroke: currentColor; }
+.lp-page .lp-nav-tile-label, .lp-page .lp-nav-tile.is-active .lp-nav-tile-label, .lp-page .lp-nav-tile:hover .lp-nav-tile-label {
+    flex: 1 1 auto; min-width: 0; margin: 0; color: inherit; font-size: 15px; font-weight: inherit; line-height: 1.3; text-align: left; white-space: normal;
+}
+.lp-page .lp-nav-tile.is-active .lp-nav-tile-label { font-weight: 600; }
+.lp-page .lp-nav-tile-badge {
+    position: absolute; top: 50%; right: 8px; left: auto; transform: translateY(-50%);
+    min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border: 0; border-radius: 10px; box-shadow: none;
+    background: rgba(255, 255, 255, 0.14); color: #FFF; font-size: 12px; font-weight: 600; line-height: 20px; text-align: center;
+}
+.lp-page .lp-nav-tile-badge[hidden] { display: none; }
+.lp-page .lp-nav-tile-badge--urgent { background: #D2435A; }
+.lp-page .lp-nav-tile-badge--warn { background: #E3A83A; color: #14202C; }
+.lp-page .lp-nav-more { margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.14); display: block; }
+.lp-page .lp-nav-more summary { display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 8px; color: #C5D6E6; font-size: 15px; font-weight: 500; cursor: pointer; list-style: none; }
+.lp-page .lp-nav-more summary::-webkit-details-marker { display: none; }
+.lp-page .lp-nav-more summary:hover { background: rgba(255, 255, 255, 0.07); color: #FFF; }
+.lp-page .lp-nav-more summary svg { width: 18px; height: 18px; flex: none; }
+.lp-page .lp-nav-more[open] .lp-sidebar-section { margin-top: 12px; }
 @media (min-width: 901px) {
-    .lp-page.lp-shell-dash .lp-sidebar {
-        position: sticky; top: 0;
-        height: 100vh; max-height: 100vh;
-        border-radius: 0;
-        border-right: 1px solid var(--color-line);
-    }
+    .lp-page .lp-sidebar > .lp-sidebar-branches { display: none; }
 }
+.lp-page .lp-topbar-branch-wrap { display: none; }
+@media (min-width: 901px) { .lp-page .lp-topbar-branch-wrap { display: block; } }
+.lp-page .lp-topbar-title { font-family: var(--font-body); font-weight: 600; }
+
+/* Top bar */
+.lp-page .lp-topbar {
+    position: sticky; top: 0; z-index: 30; min-height: 64px; padding: 12px 24px; gap: 12px;
+    background: #FFF; backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom: 1px solid var(--color-line);
+}
+.lp-page .lp-topbar-search { flex: 1 1 auto; max-width: 440px; margin: 0; }
+.lp-page .lp-gsearch { height: 40px; border: 1px solid #C9D5DF; border-radius: 8px; background: #FFF; box-shadow: none; }
+.lp-page .lp-topbar-reserve { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 0; border-radius: 8px; background: var(--color-accent); color: #FFF; font-size: 15px; font-weight: 600; box-shadow: none; white-space: nowrap; }
+.lp-page .lp-topbar-reserve:hover { background: var(--color-accent-deep); color: #FFF; transform: none; }
+.lp-page .lp-topbar .lp-sidebar-branches { margin: 0; padding: 0; border: 0; background: none; }
+.lp-page .lp-topbar .lp-sidebar-branches-trigger { height: 40px; padding: 0 12px; border: 1px solid #C9D5DF; border-radius: 8px; background: #FFF; color: var(--color-ink); box-shadow: none; }
+.lp-page .lp-topbar .lp-sidebar-branches-trigger .name { color: var(--color-ink); font-family: var(--font-body); font-size: 15px; font-weight: 600; }
+.lp-user { position: relative; }
+.lp-user-trigger { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 8px 0 4px; border: 0; border-radius: 8px; background: none; color: var(--color-ink-mute); cursor: pointer; text-align: left; }
+.lp-user-trigger:hover, .lp-user-trigger[aria-expanded="true"] { background: #EEF3F7; }
+.lp-user-avatar { display: flex; align-items: center; justify-content: center; flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--color-ink-deep); color: #FFF; font-size: 13px; font-weight: 600; }
+.lp-user-who { display: block; line-height: 1.25; }
+.lp-user-who .name { display: block; max-width: 160px; overflow: hidden; color: var(--color-ink); font-size: 15px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.lp-user-who .role { display: block; font-size: 13px; color: var(--color-ink-mute); }
+.lp-user-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 40; width: 280px; padding: 6px; box-sizing: border-box; border: 1px solid var(--color-line); border-radius: 10px; background: #FFF; box-shadow: 0 10px 30px rgba(15, 36, 56, 0.16); }
+.lp-user-menu a, .lp-user-menu button { display: flex; align-items: center; width: 100%; min-height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: 6px; background: none; color: var(--color-ink); font: inherit; font-size: 15px; font-weight: 500; text-align: left; text-decoration: none; cursor: pointer; }
+.lp-user-menu a:hover, .lp-user-menu button:hover { background: #EEF3F7; }
+.lp-user-menu hr { margin: 4px 0; border: 0; border-top: 1px solid var(--color-line-soft); }
+.lp-user-menu form { margin: 0; }
+.lp-user-menu .lp-user-logout { color: #A12A40; font-weight: 600; }
+.lp-user-head { padding: 8px 10px; }
+.lp-user-head p { margin: 0; }
+.lp-user-head .name { color: var(--color-ink); font-weight: 600; }
+.lp-user-head .email { color: var(--color-ink-mute); font-size: 14px; overflow-wrap: anywhere; }
+.lp-user-label { margin: 0; padding: 6px 10px 2px; color: var(--color-ink-mute); font-size: 13px; }
+html[data-kiosk="true"] .lp-page.lp-shell-dash { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 900px) {
-    .lp-page.lp-shell-dash .lp-sidebar { border-radius: 16px; box-shadow: 0 30px 60px -24px rgba(15, 36, 56, 0.45); }
-    .lp-page.lp-shell-dash .lp-drawer-backdrop { background: rgba(15, 36, 56, 0.40); }
-}
-.lp-page.lp-shell-dash .lp-sidebar::-webkit-scrollbar-thumb { background: rgba(26, 36, 48, 0.12); }
-.lp-page.lp-shell-dash .lp-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(26, 36, 48, 0.22); }
-
-/* Brand block: logo, hotel name, live status. */
-.lp-page.lp-shell-dash .lp-sidebar-brand {
-    min-height: 72px; margin: 0 -12px; padding: 0 20px;
-    border-bottom: 1px solid var(--color-line);
-    gap: 12px;
-}
-.lp-page.lp-shell-dash .lp-sidebar-brand-mark { width: 36px; height: 36px; padding: 5px; border-radius: 10px; border: 1px solid var(--color-line); }
-.lp-page.lp-shell-dash .lp-sidebar-brand-mark img { width: 100%; height: 100%; object-fit: contain; }
-.lp-page.lp-shell-dash .lp-sidebar-brand-text .name { color: var(--color-ink); font-size: 16px; line-height: 1.15; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.lp-page.lp-shell-dash .lp-sidebar-brand-text .sub,
-.lp-page.lp-shell-dash .lp-sidebar-brand-text .kv-op-led {
-    color: var(--color-ink-mute); font-size: 12px; letter-spacing: 0; text-transform: none;
-}
-.lp-page.lp-shell-dash .kv-op-led-dot { width: 6px; height: 6px; background: #1F7A50; box-shadow: none; }
-.lp-page.lp-shell-dash .kv-op-led-dot::before { background: rgba(31, 122, 80, 0.28); }
-
-/* Branch switcher. */
-.lp-page.lp-shell-dash .lp-sidebar-branches { margin: 8px 0 0; }
-.lp-page.lp-shell-dash .lp-sidebar-branches-trigger { background: var(--color-paper); border-color: var(--color-line); color: var(--color-ink); }
-.lp-page.lp-shell-dash .lp-sidebar-branches-trigger:hover { background: #E3EAF1; }
-.lp-page.lp-shell-dash .lp-sidebar-branches-trigger .eyebrow { color: var(--color-ink-mute); font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; }
-.lp-page.lp-shell-dash .lp-sidebar-branches-trigger .name { color: var(--color-ink); font-size: 14px; font-weight: 600; }
-
-/* Nav search. */
-.lp-page.lp-shell-dash .lp-sidebar-search-wrap { margin-top: 10px; }
-.lp-page.lp-shell-dash .lp-sidebar-search {
-    background: var(--color-paper); border: 1px solid transparent; color: var(--color-ink);
-    font-size: 14px; border-radius: 8px;
-}
-.lp-page.lp-shell-dash .lp-sidebar-search::placeholder { color: var(--color-ink-mute); }
-.lp-page.lp-shell-dash .lp-sidebar-search:focus { background: #FFFFFF; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
-.lp-page.lp-shell-dash .lp-sidebar-search-icon { color: var(--color-ink-mute); }
-.lp-page.lp-shell-dash .lp-sidebar-search-clear { color: var(--color-ink-mute); }
-.lp-page.lp-shell-dash .lp-sidebar-empty { color: var(--color-ink-mute); }
-
-/* Section headings: sentence case, quiet. */
-.lp-page.lp-shell-dash .lp-nav-section-head,
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-section-head {
-    padding: 14px 8px 6px;
-    font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none;
-    color: var(--color-ink-mute);
+    .lp-page.lp-shell-dash { grid-template-columns: minmax(0, 1fr); }
+    .lp-page .lp-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: 264px; height: auto; z-index: 80; }
+    .lp-page .lp-main { padding-top: 64px; }
+    .lp-page .lp-topbar { position: fixed; left: 0; right: 0; padding: 8px 12px; }
+    .lp-user-who, .lp-page .lp-topbar-reserve span { display: none; }
 }
 
-/* Tiles variant on the light surface: keep the gradient app icons. */
-.lp-page.lp-shell-dash .lp-nav-tile:hover { background: var(--color-paper); }
-.lp-page.lp-shell-dash .lp-nav-tile-label { color: var(--color-ink-soft); font-size: 11.5px; }
-.lp-page.lp-shell-dash .lp-nav-tile:hover .lp-nav-tile-label,
-.lp-page.lp-shell-dash .lp-nav-tile.is-active .lp-nav-tile-label { color: var(--color-ink); }
-.lp-page.lp-shell-dash .lp-nav-tile-icon { box-shadow: 0 4px 10px -5px rgba(15, 36, 56, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.14); }
-.lp-page.lp-shell-dash .lp-nav-tile-badge { box-shadow: 0 0 0 2px #FFFFFF; }
-.lp-page.lp-shell-dash .lp-nav-tile-badge--urgent { background: #C2414B; color: #FFFFFF; }
-.lp-page.lp-shell-dash .lp-nav-tile-badge--info { background: var(--color-paper); color: var(--color-ink-soft); }
+/* Pages: slim headers, one button, plain labels, quiet tables. */
+.lp-page .lp-dash { padding: 20px 24px 40px; gap: 14px; max-width: none; }
+.lp-page .lp-mono, .lp-page .font-mono { font-family: inherit; letter-spacing: 0; }
+.lp-page .uppercase { text-transform: none; }
+.lp-page .tracking-wide, .lp-page .tracking-wider, .lp-page .tracking-widest { letter-spacing: 0; }
+.lp-page .lp-eyebrow-strip { display: block; margin: 0; padding: 0; color: var(--color-ink-mute); font-family: var(--font-body); font-size: 14px; font-style: normal; font-weight: 400; }
+.lp-page .lp-eyebrow-strip::before { display: none; }
+.lp-page .lp-display { font-family: var(--font-display); letter-spacing: -0.01em; }
 
-/* List variant (3A): 36px rows, tinted icon squares in each module's
-   own colour, counts at the right edge, urgent counts as a red pill. */
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-sidebar { padding: 0 12px 12px; gap: 4px; }
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-grid { gap: 2px; }
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile {
-    position: relative;
-    grid-template-columns: 28px 1fr auto;
-    gap: 12px; padding: 4px 8px; min-height: 36px;
-    border-radius: 8px;
-}
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile:hover { background: var(--color-paper); }
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-icon {
-    position: static;
-    width: 28px; height: 28px; border-radius: 7px;
-    background: color-mix(in srgb, var(--tile-from, #64748B) 16%, #FFFFFF);
-    color: var(--tile-to, #334155);
-}
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-icon svg {
-    width: 16px; height: 16px; stroke-width: 1.7; color: inherit; filter: none;
-}
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-label {
-    font-size: 14px; font-weight: 500; color: var(--color-ink); max-width: none;
-    -webkit-line-clamp: 1;
-}
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile:hover .lp-nav-tile-label { color: var(--color-ink); }
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile.is-active {
-    background: #EAF1F8; box-shadow: none;
-}
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile.is-active .lp-nav-tile-label { color: #1C3D5E; font-weight: 600; }
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile.is-active .lp-nav-tile-icon {
-    background: var(--tile-to, #336799); color: #FFFFFF;
-}
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile.is-active .lp-nav-tile-icon svg { color: #FFFFFF; }
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge {
-    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-    min-width: 20px; height: 20px; padding: 0 6px;
-    font-family: var(--font-body); font-size: 12px; font-weight: 500;
-    box-shadow: none; border-radius: 999px;
-}
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge--warn,
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge--info {
-    background: transparent; color: var(--color-ink-mute);
-}
-html[data-sidebar-variant="list"] .lp-page.lp-shell-dash .lp-nav-tile-badge--urgent {
-    background: #C2414B; color: #FFFFFF; font-weight: 600; font-size: 11px;
-}
+.lp-page .lp-res-idx-hero { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.lp-page .lp-res-idx-hero-body { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
+.lp-page .lp-res-idx-hero-identity { flex: 1 1 320px; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.lp-page .lp-res-idx-hero-identity h1 { margin: 0; font-size: 26px; line-height: 1.2; }
+.lp-page .lp-res-idx-hero-identity > p { display: none; }
+.lp-page .lp-res-idx-hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 0 auto; }
+.lp-page .lp-res-idx-hero-money { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 0; border: 0; background: none; }
+.lp-page .lp-ih-hero-accrued { display: flex; align-items: baseline; gap: 6px; margin: 0; padding: 0; border: 0; background: none; }
+.lp-page .lp-ih-hero-accrued-label { order: 2; margin: 0; color: var(--color-ink-mute); font-size: 14px; }
+.lp-page .lp-ih-hero-accrued-value { order: 1; margin: 0; color: var(--color-ink); font-family: var(--font-body); font-size: 18px; font-weight: 600; line-height: 1.3; }
+.lp-page .lp-ih-hero-accrued-sub { display: none; }
 
-/* Sidebar foot: layout toggle, signed-in person, links. */
-.lp-page.lp-shell-dash .lp-sidebar-foot { border-top: 1px solid var(--color-line); margin: auto -12px 0; padding: 10px 12px 0; }
-.lp-page.lp-shell-dash .lp-sidebar-foot .lp-sidebar-variant-toggle {
-    border-color: var(--color-line); color: var(--color-ink-mute); font-size: 12px; letter-spacing: 0;
+.lp-page .lp-res-action, .lp-page .lp-btn, .lp-page .lp-pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 14px;
+    border: 1px solid #C9D5DF; border-radius: 8px; background: #FFF; box-shadow: none;
+    color: var(--color-ink); font-family: var(--font-body); font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none;
 }
-.lp-page.lp-shell-dash .lp-sidebar-foot .lp-sidebar-variant-toggle:hover { color: var(--color-ink); background: var(--color-paper); border-color: var(--color-line); }
-.lp-page.lp-shell-dash .lp-sidebar-link { color: var(--color-ink-soft); font-size: 14px; }
-.lp-page.lp-shell-dash .lp-sidebar-link svg { color: var(--color-ink-mute); }
-.lp-page.lp-shell-dash .lp-sidebar-link:hover { background: var(--color-paper); color: var(--color-ink); }
-.lp-page.lp-shell-dash .lp-sidebar-link:hover svg { color: var(--color-ink); }
-.lp-page.lp-shell-dash .lp-sidebar-me {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px; margin-bottom: 2px; border-radius: 8px;
-}
-.lp-page.lp-shell-dash .lp-sidebar-me-avatar {
-    width: 32px; height: 32px; flex-shrink: 0; border-radius: 999px;
-    display: grid; place-items: center;
-    background: var(--color-ink-deep); color: #FFFFFF;
-    font-size: 12px; font-weight: 600;
-}
-.lp-page.lp-shell-dash .lp-sidebar-me-name { display: block; font-size: 13.5px; font-weight: 600; color: var(--color-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lp-page.lp-shell-dash .lp-sidebar-me-role { display: block; font-size: 12.5px; color: var(--color-ink-mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lp-page .lp-res-action:hover:not(:disabled):not([disabled]), .lp-page .lp-btn:hover:not(:disabled):not([disabled]), .lp-page .lp-pill:hover { border-color: var(--color-ink-mute); background: #F6F8FA; transform: none; }
+.lp-page .lp-res-action--primary, .lp-page .lp-btn--primary { border-color: var(--color-accent); background: var(--color-accent); color: #FFF; }
+.lp-page .lp-res-action--primary:hover:not(:disabled):not([disabled]), .lp-page .lp-btn--primary:hover:not(:disabled):not([disabled]) { border-color: var(--color-accent-deep); background: var(--color-accent-deep); color: #FFF; }
+.lp-page .lp-pill .lp-pill-dot { display: none; }
 
-/* Topbar: mist glass, search in the middle, bell + Reserve on the right. */
-.lp-page.lp-shell-dash .lp-topbar {
-    min-height: 72px; padding: 0 32px;
-    background: color-mix(in srgb, var(--color-paper) 86%, transparent);
-    border-bottom: 1px solid var(--color-line);
-}
-@media (max-width: 900px) { .lp-page.lp-shell-dash .lp-topbar { min-height: 60px; padding: 0 16px; } }
-.lp-page.lp-shell-dash .lp-topbar-title { font-family: var(--font-display); font-weight: 600; }
-.lp-page.lp-shell-dash .lp-topbar-reserve {
-    display: inline-flex; align-items: center; gap: 8px;
-    height: 40px; padding: 0 16px; border-radius: 8px;
-    background: var(--color-accent); color: #FFFFFF;
-    font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap;
-}
-.lp-page.lp-shell-dash .lp-topbar-reserve:hover { background: var(--color-accent-deep); }
-.lp-page.lp-shell-dash .lp-topbar-reserve:focus-visible { outline: 3px solid var(--color-accent-soft); outline-offset: 2px; }
-@media (max-width: 640px) { .lp-page.lp-shell-dash .lp-topbar-reserve span { display: none; } .lp-page.lp-shell-dash .lp-topbar-reserve { padding: 0 12px; } }
+.lp-page .lp-input { min-height: 40px; border: 1px solid #C9D5DF; border-radius: 8px; background: #FFF; box-shadow: none; color: var(--color-ink); font-family: var(--font-body); font-size: 15px; }
+.lp-page .lp-input:focus { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent); outline: 0; }
+.lp-page .lp-form-label { color: var(--color-ink); font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: 0; }
 
-/* Topbar branch picker: a compact chip beside the search. Reuses the
-   sidebar picker's menu; phones use the one in the sidebar drawer. */
-.lp-page.lp-shell-dash .lp-topbar-branch-wrap { display: none; }
-@media (min-width: 901px) { .lp-page.lp-shell-dash .lp-topbar-branch-wrap { display: block; } }
-.lp-page.lp-shell-dash .lp-topbar-branch { margin: 0; }
-.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-trigger {
-    width: auto; max-width: 260px; height: 44px; gap: 8px; padding: 0 12px 0 14px;
-    background: var(--color-card); border-color: var(--color-line); border-radius: 999px;
-}
-.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-trigger:hover { background: #E3EAF1; }
-.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-trigger:focus-visible { outline: 3px solid var(--color-accent-soft); outline-offset: 2px; }
-.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-trigger .name { margin-top: 0; font-size: 14px; }
-.lp-page.lp-shell-dash .lp-topbar-branch .lp-sidebar-branches-menu { right: auto; min-width: 260px; }
+.lp-page .lp-dash-card { padding: 16px 18px; border-color: var(--color-line); border-radius: 10px; box-shadow: none; }
+.lp-page .lp-dash-card .lp-dash-card { border-radius: 8px; }
+.lp-page .lp-dash-card-title { font-family: var(--font-body); font-size: 17px; font-weight: 600; letter-spacing: 0; color: var(--color-ink); }
+.lp-page .lp-dash-card-meta { color: var(--color-ink-mute); font-size: 14px; }
 
-/* Cards across every staff page: 12px radius, white, display titles. */
-.lp-page .lp-dash-card { border-radius: 12px; border-color: var(--color-line); }
-.lp-page .lp-dash-card-title { font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: -0.005em; }
-.lp-page .lp-dash-card-meta { font-size: 12.5px; }
+.lp-page .lp-table thead th { padding: 10px 12px; border-bottom: 1px solid var(--color-line-soft); background: none; color: var(--color-ink-mute); font-family: var(--font-body); font-size: 13px; font-weight: 500; letter-spacing: 0; }
+.lp-page .lp-table tbody td { border-color: var(--color-line-soft); }
+.lp-page .lp-tag { gap: 0; padding: 2px 8px; border-radius: 6px; font-family: var(--font-body); font-size: 14px; font-weight: 500; letter-spacing: 0; }
+.lp-page .lp-tag::before { display: none; }
+
+.lp-page .lp-nav-tile-label, .lp-page .lp-nav-tile.is-active .lp-nav-tile-label, .lp-page .lp-nav-tile:hover .lp-nav-tile-label { display: block; max-width: none; overflow: visible; -webkit-line-clamp: unset; }
+.lp-page .lp-topbar .lp-sidebar-branches-trigger { display: inline-flex; align-items: center; gap: 8px; width: auto; }
+
+/* One strip of numbers in place of separate tiles. */
+.lp-page .lp-stats, .lp-page .lp-res-idx-hero-pulse {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0; padding: 0;
+    border: 1px solid var(--color-line); border-radius: 10px; background: #FFF; box-shadow: none;
+}
+.lp-page .lp-res-idx-hero-pulse { flex: 1 1 100%; order: 3; }
+.lp-page .lp-stats > *, .lp-page .lp-res-idx-pulse-tile { padding: 14px 18px; border: 0; border-right: 1px solid var(--color-line-soft); border-radius: 0; background: none; color: inherit; font: inherit; text-align: left; }
+.lp-page .lp-stats > :last-child, .lp-page .lp-res-idx-pulse-tile:last-child { border-right: 0; }
+.lp-page .lp-stats > button { cursor: pointer; }
+.lp-page .lp-stats > button:hover { background: #F6F8FA; }
+.lp-page .lp-stats p { margin: 0; }
+.lp-page .lp-stats .k, .lp-page .lp-res-idx-pulse-label { color: var(--color-ink-mute); font-size: 15px; font-family: var(--font-body); }
+.lp-page .lp-stats .v, .lp-page .lp-res-idx-pulse-value { color: var(--color-ink); font-family: var(--font-body); font-size: 26px; font-weight: 600; line-height: 1.25; }
+.lp-page .lp-stats .v.is-owed { color: #8F5300; }
+.lp-page .lp-stats .n, .lp-page .lp-res-idx-pulse-sub { display: block; color: var(--color-ink-mute); font-size: 13px; }
+.lp-page .lp-res-idx-pulse-dot { display: none; }
+.lp-page .lp-res-idx-pulse-tile > div { display: flex; flex-direction: column; }
+.lp-page .lp-res-idx-pulse-label { display: contents; }
+.lp-page .lp-res-idx-pulse-value { order: 1; margin: 0; }
+.lp-page .lp-res-idx-pulse-sub { order: 2; margin: 0; }
+
+/* Filters on one line, tables edge to edge. */
+.lp-filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.lp-page .lp-filter-row .lp-input { flex: 0 1 170px; width: auto; }
+.lp-page .lp-filter-row .lp-input.is-search { flex: 1 1 260px; }
+.lp-seg { display: inline-flex; height: 40px; padding: 2px; box-sizing: border-box; border: 1px solid #C9D5DF; border-radius: 8px; background: #FFF; }
+.lp-seg button { padding: 0 10px; border: 0; border-radius: 6px; background: none; color: var(--color-ink-soft); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+.lp-seg button.is-on { background: var(--color-ink-deep); color: #FFF; }
+.lp-filter-clear { border: 0; background: none; color: var(--color-accent); font: inherit; font-weight: 600; cursor: pointer; }
+.lp-page .lp-table-card { padding: 0; overflow: hidden; }
+.lp-page .lp-table-card .lp-table thead th:first-child, .lp-page .lp-table-card .lp-table tbody td:first-child { padding-left: 18px; }
+.lp-page .lp-table-card .lp-table thead th:last-child, .lp-page .lp-table-card .lp-table tbody td:last-child { padding-right: 18px; }
+.lp-page .lp-table tbody td { padding-top: 9px; padding-bottom: 9px; color: var(--color-ink-soft); font-size: 15px; }
+.lp-page a.lp-row-title { color: var(--color-ink); font-weight: 600; text-decoration: none; }
+.lp-page a.lp-row-title:hover { color: var(--color-accent); }
+.lp-page .lp-row-sub { margin: 0; color: var(--color-ink-mute); font-size: 13px; }
+.lp-row-actions { display: flex; justify-content: flex-end; gap: 12px; white-space: nowrap; }
+.lp-row-actions a, .lp-row-actions button { padding: 0; border: 0; background: none; color: var(--color-accent); font: inherit; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; }
+.lp-row-actions .is-danger { color: #A12A40; }
+
+.lp-page .lp-tag--confirmed { background: #E7EEF5; color: #26527D; }
+.lp-page .lp-tag--on-hold { background: #FFF1D9; color: #6B3F00; }
+.lp-page .lp-tag--pending, .lp-page .lp-tag--checked-out { background: #EEF3F7; color: #5E6F80; }
+.lp-page .lp-tag--cancelled { background: #FBE7EA; color: #A12A40; }
+.lp-page .lp-tag--checked-in { background: #16324B; color: #FFF; }
+.lp-page .lp-tag--ready { background: #E4F3EC; color: #0F6B4F; }
+
+.lp-page .lp-table .lp-num { font-size: 15px; line-height: inherit; }
+.lp-page [data-testid="booking-actions"] { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; align-items: start; }
+.lp-page [data-testid="booking-actions"] > * { min-width: 0; }
+.lp-page [data-testid="booking-actions"] > .lp-dash-card-head { grid-column: 1 / -1; }
+
+.lp-page .lp-dash > * { min-width: 0; }
+.lp-page .lp-table-card { max-width: 100%; }
+.lp-page .lp-dl-label { color: var(--color-ink-mute); font-family: var(--font-body); font-size: 14px; font-weight: 400; }
+.lp-page [class*="tracking-["] { letter-spacing: 0; }
+
+.lp-page .lp-table-card { position: relative; }
+.lp-page .lp-sidebar { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; }
+.lp-page [data-testid="booking-actions"] > div:not(.lp-dash-card-head) { margin: 0; padding: 0; border: 0; }
+
+/* Calendar */
+.lp-cal-nav { display: inline-flex; height: 36px; border: 1px solid #C9D5DF; border-radius: 8px; background: #FFF; overflow: hidden; }
+.lp-cal-nav button { min-width: 36px; padding: 0 10px; border: 0; background: none; color: var(--color-ink); font: inherit; font-weight: 600; cursor: pointer; }
+.lp-cal-nav button + button { border-left: 1px solid #C9D5DF; }
+.lp-cal-nav button:hover { background: #F6F8FA; }
+.lp-page .lp-cal-search { padding: 0; margin: 0; border: 0; background: none; }
+.lp-page .lp-cal-search-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.lp-page .lp-cal-search-field, .lp-page .lp-cal-search-field--room { display: flex; align-items: center; flex: 0 0 auto; gap: 6px; width: auto; }
+.lp-page .lp-cal-search-field .lp-rate-sub-label { margin: 0; color: var(--color-ink-mute); font-size: 14px; font-weight: 400; white-space: nowrap; }
+.lp-page .lp-cal-search-field .lp-input { width: 150px; }
+.lp-page .lp-cal-search-field--room .lp-input { width: 96px; }
+.lp-page .lp-rate-toggle-label { color: var(--color-ink-soft); font-size: 14px; }
+.lp-page .lp-cal-matrix thead th { color: var(--color-ink-mute); font-size: 13px; }
+.lp-page .lp-cal-header-dow { color: var(--color-ink-mute); font-size: 12px; }
+.lp-page .lp-cal-header-month { font-size: 12px; }
+.lp-page .lp-cal-header-day { color: var(--color-ink); font-size: 14px; font-weight: 600; }
+.lp-page .lp-cal-header-day.is-today { background: var(--color-accent); color: #FFF; }
+.lp-page .lp-cal-matrix thead th[data-weekend] .lp-cal-header-dow, .lp-page .lp-cal-matrix thead th[data-weekend] .lp-cal-header-day:not(.is-today) { color: var(--color-ink-soft); }
+.lp-page .lp-cal-matrix tr.lp-cal-group-head th, .lp-page .lp-cal-matrix .lp-cal-group-free { background: #F6F8FA; }
+.lp-page .lp-cal-matrix .lp-cal-group-free { height: 28px; border-radius: 0; color: var(--color-ink-mute); font-size: 13px; font-weight: 500; text-align: center; }
+.lp-page .lp-cal-matrix .lp-cal-group-name { color: var(--color-ink); font-family: var(--font-body); font-size: 15px; font-weight: 600; }
+.lp-page .lp-cal-matrix .lp-cal-group-type { display: none; }
+.lp-page .lp-cal-matrix .lp-cal-group-count { border: 0; background: none; padding: 0; color: var(--color-ink-mute); font-size: 13px; }
+.lp-page .lp-cal-matrix .lp-cal-room-label a.lp-mono { border: 0; background: none; color: var(--color-ink); font-size: 14px; font-weight: 600; }
+.lp-page .lp-cal-matrix td { background: #EEF3F7; }
+.lp-page .lp-cal-matrix td[data-weekend="true"][data-state="free"] { background: #E3EAF1; }
+.lp-page .lp-cal-matrix td[data-state="booked"], .lp-page .lp-cal-cell[data-state="booked"] { background: #6C9BC8; color: #14202C; }
+.lp-page .lp-cal-matrix td[data-state="checkedin"], .lp-page .lp-cal-cell[data-state="checkedin"] { background: #16324B; color: #FFF; }
+.lp-page .lp-cal-matrix td[data-state="due_out"], .lp-page .lp-cal-cell[data-state="due_out"] { background: #E3A83A; color: #14202C; }
+.lp-page .lp-cal-matrix td[data-state="overdue"], .lp-page .lp-cal-cell[data-state="overdue"] { background: #A12A40; color: #FFF; }
+.lp-page .lp-cal-matrix td[data-state="blocked"], .lp-page .lp-cal-cell[data-state="blocked"] { background: #5E6F80; color: #FFF; }
+.lp-page .lp-cal-matrix td[data-state="pending"] { background: repeating-linear-gradient(45deg, #E3A83A, #E3A83A 6px, #D0962C 6px, #D0962C 12px); color: #14202C; }
+.lp-page .lp-cal-legend-label { color: var(--color-ink-soft); font-size: 14px; font-weight: 500; }
+.lp-page .lp-cal-legend-hint { color: var(--color-ink-mute); font-size: 14px; }
+.lp-page .lp-cal-matrix { table-layout: fixed; width: 100%; min-width: 1040px; }
+.lp-page .lp-cal-matrix thead th:first-child, .lp-page .lp-cal-matrix tbody th { width: 140px; }
+.lp-page .lp-cal-matrix .lp-cal-group-free { position: relative; z-index: 3; }
+.lp-page .mono, .lp-page [class*="lp-cal-agenda"], .lp-page [class*="lp-cal-agenda"] * { font-family: var(--font-body); letter-spacing: 0; }
+.lp-page .lp-cal-matrix td[data-chip-position="start"] { z-index: 2; }
+.lp-page .lp-cal-matrix td[data-chip-position="start"] .lp-cal-chip-name { position: relative; overflow: visible; max-width: none; }

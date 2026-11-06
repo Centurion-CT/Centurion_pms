@@ -2,7 +2,6 @@
     <div>
         @include('_partials._back-button')
         <div class="mt-4">
-            <span class="lp-eyebrow-strip">Inventory · Change history</span>
             <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                 style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                 Who changed what
@@ -114,7 +113,7 @@
                                     <span style="color: var(--color-ink); font-weight: 500;">
                                         {{ $entry['subject_label'] }}
                                     </span>
-                                    <span class="lp-mono text-[10.5px]" style="display: block; color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                                    <span class="lp-mono text-[10.5px]" style="display: block; color: var(--color-ink-mute);">
                                         {{ $entry['subject_type'] }}
                                     </span>
                                 </td>

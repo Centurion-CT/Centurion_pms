@@ -6,7 +6,6 @@
 
     <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
-            <span class="lp-eyebrow-strip">Members</span>
             <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                 style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                 Memberships

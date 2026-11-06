@@ -192,7 +192,7 @@
                                         <span class="lp-tag lp-tag--confirmed" style="text-transform: capitalize;">{{ $m }}</span>
                                     @endforeach
                                 @endif
-                                <span class="lp-mono" style="color: var(--color-ink-mute); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;">
+                                <span class="lp-mono" style="color: var(--color-ink-mute); font-size: 10.5px;">
                                     #{{ $sale->id }}
                                 </span>
                             </div>
@@ -325,7 +325,7 @@
                                 <div class="meta">
                                     <span class="label @if ($isSystem) label--system @endif">{{ $typeLabel }}</span>
                                     @if ($entry->direction->value !== 'none')
-                                        <span style="font-size: 10.5px; color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">
+                                        <span style="font-size: 10.5px; color: var(--color-ink-mute);">
                                             {{ $entry->direction->label() }}
                                         </span>
                                     @endif
@@ -390,7 +390,7 @@
                                 <a href="{{ route('tenant.bookings.show', $booking->booking_ref) }}" wire:navigate
                                    class="grid gap-1" style="color: inherit;">
                                     <span class="flex items-center justify-between gap-2">
-                                        <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">
+                                        <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">
                                             {{ $booking->booking_ref }}
                                         </span>
                                         <span class="lp-tag {{ $statusClass }}">

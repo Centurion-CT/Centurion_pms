@@ -3,7 +3,6 @@
         @include('_partials._back-button')
         <div class="flex flex-wrap items-start justify-between gap-3 mt-4">
             <div>
-                <span class="lp-eyebrow-strip">Purchasing</span>
                 <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                     Purchase orders
@@ -128,7 +127,7 @@
                                 <td style="color: var(--color-ink-soft);">{{ $po->outlet->name ?? '-' }}</td>
                                 <td>
                                     <span class="lp-mono text-[10.5px]"
-                                          style="padding: 3px 10px; border-radius: 999px; background: {{ $po->status->toneColor() }}22; color: {{ $po->status->toneColor() }}; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;">
+                                          style="padding: 3px 10px; border-radius: 999px; background: {{ $po->status->toneColor() }}22; color: {{ $po->status->toneColor() }}; font-weight: 600;">
                                         {{ $po->status->label() }}
                                     </span>
                                 </td>

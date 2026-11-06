@@ -1,6 +1,5 @@
 <div class="lp-dash">
     <div>
-        <span class="lp-eyebrow-strip">Branches</span>
         <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
             style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
             Manage your branches
@@ -37,7 +36,7 @@
                                 @if ($current && $current->getKey() === $branch->getKey())
                                     <span class="lp-tag lp-tag--confirmed" style="margin-left: 6px;">Current</span>
                                 @endif
-                                <div class="lp-mono text-[11px] mt-1" style="color: var(--color-ink-mute); letter-spacing: 0.04em;">
+                                <div class="lp-mono text-[11px] mt-1" style="color: var(--color-ink-mute);">
                                     /branches/{{ $branch->slug }}
                                 </div>
                             </td>

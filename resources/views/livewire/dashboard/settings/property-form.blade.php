@@ -4,7 +4,6 @@
 
 <div class="lp-dash">
     <div>
-        <span class="lp-eyebrow-strip">Settings</span>
         <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
             style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
             Property settings
@@ -75,8 +74,7 @@
         }
         .lp-settings-modern .lp-settings-nav-group { margin-bottom: 18px; }
         .lp-settings-modern .lp-settings-nav-title {
-            font-size: 10.5px; font-weight: 700; letter-spacing: 0.10em;
-            text-transform: uppercase; color: var(--color-ink-mute);
+            font-size: 10.5px; font-weight: 700; color: var(--color-ink-mute);
             margin: 0 0 8px; padding: 0 12px;
         }
         .lp-settings-modern .lp-settings-nav-link {
@@ -342,8 +340,7 @@
                     <div class="flex items-center gap-2 mb-2" data-testid="publish-status-row">
                         <span data-testid="publish-status"
                               style="display:inline-flex; align-items:center; gap:6px;
-                                     padding: 3px 10px; border-radius: 999px; font-size: 11px;
-                                     letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+                                     padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
                                      background: {{ $isLive ? 'rgba(138, 174, 58, 0.14)' : 'rgba(184, 92, 66, 0.14)' }};
                                      color: {{ $publishAccent }};">
                             <span style="width:6px; height:6px; border-radius:50%; background: {{ $publishAccent }}; display:inline-block;"></span>
@@ -774,7 +771,7 @@
                 @foreach ($facilityGroups as $groupName => $groupItems)
                     <div>
                         <div class="lp-mono text-[10.5px] mb-1"
-                             style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                             style="color: var(--color-ink-mute);">
                             {{ $groupName }}
                         </div>
                         <div class="flex flex-wrap gap-2">
@@ -831,7 +828,7 @@
             @php $videoPreview = $this->videoPreview; @endphp
             @if ($videoPreview)
                 <div class="mt-3" data-testid="property-video-preview">
-                    <span class="lp-mono" style="display: block; font-size: 10.5px; color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px;">
+                    <span class="lp-mono" style="display: block; font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 6px;">
                         Preview
                         <span style="letter-spacing: 0; text-transform: none; color: var(--color-ink-soft); margin-left: 6px;">
                             (detected: {{ $videoPreview['kind'] }})
@@ -1378,7 +1375,7 @@
                 <div class="mt-3 lp-pill-soft" data-testid="payout-current"
                      style="display: inline-flex; flex-direction: column; gap: 4px; padding: 12px 14px;
                             background: var(--color-card-deep); border-radius: 10px;">
-                    <span class="lp-mono text-[11px]" style="letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                    <span class="lp-mono text-[11px]" style=" color: var(--color-ink-mute);">
                         Payouts going to
                     </span>
                     <span style="color: var(--color-ink); font-weight: 600;">

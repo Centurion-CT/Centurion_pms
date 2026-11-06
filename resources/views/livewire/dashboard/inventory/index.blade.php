@@ -7,7 +7,6 @@
     <section class="lp-res-idx-hero" data-testid="inventory-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Business · Inventory</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Inventory
@@ -121,12 +120,12 @@
                    style="display: grid; gap: 12px; text-decoration: none; color: inherit;">
                     <div class="flex items-start justify-between gap-3">
                         <span class="lp-mono text-[10.5px]"
-                              style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">
+                              style="color: var(--color-ink-mute);">
                             {{ $outlet->type->label() }}
                         </span>
                         @if (! $outlet->active)
                             <span class="lp-mono text-[10.5px]"
-                                  style="padding: 3px 10px; border-radius: 999px; background: rgba(224, 122, 95, 0.14); color: #B85C42; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;">
+                                  style="padding: 3px 10px; border-radius: 999px; background: rgba(224, 122, 95, 0.14); color: #B85C42; font-weight: 600;">
                                 Inactive
                             </span>
                         @endif
@@ -141,7 +140,7 @@
                         @endif
                     </p>
                     <span class="lp-mono text-[11px] mt-1"
-                          style="color: var(--color-accent-deep); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;">
+                          style="color: var(--color-accent-deep); font-weight: 600;">
                         Manage &rarr;
                     </span>
                 </a>

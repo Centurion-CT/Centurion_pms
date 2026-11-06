@@ -31,7 +31,6 @@
     <section class="lp-res-idx-hero" data-testid="payments-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Business</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Payments
@@ -42,31 +41,13 @@
                 <div class="lp-res-idx-hero-actions">
                     <a href="{{ route('tenant.payments.export', request()->query()) }}"
                        data-testid="payments-export"
-                       class="lp-res-action lp-res-action--primary">
+                       class="lp-res-action">
                         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M8 2v9M4 7l4 4 4-4M2 13h12"/></svg>
                         Export CSV
                     </a>
                 </div>
             </div>
 
-            <aside class="lp-res-idx-hero-money" aria-label="Net payout in window">
-                <div class="lp-ih-hero-accrued">
-                    <p class="lp-ih-hero-accrued-label">Net payout</p>
-                    <p class="lp-ih-hero-accrued-value" style="color: {{ (int) $kpis['net_payout'] > 0 ? 'var(--color-accent-deep)' : 'var(--color-ink-mute)' }};"
-                       data-testid="payments-hero-net">
-                        {{ money((int) $kpis['net_payout']) }}
-                    </p>
-                    <p class="lp-ih-hero-accrued-sub">
-                        {{ money((int) $kpis['settled']) }} in
-                        @if ((int) $kpis['refunded'] > 0)
-                            · {{ money((int) $kpis['refunded']) }} refunded
-                        @endif
-                        @if ((int) $kpis['pending_count'] > 0)
-                            · {{ (int) $kpis['pending_count'] }} pending
-                        @endif
-                    </p>
-                </div>
-            </aside>
         </div>
     </section>
 
@@ -78,56 +59,39 @@
               .\Illuminate\Support\Carbon::parse($dateTo)->format('j M');
         $payTiles = [
             [
-                'label' => 'Settled',   'sub' => $rangeSub.' · cash in',
+                'label' => 'Received',  'sub' => $rangeSub,
                 'value' => (int) $kpis['settled'],   'money' => true,
                 'dot' => 'var(--color-accent-deep)', 'color' => 'var(--color-ink)',
             ],
             [
-                'label' => 'Refunded',  'sub' => 'in window · back to guests',
+                'label' => 'Refunded',  'sub' => 'Back to guests',
                 'value' => (int) $kpis['refunded'],  'money' => true,
                 'dot' => $kpis['refunded'] > 0 ? '#B85C42' : 'var(--color-accent-deep)',
                 'color' => $kpis['refunded'] > 0 ? '#B85C42' : 'var(--color-ink)',
             ],
             [
-                'label' => 'Net payout', 'sub' => 'settled minus refunds',
+                'label' => 'Net', 'sub' => 'Received less refunds',
                 'value' => (int) $kpis['net_payout'], 'money' => true,
-                'dot' => 'var(--color-accent-deep)', 'color' => 'var(--color-accent-deep)',
+                'dot' => 'var(--color-accent-deep)', 'color' => 'var(--color-ink)',
                 'accent' => true,
             ],
             [
-                'label' => 'Pending',   'sub' => 'waiting on Paystack',
+                'label' => 'Pending',   'sub' => 'Waiting on Paystack',
                 'value' => (int) $kpis['pending_count'], 'money' => false,
                 'dot' => $kpis['pending_count'] > 0 ? '#a36318' : 'var(--color-accent-deep)',
                 'color' => $kpis['pending_count'] > 0 ? '#a36318' : 'var(--color-ink)',
             ],
         ];
     @endphp
-    <div class="grid gap-2 grid-cols-2 lg:grid-cols-4" data-testid="payment-kpis">
+    <section class="lp-stats" aria-label="Totals" data-testid="payment-kpis">
         @foreach ($payTiles as $tile)
-            <div class="lp-dash-card"
-                 style="padding: 14px 18px; display: flex; align-items: center; gap: 14px;
-                        @if (! empty($tile['accent'])) background: var(--color-accent-soft); @endif">
-                <span aria-hidden style="width: 8px; height: 8px; border-radius: 999px;
-                                          background: {{ $tile['dot'] }};
-                                          box-shadow: 0 0 0 3px {{ $tile['dot'] }}22;
-                                          flex-shrink: 0;"></span>
-                <div style="min-width: 0; flex: 1;">
-                    <p class="lp-num-lg text-[22px]" style="color: {{ $tile['color'] }};">
-                        @if ($tile['money']){{ money((int) $tile['value']) }}@else{{ number_format((int) $tile['value']) }}@endif
-                    </p>
-                    <p class="lp-mono text-[10.5px] tracking-[0.14em] uppercase"
-                       style="color: var(--color-ink-mute); margin-top: 2px;">
-                        {{ $tile['label'] }}
-                        <span style="text-transform: none; letter-spacing: 0;
-                                     color: var(--color-ink-mute);
-                                     font-size: 11px; margin-left: 4px;">
-                            {{ $tile['sub'] }}
-                        </span>
-                    </p>
-                </div>
+            <div>
+                <p class="k">{{ $tile['label'] }}</p>
+                <p class="v" style="color: {{ $tile['color'] }};">@if ($tile['money']){{ money((int) $tile['value']) }}@else{{ number_format((int) $tile['value']) }}@endif</p>
+                <p class="n">{{ $tile['sub'] }}</p>
             </div>
         @endforeach
-    </div>
+    </section>
 
     {{-- ── Filters (chip system) ────────────────────────────────────
          Ramp/Linear pattern — a search input + a horizontal chip strip
@@ -493,7 +457,7 @@
                         padding: 18px 22px; border-bottom: 1px solid var(--color-line-soft);">
                 <div>
                     <p class="lp-mono text-[10.5px]"
-                       style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                       style="color: var(--color-ink-mute);">
                         Payment
                     </p>
                     <p class="lp-display" style="font-size: 18px; font-weight: 600;">

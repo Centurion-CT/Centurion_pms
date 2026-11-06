@@ -38,7 +38,7 @@
                                 border-bottom: 1px solid var(--color-line-soft);">
                         <div>
                             <p class="lp-mono text-[10.5px]"
-                               style="color: #A8650A; letter-spacing: 0.18em; text-transform: uppercase;">
+                               style="color: #A8650A;">
                                 <span x-text="(panel.status || '').replace('_', ' ')"></span>
                                 · <span x-text="panel.ref"></span>
                             </p>
@@ -63,23 +63,23 @@
                         <dl style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
                                    column-gap: 12px; row-gap: 8px; margin: 0;">
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Check-in</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Check-in</dt>
                                 <dd style="margin: 0;" x-text="panel.checkin"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Check-out</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Check-out</dt>
                                 <dd style="margin: 0;" x-text="panel.checkout"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Nights</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Nights</dt>
                                 <dd style="margin: 0;" x-text="panel.nights"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Contact</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Contact</dt>
                                 <dd style="margin: 0;" x-text="panel.guest_phone || '-'"></dd>
                             </div>
                             <div x-show="panel.guest_email" style="grid-column: span 2;">
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Email</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Email</dt>
                                 <dd style="margin: 0; word-break: break-all;" x-text="panel.guest_email"></dd>
                             </div>
                         </dl>
@@ -114,7 +114,7 @@
                         <template x-if="panel.cancel">
                             <div style="border: 1px solid var(--color-line-soft); border-radius: 10px;
                                         padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;">
-                                <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0;">
+                                <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0;">
                                     <span x-show="panel.cancel.kind === 'cancelled'">Cancelled</span>
                                     <span x-show="panel.cancel.kind === 'no_show'" x-cloak>Marked no-show</span>
                                 </p>
@@ -141,7 +141,7 @@
 
                         {{-- Recent payments --}}
                         <div x-show="panel.payments && panel.payments.length > 0">
-                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 4px;">
+                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 4px;">
                                 Recent payments
                             </p>
                             <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px;">
@@ -154,7 +154,7 @@
                                             <span x-text="p.method"></span>
                                             <span style="color: var(--color-ink-mute);">·</span>
                                             <span class="lp-mono"
-                                                  style="font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+                                                  style="font-size: 10.5px;
                                                          color: var(--color-ink-mute); font-weight: 600;"
                                                   x-text="p.status"></span>
                                         </span>
@@ -175,7 +175,7 @@
                                     border-top: 1px solid var(--color-line-soft);
                                     background: var(--color-card-deep);">
                             <p class="lp-mono text-[10.5px]"
-                               style="color: #A8650A; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 6px;">
+                               style="color: #A8650A; margin-bottom: 6px;">
                                 Record a refund
                             </p>
                             <div class="grid gap-2 sm:grid-cols-2" style="margin-bottom: 8px;">

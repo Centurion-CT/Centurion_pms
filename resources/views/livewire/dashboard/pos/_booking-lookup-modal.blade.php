@@ -73,7 +73,7 @@
                             </div>
                         </div>
                         <span class="lp-mono text-[10px]"
-                              style="padding: 3px 8px; border-radius: 999px; letter-spacing: 0.06em; text-transform: uppercase;
+                              style="padding: 3px 8px; border-radius: 999px;
                                      background: {{ $b->booking_status->value === 'checked_in' ? 'rgba(60,120,90,0.14)' : 'rgba(0,0,0,0.05)' }};
                                      color: {{ $b->booking_status->value === 'checked_in' ? 'var(--color-accent-deep)' : 'var(--color-ink-mute)' }};">
                             {{ $b->booking_status->label() }}
@@ -103,7 +103,7 @@
             <div class="flex gap-2">
                 <input id="pay-booking" type="text" wire:model="bookingRef"
                        data-testid="pay-booking-ref" class="lp-input"
-                       placeholder="KV-XXXXXX" style="text-transform: uppercase;">
+                       placeholder="KV-XXXXXX" style="">
                 <button type="button" wire:click="lookupBooking" class="lp-btn" data-testid="pay-booking-lookup">Look up</button>
             </div>
             @if ($bookingLookupError)

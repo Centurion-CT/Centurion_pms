@@ -97,8 +97,7 @@
             <span class="lp-dash-card-title">Waiting on you</span>
             <a href="{{ route('tenant.housekeeping.inspections.index') }}" wire:navigate
                class="lp-mono text-[11px]"
-               style="color: var(--color-ink-mute); text-decoration: underline;
-                      letter-spacing: 0.06em; text-transform: uppercase;">
+               style="color: var(--color-ink-mute); text-decoration: underline;">
                 See all
             </a>
         </div>
@@ -152,7 +151,7 @@
         <div class="lp-dash-card-head">
             <span class="lp-dash-card-title">You signed off today</span>
             <span class="lp-mono text-[11px]"
-                  style="color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">
+                  style="color: var(--color-ink-mute);">
                 {{ $doneCount }} total
             </span>
         </div>
@@ -210,7 +209,7 @@
                     Rejected, needs a fresh inspection
                 </span>
                 <span class="lp-mono text-[11px]"
-                      style="color: #B85C42; letter-spacing: 0.06em; text-transform: uppercase;">
+                      style="color: #B85C42;">
                     {{ count($failed) }} open
                 </span>
             </div>

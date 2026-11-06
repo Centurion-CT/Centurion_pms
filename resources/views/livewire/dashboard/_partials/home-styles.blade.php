@@ -1,6 +1,6 @@
 {{-- Dashboard home (approved mockup 3A, "Daylight"). Scoped to .cx-home. --}}
 <style>
-    .lp-page .lp-dash.cx-home { padding: 24px 32px 56px; gap: 24px; }
+    .lp-page .lp-dash.cx-home { padding: 20px 24px 40px; gap: 14px; }
     @media (max-width: 768px) { .lp-page .lp-dash.cx-home { padding: 16px 16px 40px; gap: 16px; } }
 
     .cx-home .cx-card { background: var(--color-card); border: 1px solid var(--color-line); border-radius: 12px; }
@@ -15,22 +15,6 @@
     .cx-home .cx-dh-actions .lp-pill:hover { background: var(--color-paper); }
 
     /* Tonight's house. */
-    .cx-home .cx-th { padding: 24px; display: grid; gap: 24px; }
-    @media (min-width: 1100px) { .cx-home .cx-th { grid-template-columns: 250px minmax(0, 1fr); align-items: end; gap: 40px; } }
-    .cx-home .cx-th-title { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 0; color: var(--color-ink); }
-    .cx-home .cx-th-lede { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: var(--color-ink-soft); }
-    .cx-home .cx-th-big { display: flex; align-items: baseline; gap: 8px; margin-top: 20px; }
-    .cx-home .cx-th-pct { font-family: var(--font-display); font-weight: 600; font-size: 56px; line-height: 1; color: var(--color-ink); font-variant-numeric: tabular-nums; }
-    .cx-home .cx-th-pct-label { font-size: 14px; color: var(--color-ink-soft); }
-    .cx-home .cx-th-sub { margin: 4px 0 0; font-size: 13px; color: var(--color-ink-mute); }
-    .cx-home .cx-th-chart { min-width: 0; overflow-x: auto; }
-    .cx-home .cx-th-groups { display: flex; gap: 12px; min-width: min-content; }
-    .cx-home .cx-th-group { min-width: 0; display: flex; flex-direction: column; }
-    .cx-home .cx-th-bars { height: 150px; display: flex; align-items: flex-end; gap: 6px; }
-    .cx-home .cx-th-bar { flex: 1 1 0; min-width: 6px; border-radius: 4px 4px 2px 2px; }
-    .cx-home .cx-th-group-label { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--color-line); font-size: 12px; color: var(--color-ink-mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cx-home .cx-th-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 16px; font-size: 13px; color: var(--color-ink-soft); }
-    .cx-home .cx-th-legend span { display: inline-flex; align-items: center; gap: 6px; }
     .cx-home .cx-sw { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
     .cx-home .is-inhouse  { background: #16324B; }
     .cx-home .is-arriving { background: #5F8FBF; }
@@ -42,10 +26,10 @@
     .cx-home .is-free     { background: #E3E9EF; }
 
     /* Main grid: arrivals table + right rail. */
-    .cx-home .cx-main-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+    .cx-home .cx-main-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; }
     .cx-home .cx-main-grid > *, .cx-home .cx-bottom-grid > * { min-width: 0; }
     @media (min-width: 1100px) { .cx-home .cx-main-grid { grid-template-columns: minmax(0, 1fr) 340px; } }
-    .cx-home .cx-rail { display: grid; gap: 24px; }
+    .cx-home .cx-rail { display: grid; gap: 14px; align-content: start; }
 
     /* Arrivals and departures. */
     .cx-home .cx-ad-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 20px 24px 14px; }
@@ -80,8 +64,6 @@
         .cx-home .cx-ad-table th:first-child, .cx-home .cx-ad-table td:first-child { padding-left: 16px; }
         .cx-home .cx-ad-table th:last-child, .cx-home .cx-ad-table td:last-child { padding-right: 16px; }
         .cx-home .cx-ad-foot { padding: 12px 16px; }
-        .cx-home .cx-th { padding: 18px; }
-        .cx-home .cx-th-pct { font-size: 46px; }
     }
     .cx-home .cx-ad-empty { padding: 28px 24px; font-size: 14px; color: var(--color-ink-mute); }
     .cx-home .cx-ad-foot { display: flex; justify-content: space-between; gap: 12px; padding: 12px 24px; font-size: 13px; }
@@ -89,17 +71,6 @@
     .cx-home .cx-ad-foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
     /* Collected today (navy). */
-    .cx-home .cx-collected { background: var(--color-ink-deep); color: #FFFFFF; border-radius: 12px; padding: 20px; }
-    .cx-home .cx-collected-label { margin: 0; font-size: 13px; color: #A9C5E1; }
-    .cx-home .cx-collected-amount { margin: 6px 0 0; font-family: var(--font-display); font-weight: 600; font-size: 34px; line-height: 1.1; font-variant-numeric: tabular-nums; }
-    .cx-home .cx-collected-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
-    .cx-home .cx-collected-tile { display: block; padding: 10px 12px; border: 0; border-radius: 8px; background: rgba(255, 255, 255, 0.08); color: inherit; font: inherit; text-align: left; text-decoration: none; }
-    .cx-home button.cx-collected-tile { cursor: pointer; }
-    .cx-home .cx-collected-tile:hover { background: rgba(255, 255, 255, 0.14); }
-    .cx-home .cx-collected-tile:focus-visible { outline: 2px solid #8DB6DE; outline-offset: 2px; }
-    .cx-home .cx-collected-tile small { display: block; font-size: 12.5px; color: #A9C5E1; }
-    .cx-home .cx-collected-tile strong { display: block; margin-top: 2px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
-    .cx-home .cx-collected-tile .is-owed { color: #E3A83A; }
 
     /* Needs attention. */
     .cx-home .cx-na { padding: 20px; }
@@ -129,4 +100,13 @@
 
     .cx-home .cx-bottom-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
     @media (min-width: 1024px) { .cx-home .cx-bottom-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+    .cx-home .cx-rooms { padding: 16px 18px; }
+    .cx-home .cx-rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, 20px); gap: 4px; margin-top: 10px; }
+    .cx-home .cx-rooms-grid span { height: 20px; border-radius: 4px; background: #D9E2EA; }
+    .cx-home .cx-rooms-grid .is-inhouse, .cx-home .cx-rooms-grid .is-leaving { background: #16324B; }
+    .cx-home .cx-rooms-grid .is-arriving, .cx-home .cx-rooms-grid .is-booked { background: #6C9BC8; }
+    .cx-home .cx-rooms-grid .is-overdue { background: #A12A40; }
+    .cx-home .cx-rooms-grid .is-dirty, .cx-home .cx-rooms-grid .is-blocked { background: #E3A83A; }
+    .cx-home .cx-rooms-key { margin: 10px 0 0; font-size: 14px; color: var(--color-ink-mute); }
 </style>

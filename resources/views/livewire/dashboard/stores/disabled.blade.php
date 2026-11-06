@@ -1,6 +1,5 @@
 <div class="lp-dash">
     <div>
-        <span class="lp-eyebrow-strip">Store</span>
         <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
             style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
             Central store isn&rsquo;t turned on for this branch.
@@ -28,7 +27,6 @@
 
     <div class="lp-dash-card" style="display: grid; gap: 14px;">
         <div>
-            <div class="lp-eyebrow-strip" style="color: var(--color-ink-mute);">Current mode</div>
             <div class="mt-1 text-[15px]" style="color: var(--color-ink);">
                 {{ $currentMode->label() }}
             </div>

@@ -4,7 +4,6 @@
 
 <div class="lp-dash">
     <div>
-        <span class="lp-eyebrow-strip">Brand</span>
         <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
             style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
             Email templates
@@ -32,7 +31,7 @@
                         <tr data-testid="template-row-{{ $row->key->value }}">
                             <td style="color: var(--color-ink); font-weight: 500;">
                                 {{ $row->key->label() }}
-                                <span class="text-[11px] mt-0.5" style="display: block; color: var(--color-ink-mute); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0.04em;">
+                                <span class="text-[11px] mt-0.5" style="display: block; color: var(--color-ink-mute);">
                                     {{ $row->key->value }}
                                 </span>
                             </td>

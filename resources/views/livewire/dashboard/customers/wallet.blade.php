@@ -10,7 +10,6 @@
 
         <div class="mt-4 flex flex-wrap items-start justify-between gap-4">
             <div>
-                <span class="lp-eyebrow-strip">Guest wallet</span>
                 <h1 class="lp-display mt-2 text-[clamp(24px,3.2vw,34px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                     Wallet · {{ $customer->name }}
@@ -132,7 +131,7 @@
 
             <div class="flex flex-wrap items-end gap-2">
                 <label style="display: flex; flex-direction: column; gap: 2px;">
-                    <span class="text-[10.5px]" style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.06em;">Type</span>
+                    <span class="text-[10.5px]" style="color: var(--color-ink-mute);">Type</span>
                     <select wire:model.live="filterType" class="lp-input" style="min-width: 140px;" data-testid="filter-type">
                         @foreach ($typeOptions as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
@@ -140,12 +139,12 @@
                     </select>
                 </label>
                 <label style="display: flex; flex-direction: column; gap: 2px;">
-                    <span class="text-[10.5px]" style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.06em;">From</span>
+                    <span class="text-[10.5px]" style="color: var(--color-ink-mute);">From</span>
                     <input type="date" wire:model.live="filterFrom" class="lp-input" data-testid="filter-from"
                            aria-label="Filter from date">
                 </label>
                 <label style="display: flex; flex-direction: column; gap: 2px;">
-                    <span class="text-[10.5px]" style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.06em;">To</span>
+                    <span class="text-[10.5px]" style="color: var(--color-ink-mute);">To</span>
                     <input type="date" wire:model.live="filterTo" class="lp-input" data-testid="filter-to"
                            aria-label="Filter to date">
                 </label>

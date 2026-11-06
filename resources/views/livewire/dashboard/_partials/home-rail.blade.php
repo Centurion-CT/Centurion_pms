@@ -1,12 +1,6 @@
 {{-- Right rail (mockup 3A): money collected today, then the things that
      need someone's attention. --}}
 @php
-    $mcPoints = $monthChart['points'] ?? [];
-    $mcTodayIdx = (int) ($monthChart['today_index'] ?? 0);
-    $collectedToday = (int) ($mcPoints[$mcTodayIdx] ?? 0);
-    $outstandingAll = (int) ($pulse['outstanding'] ?? 0);
-    $monthTotal = (int) ($monthChart['total'] ?? 0);
-
     $naItems = collect($needsAttention ?? [])->map(fn ($i) => [
         'title' => $i['label'],
         'sub' => $i['count'].' '.($i['count'] === 1 ? 'booking' : 'bookings'),
@@ -31,29 +25,18 @@
         'sparkle' => '<path d="M10 2l1.6 4.4L16 8l-4.4 1.6L10 14l-1.6-4.4L4 8l4.4-1.6zM15.5 13l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/>',
     ];
 @endphp
+@php
+    $th = \App\Support\Dashboard\TonightHouse::from(
+        ['heatmap' => $heatmap ?? [], 'today' => $today ?? []],
+        $attentionRows->pluck('inspection.room_id')->all(),
+    );
+    $thRooms = collect($th['groups'])->flatMap(fn ($g) => $g['bars'])->all();
+    $thCounts = $th['counts'];
+    $thStateLabels = \App\Support\Dashboard\TonightHouse::LABELS;
+    $thOccupied = $th['occupied'];
+    $thTotal = $th['total'];
+@endphp
 <div class="cx-rail">
-    <section class="cx-collected" data-testid="widget-collected">
-        <p class="cx-collected-label">Collected today</p>
-        <p class="cx-collected-amount">{{ money($collectedToday) }}</p>
-        <div class="cx-collected-grid">
-            <button type="button" class="cx-collected-tile" x-on:click="outstandingOpen = true" data-testid="pulse-tile-outstanding">
-                <small>Outstanding</small>
-                <strong class="{{ $outstandingAll > 0 ? 'is-owed' : '' }}">{{ money($outstandingAll) }}</strong>
-            </button>
-            @if (auth('web')->user()?->canAccessModule('payments'))
-                <a href="{{ route('tenant.payments.index') }}" wire:navigate class="cx-collected-tile">
-                    <small>This month</small>
-                    <strong>{{ money($monthTotal) }}</strong>
-                </a>
-            @else
-                <div class="cx-collected-tile">
-                    <small>This month</small>
-                    <strong>{{ money($monthTotal) }}</strong>
-                </div>
-            @endif
-        </div>
-    </section>
-
     <section class="cx-card cx-na" data-testid="widget-needs-attention">
         <h2 class="cx-h2">Needs attention</h2>
         @if ($naItems->isEmpty())
@@ -80,4 +63,18 @@
     {{-- Store requests / low stock. Renders nothing when there's
          nothing to say. --}}
     <livewire:dashboard.alerts-card />
+
+    <section class="cx-card cx-rooms" data-testid="widget-tonight">
+        <h2 class="cx-h2">Tonight's rooms</h2>
+        @if ($thRooms === [])
+            <p class="cx-na-none">Add rooms to see tonight's rooms here.</p>
+        @else
+            <div class="cx-rooms-grid" role="img" aria-label="{{ $thOccupied }} of {{ $thTotal }} rooms occupied tonight">
+                @foreach ($thRooms as $bar)
+                    <span class="is-{{ $bar['state'] }}" title="{{ $bar['title'] ?? '' }}"></span>
+                @endforeach
+            </div>
+            <p class="cx-rooms-key">{{ collect($thCounts)->filter()->map(fn ($n, $key) => $thStateLabels[$key].' '.$n)->implode(' · ') }}</p>
+        @endif
+    </section>
 </div>

@@ -2,7 +2,6 @@
     <div>
         @include('_partials._back-button')
         <div class="mt-4">
-            <span class="lp-eyebrow-strip">Recipe</span>
             <h1 class="lp-display mt-3 text-[clamp(24px,3vw,30px)]"
                 style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                 {{ $product->name }}

@@ -9,7 +9,7 @@
     @if ($flash !== '')
         @php $isErrorFlash = str_starts_with($flash, 'Send failed'); @endphp
         <div class="lp-mono text-[11px] mb-3"
-             style="color: {{ $isErrorFlash ? 'var(--color-warn)' : 'var(--color-good)' }}; letter-spacing: 0.04em;"
+             style="color: {{ $isErrorFlash ? 'var(--color-warn)' : 'var(--color-good)' }};"
              wire:key="flash-{{ $flash }}">
             {{ $flash }}
         </div>
@@ -37,7 +37,7 @@
                             <td style="color: var(--color-ink); font-weight: 500;">
                                 {{ $sub->email }}
                                 @if ($sub->createdBy)
-                                    <span class="lp-mono text-[10.5px]" style="display: block; color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                                    <span class="lp-mono text-[10.5px]" style="display: block; color: var(--color-ink-mute);">
                                         added by {{ $sub->createdBy->name }}
                                     </span>
                                 @endif
@@ -100,7 +100,7 @@
 
     {{-- Send test --}}
     <div style="border-top: 1px solid var(--color-line); margin-top: 12px; padding-top: 12px;">
-        <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">
+        <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">
             Send test
         </span>
         <div class="flex flex-wrap items-center gap-2 mt-2">

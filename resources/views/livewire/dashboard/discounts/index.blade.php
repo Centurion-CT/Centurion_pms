@@ -17,7 +17,6 @@
     <section class="lp-res-idx-hero" data-testid="discounts-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Marketing</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Discounts &amp; coupons
@@ -141,7 +140,7 @@
                                     {{ $d->name }}
                                 </a>
                                 @if ($d->code)
-                                    <span class="lp-mono" style="color: var(--color-ink); letter-spacing: 0.06em; padding: 2px 8px; background: var(--color-card-deep); border: 1px solid var(--color-line-soft); border-radius: 4px; font-size: 11.5px;">
+                                    <span class="lp-mono" style="color: var(--color-ink); padding: 2px 8px; background: var(--color-card-deep); border: 1px solid var(--color-line-soft); border-radius: 4px; font-size: 11.5px;">
                                         {{ $d->code }}
                                     </span>
                                 @else
