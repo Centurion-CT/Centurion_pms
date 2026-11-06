@@ -34,9 +34,6 @@ final class BookingSite
     /** Reviews on an apartment's page. */
     public const REVIEWS_SHOWN = 6;
 
-    /** @var Collection<int, Property>|null */
-    private ?Collection $branches = null;
-
     public function __construct(private readonly PricingCalculator $pricing) {}
 
     public function business(): Tenant
@@ -100,13 +97,21 @@ final class BookingSite
      */
     public function branches(): Collection
     {
-        return $this->branches ??= Property::query()
-            ->where('is_live', true)
-            ->with(['media', 'roomCategories' => fn ($q) => $q->active()->with('media')->orderBy('base_rate')])
-            ->orderBy('name')
-            ->get()
-            ->filter(fn (Property $p) => $p->roomCategories->isNotEmpty())
-            ->values();
+        // Kept on the request: the header, footer, search and page each ask
+        // for their own BookingSite, and the marketplace asks per business.
+        $key = 'booking-site.branches.'.Tenant::current()?->getKey();
+        $cache = request()->attributes;
+        if (! $cache->has($key)) {
+            $cache->set($key, Property::query()
+                ->where('is_live', true)
+                ->with(['media', 'roomCategories' => fn ($q) => $q->active()->with('media')->orderBy('base_rate')])
+                ->orderBy('name')
+                ->get()
+                ->filter(fn (Property $p) => $p->roomCategories->isNotEmpty())
+                ->values());
+        }
+
+        return $cache->get($key);
     }
 
     /**
