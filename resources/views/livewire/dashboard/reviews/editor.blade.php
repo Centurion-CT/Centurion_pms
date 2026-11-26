@@ -159,7 +159,7 @@
                              alt="Review photo preview"
                              data-testid="review-photo-thumb">
                         <div class="review-photo-preview-meta">
-                            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em; margin: 0;">
+                            <p class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); margin: 0;">
                                 {{ $freshUrl ? 'New upload' : 'Current photo' }}
                             </p>
                             <p class="text-[12.5px] mt-1" style="color: var(--color-ink); margin: 0;">

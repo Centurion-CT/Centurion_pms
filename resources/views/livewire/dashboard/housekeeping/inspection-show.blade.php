@@ -5,7 +5,6 @@
 
         <div class="mt-4 flex flex-wrap items-start justify-between gap-3">
             <div>
-                <span class="lp-eyebrow-strip">Room inspection</span>
                 <h1 class="lp-display mt-3 text-[clamp(24px,3vw,32px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.05;">
                     Rm {{ $inspection->room?->room_number ?? '-' }}
@@ -24,7 +23,7 @@
             </div>
 
             <div style="text-align: right;">
-                <span class="lp-mono text-[10.5px]" style="letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-mute);">
+                <span class="lp-mono text-[10.5px]" style=" color: var(--color-ink-mute);">
                     Status
                 </span>
                 <div class="text-[15px]" data-testid="inspection-status"
@@ -55,7 +54,7 @@
                 ['Supervisor',  $inspection->supervisor_at,  'supervisor_by_operator_id'],
             ] as [$title, $at, $byField])
                 <div style="padding: 10px 12px; border: 1px solid var(--color-line-soft); border-radius: 8px;">
-                    <div class="lp-mono text-[10.5px]" style="letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-mute);">
+                    <div class="lp-mono text-[10.5px]" style=" color: var(--color-ink-mute);">
                         {{ $title }}
                     </div>
                     @if ($at)

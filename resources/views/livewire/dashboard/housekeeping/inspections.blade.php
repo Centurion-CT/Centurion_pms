@@ -11,7 +11,6 @@
     <section class="lp-res-idx-hero" data-testid="inspections-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Operate · Housekeeping</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Room inspections
@@ -89,7 +88,7 @@
                                 border-radius: 10px; padding: 12px; background: var(--color-card);">
                         <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;">
                             <div>
-                                <div class="lp-mono text-[10.5px]" style="letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-mute);">
+                                <div class="lp-mono text-[10.5px]" style=" color: var(--color-ink-mute);">
                                     {{ $title }}
                                     @if ($myLane === $key)
                                         · <span style="color: var(--color-accent-deep);">my queue</span>
@@ -167,7 +166,6 @@
                                     @if (in_array($r->room_id, $currentOccupantRoomIds, true))
                                         <span class="lp-mono text-[10px]"
                                               style="margin-left: 6px; padding: 1px 6px; border-radius: 999px;
-                                                     letter-spacing: 0.06em; text-transform: uppercase;
                                                      background: #DBEAFE; color: #1E40AF; font-weight: 500;"
                                               data-testid="recent-occupied-{{ $r->id }}">
                                             Occupied now
@@ -183,7 +181,6 @@
                                 <td>
                                     <span class="lp-mono text-[11px]"
                                           style="padding: 2px 8px; border-radius: 999px;
-                                                 letter-spacing: 0.06em; text-transform: uppercase;
                                                  {{ $r->status->value === 'passed'
                                                     ? 'background: #DCFCE7; color: #166534;'
                                                     : 'background: #FEE2E2; color: #B85C42;' }}">

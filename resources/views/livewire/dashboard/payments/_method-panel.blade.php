@@ -37,7 +37,7 @@
                                 border-bottom: 1px solid var(--color-line-soft);">
                         <div>
                             <p class="lp-mono text-[10.5px]"
-                               style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;"
+                               style="color: var(--color-ink-mute);"
                                x-text="panel.subtitle"></p>
                             <h3 class="lp-display"
                                 style="font-size: 18px; font-weight: 600; margin-top: 1px; line-height: 1.15;"
@@ -56,8 +56,7 @@
                             <template x-for="k in (panel.kpis || [])" :key="k.label">
                                 <div style="background: var(--color-card-deep); border-radius: 10px;
                                             padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
-                                    <span style="font-size: 10.5px; letter-spacing: 0.12em;
-                                                 text-transform: uppercase; color: var(--color-ink-mute);"
+                                    <span style="font-size: 10.5px; color: var(--color-ink-mute);"
                                           x-text="k.label"></span>
                                     <span class="lp-num" style="font-size: 16px; color: var(--color-ink); font-weight: 600;"
                                           x-text="k.value"></span>
@@ -66,7 +65,7 @@
                         </div>
 
                         <div>
-                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 6px;">
+                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 6px;">
                                 Payments in this window
                             </p>
                             <ul style="list-style: none; padding: 0; margin: 0;
@@ -93,7 +92,7 @@
                                             <span x-text="p.staff"></span>
                                             <span style="color: var(--color-ink-mute);">·</span>
                                             <span class="lp-mono"
-                                                  style="font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+                                                  style="font-size: 10.5px;
                                                          color: var(--color-ink-mute); font-weight: 600;"
                                                   x-text="p.type"></span>
                                         </div>

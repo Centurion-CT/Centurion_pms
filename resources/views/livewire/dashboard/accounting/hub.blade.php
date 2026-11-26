@@ -6,7 +6,6 @@
     <section class="lp-res-idx-hero" data-testid="accounting-hub-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Accounting</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Money in, money out.
@@ -85,8 +84,7 @@
                         </p>
                     </div>
                     <span class="lp-mono text-[11px]"
-                          style="color: var(--color-accent-deep); letter-spacing: 0.08em;
-                                 text-transform: uppercase; font-weight: 600; margin-top: auto;">
+                          style="color: var(--color-accent-deep); font-weight: 600; margin-top: auto;">
                         Open →
                     </span>
                 </a>
@@ -119,8 +117,7 @@
                         </p>
                     </div>
                     <span class="lp-mono text-[10.5px]"
-                          style="color: var(--color-ink-mute); letter-spacing: 0.12em;
-                                 text-transform: uppercase; margin-top: auto;">
+                          style="color: var(--color-ink-mute); margin-top: auto;">
                         Coming soon
                     </span>
                 </div>

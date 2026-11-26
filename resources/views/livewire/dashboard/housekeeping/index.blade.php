@@ -6,7 +6,6 @@
     <section class="lp-res-idx-hero" data-testid="hk-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Operate · Housekeeping</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Housekeeping ops
@@ -159,8 +158,7 @@
                 .hk-signer {
                     display: inline-flex; align-items: center; gap: 4px;
                     padding: 2px 6px; border-radius: 999px;
-                    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-                    font-size: 10.5px; letter-spacing: 0.04em;
+                    font-size: 10.5px;
                 }
                 .hk-signer--done { background: #DCFCE7; color: #166534; }
                 .hk-signer--pending { background: var(--color-card-deep); color: var(--color-ink-mute); }
@@ -380,7 +378,7 @@
                     style="all: unset; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                 <span class="lp-dash-card-title">Checklist bundles</span>
                 <span class="lp-mono text-[10.5px]"
-                      style="letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-mute);">
+                      style=" color: var(--color-ink-mute);">
                     {{ $templatesOpen ? '▾ hide' : '▸ show' }}
                 </span>
             </button>
@@ -460,7 +458,7 @@
                             <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 10px;
                                         padding: 8px 10px; background: var(--color-card-deep); border-radius: 6px;">
                                 <span class="lp-mono text-[10px]"
-                                      style="letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-mute);">
+                                      style=" color: var(--color-ink-mute);">
                                     Attached
                                 </span>
                                 @if ($b->attached->isEmpty())

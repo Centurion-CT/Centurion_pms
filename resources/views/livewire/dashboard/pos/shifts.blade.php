@@ -12,7 +12,6 @@
     <section class="lp-res-idx-hero mt-3" data-testid="shifts-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">POS · Shifts</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Shift reports
@@ -132,7 +131,7 @@
                                     <span class="lp-tag lp-tag--confirmed">Closed</span>
                                 @endif
                                 @if ($s->close_reason)
-                                    <span class="lp-mono" style="color: var(--color-ink-mute); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;">
+                                    <span class="lp-mono" style="color: var(--color-ink-mute); font-size: 10px;">
                                         {{ Str::limit($s->close_reason, 30) }}
                                     </span>
                                 @endif

@@ -10,7 +10,6 @@
     <section class="lp-res-idx-hero" data-testid="integrations-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Business</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Integrations
@@ -45,14 +44,13 @@
 
                 <div class="flex items-start justify-between gap-3">
                     <span class="lp-mono text-[10.5px]"
-                          style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">
+                          style="color: var(--color-ink-mute);">
                         {{ $it['category'] }}
                     </span>
                     <span class="lp-mono text-[10.5px]"
                           data-testid="integration-{{ $it['key'] }}-status"
                           style="display:inline-flex; align-items:center; gap:6px;
-                                 padding: 3px 10px; border-radius: 999px;
-                                 letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+                                 padding: 3px 10px; border-radius: 999px; font-weight: 600;
                                  background: {{ $it['connected'] ? 'var(--color-accent-soft, rgba(51, 103, 153,0.18))' : 'var(--color-card-deep)' }};
                                  color: {{ $it['connected'] ? 'var(--color-accent-deep)' : 'var(--color-ink-mute)' }};">
                         <span style="width:6px; height:6px; border-radius:50%;
@@ -75,7 +73,7 @@
                 </p>
 
                 <div class="flex items-center justify-between mt-1">
-                    <span class="lp-mono text-[11px]" style="color: var(--color-accent-deep); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;">
+                    <span class="lp-mono text-[11px]" style="color: var(--color-accent-deep); font-weight: 600;">
                         {{ $it['connected'] ? 'Manage' : 'Configure' }} &rarr;
                     </span>
                 </div>

@@ -15,7 +15,6 @@
     <section class="lp-res-idx-hero mt-3" data-testid="expenses-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Accounting · Expenses</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Expenses
@@ -306,7 +305,7 @@
                         box-shadow: 0 24px 60px rgba(0,0,0,0.22);
                         padding: 22px 24px 20px;">
                 <p class="lp-mono text-[10.5px]"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                   style="color: var(--color-ink-mute);">
                     Log expense
                 </p>
                 <h2 class="lp-display mt-1" style="font-size: 20px; font-weight: 600;">

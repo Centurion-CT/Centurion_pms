@@ -37,7 +37,7 @@
                 </label>
                 <input id="d-code" type="text" wire:model="code" maxlength="32"
                        data-testid="d-code" class="lp-input lp-mono"
-                       style="text-transform: uppercase;"
+                       style=""
                        placeholder="SUMMER25">
                 @error('code') <p class="lp-form-error">{{ $message }}</p> @enderror
                 <p class="lp-form-help">Letters, numbers, dashes, underscores only.</p>

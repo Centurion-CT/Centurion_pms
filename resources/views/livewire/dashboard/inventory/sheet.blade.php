@@ -49,7 +49,7 @@
                                        background: var(--color-card); border-bottom: 1px solid var(--color-line);
                                        min-width: 100px; padding: 10px 12px; text-align: left;
                                        font-size: 11.5px; font-weight: 600;
-                                       color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.04em;">
+                                       color: var(--color-ink-mute);">
                                 Date
                             </th>
                             @foreach ($products as $p)
@@ -58,7 +58,7 @@
                                            background: var(--color-card); border-bottom: 1px solid var(--color-line);
                                            border-left: 2px solid var(--color-line);
                                            padding: 10px 12px; text-align: center;
-                                           font-family: 'Fraunces', ui-serif, Georgia, serif;
+                                           font-family: var(--font-display);
                                            font-size: 13.5px; font-weight: 600; color: var(--color-ink);
                                            white-space: nowrap;">
                                     {{ $p->name }}
@@ -81,8 +81,7 @@
                                                background: var(--color-card); border-bottom: 1px solid var(--color-line);
                                                @if ($loop->first) border-left: 2px solid var(--color-line); @endif
                                                padding: 6px 8px; text-align: center; min-width: 60px;
-                                               font-size: 10.5px; font-weight: 600; color: var(--color-ink-mute);
-                                               text-transform: uppercase; letter-spacing: 0.05em;">
+                                               font-size: 10.5px; font-weight: 600; color: var(--color-ink-mute);">
                                         {{ $sub }}
                                     </th>
                                 @endforeach

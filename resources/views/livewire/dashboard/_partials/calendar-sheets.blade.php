@@ -45,7 +45,6 @@
 
         <div class="lp-sheet-head">
             <div>
-                <span class="lp-eyebrow-strip">New reservation</span>
                 <p class="title mt-2">Book {{ $sheetRoomName }}</p>
                 <p class="sub">Walk-in or phone booking, won&rsquo;t go through Paystack.</p>
             </div>
@@ -251,7 +250,7 @@
                                wire:keydown.enter.prevent="applyDiscount"
                                data-testid="sheet-discount-code"
                                class="lp-input"
-                               style="text-transform: uppercase; letter-spacing: 0.06em;"
+                               style=""
                                placeholder="SUMMER25">
                         <button type="button" wire:click="applyDiscount"
                                 data-testid="sheet-discount-apply"
@@ -481,7 +480,6 @@
              reservation; body is a light shimmer strip. --}}
         <div class="lp-sheet-head">
             <div>
-                <span class="lp-eyebrow-strip">Reservation</span>
                 <p class="title mt-2" data-testid="booking-sheet-loading-title">
                     Loading
                     <span x-text="pendingSurname ? pendingSurname + '’s reservation…' : 'reservation…'"></span>
@@ -510,13 +508,12 @@
 
         <div class="lp-sheet-head">
             <div>
-                <span class="lp-eyebrow-strip">Reservation</span>
                 <p class="title mt-2 flex flex-wrap items-baseline gap-2">
                     @if ($viewed->customer?->is_vip)
                         <span style="color: var(--color-accent-deep);">★</span>
                     @endif
                     <span data-testid="booking-sheet-guest">{{ $viewed->guest_name }}</span>
-                    <span class="lp-mono" style="color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; font-weight: 500;">
+                    <span class="lp-mono" style="color: var(--color-ink-mute); font-size: 12px; font-weight: 500;">
                         {{ $viewed->booking_ref }}
                     </span>
                 </p>

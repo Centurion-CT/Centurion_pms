@@ -150,7 +150,7 @@
             <p class="foot-name">{{ $brand }} Stays</p>
             <nav aria-label="Footer">
                 <a href="{{ route('platform.home') }}">For businesses</a>
-                <a href="mailto:hello@{{ config('keverna.central_domain') }}">Contact</a>
+                <a href="mailto:{{ 'hello@'.config('keverna.central_domain') }}">Contact</a>
                 <span>© {{ date('Y') }} {{ $brand }}</span>
             </nav>
         </div>

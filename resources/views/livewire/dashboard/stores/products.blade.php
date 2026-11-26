@@ -3,7 +3,6 @@
         @include('_partials._back-button')
         <div class="mt-4 flex flex-wrap items-start justify-between gap-3">
             <div>
-                <span class="lp-eyebrow-strip">Business</span>
                 <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                     Store products
@@ -68,7 +67,7 @@
                                 <td style="color: var(--color-ink); font-weight: 500;">
                                     {{ $p->name }}
                                     @if (! $p->active)
-                                        <span class="lp-mono text-[10.5px]" style="margin-left: 8px; padding: 2px 6px; border-radius: 999px; background: var(--color-card-deep); color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">Archived</span>
+                                        <span class="lp-mono text-[10.5px]" style="margin-left: 8px; padding: 2px 6px; border-radius: 999px; background: var(--color-card-deep); color: var(--color-ink-mute);">Archived</span>
                                     @endif
                                     @if ($p->sku)
                                         <span class="lp-mono text-[10.5px]" style="display:block; color: var(--color-ink-mute);">SKU {{ $p->sku }}</span>

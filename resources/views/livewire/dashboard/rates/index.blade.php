@@ -39,7 +39,6 @@
     <section class="lp-res-idx-hero" data-testid="rates-hero">
         <div class="lp-res-idx-hero-body" style="grid-template-columns: 1fr;">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Bookings</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Rates
@@ -263,7 +262,6 @@
                 {{-- Editorial header. --}}
                 <div class="lp-rate-modal-head">
                     <div>
-                        <span class="lp-eyebrow-strip">Bookings</span>
                         <h3 class="lp-display" style="font-size: 22px; font-weight: 600; margin: 4px 0 0; letter-spacing: -0.005em;">
                             {{ $editingRuleId ? 'Edit rate' : 'New rate' }}
                         </h3>

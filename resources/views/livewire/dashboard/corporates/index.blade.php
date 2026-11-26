@@ -9,7 +9,6 @@
     <section class="lp-res-idx-hero" data-testid="corporates-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Partners</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Corporates
@@ -314,7 +313,7 @@
                         <div class="lp-ledger-right">
                             <span class="lp-invoice-total">{{ money($r->gmv) }}</span>
                             @if ($isDebtor)
-                                <span class="lp-mono" style="color: #a36318; font-size: 11px; letter-spacing: 0.06em;">
+                                <span class="lp-mono" style="color: #a36318; font-size: 11px;">
                                     {{ money($r->outstanding) }} owed
                                 </span>
                             @endif

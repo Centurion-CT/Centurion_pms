@@ -1,6 +1,5 @@
 <div class="lp-dash">
     <div>
-        <span class="lp-eyebrow-strip">POS</span>
         <div class="flex flex-wrap items-start justify-between gap-3 mt-3">
             <div>
                 <h1 class="lp-display text-[clamp(26px,3.4vw,36px)]"
@@ -42,14 +41,14 @@
                    data-testid="pick-outlet-{{ $outlet->slug }}"
                    style="display: grid; gap: 12px; text-decoration: none; color: inherit;">
                     <span class="lp-mono text-[10.5px]"
-                          style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">
+                          style="color: var(--color-ink-mute);">
                         {{ $outlet->type->label() }}
                     </span>
                     <h2 class="text-[22px]" style="color: var(--color-ink); font-weight: 600; line-height: 1.05;">
                         {{ $outlet->name }}
                     </h2>
                     <span class="lp-mono text-[11px] mt-1"
-                          style="color: var(--color-accent-deep); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;">
+                          style="color: var(--color-accent-deep); font-weight: 600;">
                         Open terminal &rarr;
                     </span>
                 </a>

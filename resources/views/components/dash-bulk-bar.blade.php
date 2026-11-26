@@ -135,9 +135,7 @@
             background: rgba(245, 241, 232, 0.10);
             color: rgba(245, 241, 232, 0.75);
             border-radius: 4px;
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
             font-size: 10px;
-            letter-spacing: 0.04em;
         }
         /* Checkbox column visuals shared across the three tables. */
         .lp-page .lp-bulk-checkbox {

@@ -3,7 +3,6 @@
         @include('_partials._back-button')
         <div class="mt-4 flex flex-wrap items-start justify-between gap-3">
             <div>
-                <span class="lp-eyebrow-strip">Housekeeping</span>
                 <h1 class="lp-display mt-2 text-[clamp(26px,3.4vw,36px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                     {{ $outlet->name }}
@@ -179,7 +178,7 @@
                                 <td>
                                     @if ($isLow)
                                         <span class="lp-mono text-[10.5px]"
-                                              style="padding: 3px 8px; border-radius: 999px; background: #FEF3C7; color: #92400E; letter-spacing: 0.06em; text-transform: uppercase;"
+                                              style="padding: 3px 8px; border-radius: 999px; background: #FEF3C7; color: #92400E;"
                                               data-testid="supplies-low-{{ $row['product_id'] }}">
                                             low
                                         </span>
@@ -191,7 +190,7 @@
 
                                     @if ($usesCentralStore && $pendingByStoreProduct->has($row['product_id']))
                                         <span class="lp-mono text-[10.5px]"
-                                              style="margin-left: 6px; padding: 3px 8px; border-radius: 999px; background: #E0E7FF; color: #3730A3; letter-spacing: 0.06em; text-transform: uppercase;">
+                                              style="margin-left: 6px; padding: 3px 8px; border-radius: 999px; background: #E0E7FF; color: #3730A3;">
                                             requested
                                         </span>
                                     @endif
@@ -393,7 +392,7 @@
                     padding: 24px 26px 22px;">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--color-line);">
                 <div>
-                    <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                    <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                         Log turnover
                     </div>
                     <h2 style="font-family: var(--font-body); font-size: 18px; font-weight: 600; color: var(--color-ink); margin: 4px 0 0;">
@@ -469,7 +468,7 @@
                     padding: 24px 26px 22px;">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--color-line);">
                 <div>
-                    <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                    <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                         Request from store
                     </div>
                     <h2 style="font-family: var(--font-body); font-size: 18px; font-weight: 600; color: var(--color-ink); margin: 4px 0 0;">

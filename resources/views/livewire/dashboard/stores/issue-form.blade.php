@@ -1,7 +1,6 @@
 <div class="lp-dash">
 
     <div>
-        <span class="lp-eyebrow-strip">Business</span>
         <div class="flex flex-wrap items-start justify-between gap-3 mt-3">
             <div>
                 <h1 class="lp-display text-[clamp(24px,3vw,32px)]"

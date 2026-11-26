@@ -8,7 +8,6 @@
     <section class="lp-res-idx-hero" data-testid="bookings-hero">
         <div class="lp-res-idx-hero-body" style="grid-template-columns: 1fr;">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Operate</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Bookings
@@ -40,77 +39,40 @@
     </section>
 
     {{-- ── Filters bar ───────────────────────────────────────────── --}}
-    <section class="lp-dash-card">
-        <div class="lp-dash-card-head">
-            <span class="lp-dash-card-title">Filter</span>
-            <button type="button" wire:click="clearFilters"
-                    class="text-[12px]" style="color: var(--color-ink-soft); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; background: transparent; border: 0; font-family: inherit;">
-                Clear all
-            </button>
-        </div>
-
-        <form wire:submit.prevent class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-            <div class="lg:col-span-2">
-                <label for="bookings-search" class="lp-form-label">Search</label>
-                <input id="bookings-search" type="search"
-                       wire:model.live.debounce.400ms="search"
-                       data-testid="bookings-search"
-                       class="lp-input"
-                       placeholder="Guest name, email, or ref" />
+    <section>
+        <form wire:submit.prevent class="lp-filter-row">
+            <input id="bookings-search" type="search" aria-label="Search bookings"
+                   wire:model.live.debounce.400ms="search"
+                   data-testid="bookings-search"
+                   class="lp-input is-search"
+                   placeholder="Guest name, email or reference" />
+            <select id="bookings-status" aria-label="Status" wire:model.live="statusFilter"
+                    data-testid="bookings-status" class="lp-input">
+                <option value="">All statuses</option>
+                @foreach ($statusOptions as $option)
+                    <option value="{{ $option->value }}">{{ ucfirst(str_replace('_', ' ', $option->value)) }}</option>
+                @endforeach
+            </select>
+            <select id="bookings-room" aria-label="Room" wire:model.live="roomFilter"
+                    data-testid="bookings-room" class="lp-input">
+                <option value="">All rooms</option>
+                @foreach ($rooms as $room)
+                    <option value="{{ $room->id }}">{{ $room->name }}</option>
+                @endforeach
+            </select>
+            <input id="bookings-from" type="date" aria-label="From" wire:model.live="dateFrom"
+                   data-testid="bookings-from" class="lp-input" />
+            <input id="bookings-to" type="date" aria-label="To" wire:model.live="dateTo"
+                   data-testid="bookings-to" class="lp-input" />
+            <div class="lp-seg" data-testid="corp-filter">
+                @foreach ([['', 'All'], ['only', 'Corporate'], ['exclude', 'Walk-ins']] as [$value, $label])
+                    <button type="button"
+                            wire:click="$set('corporateFilter', '{{ $value }}')"
+                            class="{{ $corporateFilter === $value ? 'is-on' : '' }}"
+                            data-testid="corp-filter-{{ $value ?: 'all' }}">{{ $label }}</button>
+                @endforeach
             </div>
-
-            <div>
-                <label for="bookings-status" class="lp-form-label">Status</label>
-                <select id="bookings-status" wire:model.live="statusFilter"
-                        data-testid="bookings-status" class="lp-input">
-                    <option value="">All statuses</option>
-                    @foreach ($statusOptions as $option)
-                        <option value="{{ $option->value }}">{{ $option->value }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label for="bookings-room" class="lp-form-label">Room</label>
-                <select id="bookings-room" wire:model.live="roomFilter"
-                        data-testid="bookings-room" class="lp-input">
-                    <option value="">All rooms</option>
-                    @foreach ($rooms as $room)
-                        <option value="{{ $room->id }}">{{ $room->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 lg:col-span-5">
-                <div>
-                    <label for="bookings-from" class="lp-form-label">From</label>
-                    <input id="bookings-from" type="date" wire:model.live="dateFrom"
-                           data-testid="bookings-from" class="lp-input" />
-                </div>
-                <div>
-                    <label for="bookings-to" class="lp-form-label">To</label>
-                    <input id="bookings-to" type="date" wire:model.live="dateTo"
-                           data-testid="bookings-to" class="lp-input" />
-                </div>
-            </div>
-
-            <div class="lg:col-span-12">
-                <label class="lp-form-label">Corporate</label>
-                <div class="flex gap-2 mt-1" data-testid="corp-filter">
-                    @foreach ([['', 'All'], ['only', 'Corporate only'], ['exclude', 'Walk-ins only']] as [$value, $label])
-                        <button type="button"
-                                wire:click="$set('corporateFilter', '{{ $value }}')"
-                                class="lp-tag"
-                                data-testid="corp-filter-{{ $value ?: 'all' }}"
-                                style="cursor: pointer; padding: 6px 12px;
-                                       {{ $corporateFilter === $value
-                                          ? 'background: var(--color-ink); color: var(--color-card); border-color: var(--color-ink);'
-                                          : '' }}">
-                            {{ $label }}
-                        </button>
-                    @endforeach
-                </div>
-            </div>
+            <button type="button" wire:click="clearFilters" class="lp-filter-clear">Clear</button>
         </form>
 
         {{-- Active deep-link filters - set from the dashboard's Needs
@@ -150,7 +112,7 @@
             ])
         </section>
     @else
-        <section class="lp-dash-card" data-testid="bookings-panel" style="padding: 14px 16px;">
+        <section class="lp-dash-card lp-table-card" data-testid="bookings-panel">
             {{-- Dense table replaces the ledger card-stack — much
                  easier to scan at a property with a large book. Row
                  click is handled by resources/js/rowclick.js via
@@ -160,12 +122,13 @@
                 <table class="lp-table" data-testid="bookings-table">
                     <thead>
                         <tr>
-                            <th>Booking</th>
                             <th>Guest</th>
                             <th>Room</th>
-                            <th>Stay</th>
+                            <th>Check in</th>
+                            <th>Check out</th>
                             <th>Status</th>
                             <th style="text-align: right;">Total</th>
+                            <th style="text-align: right;">Balance</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -181,7 +144,10 @@
                                 'checked_out'  => 'lp-tag--checked-out',
                                 default        => '',
                             };
-                            $statusLabel = ucwords(str_replace('_', ' ', $statusValue));
+                            $statusLabel = ucfirst(str_replace('_', ' ', $statusValue));
+                            $settled = in_array($statusValue, ['cancelled', 'no_show'], true);
+                            $owed = (int) ($booking->balance_due ?? 0) + (int) ($booking->unsettled_charges ?? 0)
+                                + ($statusValue === 'checked_in' ? $booking->unchargedOverstayAmount() : 0);
                         @endphp
                         <tr data-testid="booking-row"
                             data-booking-ref="{{ $booking->booking_ref }}"
@@ -192,30 +158,11 @@
                                 <a href="{{ route('tenant.bookings.show', $booking->booking_ref) }}"
                                    wire:navigate
                                    data-testid="booking-open-{{ $booking->id }}"
-                                   class="lp-mono"
-                                   style="font-size: 12px; color: var(--color-ink); text-decoration: none;">
-                                    {{ $booking->booking_ref }}
-                                </a>
-                            </td>
-                            <td>
-                                <div style="min-width: 0;">
-                                    <p style="margin: 0; font-weight: 500; color: var(--color-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                        {{ $booking->guest_name }}
-                                    </p>
-                                    @if ($booking->corporate)
-                                        <span class="lp-tag"
-                                              data-testid="corp-tag-{{ $booking->id }}"
-                                              style="font-size: 9.5px; padding: 1px 6px; margin-top: 3px; display: inline-block;
-                                                     background: color-mix(in srgb, var(--color-accent-deep) 12%, transparent);
-                                                     color: var(--color-accent-deep); border: 0; letter-spacing: 0.06em; text-transform: uppercase;">
-                                            Corp · {{ $booking->corporate->name }}
-                                        </span>
-                                    @elseif ($booking->guest_email)
-                                        <p style="margin: 2px 0 0; font-size: 11.5px; color: var(--color-ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px;">
-                                            {{ $booking->guest_email }}
-                                        </p>
-                                    @endif
-                                </div>
+                                   class="lp-row-title">{{ $booking->guest_name }}</a>
+                                <p class="lp-row-sub">{{ $booking->booking_ref }}</p>
+                                @if ($booking->corporate)
+                                    <p class="lp-row-sub" data-testid="corp-tag-{{ $booking->id }}">{{ $booking->corporate->name }}</p>
+                                @endif
                             </td>
                             <td>
                                 @if ($booking->room)
@@ -228,8 +175,7 @@
                                         <span class="lp-tag"
                                               data-testid="booking-unassigned-{{ $booking->id }}"
                                               style="font-size: 9.5px; padding: 1px 6px; margin-top: 3px; display: inline-block;
-                                                     background: var(--color-surface-2); color: var(--color-ink-mute);
-                                                     text-transform: uppercase; letter-spacing: 0.05em;">
+                                                     background: var(--color-surface-2); color: var(--color-ink-mute);">
                                             Unassigned
                                         </span>
                                     </div>
@@ -237,21 +183,22 @@
                                     <span style="color: var(--color-ink-mute);">-</span>
                                 @endif
                             </td>
-                            <td>
-                                <div style="min-width: 0;">
-                                    <p style="margin: 0; font-size: 12.5px; color: var(--color-ink);">
-                                        {{ $booking->checkin_date->format('j M Y') }}
-                                    </p>
-                                    <p class="lp-mono" style="margin: 2px 0 0; font-size: 10.5px; color: var(--color-ink-mute); letter-spacing: 0.02em;">
-                                        {{ $booking->nights }}n
-                                    </p>
-                                </div>
-                            </td>
+                            <td>{{ $booking->checkin_date->format('D j M') }}</td>
+                            <td>{{ $booking->checkout_date?->format('D j M') }}</td>
                             <td>
                                 <span class="lp-tag {{ $statusClass }}">{{ $statusLabel }}</span>
                             </td>
                             <td class="lp-num" style="text-align: right; font-weight: 600;">
                                 ₦{{ number_format($booking->total_amount) }}
+                            </td>
+                            <td class="lp-num" style="text-align: right; font-weight: 600; color: {{ $owed > 0 && ! $settled ? '#8F5300' : 'var(--color-ink-mute)' }};">
+                                @if ($settled)
+                                    -
+                                @elseif ($owed > 0)
+                                    ₦{{ number_format($owed) }}
+                                @else
+                                    Paid
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -289,7 +236,7 @@
             gap: 10px; margin-bottom: 12px;
         }
         .lp-sheet-title {
-            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-family: var(--font-display);
             font-size: 18px; font-weight: 600; color: var(--color-ink);
             margin: 0;
         }

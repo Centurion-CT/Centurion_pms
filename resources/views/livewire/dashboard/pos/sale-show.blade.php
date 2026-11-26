@@ -121,7 +121,7 @@
                                     {{ $r->refunded_at?->format('M j · g:i A') }}
                                 </td>
                                 <td style="color: var(--color-ink); font-weight: 500;">{{ $r->reason }}</td>
-                                <td class="lp-mono text-[11.5px]" style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.06em;">
+                                <td class="lp-mono text-[11.5px]" style="color: var(--color-ink-mute);">
                                     {{ $r->refund_method }}
                                 </td>
                                 <td style="text-align: right;"><span class="lp-table-amount">&#8358;{{ number_format($r->refund_amount) }}</span></td>

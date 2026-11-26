@@ -232,7 +232,7 @@
                                               class="lp-mono"
                                               style="margin-left: 6px; padding: 1px 6px; border-radius: 999px;
                                                      background: rgba(93, 132, 44, 0.18); color: var(--color-accent-deep);
-                                                     font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700;">
+                                                     font-size: 9px; font-weight: 700;">
                                             comp
                                         </span>
                                     </span>
@@ -316,7 +316,7 @@
                     box-shadow: 0 -8px 20px rgba(0,0,0,0.06);">
             <div class="flex items-center gap-2 mb-2">
                 <span class="lp-mono text-[10.5px]"
-                      style="letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-mute);">
+                      style=" color: var(--color-ink-mute);">
                     Or charge to a credit-line tab
                 </span>
                 <span x-show="$store.pos.creditLineId"

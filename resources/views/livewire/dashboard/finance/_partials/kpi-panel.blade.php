@@ -63,7 +63,7 @@
                         border-bottom: 1px solid var(--color-line-soft);">
                 <div>
                     <p class="lp-mono text-[10.5px]"
-                       style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                       style="color: var(--color-ink-mute);">
                         {{ $kpiPanel['subtitle'] }}
                     </p>
                     <h3 class="lp-display"
@@ -85,8 +85,7 @@
                     @foreach ($kpiPanel['kpis'] as $k)
                         <div style="background: var(--color-card-deep); border-radius: 10px;
                                     padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
-                            <span style="font-size: 10.5px; letter-spacing: 0.12em;
-                                         text-transform: uppercase; color: var(--color-ink-mute);">
+                            <span style="font-size: 10.5px; color: var(--color-ink-mute);">
                                 {{ $k['label'] }}
                             </span>
                             <span class="lp-num" style="font-size: 16px; color: var(--color-ink); font-weight: 600;">
@@ -103,7 +102,7 @@
                     </p>
                 @elseif ($kpiPanel['kind'] === 'payments')
                     <div>
-                        <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 6px;">
+                        <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 6px;">
                             Payments
                         </p>
                         <ul style="list-style: none; padding: 0; margin: 0;
@@ -135,7 +134,7 @@
                                         {{ $p['method'] }}
                                         <span style="color: var(--color-ink-mute);">·</span>
                                         <span class="lp-mono"
-                                              style="font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+                                              style="font-size: 10.5px;
                                                      color: var(--color-ink-mute); font-weight: 600;">
                                             {{ $p['type'] }}
                                         </span>
@@ -147,7 +146,7 @@
                 @else
                     {{-- kind = bookings --}}
                     <div>
-                        <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 6px;">
+                        <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 6px;">
                             Bookings
                         </p>
                         <ul style="list-style: none; padding: 0; margin: 0;

@@ -145,7 +145,10 @@ class Index extends Component
      */
     private function paginate(): LengthAwarePaginator
     {
-        $query = Booking::query()->with(['room', 'corporate', 'roomCategory'])->latest('id');
+        $query = Booking::query()
+            ->with(['room', 'corporate', 'roomCategory'])
+            ->withSum(['charges as unsettled_charges' => fn ($q) => $q->unsettled()], 'amount')
+            ->latest('id');
 
         $needle = trim($this->search);
         if ($needle !== '') {

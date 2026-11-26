@@ -61,7 +61,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: baseline;
                                 margin-bottom: 10px;">
                         <p class="lp-mono text-[10.5px]"
-                           style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase; margin: 0;">
+                           style="color: var(--color-ink-mute); margin: 0;">
                             New activity
                         </p>
                         @if ($count > 0)
@@ -95,7 +95,7 @@
                                        onmouseover="this.style.background='var(--color-card-deep)'"
                                        onmouseout="this.style.background='transparent'">
                                         <p class="lp-mono text-[10px]"
-                                           style="letter-spacing: 0.12em; text-transform: uppercase;
+                                           style="
                                                   color: var(--color-accent-deep); margin: 0 0 3px; font-weight: 600;">
                                             {{ $item['kind_label'] }}
                                         </p>

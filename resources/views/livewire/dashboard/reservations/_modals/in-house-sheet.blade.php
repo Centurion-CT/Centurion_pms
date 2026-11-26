@@ -61,8 +61,7 @@
                  without a page nav. --}}
             @if ($inHouseSheetData['top']->isNotEmpty())
                 <div style="margin-bottom: 14px;">
-                    <p class="text-[11.5px]" style="color: var(--color-ink-mute); text-transform: uppercase;
-                              letter-spacing: 0.06em; margin: 0 0 6px;">
+                    <p class="text-[11.5px]" style="color: var(--color-ink-mute); margin: 0 0 6px;">
                         Departing soonest
                     </p>
                     <div style="display: grid; gap: 4px;">

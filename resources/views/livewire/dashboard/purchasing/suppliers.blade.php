@@ -3,7 +3,6 @@
         @include('_partials._back-button')
         <div class="flex flex-wrap items-start justify-between gap-3 mt-4">
             <div>
-                <span class="lp-eyebrow-strip">Purchasing</span>
                 <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                     Suppliers
@@ -121,7 +120,7 @@
                                     {{ $s->name }}
                                     @if (! $s->active)
                                         <span class="lp-mono text-[10.5px]"
-                                              style="margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: rgba(0,0,0,0.06); color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">
+                                              style="margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: rgba(0,0,0,0.06); color: var(--color-ink-mute);">
                                             Inactive
                                         </span>
                                     @endif

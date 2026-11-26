@@ -9,7 +9,7 @@
         'checked_out'  => 'lp-tag--checked-out',
         default        => '',
     };
-    $statusLabel = ucwords(str_replace('_', ' ', $statusValue));
+    $statusLabel = ucfirst(str_replace('_', ' ', $statusValue));
 @endphp
 
 <div class="lp-dash">
@@ -18,31 +18,20 @@
     <div>
         @include('_partials._back-button')
 
-        <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
-            <div>
-                <span class="lp-eyebrow-strip">Booking</span>
-                <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)] flex flex-wrap items-baseline gap-3"
-                    style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
-                    <span>Reservation</span>
-                    <span class="lp-mono text-[16px]"
-                          style="color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;">
-                        {{ $booking->booking_ref }}
-                    </span>
-                </h1>
-                <p class="mt-2 text-[14.5px]" style="color: var(--color-ink-soft);">
-                    {{ $booking->guest_name }} &middot;
-                    @if ($booking->room)
-                        {{ $booking->room->name }}
-                    @elseif ($booking->isUnassigned())
-                        {{ $booking->roomCategory?->name ?? 'Category' }} · Unassigned
-                    @else
-                        &middot;
-                    @endif
-                    &middot;
-                    {{ $booking->checkin_date->toFormattedDateString() }}
-                </p>
+        <div class="mt-3">
+            <div class="flex flex-wrap items-center gap-3">
+                <h1 class="lp-display" style="margin: 0; color: var(--color-ink); font-size: 26px; font-weight: 600; line-height: 1.2;">{{ $booking->guest_name }}</h1>
+                <span class="lp-tag {{ $statusClass }}" data-testid="booking-status">{{ $statusLabel }}</span>
             </div>
-            <span class="lp-tag {{ $statusClass }}" data-testid="booking-status">{{ $statusLabel }}</span>
+            <p class="mt-1" style="color: var(--color-ink-mute);">
+                {{ $booking->booking_ref }} ·
+                @if ($booking->room)
+                    {{ $booking->room->name }}
+                @elseif ($booking->isUnassigned())
+                    {{ $booking->roomCategory?->name ?? 'Category' }}, unassigned
+                @endif
+                · {{ $booking->checkin_date->format('D j M Y') }}
+            </p>
         </div>
     </div>
 
@@ -84,8 +73,7 @@
                                 {{ $booking->roomCategory?->name ?? 'Category' }}
                                 <span class="lp-tag" style="font-size: 10px; padding: 1px 6px;
                                                             background: var(--color-surface-2);
-                                                            color: var(--color-ink-mute);
-                                                            text-transform: uppercase; letter-spacing: 0.05em;">
+                                                            color: var(--color-ink-mute);">
                                     Unassigned
                                 </span>
                             </span>
@@ -167,7 +155,7 @@
                         <dd class="lp-dl-value">
                             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                                 <span class="lp-mono text-[10.5px]"
-                                      style="color: var(--color-accent-deep); letter-spacing: 0.08em; text-transform: uppercase;">
+                                      style="color: var(--color-accent-deep);">
                                     Corporate · {{ $booking->corporate->name }}
                                 </span>
                                 @if ($booking->corporateMember)
@@ -310,7 +298,7 @@
             </section>
         @endif
 
-        <section data-testid="booking-actions" class="lp-dash-card" style="display: grid; gap: 10px; align-content: start;">
+        <section data-testid="booking-actions" class="lp-dash-card">
             <div class="lp-dash-card-head" style="margin-bottom: 4px;">
                 <span class="lp-dash-card-title">Actions</span>
             </div>
@@ -440,7 +428,7 @@
             @if ($booking->invoices->isNotEmpty())
                 <div data-testid="booking-invoices" class="grid gap-1"
                      style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-line-soft);">
-                    <p class="lp-mono text-[10.5px]" style="letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                    <p class="lp-mono text-[10.5px]" style=" color: var(--color-ink-mute);">
                         Previously issued
                     </p>
                     @foreach ($booking->invoices as $inv)

@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Livewire\Dashboard\Rooms;
 
+use App\Enums\BookingStatus;
+use App\Enums\RoomInspectionStatus;
 use App\Enums\RoomStatus;
+use App\Models\Booking;
 use App\Models\Room;
+use App\Models\RoomInspection;
 use App\Services\Properties\PropertyContext;
 use Illuminate\Contracts\View\View;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -57,8 +61,12 @@ class Index extends Component
 
     public function render(): View
     {
+        $states = $this->roomStates();
+
         return view('livewire.dashboard.rooms.index', [
             'rooms' => $this->rooms(),
+            'roomStates' => $states,
+            'roomSummary' => collect($states)->countBy('label')->all(),
             'statuses' => RoomStatus::cases(),
         ]);
     }
@@ -69,8 +77,8 @@ class Index extends Component
     private function rooms(): LengthAwarePaginator
     {
         $query = Room::query()
-            ->with(['category.media'])
-            ->latest('id');
+            ->with(['category'])
+            ->orderByDisplayName();
 
         // Scope to the operator's current branch — Room has property_id
         // so a multi-branch org's sidebar switcher meaningfully filters
@@ -94,5 +102,63 @@ class Index extends Component
         }
 
         return $query->paginate(15);
+    }
+
+    /**
+     * What's happening in each of the branch's rooms right now, keyed by
+     * room id: covers the whole branch, not just this page, so the summary
+     * above the table counts every room.
+     *
+     * @return array<int, array{label: string, class: string, guest: ?string, next: ?string}>
+     */
+    private function roomStates(): array
+    {
+        $rooms = Room::query();
+        $currentProperty = app(PropertyContext::class)->current();
+        if ($currentProperty !== null) {
+            $rooms->where('property_id', $currentProperty->getKey());
+        }
+        $rooms = $rooms->get(['id', 'status']);
+        $ids = $rooms->modelKeys();
+
+        $inHouse = Booking::query()
+            ->whereIn('room_id', $ids)
+            ->where('booking_status', BookingStatus::CheckedIn->value)
+            ->pluck('guest_name', 'room_id');
+
+        $arrivals = Booking::query()
+            ->whereIn('room_id', $ids)
+            ->whereIn('booking_status', [BookingStatus::Confirmed->value, BookingStatus::OnHold->value])
+            ->whereDate('checkin_date', '>=', today())
+            ->orderByDesc('checkin_date')
+            ->get(['room_id', 'guest_name', 'checkin_date'])
+            ->keyBy('room_id');
+
+        $inspections = RoomInspection::query()
+            ->whereIn('room_id', $ids)
+            ->where('status', '!=', RoomInspectionStatus::Passed->value)
+            ->pluck('status', 'room_id');
+
+        return $rooms->mapWithKeys(function (Room $room) use ($inHouse, $arrivals, $inspections): array {
+            $guest = $inHouse->get($room->id);
+            $arrival = $arrivals->get($room->id);
+            $inspection = $inspections->get($room->id);
+            $arrivesToday = $arrival?->checkin_date->isToday() ?? false;
+
+            [$label, $class] = match (true) {
+                $room->status !== RoomStatus::Active => ['Out of service', 'lp-tag--cancelled'],
+                $guest !== null => ['Occupied', 'lp-tag--checked-in'],
+                in_array($inspection, [RoomInspectionStatus::CleaningDone, RoomInspectionStatus::PorterVerified], true) => ['Needs inspection', 'lp-tag--confirmed'],
+                $inspection !== null => ['Needs cleaning', 'lp-tag--on-hold'],
+                default => ['Ready', 'lp-tag--ready'],
+            };
+
+            return [$room->id => [
+                'label' => $label,
+                'class' => $class,
+                'guest' => $guest ?? ($arrivesToday ? $arrival->guest_name.' arriving' : null),
+                'next' => $arrival === null ? null : ($arrivesToday ? 'Today' : $arrival->checkin_date->format('D j M')),
+            ]];
+        })->all();
     }
 }

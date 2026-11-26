@@ -3,7 +3,6 @@
     @include('_partials._back-button')
 
     <div class="mt-4">
-        <span class="lp-eyebrow-strip">Corporate</span>
         <h1 class="lp-display mt-3 text-[clamp(24px,3vw,32px)]"
             style="color: var(--color-ink); font-weight: 600;">
             {{ $isEdit ? 'Edit corporate' : 'Register a corporate' }}

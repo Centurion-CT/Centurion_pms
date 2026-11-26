@@ -48,8 +48,7 @@
          sense either way. --}}
     <div>
         <p class="lp-mono {{ $compact ? 'text-[10.5px]' : 'text-[11px]' }}"
-           style="color: var(--color-ink-mute); letter-spacing: 0.14em;
-                  text-transform: uppercase; margin: 0 0 8px;">
+           style="color: var(--color-ink-mute); margin: 0 0 8px;">
             @if ($breakdown->longStayPricing)
                 Long-stay pricing · {{ $breakdown->nights }} {{ \Illuminate\Support\Str::plural('night', $breakdown->nights) }}
             @else

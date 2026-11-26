@@ -137,8 +137,7 @@
                                 @if ($deptKey)
                                     <span class="lp-mono text-[10.5px]"
                                           style="padding: 2px 8px; border-radius: 999px;
-                                                 background: var(--color-card-deep); color: var(--color-ink);
-                                                 letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;">
+                                                 background: var(--color-card-deep); color: var(--color-ink); font-weight: 600;">
                                         {{ $departments[$deptKey]['label'] }}
                                     </span>
                                 @else

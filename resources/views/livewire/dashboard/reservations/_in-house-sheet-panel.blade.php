@@ -43,7 +43,7 @@
                                 border-bottom: 1px solid var(--color-line-soft);">
                         <div>
                             <p class="lp-mono text-[10.5px]"
-                               style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                               style="color: var(--color-ink-mute);">
                                 <span x-show="!panel.is_overdue">In-house</span>
                                 <span x-show="panel.is_overdue" x-cloak style="color: #B85C42;">Overdue</span>
                                 · <span x-text="panel.ref"></span>
@@ -66,25 +66,25 @@
                         <dl style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
                                    column-gap: 12px; row-gap: 8px; margin: 0;">
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Check-in</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Check-in</dt>
                                 <dd style="margin: 0;" x-text="panel.checkin"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Check-out</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Check-out</dt>
                                 <dd style="margin: 0;"
                                     :style="panel.is_overdue ? 'color: #B85C42; font-weight: 600;' : ''"
                                     x-text="panel.checkout"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Nights</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Nights</dt>
                                 <dd style="margin: 0;" x-text="panel.nights"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Guest phone</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Guest phone</dt>
                                 <dd style="margin: 0;" x-text="panel.guest_phone || '-'"></dd>
                             </div>
                             <div x-show="panel.guest_email" style="grid-column: span 2;">
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Guest email</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Guest email</dt>
                                 <dd style="margin: 0; word-break: break-all;" x-text="panel.guest_email"></dd>
                             </div>
                         </dl>
@@ -115,7 +115,7 @@
                         </div>
 
                         <div x-show="panel.payments.length > 0">
-                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 4px;">Recent payments</p>
+                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 4px;">Recent payments</p>
                             <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px;">
                                 <template x-for="(p, i) in panel.payments" :key="i">
                                     <li class="flex justify-between"

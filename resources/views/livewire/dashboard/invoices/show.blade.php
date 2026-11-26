@@ -25,7 +25,6 @@
         <section class="lp-res-idx-hero mt-3" data-testid="invoice-hero">
             <div class="lp-res-idx-hero-body">
                 <div class="lp-res-idx-hero-identity">
-                    <span class="lp-eyebrow-strip">Invoice</span>
                     <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                         style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                         {{ $invoice->number ?? 'Draft' }}
@@ -210,7 +209,7 @@
                 @endif
             </div>
             <div style="text-align: right;">
-                <p class="lp-mono text-[10.5px]" style="letter-spacing: 0.16em; text-transform: uppercase; color: #6E767D;">Invoice</p>
+                <p class="lp-mono text-[10.5px]" style=" color: #6E767D;">Invoice</p>
                 <p class="lp-mono mt-1 text-[16px]" style="color: #14171A; font-weight: 600;" data-testid="invoice-number">
                     {{ $invoice->number ?? '-' }}
                 </p>
@@ -236,7 +235,7 @@
         @endphp
         <section class="mt-6 grid gap-6 sm:grid-cols-2 text-[13.5px]">
             <div>
-                <p class="lp-mono text-[10.5px]" style="letter-spacing: 0.16em; text-transform: uppercase; color: #6E767D;">Bill to</p>
+                <p class="lp-mono text-[10.5px]" style=" color: #6E767D;">Bill to</p>
                 @if ($invoiceCorp)
                     <p class="mt-2" style="color: #14171A; font-weight: 600;" data-testid="invoice-bill-to-corp">
                         {{ $invoiceCorp->name }}
@@ -276,7 +275,7 @@
             </div>
             @if ($invoice->booking)
                 <div>
-                    <p class="lp-mono text-[10.5px]" style="letter-spacing: 0.16em; text-transform: uppercase; color: #6E767D;">Stay</p>
+                    <p class="lp-mono text-[10.5px]" style=" color: #6E767D;">Stay</p>
                     <p class="lp-mono mt-2" style="color: #14171A; font-weight: 500;">{{ $invoice->booking->booking_ref }}</p>
                     <p style="color: #3A4148;">
                         {{ $invoice->booking->checkin_date?->toFormattedDateString() }} → {{ $invoice->booking->checkout_date?->toFormattedDateString() }}
@@ -314,7 +313,7 @@
         <div class="invoice-totals mt-4 grid gap-3 sm:grid-cols-[1fr_260px] items-start">
             <div>
                 @if ($invoice->notes)
-                    <p class="lp-mono text-[10.5px]" style="letter-spacing: 0.16em; text-transform: uppercase; color: #6E767D;">Notes</p>
+                    <p class="lp-mono text-[10.5px]" style=" color: #6E767D;">Notes</p>
                     <p class="mt-2 text-[13px] whitespace-pre-line" style="color: #3A4148;">{{ $invoice->notes }}</p>
                 @endif
             </div>
@@ -341,7 +340,7 @@
         @if ($invoice->bank_name || $invoice->bank_account_number)
             <section class="mt-6 rounded-lg" style="padding: 14px 16px; background: #F7F4EC; border: 1px solid #E4E1D9;"
                      data-testid="invoice-bank-details">
-                <p class="lp-mono text-[10.5px]" style="letter-spacing: 0.16em; text-transform: uppercase; color: #6E767D;">Pay into</p>
+                <p class="lp-mono text-[10.5px]" style=" color: #6E767D;">Pay into</p>
                 <div class="mt-2 grid gap-1 text-[13px]" style="color: #14171A;">
                     @if ($invoice->bank_name)
                         <p><strong style="font-weight: 500;">Bank:</strong> {{ $invoice->bank_name }}</p>

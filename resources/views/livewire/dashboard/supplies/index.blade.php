@@ -12,7 +12,6 @@
     <section class="lp-res-idx-hero" data-testid="supplies-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Operate · Housekeeping</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Supplies
@@ -76,9 +75,6 @@
                    style="display: block; text-decoration: none; color: inherit;">
                     <div class="flex items-start justify-between gap-3">
                         <div>
-                            <div class="lp-eyebrow-strip" style="color: var(--color-ink-mute);">
-                                Housekeeping
-                            </div>
                             <h2 class="mt-1 text-[17px]"
                                 style="color: var(--color-ink); font-weight: 600;">
                                 {{ $outlet->name }}
@@ -87,8 +83,7 @@
                         @if ($usesCentralStore && $s['pending'] > 0)
                             <span class="lp-mono text-[10.5px]"
                                   style="padding: 3px 8px; border-radius: 999px;
-                                         background: #FEF3C7; color: #92400E;
-                                         letter-spacing: 0.06em; text-transform: uppercase;">
+                                         background: #FEF3C7; color: #92400E;">
                                 {{ $s['pending'] }} pending
                             </span>
                         @endif
@@ -97,7 +92,7 @@
                     <dl class="mt-4 grid grid-cols-2 gap-3">
                         <div>
                             <dt class="text-[10.5px]"
-                                style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                                style="color: var(--color-ink-mute);">
                                 Products
                             </dt>
                             <dd class="lp-mono mt-1"
@@ -107,7 +102,7 @@
                         </div>
                         <div>
                             <dt class="text-[10.5px]"
-                                style="color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                                style="color: var(--color-ink-mute);">
                                 Attention
                             </dt>
                             <dd class="lp-mono mt-1"

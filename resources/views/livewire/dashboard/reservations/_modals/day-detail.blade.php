@@ -111,7 +111,6 @@
                                         <td>
                                             <span class="lp-mono text-[11px]"
                                                   style="padding: 2px 8px; border-radius: 999px;
-                                                         letter-spacing: 0.05em; text-transform: uppercase;
                                                          {{ $badgeStyle }}">
                                                 {{ $label }}
                                             </span>
@@ -191,8 +190,7 @@
                                                 {{ $ub->roomCategory?->name ?? 'Category' }}
                                                 <span class="lp-tag" style="font-size: 10px; padding: 1px 6px; margin-left: 4px;
                                                                             background: var(--color-surface-2);
-                                                                            color: var(--color-ink-mute);
-                                                                            text-transform: uppercase; letter-spacing: 0.05em;">
+                                                                            color: var(--color-ink-mute);">
                                                     Unassigned
                                                 </span>
                                             </td>
@@ -202,7 +200,6 @@
                                             <td>
                                                 <span class="lp-mono text-[10.5px]"
                                                       style="padding: 2px 8px; border-radius: 999px;
-                                                             letter-spacing: 0.06em; text-transform: uppercase;
                                                              font-weight: 600;
                                                              background: {{ $ubBg }}; color: {{ $ubFg }};">
                                                     {{ $ub->booking_status?->label() ?? '-' }}

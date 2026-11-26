@@ -111,7 +111,7 @@
         }
         .lp-ih-timeline-tick {
             position: absolute; bottom: -18px; transform: translateX(-50%);
-            font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
+            font-size: 9.5px;
             color: var(--color-ink-mute);
             font-family: 'SF Mono', 'JetBrains Mono', monospace;
         }
@@ -122,7 +122,7 @@
         }
         .lp-ih-timeline-checkout-label {
             position: absolute; top: -2px; transform: translateX(-50%);
-            font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+            font-size: 9px;
             color: var(--color-accent-deep); font-weight: 600;
             white-space: nowrap;
         }
@@ -190,7 +190,6 @@
     <section class="lp-res-idx-hero" data-testid="in-house-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Operate</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     In-house
@@ -204,7 +203,7 @@
                  so managers see the number the moment they land — it's
                  the highest-signal thing on this page. --}}
             <div class="lp-ih-hero-accrued" data-testid="in-house-accrued">
-                <span class="lp-mono" style="font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                <span class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                     Total accrued balance
                 </span>
                 <p class="lp-ih-hero-accrued-value"
@@ -439,7 +438,7 @@
                                     <p class="lp-mono" style="margin: 2px 0 0; font-size: 10.5px; color: var(--color-ink-mute); letter-spacing: 0.02em;">
                                         {{ $b->booking_ref }}
                                         @if ($b->corporate)
-                                            <span style="color: var(--color-accent-deep); text-transform: uppercase; letter-spacing: 0.06em;">
+                                            <span style="color: var(--color-accent-deep);">
                                                 · CORP · {{ $b->corporate->name }}
                                             </span>
                                         @endif
@@ -578,8 +577,7 @@
                                     <template x-if="p.is_overdue">
                                         <span class="lp-mono text-[10px]"
                                               style="display: block; margin-top: 2px; padding: 1px 6px;
-                                                     border-radius: 999px; letter-spacing: 0.06em;
-                                                     text-transform: uppercase; font-weight: 600;
+                                                     border-radius: 999px; font-weight: 600;
                                                      background: #FEE2E2; color: #B85C42;">
                                             overdue
                                         </span>
@@ -626,7 +624,7 @@
                         box-shadow: 0 24px 60px rgba(0,0,0,0.22);
                         padding: 22px 24px 20px;">
                 <p class="lp-mono text-[10.5px]"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                   style="color: var(--color-ink-mute);">
                     Change room
                 </p>
                 <h2 class="lp-display" style="font-size: 19px; font-weight: 600; margin: 4px 0 12px;">
@@ -767,7 +765,7 @@
                         box-shadow: 0 24px 60px rgba(0,0,0,0.22);
                         padding: 22px 24px 20px;">
                 <p class="lp-mono text-[10.5px]"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                   style="color: var(--color-ink-mute);">
                     Add charge
                 </p>
                 <h2 class="lp-display" style="font-size: 19px; font-weight: 600; margin: 4px 0 4px;">

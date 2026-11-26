@@ -40,7 +40,7 @@
                                 border-bottom: 1px solid var(--color-line-soft);">
                         <div>
                             <p class="lp-mono text-[10.5px]"
-                               style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                               style="color: var(--color-ink-mute);">
                                 <span x-show="!panel.is_overdue && !panel.is_same_day_late">In-house</span>
                                 <span x-show="panel.is_overdue" x-cloak style="color: #B85C42;">Overdue</span>
                                 <span x-show="!panel.is_overdue && panel.is_same_day_late" x-cloak
@@ -71,35 +71,35 @@
                         <dl style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
                                    column-gap: 12px; row-gap: 8px; margin: 0;">
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Check-in</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Check-in</dt>
                                 <dd style="margin: 0;" x-text="panel.checkin"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Check-out</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Check-out</dt>
                                 <dd style="margin: 0;"
                                     :style="panel.is_overdue ? 'color: #B85C42; font-weight: 600;' : ''"
                                     x-text="panel.checkout"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Nights so far</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Nights so far</dt>
                                 <dd style="margin: 0;" x-text="panel.nights_so_far"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Nights left</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Nights left</dt>
                                 <dd style="margin: 0;"
                                     :style="panel.nights_left !== null && panel.nights_left < 0 ? 'color: #B85C42; font-weight: 600;' : ''"
                                     x-text="panel.nights_left !== null ? panel.nights_left : '-'"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Daily rate</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Daily rate</dt>
                                 <dd style="margin: 0;" x-text="money(panel.daily_rate)"></dd>
                             </div>
                             <div>
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Phone</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Phone</dt>
                                 <dd style="margin: 0;" x-text="panel.guest_phone || '-'"></dd>
                             </div>
                             <div x-show="panel.guest_email" style="grid-column: span 2;">
-                                <dt style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin-bottom: 2px;">Email</dt>
+                                <dt style="font-size: 10.5px; color: var(--color-ink-mute); margin-bottom: 2px;">Email</dt>
                                 <dd style="margin: 0; word-break: break-all;" x-text="panel.guest_email"></dd>
                             </div>
                         </dl>
@@ -148,7 +148,7 @@
                              number without a breakdown. --}}
                         <div x-show="panel.charges && panel.charges.length > 0"
                              data-testid="in-house-panel-charges">
-                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 4px;">Open charges</p>
+                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 4px;">Open charges</p>
                             <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px;">
                                 <template x-for="(c, i) in panel.charges" :key="i">
                                     <li class="flex justify-between"
@@ -172,7 +172,7 @@
 
                         {{-- Recent payments --}}
                         <div x-show="panel.payments && panel.payments.length > 0">
-                            <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute); margin: 0 0 4px;">Recent payments</p>
+                            <p style="font-size: 10.5px; color: var(--color-ink-mute); margin: 0 0 4px;">Recent payments</p>
                             <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px;">
                                 <template x-for="(p, i) in panel.payments" :key="i">
                                     <li class="flex justify-between"
@@ -205,7 +205,7 @@
                     <div style="padding: 14px 20px;
                                 border-top: 1px solid var(--color-line-soft);
                                 display: flex; flex-direction: column; gap: 12px;">
-                        <p style="font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+                        <p style="font-size: 10.5px;
                                   color: var(--color-ink-mute); margin: 0;">
                             Front-desk actions
                         </p>
@@ -396,7 +396,7 @@
                             background: var(--color-card-deep); border-radius: 10px;
                             display: flex; justify-content: space-between; align-items: baseline;">
                     <span class="lp-mono text-[11px]"
-                          style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+                          style="color: var(--color-ink-mute);">
                         Outstanding
                     </span>
                     <span class="lp-num" data-testid="checkout-outstanding"

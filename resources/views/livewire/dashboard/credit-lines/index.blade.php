@@ -6,7 +6,6 @@
     <section class="lp-res-idx-hero" data-testid="credit-lines-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Relationships</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Credit lines
@@ -191,7 +190,7 @@
                                   style="color: {{ $outstanding > 0 ? '#a36318' : 'var(--color-ink)' }};">
                                 ₦{{ number_format($outstanding) }}
                             </span>
-                            <span class="lp-mono" style="font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-mute);">
+                            <span class="lp-mono" style="font-size: 9px; color: var(--color-ink-mute);">
                                 outstanding
                             </span>
                         </div>

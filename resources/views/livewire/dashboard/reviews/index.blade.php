@@ -29,7 +29,7 @@
             <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 16px;">
                 <div>
                     <span class="lp-eyebrow"
-                          style="font-family: ui-monospace, SFMono-Regular, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                          style=" font-size: 10.5px; color: var(--color-ink-mute);">
                         Overall
                     </span>
                     <div style="display: flex; align-items: baseline; gap: 10px; margin-top: 4px;">
@@ -76,7 +76,7 @@
             {{-- 2) Monthly trend sparkline ------------------------------- --}}
             <div>
                 <span class="lp-eyebrow"
-                      style="font-family: ui-monospace, SFMono-Regular, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                      style=" font-size: 10.5px; color: var(--color-ink-mute);">
                     Last 12 months
                 </span>
                 @php
@@ -117,7 +117,7 @@
                           stroke-linejoin="round"
                           vector-effect="non-scaling-stroke"></path>
                 </svg>
-                <div style="display: flex; justify-content: space-between; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 10px; letter-spacing: 0.06em; color: var(--color-ink-mute); margin-top: 4px;">
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--color-ink-mute); margin-top: 4px;">
                     @foreach ($monthlyTrend as $i => $m)
                         @if ($i % 2 === 0)
                             <span>{{ $m['month'] }}</span>
@@ -129,7 +129,7 @@
             {{-- 3) Keyword cloud ------------------------------------------ --}}
             <div>
                 <span class="lp-eyebrow"
-                      style="font-family: ui-monospace, SFMono-Regular, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                      style=" font-size: 10.5px; color: var(--color-ink-mute);">
                     Guests mention
                 </span>
                 @if (empty($topKeywords))
@@ -183,7 +183,7 @@
                             </span>
                         @endforeach
                     </div>
-                    <div style="display: flex; gap: 12px; margin-top: 10px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-mute);">
+                    <div style="display: flex; gap: 12px; margin-top: 10px; font-size: 10px; color: var(--color-ink-mute);">
                         <span style="display: inline-flex; align-items: center; gap: 5px;">
                             <span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 999px; background: #166534;"></span>
                             Positive

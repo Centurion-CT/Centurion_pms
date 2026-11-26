@@ -3,7 +3,6 @@
         @include('_partials._back-button')
         <div class="flex flex-wrap items-start justify-between gap-3 mt-4">
             <div>
-                <span class="lp-eyebrow-strip">Purchasing</span>
                 <h1 class="lp-display mt-3 text-[clamp(24px,3vw,30px)] lp-mono"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                     {{ $po->reference }}
@@ -15,7 +14,7 @@
             <div class="flex items-center gap-2">
                 <span class="lp-mono text-[10.5px]"
                       data-testid="po-status"
-                      style="padding: 4px 12px; border-radius: 999px; background: {{ $po->status->toneColor() }}22; color: {{ $po->status->toneColor() }}; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;">
+                      style="padding: 4px 12px; border-radius: 999px; background: {{ $po->status->toneColor() }}22; color: {{ $po->status->toneColor() }}; font-weight: 600;">
                     {{ $po->status->label() }}
                 </span>
                 @if ($po->status === App\Enums\PurchaseOrderStatus::Draft)
@@ -41,25 +40,25 @@
     <section class="lp-dash-card">
         <div class="grid gap-3 sm:grid-cols-4">
             <div>
-                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">Expected</span>
+                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">Expected</span>
                 <div class="text-[14px]" style="color: var(--color-ink);">
                     {{ $po->expected_at ? $po->expected_at->toFormattedDateString() : '-' }}
                 </div>
             </div>
             <div>
-                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">Placed</span>
+                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">Placed</span>
                 <div class="text-[14px]" style="color: var(--color-ink);">
                     {{ $po->placed_at ? $po->placed_at->toFormattedDateString() : '-' }}
                 </div>
             </div>
             <div>
-                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">Received</span>
+                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">Received</span>
                 <div class="text-[14px]" style="color: var(--color-ink);">
                     {{ $po->received_at ? $po->received_at->toFormattedDateString() : '-' }}
                 </div>
             </div>
             <div>
-                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">Total</span>
+                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">Total</span>
                 <div class="text-[14px] lp-mono" style="color: var(--color-ink); font-weight: 600;">
                     &#8358;{{ number_format($po->total) }}
                 </div>

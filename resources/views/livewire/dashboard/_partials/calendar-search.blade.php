@@ -15,39 +15,38 @@
 @endphp
 
 <section data-testid="calendar-search"
-         class="lp-dash-card lp-cal-search"
-         style="padding: 12px 14px; margin-bottom: 14px;">
+         class="lp-cal-search">
     <div class="lp-cal-search-row">
         {{-- Room # --}}
         <div class="lp-cal-search-field lp-cal-search-field--room">
-            <label for="cal-room-search" class="lp-rate-sub-label">Room #</label>
+            <label for="cal-room-search" class="lp-rate-sub-label">Room</label>
             <input id="cal-room-search"
                    type="text"
                    wire:model.live.debounce.300ms="roomSearch"
                    placeholder="e.g. 101"
                    data-testid="cal-room-search"
                    class="lp-input"
-                   style="height: 36px;">
+                   >
         </div>
 
         {{-- Available window --}}
         <div class="lp-cal-search-field">
-            <label for="cal-avail-from" class="lp-rate-sub-label">From</label>
+            <label for="cal-avail-from" class="lp-rate-sub-label">Free from</label>
             <input id="cal-avail-from"
                    type="date"
                    wire:model.live="availFrom"
                    data-testid="cal-avail-from"
                    class="lp-input"
-                   style="height: 36px;">
+                   >
         </div>
         <div class="lp-cal-search-field">
-            <label for="cal-avail-to" class="lp-rate-sub-label">To</label>
+            <label for="cal-avail-to" class="lp-rate-sub-label">to</label>
             <input id="cal-avail-to"
                    type="date"
                    wire:model.live="availTo"
                    data-testid="cal-avail-to"
                    class="lp-input"
-                   style="height: 36px;">
+                   >
         </div>
 
         {{-- Only available as slide toggle to match the design system. --}}
@@ -66,7 +65,7 @@
                     wire:click="clearCalendarSearch"
                     data-testid="cal-clear"
                     class="lp-res-action lp-res-action--ghost"
-                    style="height: 36px; padding: 0 14px; font-size: 12px;">
+                    >
                 Clear
             </button>
         @endif
@@ -75,7 +74,7 @@
     @if ($status !== null)
         <p class="lp-mono text-[11px]"
            data-testid="cal-search-status"
-           style="color: var(--color-ink-mute); margin: 8px 0 0; letter-spacing: 0.04em;">
+           style="color: var(--color-ink-mute); margin: 8px 0 0;">
             {{ $status }}
         </p>
     @endif

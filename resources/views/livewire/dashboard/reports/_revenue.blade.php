@@ -123,7 +123,7 @@
                             <td style="color: var(--color-ink); font-weight: 500;">
                                 {{ $row['name'] }}
                                 @if (! empty($row['type']))
-                                    <span class="text-[11px] mt-0.5" style="display:block; color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">{{ $row['type'] }}</span>
+                                    <span class="text-[11px] mt-0.5" style="display:block; color: var(--color-ink-mute);">{{ $row['type'] }}</span>
                                 @endif
                             </td>
                             <td style="color: var(--color-ink-soft);">{{ number_format((int) $row['bookings']) }}</td>

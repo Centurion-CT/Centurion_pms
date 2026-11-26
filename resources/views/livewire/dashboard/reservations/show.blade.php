@@ -131,7 +131,7 @@
                             @if ($isVip)
                                 <span class="lp-tag" style="background: color-mix(in srgb, var(--color-accent-deep) 14%, transparent); color: var(--color-accent-deep); border: 0;">★ VIP</span>
                             @endif
-                            <span class="lp-mono" style="font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-mute);">
+                            <span class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                                 {{ $booking->booking_ref }}
                             </span>
                         </div>
@@ -157,7 +157,7 @@
                      overstay. --}}
                 <div class="lp-stay-progress mt-4" data-testid="reservation-stay-progress">
                     <div class="flex items-baseline justify-between">
-                        <span class="lp-mono" style="font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                        <span class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                             Stay
                         </span>
                         <span style="font-size: 13px; font-weight: 500; color: {{ $stayPhaseColor }};">
@@ -177,7 +177,7 @@
                                 background: var(--color-card-deep);
                                 border: 1px solid var(--color-line-soft);">
                         <span class="lp-mono text-[10.5px]"
-                              style="color: var(--color-accent-deep); letter-spacing: 0.08em; text-transform: uppercase;">
+                              style="color: var(--color-accent-deep);">
                             Corporate · {{ $booking->corporate->name }}
                         </span>
                         @if ($booking->corporateMember)
@@ -197,7 +197,7 @@
             {{-- ── RIGHT: money summary ─────────────────────────── --}}
             <div class="lp-res-hero-money" data-testid="reservation-money">
                 <div class="lp-res-hero-money-head">
-                    <span class="lp-mono" style="font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                    <span class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                         @if ($outstandingTotal > 0) Outstanding @else Balance @endif
                     </span>
                 </div>
@@ -584,7 +584,7 @@
                         @endphp
                         <div class="lp-settle-strip">
                             <div class="lp-settle-strip-head">
-                                <span class="lp-mono" style="font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                                <span class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                                     Settle outstanding
                                 </span>
                                 <span class="lp-settle-strip-total" data-testid="settle-outstanding">
@@ -696,7 +696,7 @@
                                     },
                                  }">
                                 <div class="lp-partpay-caption">
-                                    <span class="lp-mono" style="font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">
+                                    <span class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                                         Part payment
                                     </span>
                                     <span style="font-size: 12.5px; color: var(--color-ink-soft);">
@@ -990,7 +990,7 @@
                                          style="padding: 8px 10px; border-radius: 6px;
                                                 background: {{ $previewDelta === 0 ? 'var(--color-card-deep)' : ($previewDelta > 0 ? 'rgba(184, 92, 66, 0.10)' : 'rgba(60, 120, 90, 0.10)') }};
                                                 font-size: 12px; color: var(--color-ink);">
-                                        <div class="lp-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-mute);">
+                                        <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                                             Rate delta · remaining nights
                                         </div>
                                         <div style="margin-top: 4px;">
@@ -1027,7 +1027,7 @@
                             <div data-testid="reconcile-panel"
                                  style="margin-top: 8px; padding: 14px; border-radius: 8px;
                                         background: var(--color-card-deep); display: grid; gap: 10px;">
-                                <div class="lp-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-mute);">
+                                <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                                     Reconcile · {{ $pendingReconcileDelta > 0 ? 'guest owes' : 'due to guest' }}
                                 </div>
                                 <div class="lp-num-lg" style="font-size: 22px; color: var(--color-ink);">
@@ -1179,10 +1179,10 @@
                                  style="margin-top: 8px; padding: 14px; border-radius: 8px;
                                         background: color-mix(in srgb, var(--color-accent-deep) 12%, transparent);
                                         border: 1px solid color-mix(in srgb, var(--color-accent-deep) 40%, transparent);">
-                                <div class="lp-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-accent-deep);">
+                                <div class="lp-mono" style="font-size: 10.5px; color: var(--color-accent-deep);">
                                     Coupon issued
                                 </div>
-                                <div class="lp-mono" style="margin-top: 6px; font-size: 18px; font-weight: 700; color: var(--color-ink); letter-spacing: 0.06em;">
+                                <div class="lp-mono" style="margin-top: 6px; font-size: 18px; font-weight: 700; color: var(--color-ink);">
                                     {{ $issuedCouponCode }}
                                 </div>
                                 <p style="margin: 6px 0 10px; font-size: 12px; color: var(--color-ink-soft);">
@@ -1472,7 +1472,7 @@
                                                     box-shadow: 0 24px 60px rgba(0,0,0,0.22);
                                                     padding: 22px 24px 20px;">
                                             <p class="lp-mono text-[10.5px]"
-                                               style="color: #A8650A; letter-spacing: 0.18em; text-transform: uppercase;">
+                                               style="color: #A8650A;">
                                                 Front-desk override
                                             </p>
                                             <h2 class="lp-display" style="font-size: 19px; font-weight: 600; margin-top: 4px; line-height: 1.2;">
@@ -1890,7 +1890,7 @@
                         box-shadow: 0 24px 60px rgba(0,0,0,0.22);
                         padding: 22px 24px 20px;">
                 <p class="lp-mono text-[10.5px]"
-                   style="color: #A8650A; letter-spacing: 0.18em; text-transform: uppercase;">
+                   style="color: #A8650A;">
                     Refund guest
                 </p>
                 <h2 class="lp-display" style="font-size: 19px; font-weight: 600; margin-top: 4px; line-height: 1.2;">
@@ -1995,7 +1995,7 @@
                         box-shadow: 0 24px 60px rgba(0,0,0,0.22);
                         padding: 22px 24px 20px;">
                 <p class="lp-mono text-[10.5px]"
-                   style="color: #A8650A; letter-spacing: 0.18em; text-transform: uppercase;">
+                   style="color: #A8650A;">
                     Leaving early
                 </p>
                 <h2 class="lp-display" style="font-size: 19px; font-weight: 600; margin-top: 4px; line-height: 1.2;">

@@ -43,7 +43,6 @@
         <section class="lp-res-idx-hero mt-3" data-testid="pl-hero">
             <div class="lp-res-idx-hero-body">
                 <div class="lp-res-idx-hero-identity">
-                    <span class="lp-eyebrow-strip">Accounting · Profit &amp; Loss</span>
                     <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                         style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                         Profit &amp; Loss
@@ -146,7 +145,7 @@
         <div class="grid gap-4 sm:grid-cols-3" style="align-items: baseline;">
             <div>
                 <p class="lp-mono text-[10.5px]"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+                   style="color: var(--color-ink-mute);">
                     Net (period)
                 </p>
                 <p class="lp-num-lg mt-1"
@@ -167,7 +166,7 @@
             </div>
             <div>
                 <p class="lp-mono text-[10.5px]"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+                   style="color: var(--color-ink-mute);">
                     Margin
                 </p>
                 <p class="lp-num-lg mt-1"
@@ -184,7 +183,7 @@
             </div>
             <div>
                 <p class="lp-mono text-[10.5px]"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.14em; text-transform: uppercase;">
+                   style="color: var(--color-ink-mute);">
                     Revenue vs Expenses
                 </p>
                 @php
@@ -332,8 +331,7 @@
                                         height: {{ $expH }}%; min-height: 2px;"></div>
                         </div>
                         <div class="lp-mono text-[10px]"
-                             style="color: var(--color-ink-mute); text-transform: uppercase;
-                                    letter-spacing: 0.08em;">
+                             style="color: var(--color-ink-mute);">
                             {{ \Illuminate\Support\Carbon::createFromFormat('Y-m', $m['month'])->format('M y') }}
                         </div>
                         <div class="lp-mono text-[10.5px]"
@@ -455,10 +453,7 @@
             color: #000;
         }
         .lp-page .pl-print-masthead__doctype {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
             font-size: 11px;
-            letter-spacing: 0.20em;
-            text-transform: uppercase;
             color: #333;
         }
         .lp-page .pl-print-masthead__meta {
@@ -469,10 +464,7 @@
         }
         .lp-page .pl-print-masthead__label {
             display: block;
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
             font-size: 9.5px;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
             color: #555;
         }
         .lp-page .pl-print-masthead__value {
@@ -485,10 +477,7 @@
             margin-top: 24px;
             padding-top: 12px;
             border-top: 1px solid rgba(0,0,0,0.2);
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
             font-size: 10px;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
             color: #555;
         }
     </style>

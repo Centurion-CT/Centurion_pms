@@ -6,7 +6,6 @@
 
     <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
-            <span class="lp-eyebrow-strip">Inventory</span>
             <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                 style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                 Workspaces
@@ -165,9 +164,7 @@
             .lp-page .lp-ws-gantt__axis-hours {
                 display: grid;
                 grid-template-columns: repeat({{ $spanHours }}, 1fr);
-                font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
                 font-size: 9.5px;
-                letter-spacing: 0.10em;
                 color: var(--color-ink-mute);
             }
             .lp-page .lp-ws-gantt__hour {
@@ -186,10 +183,7 @@
                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             }
             .lp-page .lp-ws-gantt__type {
-                font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
                 font-size: 10px;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
                 color: var(--color-ink-mute);
                 margin-top: 2px;
             }
@@ -228,10 +222,7 @@
                 display: inline-flex; align-items: center;
                 padding: 4px 10px;
                 border-radius: 999px;
-                font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
                 font-size: 10.5px;
-                letter-spacing: 0.10em;
-                text-transform: uppercase;
                 white-space: nowrap;
                 overflow: hidden; text-overflow: ellipsis;
             }

@@ -63,7 +63,7 @@
         <div class="flex items-start justify-between gap-3">
             <div>
                 <p class="lp-mono text-[10.5px]"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.18em; text-transform: uppercase;">
+                   style="color: var(--color-ink-mute);">
                     Extend stay
                 </p>
                 <h2 class="lp-display" style="font-size: 20px; font-weight: 600; margin-top: 2px;"

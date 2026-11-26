@@ -70,7 +70,7 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-4 mt-1 mb-3 lp-mono text-[11px]"
-         style="color: var(--color-ink-mute); letter-spacing: 0.04em;">
+         style="color: var(--color-ink-mute);">
         <span style="display:inline-flex; align-items:center; gap:6px;">
             <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-deep); display:inline-block;"></span>
             Billed &middot; &#8358;{{ number_format((int) $trendTotalBilled) }}
@@ -102,7 +102,7 @@
                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="flex items-baseline justify-between mt-1 lp-mono"
-             style="font-size: 10.5px; color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">
+             style="font-size: 10.5px; color: var(--color-ink-mute);">
             <span>{{ $firstDate }}</span>
             <span>{{ $lastDate }}</span>
         </div>
@@ -118,7 +118,7 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-4 mt-1 mb-3 lp-mono text-[11px]"
-         style="color: var(--color-ink-mute); letter-spacing: 0.04em;">
+         style="color: var(--color-ink-mute);">
         <span style="display:inline-flex; align-items:center; gap:6px;">
             <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-deep); display:inline-block;"></span>
             On-books &middot; &#8358;{{ number_format((int) $forecastOnBooks) }}
@@ -167,7 +167,7 @@
             @endforeach
         </svg>
         <div class="flex items-baseline justify-between mt-1 lp-mono"
-             style="font-size: 10.5px; color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">
+             style="font-size: 10.5px; color: var(--color-ink-mute);">
             <span>{{ $forecastFirst }}</span>
             <span>{{ $forecastLast }}</span>
         </div>

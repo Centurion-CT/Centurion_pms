@@ -1,74 +1,29 @@
 <div class="lp-dash" wire:poll.20s="refresh">
 
-    {{-- ── Page header ────────────────────────────────────────────── --}}
-    @php
-        // Window spans one or two months, render the heading
-        // accordingly so the operator always sees the month boundary
-        // they're looking at.
-        $windowLabel = $windowStart->format('M Y') === $windowEnd->format('M Y')
-            ? $windowStart->format('F Y')
-            : $windowStart->format('M').' → '.$windowEnd->format('M Y');
-    @endphp
-
-    {{-- ── Hero: window label + primary window nav ─────────
-         Identity block on the left with the current window's
-         month range as an editorial title. The window-nav
-         cluster on the right carries Today + prev/next as
-         .lp-res-action pills and a compact month-range pill. --}}
+    {{-- ── Page header: title, then move through the calendar ───── --}}
     <section class="lp-res-idx-hero" data-testid="calendar-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Calendar</span>
-                <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
-                    style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
-                    {{ $windowLabel }}
-                </h1>
-                <p class="mt-2 text-[14px]" style="color: var(--color-ink-soft); max-width: 560px;">
-                    {{ $windowStart->format('D, j M') }} → {{ $windowEnd->format('D, j M') }}.
-                    Click any free day or drag across a range to start a reservation.
-                </p>
-                <div class="lp-res-idx-hero-actions" data-testid="window-nav">
+                <h1 class="lp-display" style="color: var(--color-ink); font-weight: 600;">Calendar</h1>
+                <div class="lp-cal-nav" data-testid="window-nav">
+                    <button type="button" wire:click="previousWindow"
+                            data-testid="prev-window"
+                            aria-label="Previous 30 days">‹</button>
                     <button type="button" wire:click="goToToday"
-                            data-testid="go-today"
-                            class="lp-res-action lp-res-action--primary">
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden><circle cx="8" cy="8" r="5.5"/><circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none"/></svg>
-                        Today
-                    </button>
+                            data-testid="go-today">Today</button>
+                    <button type="button" wire:click="nextWindow"
+                            data-testid="next-window"
+                            aria-label="Next 30 days">›</button>
+                </div>
+                <span style="color: var(--color-ink-mute);">{{ $windowStart->format('j M') }} to {{ $windowEnd->format('j M') }}</span>
+                <div class="lp-res-idx-hero-actions">
                     <button type="button" wire:click="togglePast"
                             data-testid="toggle-past"
-                            class="lp-res-action {{ $showPast ? 'lp-res-action--accent' : 'lp-res-action--ghost' }}">
-                        {{ $showPast ? 'Hiding past days' : 'Show past days' }}
+                            class="lp-res-action">
+                        {{ $showPast ? 'Hide past days' : 'Show past days' }}
                     </button>
-                    <div class="lp-rates-month-nav">
-                        <button type="button" wire:click="previousWindow"
-                                data-testid="prev-window"
-                                class="lp-rates-month-btn" aria-label="Previous 30 days">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M7.5 3L4.5 6l3 3"/></svg>
-                        </button>
-                        <span class="lp-rates-month-label">
-                            {{ $windowStart->format('j M') }} – {{ $windowEnd->format('j M') }}
-                        </span>
-                        <button type="button" wire:click="nextWindow"
-                                data-testid="next-window"
-                                class="lp-rates-month-btn" aria-label="Next 30 days">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M4.5 3l3 3-3 3"/></svg>
-                        </button>
-                    </div>
                 </div>
             </div>
-
-            <aside class="lp-res-idx-hero-money" aria-label="Visible rooms">
-                <div class="lp-ih-hero-accrued">
-                    <p class="lp-ih-hero-accrued-label">Rooms in view</p>
-                    <p class="lp-ih-hero-accrued-value" style="color: var(--color-ink);">
-                        {{ number_format($visibleRoomCount) }}
-                    </p>
-                    <p class="lp-ih-hero-accrued-sub">
-                        of {{ number_format($totalRoomCount) }} total ·
-                        {{ count(is_array($days) ? $days : $days->all()) }} day window
-                    </p>
-                </div>
-            </aside>
         </div>
     </section>
 
@@ -264,7 +219,7 @@
                 <table data-testid="calendar-grid" class="lp-cal-matrix" data-calendar-bind>
                     <thead>
                         <tr>
-                            <th style="text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-mute);">Room</th>
+                            <th style="text-align: left; color: var(--color-ink-mute);">Room</th>
                             @foreach ($days as $day)
                                 @php
                                     $isMonthStart = (int) $day->day === 1;
@@ -319,7 +274,14 @@
                                         {{ $group->rooms->count() }} {{ Str::plural('room', $group->rooms->count()) }}
                                     </span>
                                 </th>
-                                <th colspan="{{ count($days) }}" class="lp-cal-group-spacer"></th>
+                                {{-- Rooms still free each night, for this type. --}}
+                                @foreach ($days as $day)
+                                    @php
+                                        $isoDate = $day->toDateString();
+                                        $freeRooms = $group->rooms->filter(fn ($r) => ($matrix[$r->id][$isoDate] ?? null) === null)->count();
+                                    @endphp
+                                    <td class="lp-cal-group-free">{{ $day->isPast() && ! $day->isToday() ? '' : $freeRooms }}</td>
+                                @endforeach
                             </tr>
 
                             @foreach ($group->rooms as $room)
@@ -416,39 +378,31 @@
                  of a paragraph of prose. --}}
             <ul data-testid="legend" class="lp-cal-legend">
                 <li class="lp-cal-legend-item">
-                    <span aria-hidden class="lp-cal-legend-swatch" style="background: var(--color-accent-soft);"></span>
-                    <span class="lp-cal-legend-label">Available</span>
-                    <span class="lp-cal-legend-hint">click or drag to reserve</span>
-                </li>
-                <li class="lp-cal-legend-item">
-                    <span aria-hidden class="lp-cal-legend-swatch" style="background: var(--color-ink);"></span>
+                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #6C9BC8;"></span>
                     <span class="lp-cal-legend-label">Booked</span>
-                    <span class="lp-cal-legend-hint">bar shows guest surname</span>
                 </li>
                 <li class="lp-cal-legend-item">
-                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #2563EB;"></span>
-                    <span class="lp-cal-legend-label">Checked in</span>
+                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #16324B;"></span>
+                    <span class="lp-cal-legend-label">In-house</span>
                 </li>
                 <li class="lp-cal-legend-item">
-                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #F59E0B;"></span>
-                    <span class="lp-cal-legend-label">Due out</span>
-                    <span class="lp-cal-legend-hint">today</span>
+                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #E3A83A;"></span>
+                    <span class="lp-cal-legend-label">Leaving today</span>
                 </li>
                 <li class="lp-cal-legend-item">
-                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #DC2626;"></span>
-                    <span class="lp-cal-legend-label">Overdue</span>
-                    <span class="lp-cal-legend-hint">past checkout</span>
+                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #A12A40;"></span>
+                    <span class="lp-cal-legend-label">Past checkout</span>
                 </li>
                 <li class="lp-cal-legend-item">
-                    <span aria-hidden class="lp-cal-legend-swatch"
-                          style="background: repeating-linear-gradient(45deg, #C99441, #C99441 3px, #B7822F 3px, #B7822F 6px);"></span>
-                    <span class="lp-cal-legend-label">Pending</span>
-                    <span class="lp-cal-legend-hint">mid-checkout</span>
+                    <span aria-hidden class="lp-cal-legend-swatch" style="background: repeating-linear-gradient(45deg, #E3A83A, #E3A83A 3px, #D0962C 3px, #D0962C 6px);"></span>
+                    <span class="lp-cal-legend-label">Waiting for payment</span>
                 </li>
                 <li class="lp-cal-legend-item">
-                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #DC2626;"></span>
-                    <span class="lp-cal-legend-label">Blocked</span>
-                    <span class="lp-cal-legend-hint">closed for maintenance</span>
+                    <span aria-hidden class="lp-cal-legend-swatch" style="background: #5E6F80;"></span>
+                    <span class="lp-cal-legend-label">Closed</span>
+                </li>
+                <li class="lp-cal-legend-item">
+                    <span class="lp-cal-legend-hint">Drag a stay to move it. Click an empty night to book.</span>
                 </li>
             </ul>
         </section>

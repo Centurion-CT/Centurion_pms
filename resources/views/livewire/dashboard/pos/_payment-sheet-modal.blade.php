@@ -30,7 +30,7 @@
              close the sheet to double-check what they're charging. --}}
         <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--color-line);">
             <div>
-                <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                <div class="lp-mono" style="font-size: 10.5px; color: var(--color-ink-mute);">
                     Take payment
                 </div>
                 <div class="lp-num-lg" style="font-size: 26px; color: var(--color-ink); margin-top: 2px;">
@@ -52,7 +52,7 @@
 
         {{-- Split-tender toggle --}}
         <div class="flex items-center justify-between mb-3">
-            <span class="lp-mono text-[11px]" style="color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">Method</span>
+            <span class="lp-mono text-[11px]" style="color: var(--color-ink-mute);">Method</span>
             <button type="button" @click="$store.pos.enableSplit()" x-show="!$store.pos.splitMode && !$store.pos.saleComp"
                     class="lp-btn" data-testid="pay-split" style="font-size: 12px; padding: 4px 12px;">
                 + Split tender
@@ -116,7 +116,7 @@
                            class="lp-input"
                            maxlength="200"
                            placeholder="e.g. VIP welcome drink · Broken order re-fired · Room 305 birthday">
-                    <p class="mt-2 lp-mono text-[11px]" style="color: var(--color-ink-mute); letter-spacing: 0.04em;">
+                    <p class="mt-2 lp-mono text-[11px]" style="color: var(--color-ink-mute);">
                         Guest pays &#8358;0 · <span x-text="$store.pos.customerName || 'walk-in'"></span> ·
                         credit &#8358;<span x-text="$store.pos.compTotal().toLocaleString()"></span> attributed to you.
                     </p>
@@ -232,7 +232,7 @@
                     <span class="lp-mono" style="color: var(--color-ink-mute); font-size: 11.5px; margin-left: 6px;"
                           x-text="$store.pos.customerPhone"></span>
                 </span>
-                <span class="lp-mono" style="color: var(--color-accent-deep); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;">
+                <span class="lp-mono" style="color: var(--color-accent-deep); font-size: 10px; font-weight: 600;">
                     ✓ In CRM
                 </span>
             </div>

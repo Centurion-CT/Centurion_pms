@@ -14,7 +14,6 @@
     <section class="lp-res-idx-hero" data-testid="summary-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Business</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Summary
@@ -44,7 +43,7 @@
     {{-- ── Filter bar ────────────────────────────────────────────── --}}
     @php
         // Inline eyebrow label style, reused across rows for alignment.
-        $eyebrow = 'flex-shrink: 0; width: 60px; color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10.5px;';
+        $eyebrow = 'flex-shrink: 0; width: 60px; color: var(--color-ink-mute); font-size: 10.5px;';
         $rangeDays = (int) ($from->diffInDays($to, absolute: true) + 1);
     @endphp
     <section class="lp-dash-card" data-testid="summary-filters"
@@ -72,7 +71,7 @@
                            class="lp-input" style="font-size: 12.5px; padding: 5px 10px; width: auto;">
                 </div>
             @else
-                <span class="lp-mono text-[11px]" style="color: var(--color-ink-mute); letter-spacing: 0.04em; white-space: nowrap;">
+                <span class="lp-mono text-[11px]" style="color: var(--color-ink-mute); white-space: nowrap;">
                     {{ $from->format('M j') }} &rarr; {{ $to->format('M j, Y') }} &middot; {{ $rangeDays }} {{ $rangeDays === 1 ? 'day' : 'days' }}
                 </span>
             @endif
@@ -101,7 +100,7 @@
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
-                <span class="lp-mono" style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10.5px;">Staff</span>
+                <span class="lp-mono" style="color: var(--color-ink-mute); font-size: 10.5px;">Staff</span>
                 <select wire:model.live="operatorFilter"
                         data-testid="summary-staff"
                         class="lp-input"
@@ -150,7 +149,7 @@
             <span class="lp-dash-card-meta">{{ $scope['label'] }} &middot; day by day</span>
         </div>
         <div class="flex flex-wrap items-center gap-4 mt-1 mb-3 lp-mono text-[11px]"
-             style="color: var(--color-ink-mute); letter-spacing: 0.04em;">
+             style="color: var(--color-ink-mute);">
             <span style="display:inline-flex; align-items:center; gap:6px;">
                 <span style="width:10px; height:10px; border-radius:2px; background: var(--color-accent-deep); display:inline-block;"></span>
                 Rooms &middot; &#8358;{{ number_format((int) $trendRoomTotal) }}
@@ -209,7 +208,7 @@
                        aria-label="{{ $card['label'] }}"
                        style="position: absolute; inset: 0; z-index: 1; border-radius: inherit;"></a>
                 @endif
-                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">
+                <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">
                     {{ $card['label'] }}
                 </span>
                 <div style="margin-top: 6px; color: {{ $valueColor }}; font-weight: 600; font-size: 22px;">
@@ -271,7 +270,7 @@
             @foreach ($growth as $key => $g)
                 <div style="border: 1px solid var(--color-line); border-radius: 8px; padding: 14px;"
                      data-testid="summary-growth-{{ $key }}">
-                    <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute); letter-spacing: 0.08em; text-transform: uppercase;">
+                    <span class="lp-mono text-[10.5px]" style="color: var(--color-ink-mute);">
                         {{ $g['label'] }}
                     </span>
                     <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 6px;">
@@ -437,7 +436,7 @@
                                 <span style="color: var(--color-ink); font-weight: 500; font-size: 13.5px;">
                                     {{ $r['name'] }}
                                 </span>
-                                <span class="lp-mono text-[10.5px]" style="display: block; color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                                <span class="lp-mono text-[10.5px]" style="display: block; color: var(--color-ink-mute);">
                                     {{ $r['sub'] }}
                                 </span>
                             </div>
@@ -535,7 +534,7 @@
                                 </td>
                                 <td style="vertical-align: top;">
                                     <span style="color: var(--color-ink); font-weight: 500;">{{ $entry['subject_label'] }}</span>
-                                    <span class="lp-mono text-[10.5px]" style="display: block; color: var(--color-ink-mute); text-transform: uppercase; letter-spacing: 0.08em;">
+                                    <span class="lp-mono text-[10.5px]" style="display: block; color: var(--color-ink-mute);">
                                         {{ $entry['subject_type'] }}
                                     </span>
                                 </td>
@@ -556,7 +555,7 @@
             <div style="padding: 12px 16px 4px; text-align: right;">
                 <a href="{{ route('tenant.inventory.audit-log') }}" wire:navigate
                    class="lp-mono text-[11px]"
-                   style="color: var(--color-ink-mute); letter-spacing: 0.04em; text-decoration: underline;">
+                   style="color: var(--color-ink-mute); text-decoration: underline;">
                     See full change history &rarr;
                 </a>
             </div>

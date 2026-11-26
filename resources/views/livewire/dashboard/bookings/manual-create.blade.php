@@ -9,7 +9,6 @@
         @include('_partials._back-button')
 
         <div class="mt-4">
-            <span class="lp-eyebrow-strip">Operate</span>
             <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
                 style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
                 Add manual booking
@@ -285,7 +284,7 @@
                            wire:keydown.enter.prevent="applyDiscount"
                            data-testid="manual-discount-code"
                            class="lp-input"
-                           style="text-transform: uppercase; letter-spacing: 0.06em;"
+                           style=""
                            placeholder="SUMMER25">
                     <button type="button" wire:click="applyDiscount"
                             data-testid="manual-discount-apply"
@@ -705,10 +704,7 @@
             display: inline-flex; align-items: baseline; gap: 8px;
         }
         .lp-page .lp-manual-summary__label {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
             font-size: 9.5px;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
             color: rgba(245, 241, 232, 0.55);
         }
         .lp-page .lp-manual-summary__value {

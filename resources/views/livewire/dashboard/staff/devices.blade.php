@@ -1,6 +1,5 @@
 <div class="lp-dash">
     <div>
-        <span class="lp-eyebrow-strip">Workspace</span>
         <h1 class="lp-display mt-3 text-[clamp(26px,3.4vw,36px)]"
             style="color: var(--color-ink); font-weight: 600; line-height: 1.04;">
             Linked devices
@@ -26,7 +25,6 @@
                         data-testid="mobile-pair-cancel"
                         class="lp-mono text-[11px]"
                         style="color: var(--color-ink-mute); text-decoration: underline;
-                               letter-spacing: 0.06em; text-transform: uppercase;
                                background: transparent; border: 0; cursor: pointer;">
                     Cancel
                 </button>
@@ -62,12 +60,11 @@
                          data-testid="mobile-pair-code"
                          style="display: inline-block; padding: 10px 16px;
                                 background: var(--color-card-deep); color: var(--color-ink);
-                                font-size: 22px; font-weight: 600; letter-spacing: 0.2em;
+                                font-size: 22px; font-weight: 600;
                                 border-radius: 8px; user-select: all;">
                         {{ $mobileCode }}
                     </div>
-                    <p class="text-[12px] lp-mono" style="color: var(--color-ink-mute); margin-top: 12px;
-                              letter-spacing: 0.06em; text-transform: uppercase;">
+                    <p class="text-[12px] lp-mono" style="color: var(--color-ink-mute); margin-top: 12px;">
                         Expires
                         <time datetime="{{ $mobileCodeExpiresAt }}">
                             in 5 minutes
@@ -83,7 +80,7 @@
         <div class="lp-dash-card-head" style="padding: 16px 18px;">
             <span class="lp-dash-card-title">Mobile phones</span>
             <span class="lp-mono text-[11px]"
-                  style="color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">
+                  style="color: var(--color-ink-mute);">
                 {{ $mobileDevices->where('revoked_at', null)->count() }} active
             </span>
         </div>
@@ -120,8 +117,7 @@
                                 </td>
                                 <td style="color: var(--color-ink);">
                                     {{ $m->device_name }}
-                                    <span style="display: block; color: var(--color-ink-mute); font-size: 11.5px;
-                                                 letter-spacing: 0.06em; text-transform: uppercase;">
+                                    <span style="display: block; color: var(--color-ink-mute); font-size: 11.5px;">
                                         {{ $m->platform }} · v{{ $m->app_version }}
                                     </span>
                                 </td>
@@ -145,7 +141,6 @@
                                                 data-testid="mobile-device-revoke-{{ $m->id }}"
                                                 class="lp-mono text-[11px]"
                                                 style="color: #B85C42; text-decoration: underline;
-                                                       letter-spacing: 0.06em; text-transform: uppercase;
                                                        background: transparent; border: 0; cursor: pointer;">
                                             Revoke
                                         </button>
@@ -164,7 +159,7 @@
         <div class="lp-dash-card-head" style="padding: 16px 18px;">
             <span class="lp-dash-card-title">POS terminals</span>
             <span class="lp-mono text-[11px]"
-                  style="color: var(--color-ink-mute); letter-spacing: 0.06em; text-transform: uppercase;">
+                  style="color: var(--color-ink-mute);">
                 {{ $devices->where('revoked_at', null)->count() }} active
             </span>
         </div>

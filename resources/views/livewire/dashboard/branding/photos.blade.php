@@ -15,7 +15,6 @@
     <section class="lp-res-idx-hero" data-testid="photos-hero">
         <div class="lp-res-idx-hero-body">
             <div class="lp-res-idx-hero-identity">
-                <span class="lp-eyebrow-strip">Content</span>
                 <h1 class="lp-display mt-2 text-[clamp(28px,3.6vw,40px)]"
                     style="color: var(--color-ink); font-weight: 600; line-height: 1.02; letter-spacing: -0.01em;">
                     Property photos
@@ -72,7 +71,7 @@
         .lp-page .logo-uploader__preview img { max-width: 108px; max-height: 108px; object-fit: contain; display: block; }
         .lp-page .logo-uploader__empty {
             display: flex; flex-direction: column; align-items: center; gap: 6px;
-            color: var(--color-ink-mute); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase;
+            color: var(--color-ink-mute); font-size: 11.5px;
             font-family: var(--font-mono, monospace);
         }
         .lp-page .logo-uploader__delete {
@@ -89,7 +88,7 @@
             position: absolute; bottom: 6px; left: 6px; padding: 3px 8px; border-radius: 999px;
             background: var(--color-accent-deep); color: #fff;
             font-family: var(--font-mono, monospace);
-            font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+            font-size: 9.5px; font-weight: 600;
         }
         .lp-page .logo-uploader__loading { position: absolute; inset: 0; background: rgba(255,255,255,0.86); border-radius: 14px; }
         .lp-page .logo-uploader__loading-inner {
