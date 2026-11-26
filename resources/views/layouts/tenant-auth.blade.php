@@ -228,52 +228,6 @@
                 ],
             ];
 
-            // Centurion grouping (mockup 3A): regroup the items above by
-            // the job the front desk is doing rather than one long
-            // "Operate" list. Item definitions (route, module gate,
-            // colour, icon) are untouched; only their section changes.
-            // Anything not named here stays in its original section.
-            $navGroupOrder = [
-                'Front desk' => ['Dashboard', 'Calendar', 'Reservations', 'Bookings', 'In-house', 'Guest requests', 'Approvals'],
-                'Workspace'  => [],
-                'Residential' => [],
-                'Property'   => ['Rooms', 'Housekeeping'],
-                'Money'      => ['Payments', 'Invoices', 'Reports'],
-                'Guests'     => ['Customers', 'Corporates'],
-                'Overview'   => ['All branches'],
-                'Rooms setup' => ['Categories', 'Rates', 'Inspections', 'Supplies'],
-                'Finance'    => ['Refunds', 'Wallets', 'Finance', 'Accounting', 'Summary'],
-                'Guest extras' => ['Credit lines', 'Complimentary', 'Membership'],
-                'Bar & stores' => ['POS', 'Store', 'Reconciliation', 'Inventory'],
-                'Marketing'  => [],
-                'Content'    => [],
-                'Settings'   => [],
-            ];
-            // Sections kept on the menu; the rest fold into "More". Names a
-            // person uses at the desk, whatever the page calls itself.
-            $navDaily = ['Front desk', 'Workspace', 'Residential', 'Property', 'Money', 'Guests'];
-            $navNames = ['Dashboard' => 'Today', 'Guest requests' => 'Requests', 'Customers' => 'Guests'];
-            $navSectionRename = ['Operate' => 'Front desk', 'Relationships' => 'Guests', 'Business' => 'Settings'];
-            $navGrouped = array_fill_keys(array_keys($navGroupOrder), []);
-            foreach ($nav as $origSection => $items) {
-                foreach ($items as $item) {
-                    $target = $navSectionRename[$origSection] ?? $origSection;
-                    foreach ($navGroupOrder as $group => $labels) {
-                        if (in_array($item['label'], $labels, true)) {
-                            $target = $group;
-                            break;
-                        }
-                    }
-                    $navGrouped[$target][] = $item;
-                }
-            }
-            foreach ($navGrouped as $group => $items) {
-                $order = array_flip($navGroupOrder[$group] ?? []);
-                usort($items, fn ($a, $b) => ($order[$a['label']] ?? 999) <=> ($order[$b['label']] ?? 999));
-                $navGrouped[$group] = $items;
-            }
-            $nav = $navGrouped;
-
             // Sidebar filtering is the intersection of:
             //  1. modules the current operator's role can access, and
             //  2. modules the property's type exposes (a Workspace-type
@@ -583,7 +537,7 @@
                  class is then refreshed client-side after each nav
                  by the inline listener at the bottom of the layout. --}}
             @persist('tenant-sidebar')
-            <aside class="lp-sidebar" data-testid="dash-sidebar"
+            <aside class="lp-sidebar kv-classic" data-testid="dash-sidebar"
                    data-tenant-sidebar
                    x-data="tenantSidebar({
                        sections: {{ \Illuminate\Support\Js::from($sidebarSections) }},
@@ -612,20 +566,50 @@
                      add one. Same partial sits in the topbar. --}}
                 @include('partials.branch-picker', ['variant' => 'sidebar'])
 
-                @php
-                    $navMoreOpen = collect($nav)->only($navDaily)->flatten(1)->count() < 5
-                        || collect($nav)->except($navDaily)->flatten(1)->contains(fn ($item) => $isActive($item));
-                    $navMoreStarted = false;
-                @endphp
+                {{-- Search, filters the nav in place. When active it
+                     expands every section so matches surface without
+                     the operator having to guess which group holds
+                     the label. Empty query returns the accordion. --}}
+                <div class="lp-sidebar-search-wrap">
+                    <svg class="lp-sidebar-search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="7" cy="7" r="4.5"/><path d="M13.5 13.5L10.5 10.5"/>
+                    </svg>
+                    <input type="search"
+                           x-model.debounce.100ms="query"
+                           @keydown.escape="query = ''"
+                           placeholder="Search…"
+                           class="lp-sidebar-search"
+                           data-testid="sidebar-search"
+                           aria-label="Search navigation">
+                    <button type="button" x-show="query.length > 0" @click="query = ''"
+                            class="lp-sidebar-search-clear" aria-label="Clear search">×</button>
+                </div>
+
+                {{-- Recent, up to 6 previously-visited nav landings,
+                     rendered as tiles so the visual language is the
+                     same as the section grids below. Colour comes
+                     from the item entry in $sidebarNavItems, which
+                     is what the client stashed at click-time. --}}
+                <template x-if="!query && visibleRecent().length > 0">
+                    <div class="lp-sidebar-section" data-testid="sidebar-recent">
+                        <div class="lp-nav-section-head">Recent</div>
+                        <div class="lp-nav-grid">
+                            <template x-for="r in visibleRecent()" :key="r.route">
+                                <a :href="r.href" wire:navigate class="lp-nav-tile">
+                                    <span class="lp-nav-tile-icon"
+                                          :style="'--tile-from: ' + (r.colorFrom || '#64748B') + '; --tile-to: ' + (r.colorTo || '#334155')">
+                                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path :d="r.icon"/>
+                                        </svg>
+                                    </span>
+                                    <span class="lp-nav-tile-label" x-text="r.label"></span>
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
                 @foreach ($nav as $section => $items)
-                    @if (! in_array($section, $navDaily, true) && ! $navMoreStarted)
-                        @php $navMoreStarted = true; @endphp
-                        <details class="lp-nav-more" @if ($navMoreOpen) open @endif data-testid="sidebar-more">
-                            <summary>
-                                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h12"/></svg>
-                                More
-                            </summary>
-                    @endif
                     <div class="lp-sidebar-section" x-show="sectionVisible('{{ $section }}')" x-cloak>
                         <div class="lp-nav-section-head"
                              data-testid="sidebar-section-{{ \Illuminate\Support\Str::slug($section) }}">
@@ -678,15 +662,12 @@
                                             {{ $badgeCount > 99 ? '99+' : $badgeCount }}
                                         </span>
                                     </span>
-                                    <span class="lp-nav-tile-label">{{ $navNames[$item['label']] ?? $item['label'] }}</span>
+                                    <span class="lp-nav-tile-label">{{ $item['label'] }}</span>
                                 </a>
                             @endforeach
                         </div>
                     </div>
                 @endforeach
-                @if ($navMoreStarted)
-                    </details>
-                @endif
 
                 {{-- No-results message while searching. --}}
                 <div x-show="query.length > 0 && noMatches()" x-cloak
@@ -695,6 +676,123 @@
                     No matches for “<span x-text="query"></span>”.
                 </div>
 
+                <div class="lp-sidebar-foot">
+                    {{-- Sidebar-variant toggle. Two concepts live in the
+                         same DOM; CSS + html[data-sidebar-variant] flips
+                         between them, so no re-render / no wire hop. --}}
+                    <button type="button"
+                            class="lp-sidebar-variant-toggle"
+                            data-testid="sidebar-variant-toggle"
+                            x-data="{
+                                variant: document.documentElement.getAttribute('data-sidebar-variant') || 'tiles',
+                                async flip() {
+                                    const next = this.variant === 'list' ? 'tiles' : 'list';
+                                    const prev = this.variant;
+                                    // Optimistic flip: apply immediately, then persist.
+                                    this.variant = next;
+                                    document.documentElement.setAttribute('data-sidebar-variant', next);
+                                    try {
+                                        const token = document.querySelector('meta[name=\'csrf-token\']')?.content || '';
+                                        const res = await fetch('{{ route('tenant.preferences.sidebar-variant') }}', {
+                                            method: 'PUT',
+                                            credentials: 'same-origin',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Accept': 'application/json',
+                                                'X-CSRF-TOKEN': token,
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                            },
+                                            body: JSON.stringify({ variant: next }),
+                                        });
+                                        if (! res.ok) throw new Error('HTTP ' + res.status);
+                                        window.KevernaOperatorPrefs?.set('sidebar_variant', next);
+                                    } catch (e) {
+                                        this.variant = prev;
+                                        document.documentElement.setAttribute('data-sidebar-variant', prev);
+                                        this.$dispatch('notify', {
+                                            title: 'Sidebar not saved',
+                                            message: 'The layout flipped but we could not store your pick. Try again shortly.',
+                                            kind: 'err',
+                                        });
+                                    }
+                                }
+                            }"
+                            x-on:click="flip()"
+                            aria-label="Switch sidebar layout">
+                        {{-- Grid icon shown when currently in list mode (points to what you'd switch TO) --}}
+                        <svg x-show="variant === 'list'" x-cloak width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden>
+                            <rect x="2" y="2" width="3.5" height="3.5"/><rect x="6.5" y="2" width="3.5" height="3.5"/><rect x="2" y="6.5" width="3.5" height="3.5"/><rect x="6.5" y="6.5" width="3.5" height="3.5"/>
+                        </svg>
+                        {{-- List icon shown when currently in tiles mode --}}
+                        <svg x-show="variant !== 'list'" x-cloak width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden>
+                            <path d="M2 3h8M2 6h8M2 9h8"/>
+                        </svg>
+                        <span class="lp-sidebar-variant-toggle-label">
+                            <span x-show="variant === 'list'" x-cloak>Switch to tiles</span>
+                            <span x-show="variant !== 'list'" x-cloak>Switch to list</span>
+                        </span>
+                    </button>
+
+                    {{-- Signed-in identity chip: shows who the operator is
+                         and which role they're carrying so they know what
+                         they can and can't do at a glance. Placed above
+                         the foot links so it reads as an anchor rather
+                         than an afterthought.  --}}
+                    @if ($currentOperator !== null)
+                        @php
+                            $signedInInitial = mb_strtoupper(mb_substr((string) $currentOperator->name, 0, 1));
+                            $signedInRoleLabel = $currentRole->label();
+                        @endphp
+
+                        <div data-testid="sidebar-signed-in"
+                             style="display: flex; align-items: center; gap: 10px;
+                                    padding: 10px 12px; margin-bottom: 6px;
+                                    border-radius: 10px; background: rgba(255,255,255,0.05);">
+                            <span aria-hidden
+                                  style="display: inline-flex; align-items: center; justify-content: center;
+                                         width: 30px; height: 30px; flex-shrink: 0; border-radius: 999px;
+                                         background: var(--color-accent-deep); color: var(--color-card);
+                                         font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em;">
+                                {{ $signedInInitial !== '' ? $signedInInitial : '?' }}
+                            </span>
+                            <span style="display: grid; gap: 1px; min-width: 0; flex: 1;">
+                                <span style="color: var(--color-card); font-size: 12.5px; font-weight: 500;
+                                             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                      title="{{ $currentOperator->name }}">
+                                    {{ $currentOperator->name }}
+                                </span>
+                                <span data-testid="sidebar-signed-in-role"
+                                      class="lp-mono"
+                                      style="color: var(--color-accent-on-dark); font-size: 10px;
+                                             letter-spacing: 0.08em; text-transform: uppercase;
+                                             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    {{ $signedInRoleLabel }}
+                                </span>
+                            </span>
+                        </div>
+                    @endif
+
+                    {{-- "View live page" opens the public landing page on
+                         a new tab so the operator can sanity-check their
+                         changes without losing their dashboard place. --}}
+                    @php $liveProperty = \App\Models\Tenant::current()?->property; @endphp
+                    <a href="{{ $liveProperty ? route('tenant.branch.show', $liveProperty) : route('tenant.rooms.browse') }}" target="_blank" rel="noopener"
+                       class="lp-sidebar-link" data-testid="view-live">
+                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4h5v5M8 12l8-8M15 11v5H4V5h5"/>
+                        </svg>
+                        View live page
+                    </a>
+                    <form method="POST" action="{{ route('tenant.logout') }}">
+                        @csrf
+                        <button type="submit" data-billing-safe class="lp-sidebar-link w-full text-left" style="cursor: pointer; background: transparent; border: 0; font-family: inherit; font-size: inherit;">
+                            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 3H5v14h6M9 10h9M15 7l3 3-3 3"/>
+                            </svg>
+                            Log out
+                        </button>
+                    </form>
+                </div>
             </aside>
             @endpersist
 
@@ -743,7 +841,7 @@
 
             {{-- ─── Main content area ─────────────────────────────── --}}
             <div class="lp-main">
-                <header class="lp-topbar" data-testid="dash-topbar">
+                <header class="lp-topbar kv-classic" data-testid="dash-topbar">
                     <div class="flex items-center gap-3 min-w-0">
                         {{-- Mobile-only hamburger that toggles the
                              sidebar drawer. Hidden ≥901px via CSS. --}}
@@ -779,14 +877,6 @@
                     </div>
 
                     <div class="flex items-center gap-3">
-                        {{-- New reservations start on the calendar: pick a room
-                             and dates there. --}}
-                        @if ($canSeeModule('calendar') && $propertyType->exposesModule('calendar'))
-                            <a href="{{ route('tenant.calendar') }}" wire:navigate class="lp-topbar-reserve" data-testid="dash-topbar-reserve">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
-                                <span>New booking</span>
-                            </a>
-                        @endif
                         {{-- Notification bell - anyone who could be a
                              target of an alert sees it. That expands
                              beyond FrontDesk / Manager to cover Stock
@@ -806,7 +896,14 @@
                             </div>
                         @endif
 
-                        @include('partials.user-menu')
+                        {{-- Email shows on tablet+ only, the phone
+                             topbar has no horizontal room left after
+                             the hamburger + property name, and the
+                             info isn't actionable. --}}
+                        <span class="lp-mono text-[10.5px] tracking-[0.16em] uppercase hidden md:inline"
+                              style="color: var(--color-ink-mute);">
+                            {{ auth()->user()?->email }}
+                        </span>
                     </div>
                 </header>
 
@@ -1002,12 +1099,7 @@
                     target.classList.add('is-active');
                 }
 
-                function openMoreIfActive() {
-                    var active = document.querySelector('.lp-nav-more a.lp-nav-tile.is-active');
-                    if (active) active.closest('.lp-nav-more').open = true;
-                }
                 document.addEventListener('livewire:navigated', refreshSidebarActive);
-                document.addEventListener('livewire:navigated', openMoreIfActive);
                 document.addEventListener('DOMContentLoaded', function () {
                     refreshSidebarActive();
                 });

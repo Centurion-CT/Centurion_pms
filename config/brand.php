@@ -23,7 +23,7 @@ return [
     'logo' => 'brand/logo.png',
     // Guest-facing site title: the landing page's browser tab and link
     // previews. Separate from `name`, which signs the software itself.
-    // Staff sidebar layout for operators who haven't picked one: 'list'
-    // (rows with tinted icons, mockup 3A) or 'tiles' (the app-icon grid).
-    'sidebar_default' => env('BRAND_SIDEBAR', 'list'),
+    // Staff sidebar layout for operators who haven't picked one: 'tiles'
+    // (the app-icon grid) or 'list' (one row per page).
+    'sidebar_default' => env('BRAND_SIDEBAR', 'tiles'),
 ];
